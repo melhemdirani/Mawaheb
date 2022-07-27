@@ -13,7 +13,7 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen
           name="Home"
-          component={LandingPage}
+          component={SignupPage}
           options={{
             headerShown: false,
           }}

@@ -23,18 +23,17 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "white",
-    backgroundColor: "#23CDB0",
     paddingTop: 10,
     paddingBottom: 10,
     fontSize: 16,
     fontWeight: "700",
-    paddingLeft: 60,
-    paddingRight: 60,
   },
   wrapperCustom: {
-    borderRadius: 22,
+    borderRadius: 30,
     backgroundColor: "#23CDB0",
-    padding: 6
+    alignItems: "center",
+    padding: 6,
+    width: 255
   },
 });
 
