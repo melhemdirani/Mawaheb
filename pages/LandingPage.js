@@ -5,17 +5,17 @@ export default function LandingPage() {
   return (
     <ImageBackground style={ styles.container } 
       resizeMode='cover' 
-      source={require('../../assets/backgroundColors.png')}
+      source={require('../assets/backgroundColors.png')}
 
     >
       <ImageBackground style={ styles.bgImage2 } 
         resizeMode='cover' 
-        source={require('../../assets/background1.png')}
+        source={require('../assets/background1.png')}
       >
         <View style={styles.container}>
           <Image
             style={styles.logo}
-            source={require('../../assets/mawaheb_logo.png')}
+            source={require('../assets/mawaheb_logo.png')}
           />
           <Text style={styles.text}>© 2022 Mawahib. All rights reserved.</Text>
           <Text style={styles.text2}>Powered by Reboost</Text>

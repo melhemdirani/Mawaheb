@@ -1,12 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import { ImageBackground, StyleSheet, Text, View, Image } from 'react-native';
-import PrimaryButton from '../../components/PrimaryButton';
+import PrimaryButton from '../components/PrimaryButton';
 
 export default function SignupPage() {
   return (
     <View style={styles.container}>
         <Text style={styles.text}>SignupPage</Text>
-        <PrimaryButton title="ana king"/>
+        <PrimaryButton title="Contact Ahmad"/>
     </View>
   );
 }
