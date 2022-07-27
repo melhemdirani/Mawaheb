@@ -10,18 +10,17 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <TestingComponentPage/>
-    // <NavigationContainer>
-    //   <Stack.Navigator>
-    //     <Stack.Screen
-    //       name="Home"
-    //       component={LandingPage}
-    //       options={{
-    //         headerShown: false,
-    //       }}
-    //     />
-    //   </Stack.Navigator>
-    // </NavigationContainer>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={SignupPage}
+          options={{
+            headerShown: false,
+          }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 

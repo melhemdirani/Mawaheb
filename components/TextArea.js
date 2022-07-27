@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, Text, View, TouchableOpacity, TextInput} from 'r
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 
-const Inputs = ({title, placeholder}) => {
+const TextArea = ({title, placeholder}) => {
 
     const [text, setText] = useState("")
     const [changed, setChanged] = useState(false)
@@ -21,6 +21,7 @@ const Inputs = ({title, placeholder}) => {
  
     return (
         <View style={!changed ? [styles.container, styles.borderBottom] : styles.container}>
+            <View style={styles.view2}>
             {
                 changed && 
                 <MaskedView maskElement={ <Text style={[styles.label, {backgroundColor: "transparent"}]}>{placeholder}</Text>}>
@@ -35,6 +36,7 @@ const Inputs = ({title, placeholder}) => {
 
             }
             <TextInput
+                multiline
                 style={
                 styles.wrapperCustom
                 }
@@ -42,12 +44,13 @@ const Inputs = ({title, placeholder}) => {
                 placeholder={placeholder}
                 placeholderTextColor="rgba(0,0,0,.5)"
             />
+            </View>
             { changed && 
                 <LinearGradient
                     start={{x:0, y: 0}}
                     end={{x:1, y: 1}}
                     colors={['#23CDB0', '#9C88FD','#9C88FD', '#9C88FD', ]}
-                    style={{height: 2, marginBottom: -5}}
+                    style={{height: 2}}
                 />
             }
         </View>
@@ -57,16 +60,19 @@ const Inputs = ({title, placeholder}) => {
 const styles = StyleSheet.create({
   container: {
     marginBottom: 20,
-    justifyContent: "center",
+    justifyContent: "space-between",
     width: "85%",
     backgroundColor: "rgba(202, 218, 221, .2)",
-    height: 50,
+    height: 150,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },
   borderBottom:{
     borderBottomColor: "#107DC5",
     borderBottomWidth: 1,
+  },
+  view2:{
+    paddingTop: 5
   },
   text: {
     paddingTop: 10,
@@ -79,8 +85,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 6,
     width: "100%",
-    paddingLeft: 20
-
+    paddingLeft: 20,
   },
   label:{
     paddingLeft: 20,
@@ -90,4 +95,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Inputs;
+export default TextArea;

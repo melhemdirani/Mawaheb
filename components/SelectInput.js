@@ -1,84 +1,99 @@
 
 import React, { useState, useEffect } from 'react';
-import { Pressable, StyleSheet, Text, View, TouchableOpacity, TextInput} from 'react-native';
+import { Pressable, StyleSheet, Text, View, FlatList, Image} from 'react-native';
 
-import { LinearGradient } from 'expo-linear-gradient';
-import MaskedView from '@react-native-masked-view/masked-view';
 
-const SelectInput = ({title, placeholder}) => {
+import {Picker} from '@react-native-picker/picker';
 
-    const [text, setText] = useState("")
-    const [changed, setChanged] = useState(false)
+const SelectInput = ({title, list}) => {
 
-    useEffect(() => {
-        if(text.length > 0 && !changed){
-            setChanged(true)
-        }
-        if(text.length < 1 && changed){
-            setChanged(false)
-        }
-    }, [text])
+    const [selected, setSelected] = useState(null)
+    const [showList, setShowList] = useState(false)
+    const [selectedLanguage, setSelectedLanguage] = useState();
 
- 
+    const onItemClick = (item) => {
+        setSelected(item)
+        setShowList(false)
+    }
+
+    const renderItem = ({ item }) => (
+        <Pressable style={styles.listItems} onPress={() => onItemClick(item)}>
+            <Text style={styles.listText} >
+                {item}
+            </Text>
+        </Pressable>
+      
+    );
     return (
         <View style={styles.container}>
-            {
-                changed && 
-                <MaskedView maskElement={ <Text style={[styles.label, {backgroundColor: "transparent"}]}>{placeholder}</Text>}>
-                    <LinearGradient
-                        start={{x:0, y: 0}}
-                        end={{x:1, y: 1}}
-                        colors={['#23CDB0', '#9C88FD','#9C88FD', '#9C88FD', ]}
-                    >
-                       <Text style={[styles.label, {opacity: 0}]}>{placeholder}</Text>
-                    </LinearGradient>
-                </MaskedView>
-
+            <View style={styles.subContainer}>
+                <Text style={selected ? styles.text2 : styles.text}>{selected === null ? title : selected}</Text>
+                <Pressable onPress={() => setShowList(!showList)} style={styles.arrowButton}>
+                    <Image
+                        style={showList ? [styles.image, styles.rotate] : styles.image}
+                        source={require('../assets/images/Vector.png')}
+                    />
+                </Pressable>
+               
+            </View>
+           
+            {   showList &&
+                <FlatList 
+                    data={list} 
+                    renderItem={renderItem}
+                    keyExtractor={item => item}
+                    style={styles.flatlist}
+                />
             }
-            <TextInput
-                style={
-                styles.wrapperCustom
-                }
-                onChangeText={(e) => setText(e)}
-                placeholder={placeholder}
-                placeholderTextColor="rgba(0,0,0,.5)"
-            />
-          
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    justifyContent: "center",
-    width: "85%",
-    backgroundColor: "#rgba(202, 218, 221, .2)",
+    container:{
+        width: "85%",
+
+    },
+    rotate:{
+        transform: [{rotate: '180deg'}]
+    },  
+    subContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "rgba(202, 218, 221, .2)",
     height: 50,
     borderBottomColor: "#107DC5",
     borderBottomWidth: 1,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
-  },
-  text: {
-    paddingTop: 10,
-    paddingBottom: 10,
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  wrapperCustom: {
-    borderRadius: 3,
-    alignItems: "center",
-    padding: 6,
-    width: "100%",
-    paddingLeft: 20
+    },
+    text: {
+        paddingLeft: 20,
+        color: "rgba(0,0,0, .5)"
+    },
+ 
+    text2: {
+        paddingLeft: 20,
+        color: "rgba(0,0,0, 1)"
+    },
+ 
+    listItems:{
+        backgroundColor: "rgba(202, 218, 221, .2)",
+    },
+    listText:{
+        marginLeft: 20,
+        marginTop: 5,
+        marginBottom: 5,
+        color: "rgba(0,0,0, .5)"
 
-  },
-  label:{
-    paddingLeft: 20,
-    fontSize: 10,
-    textTransform: "uppercase",
-    fontWeight: "600"
-  }
+    },
+    flatlist:{
+        marginTop: 10
+    },
+    arrowButton:{
+        padding: 20
+    }
 });
 
 export default SelectInput;

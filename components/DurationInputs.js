@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Pressable, StyleSheet, Text, View, TouchableOpacity, TextInput} from 'react-native';
+import { Pressable, StyleSheet, Text, View, Image, TextInput} from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 
-const Inputs = ({title, placeholder}) => {
+const DurationInputs = ({title, placeholder}) => {
 
     const [text, setText] = useState("")
     const [changed, setChanged] = useState(false)
@@ -34,20 +34,26 @@ const Inputs = ({title, placeholder}) => {
                 </MaskedView>
 
             }
-            <TextInput
-                style={
-                styles.wrapperCustom
-                }
-                onChangeText={(e) => setText(e)}
-                placeholder={placeholder}
-                placeholderTextColor="rgba(0,0,0,.5)"
-            />
+            <View style={styles.subContainer}>
+                <TextInput
+                    style={
+                    styles.wrapperCustom
+                    }
+                    onChangeText={(e) => setText(e)}
+                    placeholder={placeholder}
+                    placeholderTextColor="rgba(0,0,0,.5)"
+                />
+                <Image
+                    style={styles.rate}
+                    source={require('../assets/images/date.png')}
+                />
+            </View>
             { changed && 
                 <LinearGradient
                     start={{x:0, y: 0}}
                     end={{x:1, y: 1}}
                     colors={['#23CDB0', '#9C88FD','#9C88FD', '#9C88FD', ]}
-                    style={{height: 2, marginBottom: -5}}
+                    style={{height: 2, marginBottom: -10, marginTop: 10}}
                 />
             }
         </View>
@@ -77,8 +83,6 @@ const styles = StyleSheet.create({
   wrapperCustom: {
     borderRadius: 3,
     alignItems: "center",
-    padding: 6,
-    width: "100%",
     paddingLeft: 20
 
   },
@@ -87,7 +91,15 @@ const styles = StyleSheet.create({
     fontSize: 10,
     textTransform: "uppercase",
     fontWeight: "600"
+  },
+  rate:{
+    marginRight: 10,
+  },
+  subContainer:{
+    flexDirection: "row",
+    justifyContent: 'space-between',
+    marginTop: 5
   }
 });
 
-export default Inputs;
+export default DurationInputs;
