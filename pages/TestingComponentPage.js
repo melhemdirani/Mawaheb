@@ -14,9 +14,15 @@ const TestingComponentPage = () => {
       <Header
         icon={signUp}
         title='Jobseeker Sign up'
-        numOfPage={'1/4'}
+        // numOfPage={<Image source={trash}></Image>}
+        numOfPage='1/4'
+        hidden={false}
+ 
+     
       ></Header>
-      <Text style={styles.text}>Testing Component Page</Text>
+      <View style={styles.body}>
+        <Text>Hello</Text>
+      </View>
     </View>
   )
 }
@@ -25,9 +31,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  text: {
-    position: 'absolute',
-    top: '30%',
+  body: {
+    padding: 20,
+  },
+  backIcon: {
+    display: "none"
+
   },
 })
 
