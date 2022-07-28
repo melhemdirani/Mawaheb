@@ -5,6 +5,7 @@ import {
   ScrollView,
   Button,
   Switch,
+  SafeAreaView
 } from 'react-native'
 import React, { useState } from 'react'
 import Header from '../components/Header'
@@ -38,15 +39,15 @@ const ClientSignupPage = () => {
             ></Switch>
             <Text style={styles.private}> Private</Text>
           </View>
-          <Inputs placeholder='Address*' style={styles.input} />
-          <Inputs placeholder='TRN(Tax Number)*' style={styles.input} />
-          <UploadCard title='Trading Liscence*' />
+          <Inputs placeholder={isEnabled?'Address*':"Signatory Name*"} style={styles.input} />
+          <Inputs placeholder={isEnabled?'TRN(Tax Number)*':"Signatory Title"} style={styles.input} />
+          <UploadCard title={isEnabled?'Trading Liscence*':"Add Authorized Signatory"} />
         </View>
         <View style={styles.btnContainer}>
           <PrimaryButton title='Sign up' />
-          <View style={styles.btn}>
+          <SafeAreaView style={styles.btn}>
             <Text style={styles.btnText}>Login</Text>
-          </View>
+          </SafeAreaView>
         </View>
       </View>
     </ScrollView>
@@ -76,10 +77,10 @@ const styles = StyleSheet.create({
   btnContainer: {
     width: '90%',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 10,
   },
   btn: {
-    marginTop: 15,
+    marginTop: 10,
   },
   btnText: {
     fontSize: 15,
