@@ -1,9 +1,9 @@
 import { View, Text, Image, StyleSheet, ImageBackground } from 'react-native'
 import React from 'react'
-import backgroundImage from '../assets/backgroundHeader.jpg'
-import bodyImage from '../assets/body.png'
-import backIcon from '../assets/backIcon.png'
-import testImage from '../assets/test.png'
+import backgroundImage from '../assets/images/backgroundHeader.jpg'
+import bodyImage from '../assets/images/body.png'
+import backIcon from '../assets/images/backIcon.png'
+import testImage from '../assets/images/test.png'
 const Header = ({ icon, title, numOfPage, rightIcon, hidden }) => {
   return (
     <View style={styles.container}>
@@ -54,8 +54,9 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     color: '#fff',
-    fontWeight: 'bold',
-    left: 100,
+
+    left: 120,
+    fontFamily: 'PoppinsS',
   },
   page: {
     fontSize: 15,

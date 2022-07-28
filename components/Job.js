@@ -1,12 +1,12 @@
 import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native'
 import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
-import calendarIcon from '../assets/calendarIcon.png'
-import clockIcon from '../assets/clockIcon.png'
-import locationIcon from '../assets/locationIcon.png'
-import priceRectangle from '../assets/priceRectangle.png'
-import heartIcon from '../assets/heartIcon.png'
-import plusIcon from '../assets/plusIcon.png'
+import calendarIcon from '../assets/images/calendarIcon.png'
+import clockIcon from '../assets/images/clockIcon.png'
+import locationIcon from '../assets/images/locationIcon.png'
+import priceRectangle from '../assets/images/priceRectangle.png'
+import heartIcon from '../assets/images/heartIcon.png'
+import plusIcon from '../assets/images/plusIcon.png'
 import MaskedView from '@react-native-masked-view/masked-view'
 
 const Job = ({ title, description, price }) => {
