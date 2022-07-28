@@ -11,33 +11,36 @@ import ExperiencePage from './pages/ExperiencePage';
 import LanguagePage from './pages/LanguagePage';
 import BankPage from './pages/BankPage';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator()
 
 export default function App() {
   const [loaded] = useFonts({
-    PoppinsR: require('./assets/fonts/Poppins-Regular.ttf'),  
+    PoppinsR: require('./assets/fonts/Poppins-Regular.ttf'),
     PoppinsB: require('./assets/fonts/Poppins-Bold.ttf'),
     PoppinsL: require('./assets/fonts/Poppins-Light.ttf'),
     PoppinsS: require('./assets/fonts/Poppins-SemiBold.ttf'),
-  });
+  })
 
   if (!loaded) {
-    return <ActivityIndicator size={'large'}/>;
+    return <ActivityIndicator size={'large'} />
   }
 
   return (
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
+<<<<<<< HEAD
           name="Home"
           component={BankPage}
+=======
+          name='Home'
+          component={ClientSignupPage}
+>>>>>>> ede6209048af9530c1d94317af7684d096937cab
           options={{
             headerShown: false,
           }}
         />
       </Stack.Navigator>
     </NavigationContainer>
-
-  );
+  )
 }
-

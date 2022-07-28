@@ -1,8 +1,8 @@
 import { View, Text, StyleSheet, ImageBackground, Image } from 'react-native'
 import React from 'react'
-import secondaryHeader from '../assets/test2.png'
-import searchIcon from '../assets/search.png'
-import filterIcon from '../assets/filterIcon.png'
+import secondaryHeader from '../assets/images/test2.png'
+import searchIcon from '../assets/images/search.png'
+import filterIcon from '../assets/images/filterIcon.png'
 
 const SecondaryHeader = ({ name }) => {
   return (
