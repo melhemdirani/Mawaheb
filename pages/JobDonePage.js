@@ -6,33 +6,43 @@ import congratsProfileBg from '../assets/images/congratsProfileBg.png'
 import handShakeIcon from '../assets/images/handShakeIcon.png'
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import TertiaryButton from '../components/Buttons/TertiaryButton'
+import MaskedView from '@react-native-masked-view/masked-view'
+import { LinearGradient } from 'expo-linear-gradient'
 
-
-const FreelanceAcceptedPage = () => {
+const JobDonePage = () => {
   return (
     <View style={styles.wrapper}>
       <Header title='Let’s get the job done' hidden={true} />
       <View style={styles.container}>
-        <Text style={styles.text}> Congratulations!</Text>
+        <MaskedView
+          maskElement={
+            <Text style={[styles.text, { backgroundColor: 'transparent' }]}>
+              How was your experience with ahmad?
+            </Text>
+          }
+        >
+          <LinearGradient
+            start={{ x: 1, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            colors={['#31BEBB', '#655BDA']}
+          >
+            <Text style={[styles.text, { opacity: 0 }]}>
+              How was your experience with ahmad?
+            </Text>
+          </LinearGradient>
+        </MaskedView>
+
         <ImageBackground
           source={congratsBg}
           style={styles.congratsBg}
           resizeMode='stretch'
-        >
-          <Image
-            source={congratsProfileBg}
-            style={styles.congratsProfileBg}
-          ></Image>
-          <Text style={styles.name}>Ahmad Mohamad</Text>
-          <Image source={handShakeIcon} style={styles.handShakeIcon}></Image>
-        </ImageBackground>
+        ></ImageBackground>
         <View style={styles.btnContainer}>
           <View style={styles.primary}>
-          
-            <PrimaryButton title='Contact Ahmad' />
+            <PrimaryButton title='Confirm' />
           </View>
 
-          <TertiaryButton title='Contact later' style={styles.contactLater} />
+          <TertiaryButton title='Dismiss' style={styles.contactLater} />
         </View>
       </View>
     </View>
@@ -47,12 +57,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   text: {
-    fontSize: 35,
+    fontSize: 17,
     textAlign: 'center',
     marginTop: 40,
     color: '#31BEBB',
-    fontFamily: 'PoppinsB',
+    fontFamily: 'PoppinsS',
     marginBottom: 80,
+    width: '100%',
   },
   congratsBg: {
     width: '100%',
@@ -64,11 +75,10 @@ const styles = StyleSheet.create({
     left: 100,
   },
   handShakeIcon: {
-   top: -200,
-   left: 140,
+    top: -200,
+    left: 140,
   },
   name: {
-
     fontSize: 20,
     color: '#fff',
     fontFamily: 'PoppinsS',
@@ -76,19 +86,14 @@ const styles = StyleSheet.create({
     marginTop: -10,
   },
   btnContainer: {
-   alignItems: 'center',
-   justifyContent: 'space-between',
-   marginTop: 40,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 40,
   },
   primary: {
-   marginBottom: 20,
-  
+    marginBottom: 20,
   },
-  contactLater: {
-   
-
-  }
+  contactLater: {},
 })
 
-
-export default FreelanceAcceptedPage
+export default JobDonePage

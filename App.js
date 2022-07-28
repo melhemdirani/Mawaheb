@@ -17,6 +17,7 @@ import JobListPage from './pages/JobListPage';
 import FreelancerDetailsPage from './pages/FreelancerDetailsPage';
 import JobContractPage from './pages/JobContractPage';
 import FreelanceAcceptedPage from './pages/FreelanceAcceptedPage';
+import JobDonePage from './pages/JobDonePage';
 
 const Stack = createNativeStackNavigator()
 
@@ -37,7 +38,7 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen
           name='Home'
-          component={FreelanceAcceptedPage}
+          component={JobDonePage}
           options={{
             headerShown: false,
           }}
