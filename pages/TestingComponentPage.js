@@ -2,9 +2,9 @@ import { View, Text, SafeAreaView, StyleSheet, Image } from 'react-native'
 import React from 'react'
 import FormRow from '../components/FormRow'
 import Header from '../components/Header'
-import signUp from '../assets/signUp.png'
-import backIcon from '../assets/backIcon.png'
-import trash from '../assets/trash.png'
+import signUp from '../assets/images/signUp.png'
+import backIcon from '../assets/images/backIcon.png'
+import trash from '../assets/images/trash.png'
 import SecondaryHeader from '../components/SecondaryHeader'
 import Job from '../components/Job'
 
@@ -39,10 +39,10 @@ const TestingComponentPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white"
+    backgroundColor: 'white',
   },
   jobs: {
-    padding:  10,
+    padding: 10,
   },
   body: {
     padding: 20,
