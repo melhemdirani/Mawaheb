@@ -1,4 +1,11 @@
-import { View, Text, SafeAreaView, StyleSheet, Image, ScrollView } from 'react-native'
+import {
+  View,
+  Text,
+  SafeAreaView,
+  StyleSheet,
+  Image,
+  ScrollView,
+} from 'react-native'
 import React from 'react'
 import Header from '../components/Header'
 import icon from '../assets/images/language.png'
@@ -21,23 +28,23 @@ const LanguagePage = () => {
       />
       <View style={styles.subContainer}>
         <Text style={styles.text}>
-            Lorem ipsum dolor sit amenoLorem ipsum dolor sit ameno
+          Lorem ipsum dolor sit amenoLorem ipsum dolor sit ameno
         </Text>
-        <Inputs placeholder="Main Language*"/>
-        <SelectInput 
-          title="Profeciency*" 
-          list={["option1", "option2", "option3"]}
-        />  
-        <Inputs placeholder="Secondary Language*"/> 
-        <SelectInput 
-          title="Profeciency*" 
-          list={["option1", "option2", "option3"]}
-        /> 
+        <Inputs placeholder='Main Language*' />
+        <SelectInput
+          title='Profeciency*'
+          list={['option1', 'option2', 'option3']}
+        />
+        <Inputs placeholder='Secondary Language*' />
+        <SelectInput
+          title='Profeciency*'
+          list={['option1', 'option2', 'option3']}
+        />
         <Pressable style={styles.addButton}>
-            <AddRoleButton title="Add another language"/> 
+          <AddRoleButton title='Add another language' />
         </Pressable>
         <Pressable style={styles.nextButton}>
-            <PrimaryButton title="Continue"/> 
+          <PrimaryButton title='Continue' />
         </Pressable>
       </View>
     </ScrollView>
@@ -47,26 +54,26 @@ const LanguagePage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: 'white',
   },
-  subContainer:{
-    alignItems: "center",
+  subContainer: {
+    alignItems: 'center',
     paddingTop: 50,
   },
-  text:{
-    width: "70%",
-    textAlign: "center",
+  text: {
+    width: '70%',
+    textAlign: 'center',
     lineHeight: 22,
     marginBottom: 15,
-    color: "rgba(0,0,0,0.6)"
+    color: 'rgba(0,0,0,0.6)',
   },
-  nextButton:{
-    paddingVertical: 40
+  nextButton: {
+    paddingVertical: 40,
   },
-  addButton:{
+  addButton: {
     marginTop: 20,
-    marginBottom: 60
-  }
+    marginBottom: 60,
+  },
 })
 
 export default LanguagePage
