@@ -21,7 +21,7 @@ import { freelancerDetails } from '../assets/data/freelancerDetails'
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import minusIcon from '../assets/images/minusIcon.png'
 
-const FreelancerDetails = ({
+const FreelancerDetailsPage = ({
 
 }) => {
   const { id, title, price, roles, languages, location, shift } =
@@ -307,4 +307,4 @@ const styles = StyleSheet.create({
 
   }
 })
-export default FreelancerDetails
+export default FreelancerDetailsPage
