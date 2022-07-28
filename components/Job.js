@@ -9,9 +9,9 @@ import heartIcon from '../assets/images/heartIcon.png'
 import plusIcon from '../assets/images/plusIcon.png'
 import MaskedView from '@react-native-masked-view/masked-view'
 
-const Job = ({ title, description, price }) => {
+const Job = ({ title, description, price, lastOne }) => {
   return (
-    <View style={styles.wrapper}>
+    <View style={lastOne ? [styles.wrapper, {marginBottom: 40}] : styles.wrapper}>
         <View style={styles.header}>
           <View style={styles.subHeader}>
               <View style={styles.circle}></View>
@@ -91,7 +91,8 @@ const Job = ({ title, description, price }) => {
 }
 const styles = StyleSheet.create({
   wrapper:{
-    height: 500,
+    height: 300,
+    zIndex: 9999,
   },
   linear:{
     borderRadius: 30,

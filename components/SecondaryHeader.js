@@ -27,7 +27,7 @@ const SecondaryHeader = ({ name }) => {
 }
 const styles = StyleSheet.create({
   container: {
-    zIndex: -1,
+    zIndex: -99
   },
 
   image: {
