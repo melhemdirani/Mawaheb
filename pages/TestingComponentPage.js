@@ -29,6 +29,7 @@ const TestingComponentPage = () => {
           description={
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium '
           }
+          price={100}
         ></Job>
       </View>
     </View>
@@ -38,13 +39,10 @@ const TestingComponentPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
- 
+    backgroundColor: "white"
   },
   jobs: {
-    padding: 10,
-
-
-
+    padding:  10,
   },
   body: {
     padding: 20,

@@ -12,13 +12,15 @@ const SecondaryHeader = ({ name }) => {
         style={styles.image}
         resizeMode='cover'
       >
-        <Text style={styles.text}>Hi, {name}</Text>
-        <Image source={searchIcon} style={styles.searchIcon}></Image>
-        <Image
-          source={filterIcon}
-          style={styles.filterIcon}
-          resizeMode='cover'
-        ></Image>
+        <View style={styles.subContainer}>
+          <Text style={styles.text}>Hi, {name}</Text>
+          <Image source={searchIcon} style={styles.searchIcon}></Image>
+          <Image
+            source={filterIcon}
+            style={styles.filterIcon}
+            resizeMode='cover'
+          ></Image>
+        </View>
       </ImageBackground>
     </View>
   )
@@ -35,25 +37,26 @@ const styles = StyleSheet.create({
   },
   arc: {},
   text: {
-    position: 'absolute',
-    top: 75,
-    left: 10,
     fontSize: 20,
     color: '#fff',
     fontWeight: 'bold',
     zIndex: 1,
   },
   searchIcon: {
-    position: 'absolute',
-    top: 83,
-    left: 300,
     height: 23,
+    marginRight: -200
   },
   filterIcon: {
-    left: 375,
-    top: 85,
     height: 25,
   },
+  subContainer:{
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    top: 80,
+    paddingLeft: 10,
+    paddingRight: 10
+  }
 })
 
 export default SecondaryHeader
