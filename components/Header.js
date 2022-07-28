@@ -12,7 +12,7 @@ const Header = ({ icon, title, numOfPage, rightIcon, hidden }) => {
         style={styles.background}
         resizeMode='cover'
       >
-        <View style={ styles.info}>
+        <View style={styles.info}>
           {!hidden && <Image source={backIcon} style={styles.backIcon}></Image>}
           <Text style={styles.text}>{title}</Text>
           <Text style={styles.page}>{numOfPage}</Text>
@@ -28,7 +28,7 @@ const Header = ({ icon, title, numOfPage, rightIcon, hidden }) => {
 }
 const styles = StyleSheet.create({
   container: {
-    position: 'relative'
+    position: 'relative',
   },
   background: {
     width: '100%',
@@ -46,19 +46,16 @@ const styles = StyleSheet.create({
     left: 140,
   },
   info: {
-    position:"relative",
+    position: 'relative',
     top: 100,
     flexDirection: 'row',
     alignItems: 'center',
-
-
-
   },
   text: {
     fontSize: 20,
     color: '#fff',
     fontWeight: 'bold',
-left: 100,
+    left: 100,
   },
   page: {
     fontSize: 15,
@@ -66,8 +63,6 @@ left: 100,
     fontWeight: '200',
     left: 190,
   },
-
-
 
   rightIcon: {},
   backIcon: {
