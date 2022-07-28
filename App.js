@@ -1,15 +1,16 @@
-import { StatusBar } from 'expo-status-bar';
-import { ActivityIndicator } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import LandingPage from './pages/LandingPage';
-import SignupPage from './pages/SignupPage';
-import TestingComponentPage from './pages/TestingComponentPage';
-import { useFonts } from 'expo-font';
-import CreateProfilePage from './pages/CreateProfilePage';
-import ExperiencePage from './pages/ExperiencePage';
-import LanguagePage from './pages/LanguagePage';
-import BankPage from './pages/BankPage';
+import { StatusBar } from 'expo-status-bar'
+import { ActivityIndicator } from 'react-native'
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import LandingPage from './pages/LandingPage'
+import SignupPage from './pages/SignupPage'
+import TestingComponentPage from './pages/TestingComponentPage'
+import { useFonts } from 'expo-font'
+import CreateProfilePage from './pages/CreateProfilePage'
+import ExperiencePage from './pages/ExperiencePage'
+import LanguagePage from './pages/LanguagePage'
+import BankPage from './pages/BankPage'
+import JobListPage from './pages/JobListPage'
 
 const Stack = createNativeStackNavigator()
 
@@ -29,8 +30,8 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-          name="Home"
-          component={BankPage}
+          name='Home'
+          component={JobListPage}
           options={{
             headerShown: false,
           }}

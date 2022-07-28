@@ -1,10 +1,17 @@
-import { View, Text, SafeAreaView, StyleSheet, Image, ScrollView } from 'react-native'
+import {
+  View,
+  Text,
+  SafeAreaView,
+  StyleSheet,
+  Image,
+  ScrollView,
+} from 'react-native'
 import React from 'react'
 import FormRow from '../components/FormRow'
 import Header from '../components/Header'
 import Icon from '../assets/images/bankIcon.png'
-import backIcon from '../assets/backIcon.png'
-import trash from '../assets/trash.png'
+import backIcon from '../assets/images/backIcon.png'
+import trash from '../assets/images/trash.png'
 import SecondaryHeader from '../components/SecondaryHeader'
 import Job from '../components/Job'
 import Inputs from '../components/Inputs'
@@ -26,17 +33,17 @@ const BankPage = () => {
       />
       <View style={styles.subContainer}>
         <Text style={styles.text}>
-            Lorem ipsum dolor sit amenoLorem ipsum dolor sit ameno
+          Lorem ipsum dolor sit amenoLorem ipsum dolor sit ameno
         </Text>
-        <Inputs placeholder="IBAN*"/>
-        <Inputs placeholder="Account Name*"/>
-        <Inputs placeholder="Bank Name*"/>
-        <Inputs placeholder="Bank Address*"/>
-        <Inputs placeholder="City*"/>
-        <Inputs placeholder="Swift Code*"/>
-      
+        <Inputs placeholder='IBAN*' />
+        <Inputs placeholder='Account Name*' />
+        <Inputs placeholder='Bank Name*' />
+        <Inputs placeholder='Bank Address*' />
+        <Inputs placeholder='City*' />
+        <Inputs placeholder='Swift Code*' />
+
         <Pressable style={styles.nextButton}>
-            <PrimaryButton title="Create Profile"/> 
+          <PrimaryButton title='Create Profile' />
         </Pressable>
       </View>
     </ScrollView>
@@ -46,27 +53,27 @@ const BankPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: 'white',
   },
-  subContainer:{
-    alignItems: "center",
+  subContainer: {
+    alignItems: 'center',
     paddingTop: 50,
   },
-  text:{
-    width: "70%",
-    textAlign: "center",
+  text: {
+    width: '70%',
+    textAlign: 'center',
     lineHeight: 22,
     marginBottom: 15,
-    color: "rgba(0,0,0,0.6)"
+    color: 'rgba(0,0,0,0.6)',
   },
-  nextButton:{
+  nextButton: {
     paddingVertical: 40,
-    marginTop: 10
+    marginTop: 10,
   },
-  addButton:{
+  addButton: {
     marginTop: 20,
-    marginBottom: 60
-  }
+    marginBottom: 60,
+  },
 })
 
 export default BankPage
