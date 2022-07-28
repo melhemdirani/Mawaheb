@@ -29,13 +29,8 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-<<<<<<< HEAD
           name="Home"
           component={BankPage}
-=======
-          name='Home'
-          component={ClientSignupPage}
->>>>>>> ede6209048af9530c1d94317af7684d096937cab
           options={{
             headerShown: false,
           }}
