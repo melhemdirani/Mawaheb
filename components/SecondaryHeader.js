@@ -4,7 +4,7 @@ import secondaryHeader from '../assets/images/test2.png'
 import searchIcon from '../assets/images/search.png'
 import filterIcon from '../assets/images/filterIcon.png'
 
-const SecondaryHeader = ({ name }) => {
+const SecondaryHeader = ({ title }) => {
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -13,7 +13,7 @@ const SecondaryHeader = ({ name }) => {
         resizeMode='cover'
       >
         <View style={styles.subContainer}>
-          <Text style={styles.text}>Hi, {name}</Text>
+          <Text style={styles.text}>{title}</Text>
           <Image source={searchIcon} style={styles.searchIcon}></Image>
           <Image
             source={filterIcon}

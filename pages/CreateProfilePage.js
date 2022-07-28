@@ -1,4 +1,11 @@
-import { View, Text, SafeAreaView, StyleSheet, Image, ScrollView } from 'react-native'
+import {
+  View,
+  Text,
+  SafeAreaView,
+  StyleSheet,
+  Image,
+  ScrollView,
+} from 'react-native'
 import React from 'react'
 import Header from '../components/Header'
 import signUp from '../assets/images/signUp.png'
@@ -19,17 +26,17 @@ const CreateProfilePage = () => {
       />
       <View style={styles.subContainer}>
         <Text style={styles.text}>
-            Fill and upload the below required field and documents
+          Fill and upload the below required field and documents
         </Text>
-        <Inputs title="Continue to Payment" placeholder="Emirates ID Number*"/> 
-        <Inputs title="Continue to Payment" placeholder="Expiration Date*"/> 
-        <UploadCard title="Emirates ID front side"/> 
-        <UploadCard title="Emirates ID back side"/> 
-        <Inputs title="Continue to Payment" placeholder="Passport Number*"/> 
-        <UploadCard title="Copy of passport"/> 
-        <UploadCard title="Copy of residency visa"/> 
+        <Inputs title='Continue to Payment' placeholder='Emirates ID Number*' />
+        <Inputs title='Continue to Payment' placeholder='Expiration Date*' />
+        <UploadCard title='Emirates ID front side' />
+        <UploadCard title='Emirates ID back side' />
+        <Inputs title='Continue to Payment' placeholder='Passport Number*' />
+        <UploadCard title='Copy of passport' />
+        <UploadCard title='Copy of residency visa' />
         <Pressable style={styles.nextButton}>
-            <PrimaryButton title="Next"/> 
+          <PrimaryButton title='Next' />
         </Pressable>
       </View>
     </ScrollView>
@@ -39,22 +46,22 @@ const CreateProfilePage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: 'white',
   },
-  subContainer:{
-    alignItems: "center",
+  subContainer: {
+    alignItems: 'center',
     paddingTop: 50,
   },
-  text:{
-    width: "70%",
-    textAlign: "center",
+  text: {
+    width: '70%',
+    textAlign: 'center',
     lineHeight: 22,
     marginBottom: 15,
-    color: "rgba(0,0,0,0.6)"
+    color: 'rgba(0,0,0,0.6)',
   },
-  nextButton:{
-    paddingVertical: 40
-  }
+  nextButton: {
+    paddingVertical: 40,
+  },
 })
 
 export default CreateProfilePage
