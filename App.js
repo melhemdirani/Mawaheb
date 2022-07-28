@@ -10,6 +10,8 @@ import CreateProfilePage from './pages/CreateProfilePage';
 import ExperiencePage from './pages/ExperiencePage';
 import LanguagePage from './pages/LanguagePage';
 import BankPage from './pages/BankPage';
+import ClientSignupPage from './pages/ClientSignupPage';
+import Navbar from './components/Navbar';
 
 const Stack = createNativeStackNavigator()
 
@@ -30,7 +32,7 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen
           name="Home"
-          component={BankPage}
+          component={Navbar}
           options={{
             headerShown: false,
           }}
