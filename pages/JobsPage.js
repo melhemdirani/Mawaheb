@@ -35,7 +35,7 @@ const JobsPage = () => {
     }
     return (
         <View style={styles.container}>
-            <SecondaryHeader name={'John'}></SecondaryHeader>
+            <SecondaryHeader title={'Hi John'}></SecondaryHeader>
             <FlatList 
                 data={Data} 
                 renderItem={renderItem}
