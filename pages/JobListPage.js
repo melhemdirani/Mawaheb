@@ -6,6 +6,7 @@ import MaskedView from '@react-native-masked-view/masked-view'
 import { LinearGradient } from 'expo-linear-gradient'
 import arrowUpIcon from '../assets/images/arrowUpIcon.png'
 import { jobs } from '../assets/data/jobs'
+import Navbar from '../components/Navbar'
 
 const JobListPage = () => {
   const renderItem = (data) => {
@@ -42,12 +43,9 @@ const JobListPage = () => {
           keyExtractor={(item) => item.id}
           // contentContainerStyle={{paddingBottom: 200}}
 
-       
-       
-
           style={styles.jobs}
-
         ></FlatList>
+        <Navbar />
       </View>
     </View>
   )
@@ -67,6 +65,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginTop : -15,
   },
   jobs: {
     padding: 7,

@@ -13,6 +13,7 @@ import BankPage from './pages/BankPage';
 import ClientSignupPage from './pages/ClientSignupPage';
 import Navbar from './components/Navbar';
 import JobsPage from './pages/JobsPage';
+import JobListPage from './pages/JobListPage';
 
 const Stack = createNativeStackNavigator()
 
@@ -32,13 +33,14 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-          name="Home"
+          name='Home'
           component={JobsPage}
           options={{
             headerShown: false,
           }}
         />
       </Stack.Navigator>
+   
     </NavigationContainer>
   )
 }

@@ -11,23 +11,28 @@ import MaskedView from '@react-native-masked-view/masked-view'
 
 const Job = ({ title, description, price, lastOne }) => {
   return (
-    <View style={lastOne ? [styles.wrapper, {marginBottom: 40}] : styles.wrapper}>
-        <View style={styles.header}>
-          <View style={styles.subHeader}>
-              <View style={styles.circle}></View>
-              <ImageBackground
-                source={priceRectangle}
-                style={styles.priceBg}
-                resizeMode='contain'
-              >
-                <Text style={styles.price}>{price} </Text>
-              </ImageBackground>
-          </View>
-          <View style={styles.subHeader}>
-            <Image source={heartIcon} style={styles.heart}></Image>
-            <Image source={plusIcon} style={styles.plus}></Image>
-          </View>
+    <View
+      style={lastOne ? [styles.wrapper, { marginBottom: 40 }] : styles.wrapper}
+    >
+      <View style={styles.header}>
+        <View style={styles.subHeader}>
+          <View style={styles.circle}></View>
+          <ImageBackground
+            source={priceRectangle}
+            style={styles.priceBg}
+            resizeMode='contain'
+          >
+            <View style={styles.priceAndCurrency}>
+              <Text style={styles.price}>{price} </Text>
+              <Text style={styles.currency}>AED</Text>
+            </View>
+          </ImageBackground>
         </View>
+        <View style={styles.subHeader}>
+          <Image source={heartIcon} style={styles.heart}></Image>
+          <Image source={plusIcon} style={styles.plus}></Image>
+        </View>
+      </View>
       <LinearGradient
         colors={[
           'rgba(202, 218, 221, 0.1)',
@@ -45,7 +50,9 @@ const Job = ({ title, description, price, lastOne }) => {
           <View style={styles.info}>
             <MaskedView
               maskElement={
-                <Text style={[styles.title, { backgroundColor: 'transparent' }]}>
+                <Text
+                  style={[styles.title, { backgroundColor: 'transparent' }]}
+                >
                   {title}
                 </Text>
               }
@@ -90,13 +97,12 @@ const Job = ({ title, description, price, lastOne }) => {
   )
 }
 const styles = StyleSheet.create({
-  wrapper:{
+  wrapper: {
     height: 300,
     zIndex: 9999,
   },
-  linear:{
+  linear: {
     borderRadius: 30,
-    
   },
   container: {
     justifyContent: 'center',
@@ -105,7 +111,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0,0,0,.03)',
     position: 'relative',
     zIndex: 1,
-    paddingTop: 30
+    paddingTop: 30,
   },
   info: {
     padding: 20,
@@ -113,17 +119,17 @@ const styles = StyleSheet.create({
   header: {
     zIndex: 1,
     top: 0,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "90%",
-    alignSelf: "center",
-    marginBottom: -45
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '90%',
+    alignSelf: 'center',
+    marginBottom: -45,
   },
   title: {
     fontSize: 20,
     marginBottom: 10,
-    fontFamily: "PoppinsB"
+    fontFamily: 'PoppinsB',
   },
   footer: {
     flexDirection: 'row',
@@ -147,13 +153,13 @@ const styles = StyleSheet.create({
     borderColor: ' rgba(16, 125, 197, 1)',
     borderWidth: 1,
     zIndex: 999,
-    backgroundColor: "white"
+    backgroundColor: 'white',
   },
   priceBg: {
-    width: 115  ,
+    width: 110,
     height: 90,
     left: 10,
-    justifyContent: "center"
+    justifyContent: 'center',
   },
   price: {
     fontSize: 18,
@@ -161,31 +167,41 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'rgba(16, 125, 197, 1)',
   },
-  heart: {
-   
-  },
+  heart: {},
   plus: {
-    left: 10
+    left: 10,
   },
   text: {
     color: 'rgba(16, 125, 197, 1)',
-    fontFamily: 'PoppinsR'
+    fontFamily: 'PoppinsR',
   },
   description: {
-    color: "#0A084B",
-    fontFamily: 'PoppinsR'
+    color: '#0A084B',
+    fontFamily: 'PoppinsR',
+  },
+  subHeader: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  shad: {
+    shadowOffset: { width: -2, height: 4 },
+    shadowColor: '#171717',
+    shadowOpacity: 1,
+    shadowRadius: 3,
+  },
+  priceAndCurrency: {
+    flexDirection: 'row',
 
+    alignItems: 'center',
+    width: '100%',
   },
-  subHeader:{
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center"
+  currency: {
+    fontSize: 10,
+    fontFamily: 'PoppinsR',
+    marginLeft: 10,
+    marginTop: 5,
+    color: '#107DC5',
   },
-  shad: {  
-    shadowOffset: {width: -2, height: 4},  
-    shadowColor: '#171717',  
-    shadowOpacity: 1,  
-    shadowRadius: 3,  
-  }
 })
 export default Job

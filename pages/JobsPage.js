@@ -10,19 +10,19 @@ const JobsPage = () => {
             id:0,
             title: 'Job Title Lorem Ipsum1',
             description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium',
-            price: 100
+            price: 15000
         },
         {
             id:1,
             title: 'Job Title Lorem Ipsum2',
             description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium1',
-            price: 200
+            price: 10000
         },
         {
             id:2,
             title: 'Job Title Lorem Ipsum3',
             description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium2',
-            price: 200
+            price: 20000
         }
     ]
     const renderItem = (data) => {
