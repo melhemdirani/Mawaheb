@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { ImageBackground, StyleSheet, Text, View, ScrollView } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View, ScrollView, Image } from 'react-native';
 import AddRoleButton from '../components/Buttons/AddRoleButton';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
 import SecondaryButton from '../components/Buttons/SecondaryButton';
@@ -15,17 +15,24 @@ import UploadCard from '../components/UploadCard';
 export default function SignupPage() {
   return (
     <View style={styles.container}>
-      {/* <SecondaryButton title="Contact Ahmad"/>
-      <PrimaryButton title="Continue to Payment"/>
-      <TertiaryButton title="Continue to Payment"/>
-      <AddRoleButton title="Add another role"/>
-      <UploadCard title="Continue to Payment"/>
-      <Inputs title="Continue to Payment" placeholder="First Name"/>
-      <DailyRate title="Continue to Payment" placeholder="First Name"/>
-      <DurationInputs title="Continue to Payment" placeholder="First Name"/>
-      <TextArea title="Continue to Payment" placeholder="First Name"/>
-      <SelectInput title="Continue to Payment" placeholder="First Name" list={["option1", "option2", "option3"]}/> */}
-      <Notification title="Notification lorem ipsum dolor sit ameno" color="#31BEBB"/>
+      <Image
+        style={styles.image}
+        source={require('../assets/images/signupheader.png')}
+      />
+      <Text style={styles.header}>
+        Quick Easy Simple!
+      </Text>
+      <Text style={styles.text}>
+        <Text style={styles.text1}>
+          Mawahib{" "}
+        </Text>
+        connects businesses with independent professionals and agencies around the MENA region.
+      </Text>
+      <PrimaryButton title="Jobseeker Sign up"/> 
+      <View style={styles.spacing}/> 
+      <SecondaryButton title="Recruiter Sign up"/>   
+      <View style={styles.spacing}/> 
+      <TertiaryButton title="Continue to Payment"/>    
     </View>
   );
 }
@@ -34,10 +41,39 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 100
+    backgroundColor: 'white'
+  },
+  header:{
+    position: "absolute",
+    top: 88,
+    alignSelf: "flex-start",
+    fontSize: 40,
+    fontWeight: "800",
+    maxWidth: "55%",
+    height: 300,
+    color: "white",
+    left: 15,
+    lineHeight: 45,
+    fontFamily: "PoppinsB"
+
+  },
+  image:{
+    width: "100%",
+  },
+  spacing:{
+    marginBottom: 15  
   },
   text:{
     color: "black",
+    width: "90%",
+    marginTop: 30,
+    fontSize: 17,
+    lineHeight: 25,
+    marginBottom: 30,
+    fontFamily: "PoppinsR"
+  },
+  text1:{
+    color: "#9C88FD",
+    fontWeight: "700"
   }
 });
