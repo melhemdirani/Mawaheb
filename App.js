@@ -6,6 +6,10 @@ import LandingPage from './pages/LandingPage';
 import SignupPage from './pages/SignupPage';
 import TestingComponentPage from './pages/TestingComponentPage';
 import { useFonts } from 'expo-font';
+import CreateProfilePage from './pages/CreateProfilePage';
+import ExperiencePage from './pages/ExperiencePage';
+import LanguagePage from './pages/LanguagePage';
+import BankPage from './pages/BankPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,7 +30,7 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen
           name="Home"
-          component={TestingComponentPage}
+          component={BankPage}
           options={{
             headerShown: false,
           }}
