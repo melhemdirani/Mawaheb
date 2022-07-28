@@ -3,7 +3,8 @@ import React from 'react'
 import backgroundImage from '../assets/backgroundHeader.jpg'
 import bodyImage from '../assets/body.png'
 import backIcon from '../assets/backIcon.png'
-const Header = ({ icon, title, numOfPage, rightIcon }) => {
+import testImage from '../assets/test.png'
+const Header = ({ icon, title, numOfPage, rightIcon, hidden }) => {
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -12,12 +13,12 @@ const Header = ({ icon, title, numOfPage, rightIcon }) => {
         resizeMode='cover'
       >
         <View style={styles.info}>
-          <Image source={backIcon} style={styles.backIcon}></Image>
+          {!hidden && <Image source={backIcon} style={styles.backIcon}></Image>}
           <Text style={styles.text}>{title}</Text>
           <Text style={styles.page}>{numOfPage}</Text>
         </View>
         <ImageBackground
-          source={bodyImage}
+          source={testImage}
           style={styles.body}
         ></ImageBackground>
       </ImageBackground>
@@ -30,40 +31,43 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   background: {
-    position: 'absolute',
     width: '100%',
-    height: 850,
+    height: 200,
   },
   body: {
     position: 'absolute',
-    top: 150,
     width: '100%',
-    height: '100%',
+    height: 100,
+    top: 150,
   },
   icon: {
     position: 'absolute',
-    top: 150,
+    top: 140,
     left: 140,
   },
   info: {
+    position: 'relative',
     top: 100,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
   },
   text: {
     fontSize: 20,
     color: '#fff',
     fontWeight: 'bold',
+    left: 100,
   },
   page: {
     fontSize: 15,
     color: '#fff',
     fontWeight: '200',
+    left: 190,
   },
+
   rightIcon: {},
-  backIcon: {},
+  backIcon: {
+    left: 10,
+  },
 })
 
 export default Header
