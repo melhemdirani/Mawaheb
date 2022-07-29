@@ -11,20 +11,25 @@ import MaskedView from '@react-native-masked-view/masked-view'
 
 const Job = ({ title, description, price, lastOne, current }) => {
   return (
-    <View style={lastOne ? [styles.wrapper, {marginBottom: 40}] : styles.wrapper}>
+    <View
+      style={lastOne ? [styles.wrapper, { marginBottom: 40 }] : styles.wrapper}
+    >
       <View style={styles.header}>
         <View style={styles.subHeader}>
-            <View style={styles.circle}></View>
-            <ImageBackground
-              source={priceRectangle}
-              style={styles.priceBg}
-              resizeMode='contain'
-            >
+          <View style={styles.circle}></View>
+          <ImageBackground
+            source={priceRectangle}
+            style={styles.priceBg}
+            resizeMode='contain'
+          >
+            <View style={styles.priceAndCurrency}>
               <Text style={styles.price}>{price} </Text>
-            </ImageBackground>
+              <Text style={styles.currency}>AED</Text>
+            </View>
+          </ImageBackground>
         </View>
         <View style={styles.subHeader}>
-          {!current && <Image source={heartIcon} style={styles.heart}></Image>}
+          <Image source={heartIcon} style={styles.heart}></Image>
           <Image source={plusIcon} style={styles.plus}></Image>
         </View>
       </View>
@@ -109,13 +114,7 @@ const Job = ({ title, description, price, lastOne, current }) => {
   )
 }
 const styles = StyleSheet.create({
-<<<<<<< HEAD
-  wrapper:{
-    height: 260,
-=======
   wrapper: {
-    height: 300,
->>>>>>> bbb1e73deb39b14045dd5125047d2154564ef35b
     zIndex: 9999,
     width: "90%",
     alignSelf: "center",
@@ -130,14 +129,11 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0,0,0,.03)',
     position: 'relative',
     zIndex: 1,
-<<<<<<< HEAD
-    paddingTop: 15
-=======
-    paddingTop: 30,
->>>>>>> bbb1e73deb39b14045dd5125047d2154564ef35b
+    paddingTop: 15,
   },
   info: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 15
   },
   header: {
     zIndex: 1,
@@ -196,27 +192,17 @@ const styles = StyleSheet.create({
   heart: {},
   plus: {
     left: 10,
-<<<<<<< HEAD
     marginRight: 20
-=======
->>>>>>> bbb1e73deb39b14045dd5125047d2154564ef35b
   },
   text: {
     color: 'rgba(16, 125, 197, 1)',
     fontFamily: 'PoppinsR',
-<<<<<<< HEAD
     fontSize: 10
-  },
-  description: {
-    color: "#0A084B",
-    fontFamily: 'PoppinsR',
-    fontSize: 12,
-    top: -5
-=======
   },
   description: {
     color: '#0A084B',
     fontFamily: 'PoppinsR',
+    top: -5
   },
   subHeader: {
     flexDirection: 'row',
@@ -241,7 +227,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginTop: 5,
     color: '#107DC5',
->>>>>>> bbb1e73deb39b14045dd5125047d2154564ef35b
   },
 })
 export default Job
