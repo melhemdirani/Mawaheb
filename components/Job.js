@@ -9,7 +9,7 @@ import heartIcon from '../assets/images/heartIcon.png'
 import plusIcon from '../assets/images/plusIcon.png'
 import MaskedView from '@react-native-masked-view/masked-view'
 
-const Job = ({ title, description, price, lastOne, current }) => {
+const Job = ({ title, description, price, lastOne, current, heart }) => {
   return (
     <View
       style={lastOne ? [styles.wrapper, { marginBottom: 40 }] : styles.wrapper}
@@ -29,7 +29,7 @@ const Job = ({ title, description, price, lastOne, current }) => {
           </ImageBackground>
         </View>
         <View style={styles.subHeader}>
-          <Image source={heartIcon} style={styles.heart}></Image>
+          {!heart && <Image source={heartIcon} style={styles.heart}></Image>}
           <Image source={plusIcon} style={styles.plus}></Image>
         </View>
       </View>
@@ -55,21 +55,24 @@ const Job = ({ title, description, price, lastOne, current }) => {
         end={{ x: 1, y: 0 }}
         style={styles.linear}
       >
-        <View style={[styles.container, styles.shadow]}>
+        <View style={[styles.container]}>
           <View style={styles.info}>
             <MaskedView
               maskElement={
                 <Text
-                  style={[styles.title, { backgroundColor: 'transparent' }]}
+                  style={[
+                    styles.title, 
+                    { backgroundColor: 'transparent' }
+                  ]}
                 >
                   {title}
                 </Text>
               }
             >
               <LinearGradient
-                start={{ x: 1, y: 0 }}
+                start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
-                colors={['rgba(49, 190, 187, 1)', 'rgba(101, 91, 218, 1)']}
+                colors={['#31BEBB','#655BDA']}
               >
                 <Text style={[styles.title, { opacity: 0 }]}>{title}</Text>
               </LinearGradient>
@@ -118,9 +121,10 @@ const styles = StyleSheet.create({
     zIndex: 9999,
     width: "90%",
     alignSelf: "center",
+    top: -5
   },
   linear: {
-    borderRadius: 30,
+    borderRadius: 20,
   },
   container: {
     justifyContent: 'center',
@@ -132,8 +136,7 @@ const styles = StyleSheet.create({
     paddingTop: 15,
   },
   info: {
-    paddingHorizontal: 20,
-    paddingVertical: 15
+    padding: 20,
   },
   header: {
     zIndex: 1,
@@ -146,9 +149,9 @@ const styles = StyleSheet.create({
     marginBottom: -45,
   },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     marginBottom: 10,
-    fontFamily: 'PoppinsB',
+    fontFamily: 'PoppinsS',
   },
   footer: {
     flexDirection: 'row',
@@ -156,9 +159,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopColor: 'rgba(16, 125, 197, 1)',
     borderTopWidth: 0.4,
-    padding: 20,
-    paddingTop: 15,
-    paddingBottom: 15,
+    paddingVertical: 15,
+    paddingLeft: 25,
     width: "100%"
   },
 
@@ -200,8 +202,9 @@ const styles = StyleSheet.create({
     fontSize: 10
   },
   description: {
-    color: '#0A084B',
+    color: 'rgba(10, 8, 75, .6)',
     fontFamily: 'PoppinsR',
+    fontSize: 12,
     top: -5
   },
   subHeader: {
@@ -209,11 +212,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  shad: {
+  shadow: {
     shadowOffset: { width: -2, height: 4 },
     shadowColor: '#171717',
     shadowOpacity: 1,
-    shadowRadius: 3,
+    shadowRadius: 30,
+    backgroundColor: "white"
   },
   priceAndCurrency: {
     flexDirection: 'row',

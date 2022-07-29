@@ -11,9 +11,7 @@ import dashboardA from '../assets/images/dashboardA.png'
 import dashboardN from '../assets/images/dashboardN.png'
 
 
-function Navbar() {
-
-    const [active, setActive] = useState('Jobs')
+function Navbar({active}) {
 
     return (
         <View style={[styles.container, styles.shadowProp]}>

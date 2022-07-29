@@ -1,4 +1,4 @@
-import { View, Text, FlatList, StyleSheet, Image, ImageBackground } from 'react-native';
+import { ScrollView ,View, Text, FlatList, StyleSheet, Image, ImageBackground } from 'react-native';
 import React from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
@@ -28,17 +28,24 @@ const JobseekerDashboard = () => {
             title: 'Job Title Lorem Ipsum3',
             description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium2',
             price: 200
-        }
+        },
+        {
+            id:3,
+            title: 'Job Title Lorem Ipsum3',
+            description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium2',
+            price: 200
+        },
     ]
-    const renderItem = (data) => {
-        let lastOne = data.index === Data.length - 1 ? true : false
+    const RenderItem = (data, index) => {
+        let lastOne = index === Data.length - 1 ? true : false
         return(
             <View style={styles.renderItem}>
                 <Job 
-                    title={data.item.title} 
-                    description={data.item.description} 
-                    price={data.item.price} 
+                    title={data.data.title} 
+                    description={data.data.description} 
+                    price={data.data.price} 
                     lastOne={lastOne} 
+                    heart={true}
                 /> 
             </View>
         )
@@ -71,46 +78,51 @@ const JobseekerDashboard = () => {
 
     const TotalContainer = ({month, day}) => {
         return(
-            <View
+            <ImageBackground
+                source={totalBg}
                 style={styles.totalContainer}
-                resizeMode='cover'
+                resizeMode='contain'
             >
-                 <Image
-                    style={styles.totalImg}
-                    source={totalBg}
-                />
                 <View  style={styles.sub}>
                     <Text style={styles.totalText}>{month}</Text>
                     <Text style={styles.totalText2}>months</Text>
                 </View>
-                <View  style={[styles.sub, styles.borderL]}>
+                <View style={styles.borderL} />
+                <View  style={[styles.sub]}>
                     <Text style={styles.totalText}>{day}</Text>
                     <Text style={styles.totalText2}>days</Text>
                 </View>
-            </View>
+            </ImageBackground>
         )
     }
     const TotalContainer2 = ({n}) => {
         return(
-            <View
-                style={styles.totalContainer}
-                resizeMode='cover'
+            <ImageBackground
+                source={totalBg}
+                style={[styles.totalContainer]}
+                resizeMode='contain'
             >
-                 <Image
-                    style={styles.totalImg}
-                    source={totalBg}
-                />
-           
-                <Text style={styles.totalText2}>days</Text>
-            </View>
+                <View style={[styles.totalContainer2]}>
+                    <Text style={styles.totalText}>{n}</Text>
+                    <Text style={[styles.totalText2, styles.textPadding]}>AED</Text>
+                </View>
+            </ImageBackground>
         )
     }
     return (
         <View style={styles.container}>
+            <ScrollView style={styles.container4}>
             <SecondaryHeader title={'Hi John,'} heart={true}/>
             <View style={styles.row2}>
-                <TotalContainer month={12} day={25} />
-                <TotalContainer2 n="180,000" />
+                <View style={styles.col}>
+                    <Text style={styles.colText}>Total Working Time</Text>
+                    <TotalContainer month={12} day={25} />
+                </View>
+                <View style={styles.col}>
+                    <Text style={styles.colText}>Total Cash Earned</Text>
+                    <TotalContainer2 n="180,000" />
+                </View>
+             
             </View>
             <View style={styles.current}>
                 <Image
@@ -119,7 +131,8 @@ const JobseekerDashboard = () => {
                 />
                 <View style={styles.currentSub}>
                     <Text style={[styles.title2]}>Current Job</Text>
-                    <Job 
+                    <Job
+                        heart={true}
                         current={true}
                         title="Job Title Lorem Ipsum"
                         description="Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno "
@@ -128,13 +141,12 @@ const JobseekerDashboard = () => {
                 </View>
             </View>
             <MaskedTitle title="Previous Jobs" />
-            <FlatList 
-                data={Data} 
-                renderItem={renderItem}
-                keyExtractor={item => item.id}
-                style={styles.flatlist}
-            />
-            <Navbar />
+            {
+                Data && Data.map((data, i ) => <RenderItem data={data} index={i} key={i} />)
+            }
+            </ScrollView>
+
+            <Navbar active="Dashboard" />
         </View>
     )
 }
@@ -176,10 +188,10 @@ const styles = StyleSheet.create({
     },
     title2:{
         fontSize: 20,
-        top: 30,
+        top: 35,
         fontFamily: 'PoppinsS',
         left: 20,
-        marginBottom: 25,
+        marginBottom: 35,
         color: "white"
     },
     currentSub:{
@@ -193,6 +205,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
+        width: 175,
+        height: 65,
     },
     totalText:{
         color: "white",
@@ -202,7 +216,7 @@ const styles = StyleSheet.create({
     totalText2:{
         color: "white",
         fontFamily: "PoppinsR",
-        fontSize: 8,
+        fontSize: 9,
         top: -4
     },
     sub:{
@@ -213,14 +227,35 @@ const styles = StyleSheet.create({
     borderL:{
         borderLeftWidth: 1,
         borderLeftColor: "white",
+        width: 1,
+        height: "50%"
     },
     row2:{
         flexDirection: "row",
-        justifyContent: "space-between",
-        paddingLeft: 33,
-        paddingRight: 93,
-        marginBottom: 20
+        justifyContent: "space-around",
+        alignSelf: "center",
+        width: "95%",
+        marginBottom: 20,
+        paddingVertical: 10
+    },
+    col:{
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    totalContainer2:{
+        flexDirection: "row",
+        alignItems: "flex-end"
+    },
+    textPadding:{
+        left: 5
+    },
+    colText:{
+        fontSize: 13,
+        fontFamily: "PoppinsR",
+        letterSpacing: 1.5,
+        bottom: 10
     }
+    
  
 })
 
