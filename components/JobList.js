@@ -9,6 +9,7 @@ import heartIcon from '../assets/images/heartIcon.png'
 import plusIcon from '../assets/images/plusIcon.png'
 import MaskedView from '@react-native-masked-view/masked-view'
 import languageIcon from '../assets/images/LanguageIcon.png'
+import languageCircle from '../assets/images/languageCircle.png'
 
 const JobList = ({
   title,
@@ -29,7 +30,10 @@ const JobList = ({
             style={styles.priceBg}
             resizeMode='contain'
           >
-            <Text style={styles.price}>{price} </Text>
+            <View style={styles.priceAndCurrency}>
+              <Text style={styles.price}>{price} </Text>
+              <Text style={styles.currency}>AED per day</Text>
+            </View>
           </ImageBackground>
         </View>
         <View style={styles.subHeader}>
@@ -126,7 +130,6 @@ const styles = StyleSheet.create({
     position: 'relative',
     zIndex: 1,
     paddingTop: 30,
-
   },
   info: {
     padding: 20,
@@ -173,7 +176,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   priceBg: {
-    width: 115,
+    width: 130,
     height: 90,
     left: 10,
     justifyContent: 'center',
@@ -218,6 +221,26 @@ const styles = StyleSheet.create({
   },
   language: {
     fontFamily: 'PoppinsR',
+  },
+  description: {
+    fontFamily: 'PoppinsR',
+    color: '#0A084B',
+  },
+  languageIcon: {
+    marginLeft: 20,
+  },
+  priceAndCurrency: {
+    flexDirection: 'row',
+
+    alignItems: 'center',
+    width: '100%',
+  },
+  currency: {
+    fontFamily: 'PoppinsR',
+    fontSize: 10,
+    marginTop: 3,
+    color: '#107DC5',
+    padding: 10,
   },
 })
 export default JobList

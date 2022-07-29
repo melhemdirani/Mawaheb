@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native'
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ImageBackground,
+  SafeAreaView,
+} from 'react-native'
 import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import calendarIcon from '../assets/images/calendarIcon.png'
@@ -8,44 +15,48 @@ import priceRectangle from '../assets/images/priceRectangle.png'
 import heartIcon from '../assets/images/heartIcon.png'
 import plusIcon from '../assets/images/plusIcon.png'
 import MaskedView from '@react-native-masked-view/masked-view'
+import languageIcon from '../assets/images/LanguageIcon.png'
+import languageCircle from '../assets/images/languageCircle.png'
+import { freelancerDetails } from '../assets/data/freelancerDetails'
+import PrimaryButton from '../components/Buttons/PrimaryButton'
+import minusIcon from '../assets/images/minusIcon.png'
 
-const Job = ({ title, description, price, lastOne, current }) => {
+const FreelancerDetailsPage = ({
+
+}) => {
+  const { id, title, price, roles, languages, location, shift } =
+    freelancerDetails
+
   return (
-    <View style={lastOne ? [styles.wrapper, {marginBottom: 40}] : styles.wrapper}>
+    <SafeAreaView style={styles.wrapper}>
       <View style={styles.header}>
         <View style={styles.subHeader}>
-            <View style={styles.circle}></View>
-            <ImageBackground
-              source={priceRectangle}
-              style={styles.priceBg}
-              resizeMode='contain'
-            >
+          <View style={styles.circle}></View>
+          <ImageBackground
+            source={priceRectangle}
+            style={styles.priceBg}
+            resizeMode='contain'
+          >
+            <View style={styles.priceAndCurrency}>
               <Text style={styles.price}>{price} </Text>
-            </ImageBackground>
+              <Text style={styles.currency}>AED per day</Text>
+            </View>
+          </ImageBackground>
         </View>
         <View style={styles.subHeader}>
-          {!current && <Image source={heartIcon} style={styles.heart}></Image>}
-          <Image source={plusIcon} style={styles.plus}></Image>
+          <Image source={heartIcon} style={styles.heart}></Image>
+          <Image source={minusIcon} style={styles.plus}></Image>
         </View>
       </View>
       <LinearGradient
-        colors={
-          current?
-          [
-            '#E8EEF9',
-            '#E8EEF9',
-            '#E8EEF9',
-            '#E8EEF9',
-          ]
-          :[
+        colors={[
           'rgba(202, 218, 221, 0.1)',
           'rgba(202, 218, 221, 0)',
           'rgba(202, 218, 221, 0.2)',
           'rgba(202, 218, 221, 0.2)',
           'rgba(202, 218, 221, 0.2)',
           'rgba(202, 218, 221, 0.1)',
-          ]
-        }
+        ]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={styles.linear}
@@ -69,56 +80,71 @@ const Job = ({ title, description, price, lastOne, current }) => {
                 <Text style={[styles.title, { opacity: 0 }]}>{title}</Text>
               </LinearGradient>
             </MaskedView>
-            <Text style={styles.description}>{description}</Text>
+            <View style={styles.roles}>
+              {roles.map((role) => {
+                return (
+                  <View key={role.id} style={styles.role}>
+                    <Text style={styles.roleName}>{role.name}</Text>
+                    <Text style={styles.roleDescription}>
+                      {role.description}
+                    </Text>
+                    <View style={styles.roleDate}>
+                      <Image
+                        source={calendarIcon}
+                        style={styles.calendarIcon}
+                      ></Image>
+                      <Text style={styles.roleDateText}>{role.date}</Text>
+                    </View>
+                  </View>
+                )
+              })}
+            </View>
+          </View>
+          <View style={styles.languages}>
+            <Image source={languageIcon} style={styles.languageIcon}></Image>
+
+            {languages.map((item, i) => {
+              return (
+                <Text key={i} style={styles.language}>
+                  {item}
+                </Text>
+              )
+            })}
           </View>
           <LinearGradient
-            colors={
-              current?
-              [
-                '#E3E8F2',
-                '#E3E8F2',
-                '#E3E8F2',
-              ]
-              :[
-                'rgba(202, 218, 221, 0.4)',
-                'rgba(202, 218, 221, 0)',
-                'rgba(202, 218, 221, 0.4)',
-              ]
-            }
+            colors={[
+              'rgba(202, 218, 221, 0.4)',
+              'rgba(202, 218, 221, 0)',
+              'rgba(202, 218, 221, 0.4)',
+            ]}
             start={{ x: 1, y: 0 }}
             end={{ x: 1, y: 1 }}
           >
             <View style={styles.footer}>
               <View style={styles.footerInfo}>
-                <Image source={calendarIcon} style={styles.icon}></Image>
-                <Text style={styles.text}> 10/10/2020</Text>
-              </View>
-              <View style={styles.footerInfo}>
                 <Image source={clockIcon} style={styles.icon}></Image>
-                <Text style={styles.text}> Day Shift</Text>
+                <Text style={styles.text}> {shift}</Text>
               </View>
               <View style={styles.footerInfo}>
                 <Image source={locationIcon} style={styles.icon}></Image>
-                <Text style={styles.text}> 123 Main St</Text>
+                <Text style={styles.text}>{location}</Text>
               </View>
             </View>
           </LinearGradient>
         </View>
       </LinearGradient>
-    </View>
+      <View style={styles.button}>
+        <PrimaryButton title='Accept Applicant' />
+      </View>
+    </SafeAreaView>
   )
 }
 const styles = StyleSheet.create({
-<<<<<<< HEAD
-  wrapper:{
-    height: 260,
-=======
   wrapper: {
     height: 300,
->>>>>>> bbb1e73deb39b14045dd5125047d2154564ef35b
-    zIndex: 9999,
-    width: "90%",
-    alignSelf: "center",
+    padding: 20,
+    marginTop: 70,
+    flex: 1,
   },
   linear: {
     borderRadius: 30,
@@ -130,11 +156,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0,0,0,.03)',
     position: 'relative',
     zIndex: 1,
-<<<<<<< HEAD
-    paddingTop: 15
-=======
     paddingTop: 30,
->>>>>>> bbb1e73deb39b14045dd5125047d2154564ef35b
   },
   info: {
     padding: 20,
@@ -152,29 +174,29 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     marginBottom: 10,
-    fontFamily: 'PoppinsB',
+    fontFamily: 'PoppinsS',
+    marginEnd: 80,
+    width: '100%',
   },
   footer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
+    width: '92%',
     alignItems: 'center',
-    borderTopColor: 'rgba(16, 125, 197, 1)',
-    borderTopWidth: 0.4,
+
+
     padding: 20,
-    paddingTop: 15,
-    paddingBottom: 15,
-    width: "100%"
   },
 
   footerInfo: {
     flexDirection: 'row',
-    marginHorizontal: 5,
+
     alignItems: 'center',
     paddingTop: 7,
   },
   circle: {
-    width: 60,
-    height: 60,
+    width: 80,
+    height: 80,
     borderRadius: 50,
     borderColor: ' rgba(16, 125, 197, 1)',
     borderWidth: 1,
@@ -182,7 +204,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   priceBg: {
-    width: 110,
+    width: 130,
     height: 90,
     left: 10,
     justifyContent: 'center',
@@ -196,23 +218,10 @@ const styles = StyleSheet.create({
   heart: {},
   plus: {
     left: 10,
-<<<<<<< HEAD
-    marginRight: 20
-=======
->>>>>>> bbb1e73deb39b14045dd5125047d2154564ef35b
   },
   text: {
     color: 'rgba(16, 125, 197, 1)',
     fontFamily: 'PoppinsR',
-<<<<<<< HEAD
-    fontSize: 10
-  },
-  description: {
-    color: "#0A084B",
-    fontFamily: 'PoppinsR',
-    fontSize: 12,
-    top: -5
-=======
   },
   description: {
     color: '#0A084B',
@@ -229,6 +238,25 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 3,
   },
+  languages: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    width: '80%',
+    marginEnd: 60,
+    marginTop: -30,
+    marginBottom: 20,
+  },
+  language: {
+    fontFamily: 'PoppinsR',
+  },
+  description: {
+    fontFamily: 'PoppinsR',
+    color: '#0A084B',
+  },
+  languageIcon: {
+    marginLeft: 20,
+  },
   priceAndCurrency: {
     flexDirection: 'row',
 
@@ -236,12 +264,47 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   currency: {
-    fontSize: 10,
     fontFamily: 'PoppinsR',
-    marginLeft: 10,
-    marginTop: 5,
+    fontSize: 10,
+    marginTop: 3,
     color: '#107DC5',
->>>>>>> bbb1e73deb39b14045dd5125047d2154564ef35b
+    padding: 10,
   },
+  calendarIcon: {
+    marginRight: 5,
+  },
+  roleDate: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+  },
+  roleName: {
+    fontFamily: 'PoppinsR',
+    fontSize: 14,
+    color: '#0A084B',
+    marginBottom: 5,
+  },
+  roleDescription: {
+    fontFamily: 'PoppinsR',
+    fontSize: 12,
+    color: '#0A084B',
+    marginBottom: 5,
+  },
+  role: {
+    marginBottom: 20,
+    borderBottomColor: '#107DC5',
+    borderBottomWidth: 1,
+    paddingBottom: 20,
+  },
+  roleDateText: {
+    fontFamily: 'PoppinsR',
+    fontSize: 12,
+    color: '#107DC5',
+  },
+  button:{
+   alignItems: 'center',
+   marginTop: 20,
+
+  }
 })
-export default Job
+export default FreelancerDetailsPage
