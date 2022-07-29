@@ -34,13 +34,19 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
+<<<<<<< HEAD
           name="Home"
           component={JobseekerDashboard}
+=======
+          name='Home'
+          component={JobDonePage}
+>>>>>>> bbb1e73deb39b14045dd5125047d2154564ef35b
           options={{
             headerShown: false,
           }}
         />
       </Stack.Navigator>
+   
     </NavigationContainer>
   )
 }
