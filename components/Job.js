@@ -9,34 +9,43 @@ import heartIcon from '../assets/images/heartIcon.png'
 import plusIcon from '../assets/images/plusIcon.png'
 import MaskedView from '@react-native-masked-view/masked-view'
 
-const Job = ({ title, description, price, lastOne }) => {
+const Job = ({ title, description, price, lastOne, current }) => {
   return (
     <View style={lastOne ? [styles.wrapper, {marginBottom: 40}] : styles.wrapper}>
-        <View style={styles.header}>
-          <View style={styles.subHeader}>
-              <View style={styles.circle}></View>
-              <ImageBackground
-                source={priceRectangle}
-                style={styles.priceBg}
-                resizeMode='contain'
-              >
-                <Text style={styles.price}>{price} </Text>
-              </ImageBackground>
-          </View>
-          <View style={styles.subHeader}>
-            <Image source={heartIcon} style={styles.heart}></Image>
-            <Image source={plusIcon} style={styles.plus}></Image>
-          </View>
+      <View style={styles.header}>
+        <View style={styles.subHeader}>
+            <View style={styles.circle}></View>
+            <ImageBackground
+              source={priceRectangle}
+              style={styles.priceBg}
+              resizeMode='contain'
+            >
+              <Text style={styles.price}>{price} </Text>
+            </ImageBackground>
         </View>
+        <View style={styles.subHeader}>
+          {!current && <Image source={heartIcon} style={styles.heart}></Image>}
+          <Image source={plusIcon} style={styles.plus}></Image>
+        </View>
+      </View>
       <LinearGradient
-        colors={[
+        colors={
+          current?
+          [
+            '#E8EEF9',
+            '#E8EEF9',
+            '#E8EEF9',
+            '#E8EEF9',
+          ]
+          :[
           'rgba(202, 218, 221, 0.1)',
           'rgba(202, 218, 221, 0)',
           'rgba(202, 218, 221, 0.2)',
           'rgba(202, 218, 221, 0.2)',
           'rgba(202, 218, 221, 0.2)',
           'rgba(202, 218, 221, 0.1)',
-        ]}
+          ]
+        }
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={styles.linear}
@@ -61,11 +70,19 @@ const Job = ({ title, description, price, lastOne }) => {
             <Text style={styles.description}>{description}</Text>
           </View>
           <LinearGradient
-            colors={[
-              'rgba(202, 218, 221, 0.4)',
-              'rgba(202, 218, 221, 0)',
-              'rgba(202, 218, 221, 0.4)',
-            ]}
+            colors={
+              current?
+              [
+                '#E3E8F2',
+                '#E3E8F2',
+                '#E3E8F2',
+              ]
+              :[
+                'rgba(202, 218, 221, 0.4)',
+                'rgba(202, 218, 221, 0)',
+                'rgba(202, 218, 221, 0.4)',
+              ]
+            }
             start={{ x: 1, y: 0 }}
             end={{ x: 1, y: 1 }}
           >
@@ -91,8 +108,10 @@ const Job = ({ title, description, price, lastOne }) => {
 }
 const styles = StyleSheet.create({
   wrapper:{
-    height: 300,
+    height: 260,
     zIndex: 9999,
+    width: "90%",
+    alignSelf: "center",
   },
   linear:{
     borderRadius: 30,
@@ -105,7 +124,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0,0,0,.03)',
     position: 'relative',
     zIndex: 1,
-    paddingTop: 30
+    paddingTop: 15
   },
   info: {
     padding: 20,
@@ -132,17 +151,20 @@ const styles = StyleSheet.create({
     borderTopColor: 'rgba(16, 125, 197, 1)',
     borderTopWidth: 0.4,
     padding: 20,
+    paddingTop: 15,
+    paddingBottom: 15,
+    width: "100%"
   },
 
   footerInfo: {
     flexDirection: 'row',
-    marginHorizontal: 12,
+    marginHorizontal: 5,
     alignItems: 'center',
     paddingTop: 7,
   },
   circle: {
-    width: 80,
-    height: 80,
+    width: 60,
+    height: 60,
     borderRadius: 50,
     borderColor: ' rgba(16, 125, 197, 1)',
     borderWidth: 1,
@@ -165,16 +187,19 @@ const styles = StyleSheet.create({
    
   },
   plus: {
-    left: 10
+    left: 10,
+    marginRight: 20
   },
   text: {
     color: 'rgba(16, 125, 197, 1)',
-    fontFamily: 'PoppinsR'
+    fontFamily: 'PoppinsR',
+    fontSize: 10
   },
   description: {
     color: "#0A084B",
-    fontFamily: 'PoppinsR'
-
+    fontFamily: 'PoppinsR',
+    fontSize: 12,
+    top: -5
   },
   subHeader:{
     flexDirection: "row",

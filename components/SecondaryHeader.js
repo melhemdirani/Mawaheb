@@ -2,9 +2,10 @@ import { View, Text, StyleSheet, ImageBackground, Image } from 'react-native'
 import React from 'react'
 import secondaryHeader from '../assets/images/test2.png'
 import searchIcon from '../assets/images/search.png'
+import heartIcon from '../assets/images/heart.png'
 import filterIcon from '../assets/images/filterIcon.png'
 
-const SecondaryHeader = ({ title }) => {
+const SecondaryHeader = ({ title, heart }) => {
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -14,9 +15,9 @@ const SecondaryHeader = ({ title }) => {
       >
         <View style={styles.subContainer}>
           <Text style={styles.text}>{title}</Text>
-          <Image source={searchIcon} style={styles.searchIcon}></Image>
+          {!heart && <Image source={searchIcon} style={styles.searchIcon}></Image>}
           <Image
-            source={filterIcon}
+            source={ heart ? heartIcon : filterIcon}
             style={styles.filterIcon}
             resizeMode='cover'
           ></Image>
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
 
   image: {
     width: '100%',
-    height: 160,
+    height: 130,
     zIndex: -1,
   },
   arc: {},
@@ -43,20 +44,19 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   searchIcon: {
-    height: 23,
     marginRight: -200
   },
   filterIcon: {
-    height: 25,
+    right: 10
   },
   subContainer:{
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-end",
-    top: 80,
+    top: 60,
     paddingLeft: 10,
     paddingRight: 10
-  }
+  },
 })
 
 export default SecondaryHeader
