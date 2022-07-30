@@ -4,7 +4,7 @@ import SecondaryHeader from '../components/SecondaryHeader'
 import Job from '../components/Job'
 import Navbar from '../components/Navbar'
 
-const JobsPage = () => {
+const JobsPage = ({navigation}) => {
     const Data = [
         {   
             id:0,
@@ -25,48 +25,46 @@ const JobsPage = () => {
             price: 20000
         }
     ]
-    const renderItem = (data) => {
-        let lastOne = data.index === Data.length - 1 ? true : false
+    const RenderItem = ({data}) => {
         return(
             <View style={styles.renderItem}>
-                <Job title={data.item.title} description={data.item.description} price={data.item.price} lastOne={lastOne} /> 
+                <Job title={data.title} description={data.description} price={data.price} /> 
             </View>
         )
     }
     return (
         <View style={styles.container}>
-            <SecondaryHeader title={'Hi John'}></SecondaryHeader>
-            <FlatList 
-                data={Data} 
-                renderItem={renderItem}
-                keyExtractor={item => item.id}
-                style={styles.flatlist}
-            />
-            <Navbar />
+            <ScrollView >
+                <SecondaryHeader title={'Hi John'}></SecondaryHeader>
+                {
+                    Data && Data.map((data, i) => 
+                        <RenderItem key={i} data={data} />
+                    )
+
+                }
+            </ScrollView>
+            <Navbar active="Jobs" navigation={navigation}/>
         </View>
+
     )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-  jobs: {
-    padding: 10,
-  },
-  renderItem:{
-  },
-  body: {
-    padding: 20,
-  },
-  backIcon: {
-    display: 'none',
-  },
-  flatlist:{
-      marginTop: -38,
-      paddingTop: 38,
-  }
+    container: {
+        flex: 1,
+        backgroundColor: 'white',
+    },
+    jobs: {
+        padding: 10,
+    },
+    renderItem:{
+    },
+    body: {
+        padding: 20,
+    },
+    backIcon: {
+        display: 'none',
+    },
 })
 
 export default JobsPage

@@ -11,18 +11,18 @@ import dashboardA from '../assets/images/dashboardA.png'
 import dashboardN from '../assets/images/dashboardN.png'
 
 
-function Navbar({active}) {
-
+function Navbar({active, navigation}) {
+    
     return (
         <View style={[styles.container, styles.shadowProp]}>
-            <Pressable style={styles.Pressable}>
+            <Pressable style={styles.Pressable}  onPress={() => navigation.navigate('jobseeker_jobs')}>
                 <Image
                     style={styles.rate}
                     source={active === 'Jobs' ? jobsA : jobsN}
                 />
                 <Text style={active === 'Jobs' ? styles.text2 : styles.text}>Jobs</Text>
             </Pressable>
-            <Pressable style={styles.Pressable}>
+            <Pressable style={styles.Pressable}  onPress={() => navigation.navigate('seeker_dash')}>
                 <Image
                     style={styles.rate}
                     source={active === 'Dashboard' ? dashboardA : dashboardN}
@@ -30,14 +30,15 @@ function Navbar({active}) {
                 />
                 <Text style={active === 'Dashboard' ? styles.text2 : styles.text}>Dashboard</Text>
             </Pressable>
-            <Pressable style={styles.Pressable}>
+            <Pressable style={styles.Pressable}  onPress={() => navigation.navigate('notifications')}>
+
                 <Image
                     style={styles.rate}
                     source={active === 'Notifications' ? notifcationA : notifcationN}
                 />
                 <Text style={active === 'Notifications' ? styles.text2 : styles.text}>Notifications</Text>
             </Pressable>
-            <Pressable style={styles.Pressable}>
+            <Pressable style={styles.Pressable}  onPress={() => navigation.navigate('settings')}>
                 <Image
                     style={styles.rate}
                     source={active === 'Settings' ? settingsA : settingsN}

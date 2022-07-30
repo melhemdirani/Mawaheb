@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
-const SecondaryButton = ({title}) => {
+const SecondaryButton = ({title, navigate}) => {
 
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={
           styles.wrapperCustom
-        }>
+        }
+        onPress={() =>navigate()}
+      >
           <Text style={styles.text}>
             {title}
           </Text>

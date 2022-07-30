@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
-const PrimaryButton = ({title}) => {
+const PrimaryButton = ({title, navigate}) => {
 
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={
           styles.wrapperCustom
-        }>
+        }
+        onPress={() => navigate()}
+      >
           <Text style={styles.text}>
             {title}
           </Text>
@@ -19,7 +21,7 @@ const PrimaryButton = ({title}) => {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "center",
+    justifyContent: "center", 
   },
   text: {
     color: "white",

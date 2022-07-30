@@ -52,7 +52,7 @@ const SelectInput = ({title, list}) => {
 const styles = StyleSheet.create({
     container:{
         width: "85%",
-        marginBottom: 10
+        marginBottom: 20,
     },
     rotate:{
         transform: [{rotate: '180deg'}]

@@ -25,37 +25,37 @@ const DurationInputs = ({title, placeholder}) => {
                 changed && 
                 <MaskedView maskElement={ <Text style={[styles.label, {backgroundColor: "transparent"}]}>{placeholder}</Text>}>
                     <LinearGradient
-                        start={{x:0, y: 0}}
-                        end={{x:1, y: 1}}
-                        colors={['#23CDB0', '#9C88FD','#9C88FD', '#9C88FD', ]}
+                      start={{x:0, y: 0}}
+                      end={{x:1, y: 1}}
+                      colors={['#23CDB0', '#9C88FD','#9C88FD', '#9C88FD', ]}
                     >
-                       <Text style={[styles.label, {opacity: 0}]}>{placeholder}</Text>
+                      <Text style={[styles.label, {opacity: 0}]}>{placeholder}</Text>
                     </LinearGradient>
                 </MaskedView>
 
             }
             <View style={styles.subContainer}>
                 <TextInput
-                    style={
-                    styles.wrapperCustom
-                    }
-                    onChangeText={(e) => setText(e)}
-                    placeholder={placeholder}
-                    placeholderTextColor="rgba(0,0,0,.5)"
+                  style={
+                  styles.wrapperCustom
+                  }
+                  onChangeText={(e) => setText(e)}
+                  placeholder={placeholder}
+                  placeholderTextColor="rgba(0,0,0,.5)"
                 />
                 <Image
-                    style={styles.rate}
-                    source={require('../assets/images/date.png')}
+                  style={styles.rate}
+                  source={require('../assets/images/date.png')}
                 />
             </View>
-            { changed && 
+              { changed && 
                 <LinearGradient
-                    start={{x:0, y: 0}}
-                    end={{x:1, y: 1}}
-                    colors={['#23CDB0', '#9C88FD','#9C88FD', '#9C88FD', ]}
-                    style={{height: 2, marginBottom: -10, marginTop: 10}}
+                  start={{x:0, y: 0}}
+                  end={{x:1, y: 1}}
+                  colors={['#23CDB0', '#9C88FD','#9C88FD', '#9C88FD', ]}
+                  style={{height: 2, marginBottom: -10, marginTop: 10}}
                 />
-            }
+              } 
         </View>
     );
 };

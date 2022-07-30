@@ -13,15 +13,20 @@ import Inputs from '../components/Inputs'
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable'
 
-const BankPage = () => {
+const BankPage = ({  navigation }) => {
+  const navigate = () => {
+    navigation.navigate('jobseeker_jobs')
+  }
+
   return (
     <ScrollView style={styles.container}>
       <Header
         icon={Icon}
         title='Bank Details'
         // numOfPage={<Image source={trash}></Image>}
-        numOfPage='4/4'
+        numOfPage='5/5'
         hidden={false}
+        goBack={navigation.goBack}
       />
       <View style={styles.subContainer}>
         <Text style={styles.text}>
@@ -35,7 +40,7 @@ const BankPage = () => {
         <Inputs placeholder='Swift Code*' />
 
         <Pressable style={styles.nextButton}>
-          <PrimaryButton title='Create Profile' />
+          <PrimaryButton title='Create Profile' navigate={navigate}/>
         </Pressable>
       </View>
     </ScrollView>

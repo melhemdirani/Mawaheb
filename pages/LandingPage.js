@@ -1,7 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import { ImageBackground, StyleSheet, Text, View, Image } from 'react-native';
 
-export default function LandingPage() {
+
+export default function LandingPage({navigation}) {
+
+  setTimeout(() => {
+    navigation.navigate('SignIn')
+  }, 2000)
   return (
     <ImageBackground style={ styles.container } 
       resizeMode='cover' 

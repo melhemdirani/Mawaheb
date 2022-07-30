@@ -3,57 +3,58 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Pressable,
+  Button,
   Switch,
   SafeAreaView
 } from 'react-native'
 import React, { useState } from 'react'
 import Header from '../components/Header'
-import signUp from '../assets/images/signUp.png'
+import post from '../assets/images/postJob.png'
 import Inputs from '../components/Inputs'
 import UploadCard from '../components/UploadCard'
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import TertiaryButton from '../components/Buttons/TertiaryButton'
 import SecondaryButton from '../components/Buttons/SecondaryButton'
+import SelectInput from '../components/SelectInput'
+import DurationInputs from '../components/DurationInputs'
+import TextArea from '../components/TextArea'
 
-const ClientSignupPage = ({navigation}) => {
-
-  const navigateLogin = () => {
-    navigation.navigate("login")
-  } 
+const JobPostingPage = () => {
   const [isEnabled, setIsEnabled] = useState(false)
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState)
   return (
     <ScrollView style={styles.wrapper}>
-      <Header title='Client Sign Up' icon={signUp} hidden={true} />
+      <Header 
+        title='Post a Job' 
+        icon={post} 
+        numOfPage='1/2'
+        hidden={false}
+        />
       <View style={styles.container}>
         <Text style={styles.text}>Answer the questions below in order to </Text>
         <Text style={styles.text}>find the best job for you</Text>
         <View style={styles.form}>
-          <Inputs placeholder='company Name*' style={styles.input} />
-          <View style={styles.privacy}>
-            <Text style={!isEnabled ? styles.picked : styles.notPicked}>Public </Text>
-            <Switch
-              style={styles.switch}
-              ios_backgroundColor='#23CDB0'
-              trackColor={{ false: '#23CDB0', true: '#23CDB0' }}
-              thumbColor={'#f4f3f4'}
-              onValueChange={toggleSwitch}
-              value={isEnabled}
-            ></Switch>
-            <Text style={isEnabled ? styles.picked : styles.notPicked}> Private</Text>
-          </View>
-          <Inputs placeholder={isEnabled?'Address*':"Signatory Name*"} style={styles.input} />
-          <Inputs placeholder={isEnabled?'TRN(Tax Number)*':"Signatory Title"} style={styles.input} />
-          <UploadCard title={isEnabled?'Trading Liscence*':"Add Authorized Signatory"} />
+            <SelectInput title="Job Title" list={["Senior Production Manager", "option2", "option3"]}/> 
+            <DurationInputs placeholder="Job Duration*"/>  
+            <Inputs placeholder='Location*' style={styles.input} />
+            <Inputs placeholder='Years of experience*' style={styles.input} />
+            <SelectInput title="Budget" list={["option1", "option2", "option3"]}/> 
+            <TextArea  placeholder="Job Description*"/>  
+            <View style={styles.privacy}>
+                <Text style={!isEnabled ? styles.picked : styles.notPicked}>Public </Text>
+                <Switch
+                style={styles.switch}
+                ios_backgroundColor='#23CDB0'
+                trackColor={{ false: '#23CDB0', true: '#23CDB0' }}
+                thumbColor={'#f4f3f4'}
+                onValueChange={toggleSwitch}
+                value={isEnabled}
+                ></Switch>
+                <Text style={isEnabled ? styles.picked : styles.notPicked}> Private</Text>
+            </View>
         </View>
         <View style={styles.btnContainer}>
-          <PrimaryButton title='Sign up' />
-          <SafeAreaView style={styles.btn}>
-            <Pressable onPress={() => navigateLogin()}>
-             <Text style={styles.btnText}>Login</Text>
-            </Pressable>
-          </SafeAreaView>
+          <PrimaryButton title='Continue to Payment' />
         </View>
       </View>
     </ScrollView>
@@ -119,4 +120,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default ClientSignupPage
+export default JobPostingPage

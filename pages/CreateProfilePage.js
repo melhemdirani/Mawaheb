@@ -14,15 +14,20 @@ import UploadCard from '../components/UploadCard'
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable'
 
-const CreateProfilePage = () => {
+const CreateProfilePage = ({  navigation }) => {
+  const navigateExperience = () => {
+    navigation.navigate("experience")
+  } 
+
   return (
     <ScrollView style={styles.container}>
       <Header
         icon={signUp}
         title='Create Profile'
         // numOfPage={<Image source={trash}></Image>}
-        numOfPage='1/4'
+        numOfPage='2/5'
         hidden={false}
+        goBack={navigation.goBack}
       />
       <View style={styles.subContainer}>
         <Text style={styles.text}>
@@ -35,8 +40,8 @@ const CreateProfilePage = () => {
         <Inputs title='Continue to Payment' placeholder='Passport Number*' />
         <UploadCard title='Copy of passport' />
         <UploadCard title='Copy of residency visa' />
-        <Pressable style={styles.nextButton}>
-          <PrimaryButton title='Next' />
+        <Pressable style={styles.nextButton} >
+          <PrimaryButton title='Next' navigate={navigateExperience} />
         </Pressable>
       </View>
     </ScrollView>

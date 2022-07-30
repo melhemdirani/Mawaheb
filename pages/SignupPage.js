@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { ImageBackground, StyleSheet, Text, View, ScrollView, Image } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View, ScrollView, Image,  } from 'react-native';
 import AddRoleButton from '../components/Buttons/AddRoleButton';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
 import SecondaryButton from '../components/Buttons/SecondaryButton';
@@ -12,7 +12,18 @@ import SelectInput from '../components/SelectInput';
 import TextArea from '../components/TextArea';
 import UploadCard from '../components/UploadCard';
 
-export default function SignupPage() {
+export default function SignupPage({navigation}) {
+  
+  const navigateJob = () => {
+    navigation.navigate("JobSignUp")
+  } 
+  const navigateLogin = () => {
+    navigation.navigate("login")
+  } 
+  const navigateCSignup = () => {
+    navigation.navigate("recruiter_signup")
+  } 
+
   return (
     <View style={styles.container}>
       <Image
@@ -28,11 +39,11 @@ export default function SignupPage() {
         </Text>
         connects businesses with independent professionals and agencies around the MENA region.
       </Text>
-      <PrimaryButton title="Jobseeker Sign up"/> 
+      <PrimaryButton title="Jobseeker Sign up" navigate={navigateJob}/> 
       <View style={styles.spacing}/> 
-      <SecondaryButton title="Recruiter Sign up"/>   
+      <SecondaryButton title="Recruiter Sign up" navigate={navigateCSignup}/>   
       <View style={styles.spacing}/> 
-      <TertiaryButton title="Continue to Payment"/>    
+      <TertiaryButton title="Login" navigate={navigateLogin}/>    
     </View>
   );
 }

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable, Button } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 
@@ -7,14 +7,17 @@ import Header from '../components/Header'
 import signUp from '../assets/images/experienceIcon.png'
 import Inputs from '../components/Inputs'
 import PrimaryButton from '../components/Buttons/PrimaryButton'
-import Pressable from 'react-native/Libraries/Components/Pressable/Pressable'
 import SelectInput from '../components/SelectInput';
 import TextArea from '../components/TextArea';
 import DurationInputs from '../components/DurationInputs';
 import DailyRate from '../components/DailyRate';
 import AddRoleButton from '../components/Buttons/AddRoleButton';
 
-const ExperiencePage = () => {
+const ExperiencePage = ({ navigation }) => {
+
+    const languageNavigate = () => {
+        navigation.navigate('language')
+    }
 
     const MaskedTitle = ({title}) => {
         return(
@@ -47,8 +50,9 @@ const ExperiencePage = () => {
                 icon={signUp}
                 title='Experience'
                 // numOfPage={<Image source={trash}></Image>}
-                numOfPage='2/4'
+                numOfPage='3/5'
                 hidden={false}
+                goBack={navigation.goBack}
             />
             <View style={styles.subContainer}>
                 <Text style={styles.text}>
@@ -110,11 +114,14 @@ const ExperiencePage = () => {
                     style={{height: 5, width: "100%", marginTop: 5}}
                 />
                 <Pressable style={styles.nextButton}>
-                    <PrimaryButton title="Next"/> 
+                    <PrimaryButton title="Next" navigate={languageNavigate}/> 
                 </Pressable>
-                <Text style={styles.skipText}>
-                    SKIP
-                </Text>
+                <Pressable onPress={() => languageNavigate()}>
+                    <Text style={styles.skipText}>
+                        SKIP
+                    </Text>
+                </Pressable>
+               
             </View>
            
         </ScrollView>

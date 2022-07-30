@@ -12,7 +12,8 @@ import MaskedView from '@react-native-masked-view/masked-view'
 const Job = ({ title, description, price, lastOne, current, heart }) => {
   return (
     <View
-      style={lastOne ? [styles.wrapper, { marginBottom: 40 }] : styles.wrapper}
+      // style={lastOne ? [styles.wrapper, { marginBottom: 40 }] : styles.wrapper}
+      style={styles.wrapper}
     >
       <View style={styles.header}>
         <View style={styles.subHeader}>

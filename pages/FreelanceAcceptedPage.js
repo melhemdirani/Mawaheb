@@ -1,11 +1,14 @@
-import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native'
-import React from 'react'
-import Header from '../components/Header'
-import congratsBg from '../assets/images/congratsBg.png'
-import congratsProfileBg from '../assets/images/congratsProfileBg.png'
-import handShakeIcon from '../assets/images/handShakeIcon.png'
-import PrimaryButton from '../components/Buttons/PrimaryButton'
-import TertiaryButton from '../components/Buttons/TertiaryButton'
+import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native';
+import React from 'react';
+
+import Header from '../components/Header';
+import congratsBg from '../assets/images/congratsBg.png';
+import party from '../assets/images/party.png';
+import profile from '../assets/images/profile.png';
+import handShakeIcon from '../assets/images/handShakeIcon.png';
+import PrimaryButton from '../components/Buttons/PrimaryButton';
+import TertiaryButton from '../components/Buttons/TertiaryButton';
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 const FreelanceAcceptedPage = () => {
@@ -19,12 +22,22 @@ const FreelanceAcceptedPage = () => {
           style={styles.congratsBg}
           resizeMode='stretch'
         >
-          <Image
-            source={congratsProfileBg}
-            style={styles.congratsProfileBg}
-          ></Image>
+          <View style={styles.imageContainer}>
+            <Image source={party} style={styles.party}/>
+            <LinearGradient
+              start={{x:0, y: 0}}
+              end={{x:1, y: 1}}
+              colors={['#107DC5', '#23CDB0','#23CDB0','#23CDB0', '#0482AA', ]}
+              style={styles.proifleContainer}
+            >
+              <Image
+                source={profile}
+                style={styles.profile}
+              />
+            </LinearGradient>
+            <Image source={handShakeIcon} style={styles.handShakeIcon}/>
+          </View>
           <Text style={styles.name}>Ahmad Mohamad</Text>
-          <Image source={handShakeIcon} style={styles.handShakeIcon}></Image>
         </ImageBackground>
         <View style={styles.btnContainer}>
           <View style={styles.primary}>
@@ -47,7 +60,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   text: {
-    fontSize: 35,
+    fontSize: 28,
     textAlign: 'center',
     marginTop: 40,
     color: '#31BEBB',
@@ -56,24 +69,22 @@ const styles = StyleSheet.create({
   },
   congratsBg: {
     width: '100%',
-    height: 300,
+    height: 270,
   },
-  congratsProfileBg: {
-    height: 200,
-    top: -90,
-    left: 100,
+  proifleContainer: {
+    backgroundColor: "#23CDB0",
+    borderRadius: 100,
+    padding: 10
   },
   handShakeIcon: {
-   top: -200,
-   left: 140,
+    top: -50
   },
   name: {
-
     fontSize: 20,
     color: '#fff',
-    fontFamily: 'PoppinsS',
+    fontFamily: 'PoppinsB',
     textAlign: 'center',
-    marginTop: -10,
+    top: -80
   },
   btnContainer: {
    alignItems: 'center',
@@ -87,6 +98,16 @@ const styles = StyleSheet.create({
   contactLater: {
    
 
+  },
+  imageContainer:{
+    alignItems: "center",
+    zIndex: 99,
+    top: -40
+  },
+  party:{
+    position: "absolute",
+    top: -70,
+    zIndex: -1
   }
 })
 

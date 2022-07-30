@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LandingPage from './pages/LandingPage';
 import SignupPage from './pages/SignupPage';
-import TestingComponentPage from './pages/TestingComponentPage';
+import SettingsPage from './pages/SettingsPage';
 import { useFonts } from 'expo-font';
 import CreateProfilePage from './pages/CreateProfilePage';
 import ExperiencePage from './pages/ExperiencePage';
@@ -15,6 +15,13 @@ import Navbar from './components/Navbar';
 import JobsPage from './pages/JobsPage';
 import JobListPage from './pages/JobListPage';
 import JobseekerDashboard from './pages/JobseekerDashboard';
+import NotificationsPage from './pages/NotificationsPage';
+import FreelanceAcceptedPage from './pages/FreelanceAcceptedPage';
+import JobDonePage from './pages/JobDonePage';
+import JobPostingPage from './pages/JobPostingPage';
+import PaymentPage from './pages/PaymentPage';
+import LoginJobseeker from './pages/LoginJobseeker';
+import JobSeekersignup from './pages/JobSeekersignup';
 
 const Stack = createNativeStackNavigator()
 
@@ -35,7 +42,91 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen
           name="Home"
+          component={LandingPage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="SignIn"
+          component={SignupPage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="JobSignUp2"
+          component={CreateProfilePage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="JobSignUp"
+          component={JobSeekersignup}
+          options={{
+            headerShown: false,
+        }}
+        />
+        <Stack.Screen
+          name="experience"
+          component={ExperiencePage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="language"
+          component={LanguagePage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="bank"
+          component={BankPage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="jobseeker_jobs"
+          component={JobsPage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="login"
+          component={LoginJobseeker}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="seeker_dash"
           component={JobseekerDashboard}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="notifications"
+          component={NotificationsPage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="settings"
+          component={SettingsPage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="recruiter_signup"
+          component={ClientSignupPage}
           options={{
             headerShown: false,
           }}

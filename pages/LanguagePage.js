@@ -16,14 +16,19 @@ import Pressable from 'react-native/Libraries/Components/Pressable/Pressable'
 import SelectInput from '../components/SelectInput'
 import AddRoleButton from '../components/Buttons/AddRoleButton'
 
-const LanguagePage = () => {
+const LanguagePage = ({ navigation }) => {
+  
+  const navigateBank = () => {
+    navigation.navigate('bank')
+  }
   return (
     <ScrollView style={styles.container}>
       <Header
         icon={icon}
         title='Language'
         // numOfPage={<Image source={trash}></Image>}
-        numOfPage='3/4'
+        numOfPage='4/5'
+        goBack={navigation.goBack}
         hidden={false}
       />
       <View style={styles.subContainer}>
@@ -44,7 +49,7 @@ const LanguagePage = () => {
           <AddRoleButton title='Add another language' />
         </Pressable>
         <Pressable style={styles.nextButton}>
-          <PrimaryButton title='Continue' />
+          <PrimaryButton title='Continue' navigate={navigateBank}/>
         </Pressable>
       </View>
     </ScrollView>

@@ -15,12 +15,15 @@ const SecondaryHeader = ({ title, heart }) => {
       >
         <View style={styles.subContainer}>
           <Text style={styles.text}>{title}</Text>
-          {!heart && <Image source={searchIcon} style={styles.searchIcon}></Image>}
-          <Image
-            source={ heart ? heartIcon : filterIcon}
-            style={styles.filterIcon}
-            resizeMode='cover'
-          ></Image>
+          <View style={styles.miniContainer}>
+            {!heart && <Image source={searchIcon} style={styles.searchIcon}></Image>}
+            <Image
+              source={ heart ? heartIcon : filterIcon}
+              style={styles.filterIcon}
+              resizeMode='cover'
+            />
+          </View>
+       
         </View>
       </ImageBackground>
     </View>
@@ -30,7 +33,11 @@ const styles = StyleSheet.create({
   container: {
     zIndex: -99
   },
-
+  miniContainer:{
+    flexDirection: "row",
+    width: 100,
+    justifyContent: "space-between"
+  },  
   image: {
     width: '100%',
     height: 130,
@@ -44,7 +51,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   searchIcon: {
-    marginRight: -200
   },
   filterIcon: {
     right: 10

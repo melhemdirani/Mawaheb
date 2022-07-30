@@ -9,7 +9,7 @@ import Navbar from '../components/Navbar';
 import backgroundImage from '../assets/images/currentBg.png'
 import totalBg from '../assets/images/totalBg.png'
 
-const JobseekerDashboard = () => {
+const JobseekerDashboard = ({navigation}) => {
     const Data = [
         {   
             id:0,
@@ -146,7 +146,7 @@ const JobseekerDashboard = () => {
             }
             </ScrollView>
 
-            <Navbar active="Dashboard" />
+            <Navbar active="Dashboard" navigation={navigation}/>
         </View>
     )
 }

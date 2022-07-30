@@ -22,6 +22,9 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         backgroundColor: "white",
         alignItems: "center",
+        alignSelf: "center",
+        marginTop: 20,
+        top: 40,
         width: "90%",
         height: 70,
         borderBottomRightRadius: 20,
@@ -36,10 +39,10 @@ const styles = StyleSheet.create({
         fontWeight: "400"
     },
     shadowProp: {  
-        shadowOffset: {width: -2, height: 4},  
+        shadowOffset: {width: 5, height: 4},  
         shadowColor: '#171717',  
-        shadowOpacity: .06,  
-        shadowRadius: 3,  
+        shadowOpacity: .1,  
+        shadowRadius: 5,  
     },  
     image:{
         marginRight: 20,

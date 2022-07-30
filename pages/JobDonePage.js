@@ -1,18 +1,25 @@
-import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native'
-import React from 'react'
-import Header from '../components/Header'
-import congratsBg from '../assets/images/congratsBg.png'
-import congratsProfileBg from '../assets/images/congratsProfileBg.png'
-import handShakeIcon from '../assets/images/handShakeIcon.png'
-import PrimaryButton from '../components/Buttons/PrimaryButton'
-import TertiaryButton from '../components/Buttons/TertiaryButton'
-import MaskedView from '@react-native-masked-view/masked-view'
-import { LinearGradient } from 'expo-linear-gradient'
+import React, { useState} from 'react';
+import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native';
+
+import Header from '../components/Header';
+import congratsBg from '../assets/images/congratsBg.png';
+import PrimaryButton from '../components/Buttons/PrimaryButton';
+import TertiaryButton from '../components/Buttons/TertiaryButton';
+import MaskedView from '@react-native-masked-view/masked-view';
+import { LinearGradient } from 'expo-linear-gradient';
+import profile from '../assets/images/profile.png';
+import emptyStar from '../assets/images/emptyStar.png';
+import fullStar from '../assets/images/fullStar.png';
+import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
+
 
 const JobDonePage = () => {
+
+  const [rate, setRate] = useState(0)
+
   return (
     <View style={styles.wrapper}>
-      <Header title='Let’s get the job done' hidden={true} />
+      <Header title='Job done!' hidden={true} icon={profile} profile rating={4.8}/>
       <View style={styles.container}>
         <MaskedView
           maskElement={
@@ -36,7 +43,13 @@ const JobDonePage = () => {
           source={congratsBg}
           style={styles.congratsBg}
           resizeMode='stretch'
-        ></ImageBackground>
+        >
+        {[...Array(5)].map((e, i) =>   
+          <Pressable onPress={() => setRate(i)}>
+            <Image source={i > rate ? emptyStar : fullStar} style={styles.starts} />
+          </Pressable>
+        )}
+        </ImageBackground>
         <View style={styles.btnContainer}>
           <View style={styles.primary}>
             <PrimaryButton title='Confirm' />
@@ -55,6 +68,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    top: 20
   },
   text: {
     fontSize: 17,
@@ -67,7 +81,11 @@ const styles = StyleSheet.create({
   },
   congratsBg: {
     width: '100%',
-    height: 300,
+    height: 270,
+    flexDirection: "row",
+    alignItems: "center",
+    top: -30,
+    justifyContent: "space-evenly"
   },
   congratsProfileBg: {
     height: 200,
