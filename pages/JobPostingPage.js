@@ -19,7 +19,7 @@ import SelectInput from '../components/SelectInput'
 import DurationInputs from '../components/DurationInputs'
 import TextArea from '../components/TextArea'
 
-const JobPostingPage = () => {
+const JobPostingPage = ({navigation}) => {
   const [isEnabled, setIsEnabled] = useState(false)
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState)
   return (
@@ -29,6 +29,7 @@ const JobPostingPage = () => {
         icon={post} 
         numOfPage='1/2'
         hidden={false}
+        goBack={navigation.goBack}
         />
       <View style={styles.container}>
         <Text style={styles.text}>Answer the questions below in order to </Text>

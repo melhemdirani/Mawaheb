@@ -8,7 +8,7 @@ import arrowUpIcon from '../assets/images/arrowUpIcon.png'
 import { jobs } from '../assets/data/jobs'
 import Navbar from '../components/Navbar'
 
-const JobListPage = () => {
+const JobListPage = ({navigation}) => {
   const renderItem = (data) => {
     return <JobList {...data.item} />
   }
@@ -45,7 +45,7 @@ const JobListPage = () => {
 
           style={styles.jobs}
         ></FlatList>
-        <Navbar />
+        <Navbar active="Jobs" client navigation={navigation}/>
       </View>
     </View>
   )

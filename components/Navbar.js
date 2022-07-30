@@ -11,18 +11,33 @@ import dashboardA from '../assets/images/dashboardA.png'
 import dashboardN from '../assets/images/dashboardN.png'
 
 
-function Navbar({active, navigation}) {
+function Navbar({active, navigation, client}) {
+
+    const onJobsPress = () => {
+        if(client){
+            navigation.navigate('recruiter_Jobs')
+        }  else {
+            navigation.navigate('jobseeker_jobs')
+        }
+    }
+    const onDashPress = () => {
+        if(client){
+            navigation.navigate('recruiter_dashboard')
+        }   else {
+            navigation.navigate('seeker_dash')
+        }
+    }
     
     return (
         <View style={[styles.container, styles.shadowProp]}>
-            <Pressable style={styles.Pressable}  onPress={() => navigation.navigate('jobseeker_jobs')}>
+            <Pressable style={styles.Pressable}  onPress={() => onJobsPress()}>
                 <Image
                     style={styles.rate}
                     source={active === 'Jobs' ? jobsA : jobsN}
                 />
                 <Text style={active === 'Jobs' ? styles.text2 : styles.text}>Jobs</Text>
             </Pressable>
-            <Pressable style={styles.Pressable}  onPress={() => navigation.navigate('seeker_dash')}>
+            <Pressable style={styles.Pressable}  onPress={() => onDashPress()}>
                 <Image
                     style={styles.rate}
                     source={active === 'Dashboard' ? dashboardA : dashboardN}

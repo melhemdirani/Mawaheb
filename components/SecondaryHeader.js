@@ -15,7 +15,7 @@ const SecondaryHeader = ({ title, heart }) => {
       >
         <View style={styles.subContainer}>
           <Text style={styles.text}>{title}</Text>
-          <View style={styles.miniContainer}>
+          <View style={!heart ? styles.miniContainer : styles.miniContainer2}>
             {!heart && <Image source={searchIcon} style={styles.searchIcon}></Image>}
             <Image
               source={ heart ? heartIcon : filterIcon}
@@ -36,6 +36,11 @@ const styles = StyleSheet.create({
   miniContainer:{
     flexDirection: "row",
     width: 100,
+    justifyContent: "space-between"
+  },  
+  miniContainer2:{
+    flexDirection: "row",
+    width: 20,
     justifyContent: "space-between"
   },  
   image: {

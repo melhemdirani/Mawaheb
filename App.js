@@ -22,6 +22,7 @@ import JobPostingPage from './pages/JobPostingPage';
 import PaymentPage from './pages/PaymentPage';
 import LoginJobseeker from './pages/LoginJobseeker';
 import JobSeekersignup from './pages/JobSeekersignup';
+import ClientDashboard from './pages/ClientDashboard';
 
 const Stack = createNativeStackNavigator()
 
@@ -127,6 +128,27 @@ export default function App() {
         <Stack.Screen
           name="recruiter_signup"
           component={ClientSignupPage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="recruiter_dashboard"
+          component={ClientDashboard}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="recruiter_Jobs"
+          component={JobListPage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="jobPosting"
+          component={JobPostingPage}
           options={{
             headerShown: false,
           }}

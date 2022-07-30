@@ -21,6 +21,9 @@ const ClientSignupPage = ({navigation}) => {
   const navigateLogin = () => {
     navigation.navigate("login")
   } 
+  const navigateDash = () => {
+    navigation.navigate("recruiter_Jobs")
+  } 
   const [isEnabled, setIsEnabled] = useState(false)
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState)
   return (
@@ -48,7 +51,7 @@ const ClientSignupPage = ({navigation}) => {
           <UploadCard title={isEnabled?'Trading Liscence*':"Add Authorized Signatory"} />
         </View>
         <View style={styles.btnContainer}>
-          <PrimaryButton title='Sign up' />
+          <PrimaryButton navigate={navigateDash} title='Sign up' />
           <SafeAreaView style={styles.btn}>
             <Pressable onPress={() => navigateLogin()}>
              <Text style={styles.btnText}>Login</Text>

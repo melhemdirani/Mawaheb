@@ -118,6 +118,7 @@ const JobList = ({
 const styles = StyleSheet.create({
   wrapper: {
     height: 300,
+    marginTop: -5
   },
   linear: {
     borderRadius: 30,
@@ -196,8 +197,8 @@ const styles = StyleSheet.create({
     fontFamily: 'PoppinsR',
   },
   description: {
-    color: '#0A084B',
     fontFamily: 'PoppinsR',
+    color: "rgba(10, 8, 75, .6)"
   },
   subHeader: {
     flexDirection: 'row',
@@ -221,10 +222,7 @@ const styles = StyleSheet.create({
   },
   language: {
     fontFamily: 'PoppinsR',
-  },
-  description: {
-    fontFamily: 'PoppinsR',
-    color: '#0A084B',
+    color: "rgba(10, 8, 75, .6)"
   },
   languageIcon: {
     marginLeft: 20,
