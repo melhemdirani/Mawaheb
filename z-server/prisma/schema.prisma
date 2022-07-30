@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+ 
+ model User{
+  id Int @id @default(autoincrement())
+  name String
+  email String @unique
+  phoneNb String
+  password String
+  role Role
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+ }
+enum Role  {
+   admin
+    freelancer
+    client
+
+}
+
+  //when a user is created add JWT token to the user
+  
+ 
+
+ 
+
+ 
+// for freelancer
+// emirates id (photo) and expiration date
+//passport photo  and id + residency visa 
+//table images  
+
+
+//experience 
+// roles :  roleName, projectTitle,Location,Key Responsibilities,daily rate , roleDuration, most Notable Project , latestRole 
+//languages: text , proficiency , 
+//bankDetails :Iban , Account Name, BankName,Bank Address, City,SwiftCode, 
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
