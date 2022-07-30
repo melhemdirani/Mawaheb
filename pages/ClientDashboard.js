@@ -30,6 +30,7 @@ const ClientDashboard = ({navigation}) => {
             >
                 <Job
                     heart={true}
+                    client
                     current={true}
                     title="Job Title Lorem Ipsum"
                     description="Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno "
