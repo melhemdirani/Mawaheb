@@ -20,7 +20,7 @@ const testRegister = async (req, res) => {
 const register = async (req, res) => {
   const { name, email, password, phoneNb, role } = req.body
 
-  if (!name || !email || !password) {
+  if (!name || !email || !password, !phoneNb || !role) {
     throw new BadRequestError('please provide all values')
   }
   
