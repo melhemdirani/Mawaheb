@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native'
+import { View, Text, StyleSheet, Image, ImageBackground, Pressable } from 'react-native'
 import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import calendarIcon from '../assets/images/calendarIcon.png'
@@ -19,6 +19,7 @@ const JobList = ({
   shift,
   location,
   languages,
+  navigate
 }) => {
   return (
     <View style={styles.wrapper}>
@@ -38,7 +39,9 @@ const JobList = ({
         </View>
         <View style={styles.subHeader}>
           <Image source={heartIcon} style={styles.heart}></Image>
-          <Image source={plusIcon} style={styles.plus}></Image>
+          <Pressable onPress={() => navigate()}>
+            <Image source={plusIcon} style={styles.plus}></Image>
+          </Pressable>
         </View>
       </View>
       <LinearGradient

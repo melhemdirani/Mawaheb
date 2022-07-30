@@ -21,11 +21,16 @@ import checkbox from '../assets/images/checkbox.png'
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import btnBackground from '../assets/images/btnBackground.png'
 
-const JobContractPage = () => {
+const JobContractPage = ({navigation}) => {
   const [toggleCheckBox, setToggleCheckBox] = useState(false)
   const { id, title, price, roles, languages, location, shift } =
     freelancerDetails
   const { id: roleId, description, name, date } = roles[0]
+
+  const navigateAccept = () => {
+    navigation.navigate('acceptedClient')
+
+  }
   return (
     <ScrollView style={styles.wrapper}>
       <Header title='Job Contract' icon={jobContractIcon} />
@@ -68,7 +73,7 @@ const JobContractPage = () => {
           end={{ x: 1, y: 0 }}
           style={styles.linear}
         >
-          <View style={[styles.container, styles.shadow]}>
+          <View style={[styles.container2, styles.shadow]}>
             <View style={styles.info}>
               <MaskedView
                 maskElement={
@@ -172,10 +177,10 @@ const JobContractPage = () => {
                 <Text style={[styles.party, { opacity: 0 }]}>Second Party</Text>
               </LinearGradient>
             </MaskedView>
-            <Text style={styles.freelancerName}>Freelancer Name blurred</Text>
+            <Text style={styles.companyName}>Freelancer Name blurred</Text>
           </View>
           <Text style={styles.revealText}>
-            will be revealed after signing the contract
+            Will be revealed after signing the contract
           </Text>
           <Text style={styles.jobDescription}>
             Job description lorom ipsum dolor sit ameno Job description lorom
@@ -205,20 +210,17 @@ const JobContractPage = () => {
               I hereby confirm all the mentioned in this contract
             </Text>
           </View>
-          
-          <ImageBackground
-            source={btnBackground}
-            style={styles.btnBg}
-            resizeMode="stretch"
-            
-            
-          >
-            <View style={styles.btn}>
-              <PrimaryButton title='Accept and Sign' />
-            </View>
-          </ImageBackground>
         </View>
       </SafeAreaView>
+      <ImageBackground
+        source={btnBackground}
+        style={styles.btnBg}
+        resizeMode="stretch"
+      >
+        <View style={styles.btn}>
+          <PrimaryButton title='Accept and Sign' navigate={navigateAccept}/>
+        </View>
+      </ImageBackground>
     </ScrollView>
   )
 }
@@ -228,19 +230,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  container: {},
+  container: {
+    width: "90%",
+    alignSelf: "center"
+  },
+  container2:{
+  },
   info: {
     padding: 20,
     paddingLeft: 35,
   },
   titleHeader: {
     marginTop: 50,
-    alignItems: 'center',
+    alignItems: "center"
   },
   text: {
     fontSize: 13,
     fontFamily: 'PoppinsR',
-    color: '#000000',
+    textAlign: "center",
+    color: 'rgba(0, 0, 0, .6)',
   },
   header: {
     zIndex: 1,
@@ -248,8 +256,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: '90%',
-    alignSelf: 'center',
     marginBottom: -45,
   },
   priceBg: {
@@ -259,9 +265,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   price: {
-    fontSize: 18,
+    fontSize: 15,
     left: 10,
-
     color: 'rgba(16, 125, 197, 1)',
     fontFamily: 'PoppinsS',
   },
@@ -300,12 +305,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 7,
   },
-  text: {
-    color: 'rgba(16, 125, 197, 1)',
-    fontFamily: 'PoppinsR',
-  },
   description: {
-    color: '#0A084B',
+    color: 'rgba(10, 8, 75, .6)',
     fontFamily: 'PoppinsR',
   },
   subHeader: {
@@ -323,7 +324,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
   },
   fee: {
-    fontSize: 13,
+    fontSize: 12,
     fontFamily: 'PoppinsR',
     color: '#107DC5',
   },
@@ -336,37 +337,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   party: {
-    fontSize: 20,
+    fontSize: 16,
     fontFamily: 'PoppinsS',
+    width: 150,
   },
   partyAndName: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    marginBottom: 15
   },
   companyName: {
-    marginLeft: 60,
-    color: '#000000',
+    color: 'rgba(0,0,0,.6)',
     fontFamily: 'PoppinsR',
-    fontSize: 16,
-  },
-  freelancerName: {
-    marginLeft: 30,
-    color: '#000000',
-    fontFamily: 'PoppinsR',
-    fontSize: 16,
+    fontSize: 13,
   },
   revealText: {
-    marginTop: 10,
+    marginTop: -10,
+    fontSize: 10,
     color: '#107DC5',
     fontFamily: 'PoppinsL',
-    paddingHorizontal: 10,
   },
   jobDescription: {
     marginTop: 20,
-    paddingHorizontal: 10,
     fontFamily: 'PoppinsR',
-    color: '#0A084B',
+    color: 'rgba(10, 8, 75, .6)',
   },
   checkboxAndConfirm: {
     paddingHorizontal: 4,
@@ -377,8 +371,8 @@ const styles = StyleSheet.create({
   confirm: {
     marginLeft: 5,
     color: '#212121',
-    fontFamily: 'PoppinsS',
-    fontSize: 13,
+    fontFamily: 'PoppinsR',
+    fontSize: 12,
     width: '100%',
   },
   btnBg: {
@@ -395,6 +389,10 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     padding: 40,
   },
+  linear:{
+    width: "100%",
+    borderRadius: 20
+  }
 })
 
 export default JobContractPage

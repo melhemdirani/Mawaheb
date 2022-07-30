@@ -11,7 +11,11 @@ import TertiaryButton from '../components/Buttons/TertiaryButton';
 import { LinearGradient } from 'expo-linear-gradient';
 
 
-const FreelanceAcceptedPage = () => {
+const FreelanceAcceptedPage = ({navigation}) => {
+
+  const navigateDone = () => {
+    navigation.navigate('jobDoneClient')
+  }
   return (
     <View style={styles.wrapper}>
       <Header title='Let’s get the job done' hidden={true} />
@@ -41,10 +45,8 @@ const FreelanceAcceptedPage = () => {
         </ImageBackground>
         <View style={styles.btnContainer}>
           <View style={styles.primary}>
-          
-            <PrimaryButton title='Contact Ahmad' />
+            <PrimaryButton title='Contact Ahmad' navigate={navigateDone} />
           </View>
-
           <TertiaryButton title='Contact later' style={styles.contactLater} />
         </View>
       </View>

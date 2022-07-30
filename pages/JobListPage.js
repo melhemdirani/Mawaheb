@@ -9,9 +9,17 @@ import { jobs } from '../assets/data/jobs'
 import Navbar from '../components/Navbar'
 
 const JobListPage = ({navigation}) => {
-  const renderItem = (data) => {
-    return <JobList {...data.item} />
+
+  const detailsNavigate = () => {
+    navigation.navigate('freelancerDetails')
   }
+
+  const renderItem = (data) => {
+    return <JobList {...data.item} navigate={detailsNavigate}/>
+  }
+
+
+
   return (
     <View style={styles.wrapper}>
       <SecondaryHeader title='Find the right person' />

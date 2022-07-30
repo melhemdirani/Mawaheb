@@ -17,10 +17,12 @@ import JobListPage from './pages/JobListPage';
 import JobseekerDashboard from './pages/JobseekerDashboard';
 import NotificationsPage from './pages/NotificationsPage';
 import FreelanceAcceptedPage from './pages/FreelanceAcceptedPage';
+import FreelancerDetailsPage from './pages/FreelancerDetailsPage';
 import JobDonePage from './pages/JobDonePage';
 import JobPostingPage from './pages/JobPostingPage';
 import PaymentPage from './pages/PaymentPage';
 import LoginJobseeker from './pages/LoginJobseeker';
+import JobContractPage from './pages/JobContractPage';
 import JobSeekersignup from './pages/JobSeekersignup';
 import ClientDashboard from './pages/ClientDashboard';
 
@@ -149,6 +151,41 @@ export default function App() {
         <Stack.Screen
           name="jobPosting"
           component={JobPostingPage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="payment"
+          component={PaymentPage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="freelancerDetails"
+          component={FreelancerDetailsPage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="acceptContract"
+          component={JobContractPage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="acceptedClient"
+          component={FreelanceAcceptedPage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="jobDoneClient"
+          component={JobDonePage}
           options={{
             headerShown: false,
           }}

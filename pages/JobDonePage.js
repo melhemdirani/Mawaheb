@@ -13,8 +13,16 @@ import fullStar from '../assets/images/fullStar.png';
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
 
 
-const JobDonePage = () => {
+const JobDonePage = ({navigation}) => {
 
+  const navigateDash = () => {
+    navigation.navigate('recruiter_dashboard')
+  }
+
+  const confirmPress = () => {
+    alert('Thank you for your feedback!')
+    navigation.navigate('recruiter_dashboard')
+  }
   const [rate, setRate] = useState(0)
 
   return (
@@ -52,10 +60,10 @@ const JobDonePage = () => {
         </ImageBackground>
         <View style={styles.btnContainer}>
           <View style={styles.primary}>
-            <PrimaryButton title='Confirm' />
+            <PrimaryButton title='Confirm' navigate={confirmPress}/>
           </View>
 
-          <TertiaryButton title='Dismiss' style={styles.contactLater} />
+          <TertiaryButton title='Dismiss' style={styles.contactLater}  navigate={navigateDash}/>
         </View>
       </View>
     </View>

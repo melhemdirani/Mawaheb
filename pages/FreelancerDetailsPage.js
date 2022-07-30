@@ -5,6 +5,8 @@ import {
   Image,
   ImageBackground,
   SafeAreaView,
+  Pressable,
+  ScrollView
 } from 'react-native'
 import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
@@ -21,17 +23,18 @@ import { freelancerDetails } from '../assets/data/freelancerDetails'
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import minusIcon from '../assets/images/minusIcon.png'
 
-const FreelancerDetailsPage = ({
+const FreelancerDetailsPage = ({navigation}) => {
+  const { id, title, price, roles, languages, location, shift } = freelancerDetails
 
-}) => {
-  const { id, title, price, roles, languages, location, shift } =
-    freelancerDetails
+  const navigateContract = () => {
+    navigation.navigate('acceptContract')
+  }
 
   return (
-    <SafeAreaView style={styles.wrapper}>
+    <ScrollView style={styles.wrapper}>
       <View style={styles.header}>
         <View style={styles.subHeader}>
-          <View style={styles.circle}></View>
+          <View style={styles.circle} />
           <ImageBackground
             source={priceRectangle}
             style={styles.priceBg}
@@ -45,7 +48,9 @@ const FreelancerDetailsPage = ({
         </View>
         <View style={styles.subHeader}>
           <Image source={heartIcon} style={styles.heart}></Image>
-          <Image source={minusIcon} style={styles.plus}></Image>
+          <Pressable onPress={() => navigation.goBack()}>
+            <Image source={minusIcon} style={styles.plus}></Image>
+          </Pressable>
         </View>
       </View>
       <LinearGradient
@@ -63,46 +68,47 @@ const FreelancerDetailsPage = ({
       >
         <View style={[styles.container, styles.shadow]}>
           <View style={styles.info}>
-            <MaskedView
-              maskElement={
-                <Text
-                  style={[styles.title, { backgroundColor: 'transparent' }]}
-                >
-                  {title}
-                </Text>
-              }
-            >
-              <LinearGradient
-                start={{ x: 1, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                colors={['rgba(49, 190, 187, 1)', 'rgba(101, 91, 218, 1)']}
+              <MaskedView
+                maskElement={
+                  <Text
+                    style={[styles.title, { backgroundColor: 'transparent' }]}
+                  >
+                    {title}
+                  </Text>
+                }
               >
-                <Text style={[styles.title, { opacity: 0 }]}>{title}</Text>
-              </LinearGradient>
-            </MaskedView>
-            <View style={styles.roles}>
-              {roles.map((role) => {
-                return (
-                  <View key={role.id} style={styles.role}>
-                    <Text style={styles.roleName}>{role.name}</Text>
-                    <Text style={styles.roleDescription}>
-                      {role.description}
-                    </Text>
-                    <View style={styles.roleDate}>
-                      <Image
-                        source={calendarIcon}
-                        style={styles.calendarIcon}
-                      ></Image>
-                      <Text style={styles.roleDateText}>{role.date}</Text>
+                <LinearGradient
+                  start={{ x: 1, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  colors={['rgba(49, 190, 187, 1)', 'rgba(101, 91, 218, 1)']}
+                >
+                  <Text style={[styles.title, { opacity: 0 }]}>{title}</Text>
+                </LinearGradient>
+              </MaskedView>
+              <View style={styles.roles}>
+                {roles.map((role) => {
+                  return (
+                    <View key={role.id} style={styles.role}>
+                      <View style={{paddingHorizontal: 20}}>
+                        <Text style={styles.roleName}>{role.name}</Text>
+                        <Text style={styles.roleDescription}>
+                          {role.description}
+                        </Text>
+                        <View style={styles.roleDate}>
+                          <Image
+                            source={calendarIcon}
+                            style={styles.calendarIcon}
+                          ></Image>
+                          <Text style={styles.roleDateText}>{role.date}</Text>
+                        </View>
+                      </View>
                     </View>
-                  </View>
-                )
-              })}
-            </View>
+                  )
+                })}
+              </View>
           </View>
           <View style={styles.languages}>
             <Image source={languageIcon} style={styles.languageIcon}></Image>
-
             {languages.map((item, i) => {
               return (
                 <Text key={i} style={styles.language}>
@@ -119,30 +125,31 @@ const FreelancerDetailsPage = ({
             ]}
             start={{ x: 1, y: 0 }}
             end={{ x: 1, y: 1 }}
+            style={styles.footerContainer}
           >
-            <View style={styles.footer}>
-              <View style={styles.footerInfo}>
-                <Image source={clockIcon} style={styles.icon}></Image>
-                <Text style={styles.text}> {shift}</Text>
-              </View>
-              <View style={styles.footerInfo}>
-                <Image source={locationIcon} style={styles.icon}></Image>
-                <Text style={styles.text}>{location}</Text>
-              </View>
+            <View style={styles.footerInfo}>
+              <Image source={clockIcon} style={styles.icon}></Image>
+              <Text style={styles.text}> {shift}</Text>
+            </View>
+            <View style={styles.footerInfo}>
+              <Image source={locationIcon} style={styles.icon}></Image>
+              <Text style={styles.text}>{location}</Text>
             </View>
           </LinearGradient>
         </View>
       </LinearGradient>
       <View style={styles.button}>
-        <PrimaryButton title='Accept Applicant' />
+        <PrimaryButton title='Accept Applicant' navigate={navigateContract} />
       </View>
-    </SafeAreaView>
+    </ScrollView>
   )
 }
 const styles = StyleSheet.create({
   wrapper: {
     height: 300,
     padding: 20,
+    width: "100%",
+    alignSelf: "center",
     marginTop: 70,
     flex: 1,
   },
@@ -159,7 +166,7 @@ const styles = StyleSheet.create({
     paddingTop: 30,
   },
   info: {
-    padding: 20,
+    paddingVertical: 20,
   },
   header: {
     zIndex: 1,
@@ -176,21 +183,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontFamily: 'PoppinsS',
     marginEnd: 80,
+    left: 20,
     width: '100%',
   },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '92%',
-    alignItems: 'center',
-
-
-    padding: 20,
-  },
-
   footerInfo: {
     flexDirection: 'row',
-
     alignItems: 'center',
     paddingTop: 7,
   },
@@ -240,15 +237,16 @@ const styles = StyleSheet.create({
   },
   languages: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    width: '80%',
-    marginEnd: 60,
+    width: '100%',
     marginTop: -30,
     marginBottom: 20,
+    paddingRight: 20
   },
   language: {
     fontFamily: 'PoppinsR',
+    color: 'rgba(10, 8, 75, .6)',
   },
   description: {
     fontFamily: 'PoppinsR',
@@ -281,18 +279,19 @@ const styles = StyleSheet.create({
   roleName: {
     fontFamily: 'PoppinsR',
     fontSize: 14,
-    color: '#0A084B',
+    color: 'rgba(10, 8, 75, .6)',
     marginBottom: 5,
   },
   roleDescription: {
     fontFamily: 'PoppinsR',
     fontSize: 12,
-    color: '#0A084B',
+    color: 'rgba(10, 8, 75, .6)',
+    lineHeight: 20,
     marginBottom: 5,
   },
   role: {
     marginBottom: 20,
-    borderBottomColor: '#107DC5',
+    borderBottomColor: 'rgba(16, 125, 197, .3)',
     borderBottomWidth: 1,
     paddingBottom: 20,
   },
@@ -303,8 +302,16 @@ const styles = StyleSheet.create({
   },
   button:{
    alignItems: 'center',
-   marginTop: 20,
+   marginTop: 40,
+   marginBottom: 90
 
-  }
+  },
+  footerContainer:{
+    flexDirection: "row",
+    width: "100%",
+    alignItems: "flex-start",
+    paddingVertical: 20,
+    paddingLeft: 20
+  },
 })
 export default FreelancerDetailsPage

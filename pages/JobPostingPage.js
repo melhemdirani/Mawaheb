@@ -22,6 +22,10 @@ import TextArea from '../components/TextArea'
 const JobPostingPage = ({navigation}) => {
   const [isEnabled, setIsEnabled] = useState(false)
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState)
+
+  const paymentNav = () => {
+    navigation.navigate('payment')
+  }
   return (
     <ScrollView style={styles.wrapper}>
       <Header 
@@ -55,7 +59,7 @@ const JobPostingPage = ({navigation}) => {
             </View>
         </View>
         <View style={styles.btnContainer}>
-          <PrimaryButton title='Continue to Payment' />
+          <PrimaryButton title='Continue to Payment' navigate={paymentNav}/>
         </View>
       </View>
     </ScrollView>

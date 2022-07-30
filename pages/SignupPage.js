@@ -24,8 +24,7 @@ import { useEffect } from 'react'
 
 export default function SignupPage({ navigation }) {
   const register = async () => {
-    let url = "http://192.168.16.102:4000/api/v1/auth/register"
-
+    let url = "http://172.20.10.13:4000/api/v1/auth/register"
     try {
       const {data} = await axios.post(url,{
         name:"melhem",

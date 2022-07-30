@@ -21,10 +21,15 @@ import {
   import DurationInputs from '../components/DurationInputs'
   import TextArea from '../components/TextArea'
   
-  const PaymentPage = () => {
+  const PaymentPage = ({navigation}) => {
     const [isEnabled, setIsEnabled] = useState(false)
     const [card, setCard] = useState(true)
     const toggleSwitch = () => setIsEnabled((previousState) => !previousState)
+
+    const onPostClick = () => {
+      alert("Thank you! Your job was posted")
+      navigation.navigate('recruiter_dashboard')
+    }
 
     const Prepaid = () => {
         return(
@@ -70,7 +75,8 @@ import {
           icon={payment} 
           numOfPage='2/2'
           hidden={false}
-          />
+          goBack={navigation.goBack}
+        />
         <View style={styles.container}>
             <View style={styles.form}>
                 <View style={styles.privacy}>
@@ -99,7 +105,7 @@ import {
 
             }
             <View style={styles.btnContainer}>
-                <PrimaryButton title='Pay and Post Job' />
+                <PrimaryButton title='Pay and Post Job' navigate={onPostClick} />
             </View>
         </View>
       </ScrollView>
