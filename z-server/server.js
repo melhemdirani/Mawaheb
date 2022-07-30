@@ -13,6 +13,7 @@ import path from 'path'
 import helmet from 'helmet'
 import xss from 'xss-clean'
 import MongoSanitize from 'express-mongo-sanitize'
+import cors from 'cors'
 
 //db and authenticateUser
 
@@ -33,6 +34,7 @@ app.use(express.static(path.resolve(__dirname, './client/build')))
 app.use(express.json())
 app.use(cookieParser(process.env.JWT_SECRET))
 app.use(express.static('./Public'))
+// app.use(cors())
 
 app.use(fileUpload())
 
