@@ -22,6 +22,7 @@ import JobPostingPage from './pages/JobPostingPage';
 import PaymentPage from './pages/PaymentPage';
 import LoginJobseeker from './pages/LoginJobseeker';
 import JobSeekersignup from './pages/JobSeekersignup';
+import JobContractPage from './pages/JobContractPage';
 
 const Stack = createNativeStackNavigator()
 
@@ -49,7 +50,7 @@ export default function App() {
         />
         <Stack.Screen
           name="SignIn"
-          component={SignupPage}
+          component={JobContractPage}
           options={{
             headerShown: false,
           }}

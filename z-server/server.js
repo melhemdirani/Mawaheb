@@ -20,6 +20,8 @@ import MongoSanitize from 'express-mongo-sanitize'
 //routers
 import authRouter from './routes/authRoutes.js'
 import userRouter from './routes/userRoutes.js'
+import freelancerRouter from './routes/freelancerRoutes.js'
+import clientRouter from './routes/clientRoutes.js'
 
 //middleware
 import notFoundMiddleware from './middleware/not-found.js'
@@ -47,6 +49,9 @@ app.use(
 
   userRouter
 )
+app.use( '/api/v1/freelancers', freelancerRouter)
+app.use( '/api/v1/clients', clientRouter)
+
 //Routes
 
 app.get('*', (req, res) => {
