@@ -1,8 +1,8 @@
 import React from 'react'
-import { Image, StyleSheet, Text, View, TouchableOpacity, TextInput} from 'react-native';
+import { Image, StyleSheet, Text, View, Pressable} from 'react-native';
 
 
-function Setting({title, icon}) {
+function Setting({title, icon, action}) {
 
     return (
         <View style={styles.container}>
@@ -10,7 +10,9 @@ function Setting({title, icon}) {
                 style={styles.image}
                 source={icon}
             />
-            <Text style={styles.text}>{title}</Text>
+            <Pressable onPress={() => action()}>
+                <Text style={styles.text}>{title}</Text>
+            </Pressable>
 
         </View>
     )

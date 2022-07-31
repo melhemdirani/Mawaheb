@@ -1,10 +1,14 @@
-import { ScrollView ,View, Text, FlatList, StyleSheet, Image, ImageBackground } from 'react-native';
-import React from 'react';
-import { LinearGradient } from 'expo-linear-gradient';
-import MaskedView from '@react-native-masked-view/masked-view';
+import React, { useState } from 'react';
+import { ScrollView ,View, StyleSheet} from 'react-native';
+import { connect } from 'react-redux';
+
+import { signOut } from '../redux/user/user.actions';
 
 import Navbar from '../components/Navbar';
 import Header from '../components/Header';
+import Setting from '../components/Setting';
+import PrimaryButton from '../components/Buttons/PrimaryButton';
+
 import settingsIcon from '../assets/images/settingsIcon.png';
 import profileSetting from '../assets/images/profileSetting.png';
 import languageSetting from '../assets/images/languageSetting.png';
@@ -13,11 +17,16 @@ import termsSetting from '../assets/images/termsSetting.png';
 import aboutSetting from '../assets/images/aboutSetting.png';
 import logoutSetting from '../assets/images/logoutSetting.png';
 
-import Setting from '../components/Setting';
-import PrimaryButton from '../components/Buttons/PrimaryButton';
 
 
-const SettingsPage = ({navigation}) => {
+const SettingsPage = ({navigation, signOut, role}) => {
+
+    const [reload, setReload] = useState(true)
+    
+    const logout = () => {
+        signOut()
+        navigation.navigate('Home', {reload})
+    }
  
     return (
         <View style={styles.container}>
@@ -28,13 +37,13 @@ const SettingsPage = ({navigation}) => {
                 <Setting title="Privacy Policy" icon={privacySetting}/>
                 <Setting title="Terms and Conditions" icon={termsSetting}/>
                 <Setting title="About Mawahib" icon={aboutSetting}/>
-                <Setting title="Logout" icon={logoutSetting}/>
+                <Setting title="Logout" icon={logoutSetting} action={logout}/>
                 <View style={styles.button}>
                     <PrimaryButton title="Contact US"/> 
                 </View>
 
             </ScrollView>
-            <Navbar active="Settings" navigation={navigation} />
+            <Navbar active="Settings" navigation={navigation} client={role === 'client' ? true : false}/>
         </View>
     )
 }
@@ -51,4 +60,14 @@ const styles = StyleSheet.create({
   
 })
 
-export default SettingsPage
+const mapDispatchToProps = (dispatch) => ({
+    signOut: (role) => dispatch(signOut(role))
+});
+
+const mapStateToProps =  ({
+    role: {role},
+})   => ({
+    role
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(SettingsPage)

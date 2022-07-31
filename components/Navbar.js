@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable, Platform } from 'react-native';
+import { connect } from 'react-redux';
 
 import jobsA from '../assets/images/jobsA.png'
 import jobsN from '../assets/images/jobsN.png'
@@ -67,38 +68,87 @@ function Navbar({active, navigation, client}) {
     )
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        height: 90,
-        paddingTop: 20,
-        paddingLeft: 40,
-        paddingRight: 40,
-        width: "100%",
-        borderTopRightRadius: 30,
-        borderTopLeftRadius: 30,
-        backgroundColor: "white"
-    },
-    text:{
-        color: "#929495",
-        fontSize: 12,
-        fontFamily: 'PoppinsR'
-    },
-    text2:{
-        color: "#107DC5",
-        fontSize: 12,
-        fontFamily: 'PoppinsS'
-    },
-    Pressable:{
-        alignItems: "center"
-    },
-    shadowProp: {  
-        shadowOffset: {width: 2, height: 1},  
-        shadowColor: 'rgba(0, 0, 0, 0.1)',  
-        shadowOpacity: 1,  
-        shadowRadius: 10,  
-    }, 
-  })
+const styles =  Platform.OS === 'android'
+    ? StyleSheet.create({
+        container: {
+            flexDirection: "row",
+            justifyContent: "space-between",
+            height: 90,
+            paddingTop: 20,
+            paddingLeft: 40,
+            paddingRight: 40,
+            left: -10,
+            width: "105%",
+            borderTopRightRadius: 30,
+            borderTopLeftRadius: 30,
+            backgroundColor: "white"
+        },
+        text:{
+            color: "#929495",
+            fontSize: 12,
+            fontFamily: 'PoppinsR'
+        }, 
+        text2:{
+            color: "#107DC5",
+            fontSize: 12,
+            fontFamily: 'PoppinsS'
+        },
+        Pressable:{
+            alignItems: "center"
+        },
+        shadowProp: {  
+            backgroundColor: "rgba(255,255,255,0)" ,
+            shadowColor: "rgba(0,0,0,.4)",
+            elevation: 5,
+            borderTopRadius: 24,
+            shadowOffset: {
+              width: 2,
+              height: -4,
+            },
+            shadowRadius: 24,
+        }, 
+    })
+    : StyleSheet.create({
+        container: {
+            flexDirection: "row",
+            justifyContent: "space-between",
+            height: 90,
+            paddingTop: 20,
+            paddingLeft: 40,
+            paddingRight: 40,
+            width: "100%",
+            borderTopRightRadius: 30,
+            borderTopLeftRadius: 30,
+            backgroundColor: "white"
+        },
+        text:{
+            color: "#929495",
+            fontSize: 12,
+            fontFamily: 'PoppinsR'
+        },
+        text2:{
+            color: "#107DC5",
+            fontSize: 12,
+            fontFamily: 'PoppinsS'
+        },
+        Pressable:{
+            alignItems: "center"
+        },
+        shadowProp: {  
+            shadowOffset: {width: 2, height: 1},  
+            shadowColor: 'rgba(0, 0, 0, 0.1)',  
+            shadowOpacity: 1,  
+            shadowRadius: 10,  
+        }, 
+    })
 
-export default Navbar
+
+
+const mapStateToProps =  ({
+    role: {role},
+})   => ({
+    role,
+})
+    
+
+export default connect(mapStateToProps)(Navbar)

@@ -33,15 +33,16 @@ const CreateProfilePage = ({  navigation }) => {
         <Text style={styles.text}>
           Fill and upload the below required field and documents
         </Text>
-        <Inputs title='Continue to Payment' placeholder='Emirates ID Number*' />
-        <Inputs title='Continue to Payment' placeholder='Expiration Date*' />
-        <UploadCard title='Emirates ID front side' />
-        <UploadCard title='Emirates ID back side' />
         <Inputs title='Continue to Payment' placeholder='Passport Number*' />
         <UploadCard title='Copy of passport' />
         <UploadCard title='Copy of residency visa' />
         <Pressable style={styles.nextButton} >
           <PrimaryButton title='Next' navigate={navigateExperience} />
+        </Pressable>
+        <Pressable onPress={() => navigation.navigate("experience")}>
+          <Text style={styles.skipText}>
+              SKIP
+          </Text>
         </Pressable>
       </View>
     </ScrollView>
@@ -67,6 +68,13 @@ const styles = StyleSheet.create({
   nextButton: {
     paddingVertical: 40,
   },
+  skipText:{
+    fontFamily: 'PoppinsS',
+    fontSize: 15,
+    marginTop: -25,
+    marginBottom: 80,
+    letterSpacing: 2
+  }
 })
 
 export default CreateProfilePage

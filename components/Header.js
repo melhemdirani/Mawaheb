@@ -1,12 +1,12 @@
-import { View, Text, Image, StyleSheet, ImageBackground, Pressable } from 'react-native'
-import React from 'react'
+import React from 'react';
+import { View, Text, Image, StyleSheet, ImageBackground, Pressable } from 'react-native';
+
 import backgroundImage from '../assets/images/backgroundHeader.jpg'
-import bodyImage from '../assets/images/body.png'
 import backIcon from '../assets/images/backIcon.png'
 import testImage from '../assets/images/test.png'
 import { LinearGradient } from 'expo-linear-gradient'
 
-const Header = ({ icon, title, numOfPage, rightIcon, hidden, numberHidded, goBack, profile, rating }) => {
+const Header = ({ icon, title, numOfPage, rightIcon, hidden, numberHidded, goBack, profile, rating, onTrashPress}) => {
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -17,17 +17,19 @@ const Header = ({ icon, title, numOfPage, rightIcon, hidden, numberHidded, goBac
         <View style={!hidden ? styles.info : !numberHidded ? styles.info2 : styles.info3}>
           {
             !hidden && 
-            <Pressable onPress={() => goBack()}>
-              <Image onPress={() => goBack()} source={backIcon} style={styles.backIcon}/>
+            <Pressable onPress={() => goBack()} style={styles.backIcon}>
+              <Image onPress={() => goBack()} source={backIcon} />
             </Pressable>
           }
-          <Text style={styles.text}>{title}</Text>
           {
             numberHidded
-            ? <Image source={rightIcon} style={styles.page2}></Image>
+            ? <Pressable onPress={() => onTrashPress()}>
+                <Image source={rightIcon} style={styles.page2}  />
+              </Pressable>
             : <Text style={styles.page}>{numOfPage}</Text>
           }
         </View>
+        <Text style={styles.text}>{title}</Text>
         <ImageBackground
           source={testImage}
           style={styles.body}
@@ -93,7 +95,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     width: "90%",
     alignItems: 'center',
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   info2: {
     position: 'relative',
@@ -117,6 +119,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#fff',
     fontFamily: 'PoppinsS',
+    alignSelf: "center",
+    top: 90
   },
   page: {
     fontSize: 15,
@@ -139,6 +143,7 @@ const styles = StyleSheet.create({
 
   rightIcon: {},
   backIcon: {
+   
   },
 })
 

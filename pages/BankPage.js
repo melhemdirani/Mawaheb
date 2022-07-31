@@ -1,9 +1,7 @@
 import {
   View,
   Text,
-  SafeAreaView,
   StyleSheet,
-  Image,
   ScrollView,
 } from 'react-native'
 import React from 'react'
@@ -38,9 +36,13 @@ const BankPage = ({  navigation }) => {
         <Inputs placeholder='Bank Address*' />
         <Inputs placeholder='City*' />
         <Inputs placeholder='Swift Code*' />
-
         <Pressable style={styles.nextButton}>
           <PrimaryButton title='Create Profile' navigate={navigate}/>
+        </Pressable>
+        <Pressable onPress={() =>  navigation.navigate('jobseeker_jobs')}>
+          <Text style={styles.skipText}>
+              SKIP
+          </Text>
         </Pressable>
       </View>
     </ScrollView>
@@ -71,6 +73,13 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 60,
   },
+  skipText:{
+    fontFamily: 'PoppinsS',
+    fontSize: 15,
+    marginTop: -25,
+    marginBottom: 80,
+    letterSpacing: 2
+  }
 })
 
 export default BankPage

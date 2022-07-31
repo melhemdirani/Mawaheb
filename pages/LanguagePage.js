@@ -51,6 +51,11 @@ const LanguagePage = ({ navigation }) => {
         <Pressable style={styles.nextButton}>
           <PrimaryButton title='Continue' navigate={navigateBank}/>
         </Pressable>
+        <Pressable onPress={() =>  navigation.navigate('bank')}>
+          <Text style={styles.skipText}>
+              SKIP
+          </Text>
+        </Pressable>
       </View>
     </ScrollView>
   )
@@ -79,6 +84,13 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 60,
   },
+  skipText:{
+    fontFamily: 'PoppinsS',
+    fontSize: 15,
+    marginTop: -25,
+    marginBottom: 80,
+    letterSpacing: 2
+  }
 })
 
 export default LanguagePage

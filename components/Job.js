@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native'
+import { View, Text, StyleSheet, Image, ImageBackground, Platform } from 'react-native'
 import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import calendarIcon from '../assets/images/calendarIcon.png'
@@ -96,6 +96,7 @@ const Job = ({ title, description, price, client, current, heart }) => {
             }
             start={{ x: 1, y: 0 }}
             end={{ x: 1, y: 1 }}
+            style={styles.linear2}
           >
             <View style={styles.footer}>
               <View style={styles.footerInfo}>
@@ -117,121 +118,241 @@ const Job = ({ title, description, price, client, current, heart }) => {
     </View>
   )
 }
-const styles = StyleSheet.create({
-  wrapper: {
-    zIndex: 9999,
-    width: "90%",
-    alignSelf: "center",
-    top: -5
-  },
-  linear: {
-    borderRadius: 20,
-  },
-  container: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(0,0,0,.03)',
-    position: 'relative',
-    zIndex: 1,
-    paddingTop: 15,
-  },
-  info: {
-    padding: 20,
-  },
-  header: {
-    zIndex: 1,
-    top: 0,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '90%',
-    alignSelf: 'center',
-    marginBottom: -45,
-  },
-  title: {
-    fontSize: 18,
-    marginBottom: 10,
-    fontFamily: 'PoppinsS',
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderTopColor: 'rgba(16, 125, 197, 1)',
-    borderTopWidth: 0.4,
-    paddingVertical: 15,
-    paddingLeft: 25,
-    width: "100%"
-  },
+const styles = Platform.OS === 'android'  
+  ? StyleSheet.create({
+    wrapper: {
+      zIndex: 9999,
+      width: "90%",
+      alignSelf: "center",
+      top: -5
+    },
+    linear: {
+      borderRadius: 20,
+    },
+    container: {
+      justifyContent: 'center',
+      borderColor: 'rgba(0,0,0,.03)',
+      zIndex: 1,
+      paddingTop: 15,
+      borderRadius: 20
+    },
+    info: {
+      padding: 20,
+    },
+    header: {
+      zIndex: 1,
+      top: 0,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      width: '90%',
+      alignSelf: 'center',
+      marginBottom: -45,
+    },
+    linear2:{
+      borderBottomLeftRadius: 20,
+      borderBottomRightRadius: 20,
+    },
+    title: {
+      fontSize: 18,
+      marginBottom: 10,
+      fontFamily: 'PoppinsS',
+    },
+    footer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      borderTopColor: 'rgba(16, 125, 197, 1)',
+      borderTopWidth: 0.4,
+      paddingVertical: 15,
+      paddingHorizontal: 25,
+    },
 
-  footerInfo: {
-    flexDirection: 'row',
-    marginHorizontal: 5,
-    alignItems: 'center',
-    paddingTop: 7,
-  },
-  circle: {
-    width: 60,
-    height: 60,
-    borderRadius: 50,
-    borderColor: ' rgba(16, 125, 197, 1)',
-    borderWidth: 1,
-    zIndex: 999,
-    backgroundColor: 'white',
-  },
-  priceBg: {
-    width: 110,
-    height: 90,
-    left: 10,
-    justifyContent: 'center',
-  },
-  price: {
-    fontSize: 18,
-    left: 10,
-    fontWeight: 'bold',
-    color: 'rgba(16, 125, 197, 1)',
-  },
-  heart: {},
-  plus: {
-    left: 10,
-    marginRight: 20
-  },
-  text: {
-    color: 'rgba(16, 125, 197, 1)',
-    fontFamily: 'PoppinsR',
-    fontSize: 10
-  },
-  description: {
-    color: 'rgba(10, 8, 75, .6)',
-    fontFamily: 'PoppinsR',
-    fontSize: 12,
-    top: -5
-  },
-  subHeader: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  shadow: {
-    shadowOffset: { width: -2, height: 4 },
-    shadowColor: '#171717',
-    shadowOpacity: 1,
-    shadowRadius: 30,
-    backgroundColor: "white"
-  },
-  priceAndCurrency: {
-    flexDirection: 'row',
+    footerInfo: {
+      flexDirection: 'row',
+      marginHorizontal: 5,
+      alignItems: 'center',
+      paddingTop: 7,
+    },
+    circle: {
+      width: 60,
+      height: 60,
+      borderRadius: 50,
+      borderColor: ' rgba(16, 125, 197, 1)',
+      borderWidth: 1,
+      zIndex: 999,
+      backgroundColor: 'white',
+    },
+    priceBg: {
+      width: 110,
+      height: 90,
+      left: 10,
+      justifyContent: 'center',
+    },
+    price: {
+      fontSize: 18,
+      left: 10,
+      fontWeight: 'bold',
+      color: 'rgba(16, 125, 197, 1)',
+    },
+    heart: {},
+    plus: {
+      left: 10,
+      marginRight: 20
+    },
+    text: {
+      color: 'rgba(16, 125, 197, 1)',
+      fontFamily: 'PoppinsR',
+      fontSize: 10
+    },
+    description: {
+      color: 'rgba(10, 8, 75, .6)',
+      fontFamily: 'PoppinsR',
+      fontSize: 12,
+      top: -5
+    },
+    subHeader: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    shadow: {
+      shadowOffset: { width: -2, height: 4 },
+      shadowColor: '#171717',
+      shadowOpacity: 1,
+      shadowRadius: 30,
+      backgroundColor: "white"
+    },
+    priceAndCurrency: {
+      flexDirection: 'row',
 
-    alignItems: 'center',
-    width: '100%',
-  },
-  currency: {
-    fontSize: 10,
-    fontFamily: 'PoppinsR',
-    marginLeft: 10,
-    marginTop: 5,
-    color: '#107DC5',
-  },
-})
+      alignItems: 'center',
+      width: '100%',
+    },
+    currency: {
+      fontSize: 10,
+      fontFamily: 'PoppinsR',
+      marginLeft: 10,
+      marginTop: 5,
+      color: '#107DC5',
+    },
+  })
+  : StyleSheet.create({
+    wrapper: {
+      zIndex: 9999,
+      width: "90%",
+      alignSelf: "center",
+      top: -5
+    },
+    linear: {
+      borderRadius: 20,
+    },
+    container: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: 1,
+      borderColor: 'rgba(0,0,0,.03)',
+      position: 'relative',
+      zIndex: 1,
+      paddingTop: 15,
+    },
+    info: {
+      padding: 20,
+    },
+    header: {
+      zIndex: 1,
+      top: 0,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      width: '90%',
+      alignSelf: 'center',
+      marginBottom: -45,
+    },
+    title: {
+      fontSize: 18,
+      marginBottom: 10,
+      fontFamily: 'PoppinsS',
+    },
+    footer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      borderTopColor: 'rgba(16, 125, 197, 1)',
+      borderTopWidth: 0.4,
+      paddingVertical: 15,
+      paddingLeft: 25,
+      width: "100%"
+    },
+
+    footerInfo: {
+      flexDirection: 'row',
+      marginHorizontal: 5,
+      alignItems: 'center',
+      paddingTop: 7,
+    },
+    circle: {
+      width: 60,
+      height: 60,
+      borderRadius: 50,
+      borderColor: ' rgba(16, 125, 197, 1)',
+      borderWidth: 1,
+      zIndex: 999,
+      backgroundColor: 'white',
+    },
+    priceBg: {
+      width: 110,
+      height: 90,
+      left: 10,
+      justifyContent: 'center',
+    },
+    price: {
+      fontSize: 18,
+      left: 10,
+      fontWeight: 'bold',
+      color: 'rgba(16, 125, 197, 1)',
+    },
+    heart: {},
+    plus: {
+      left: 10,
+      marginRight: 20
+    },
+    text: {
+      color: 'rgba(16, 125, 197, 1)',
+      fontFamily: 'PoppinsR',
+      fontSize: 10
+    },
+    description: {
+      color: 'rgba(10, 8, 75, .6)',
+      fontFamily: 'PoppinsR',
+      fontSize: 12,
+      top: -5
+    },
+    subHeader: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    shadow: {
+      shadowOffset: { width: -2, height: 4 },
+      shadowColor: '#171717',
+      shadowOpacity: 1,
+      shadowRadius: 30,
+      backgroundColor: "white"
+    },
+    priceAndCurrency: {
+      flexDirection: 'row',
+
+      alignItems: 'center',
+      width: '100%',
+    },
+    currency: {
+      fontSize: 10,
+      fontFamily: 'PoppinsR',
+      marginLeft: 10,
+      marginTop: 5,
+      color: '#107DC5',
+    },
+  })
+
 export default Job

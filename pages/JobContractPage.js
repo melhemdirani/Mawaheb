@@ -33,7 +33,7 @@ const JobContractPage = ({navigation}) => {
   }
   return (
     <ScrollView style={styles.wrapper}>
-      <Header title='Job Contract' icon={jobContractIcon} />
+      <Header title='Job Contract' icon={jobContractIcon} goBack={navigation.goBack} />
       <SafeAreaView style={styles.container}>
         <View style={styles.titleHeader}>
           <Text style={styles.text}>

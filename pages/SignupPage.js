@@ -25,6 +25,7 @@ import { useEffect } from 'react'
 export default function SignupPage({ navigation }) {
   const register = async () => {
     let url = "http://172.20.10.13:4000/api/v1/auth/register"
+
     try {
       const {data} = await axios.post(url,{
         name:"melhem",
@@ -67,7 +68,6 @@ export default function SignupPage({ navigation }) {
         connects businesses with independent professionals and agencies around
         the MENA region.
       </Text>
-      <Button title='clickme' onPress={() => register()}></Button>
       <PrimaryButton title='Jobseeker Sign up' navigate={navigateJob} />
       <View style={styles.spacing} />
       <SecondaryButton title='Recruiter Sign up' navigate={navigateCSignup} />
@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
+    height: 500,
   },
   spacing: {
     marginBottom: 15,

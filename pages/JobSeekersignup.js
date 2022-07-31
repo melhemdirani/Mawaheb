@@ -36,6 +36,10 @@ import {
           <Inputs title='Continue to Payment' placeholder='Name*' />
           <Inputs title='Continue to Payment' placeholder='Email*' />
           <Inputs title='Continue to Payment' placeholder='Phone Number*' />
+          <Inputs title='Continue to Payment' placeholder='Emirates ID Number*' />
+          <Inputs title='Continue to Payment' placeholder='Expiration Date*' />
+          <UploadCard title='Emirates ID front side' />
+          <UploadCard title='Emirates ID back side' />
           <Pressable style={styles.nextButton} >
             <PrimaryButton title='Next' navigate={navigateExperience} />
           </Pressable>
@@ -63,6 +67,7 @@ import {
     nextButton: {
       paddingVertical: 40,
     },
+
   })
   
   export default JobSeekersignup

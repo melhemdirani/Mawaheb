@@ -1,10 +1,12 @@
-import { View, ScrollView, FlatList, StyleSheet, Image } from 'react-native'
 import React from 'react'
+import { View, ScrollView, StyleSheet } from 'react-native'
+import { connect } from 'react-redux';
+
 import SecondaryHeader from '../components/SecondaryHeader'
 import Job from '../components/Job'
 import Navbar from '../components/Navbar'
 
-const JobsPage = ({navigation}) => {
+const JobsPage = ({navigation, name}) => {
     const Data = [
         {   
             id:0,
@@ -32,10 +34,11 @@ const JobsPage = ({navigation}) => {
             </View>
         )
     }
+    let welcomeMessage = `Hi ${name},`
     return (
         <View style={styles.container}>
             <ScrollView >
-                <SecondaryHeader title={'Hi John'}></SecondaryHeader>
+                <SecondaryHeader title={welcomeMessage}></SecondaryHeader>
                 {
                     Data && Data.map((data, i) => 
                         <RenderItem key={i} data={data} />
@@ -67,4 +70,12 @@ const styles = StyleSheet.create({
     },
 })
 
-export default JobsPage
+const mapStateToProps =  ({
+    name: {name},
+    role: {role},
+})   => ({
+    name,
+    role,
+});
+
+export default connect(mapStateToProps)(JobsPage)

@@ -116,7 +116,7 @@ const ExperiencePage = ({ navigation }) => {
                 <Pressable style={styles.nextButton}>
                     <PrimaryButton title="Next" navigate={languageNavigate}/> 
                 </Pressable>
-                <Pressable onPress={() => languageNavigate()}>
+                <Pressable onPress={() => navigation.navigate('language')}>
                     <Text style={styles.skipText}>
                         SKIP
                     </Text>

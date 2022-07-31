@@ -25,6 +25,10 @@ import LoginJobseeker from './pages/LoginJobseeker';
 import JobContractPage from './pages/JobContractPage';
 import JobSeekersignup from './pages/JobSeekersignup';
 import ClientDashboard from './pages/ClientDashboard';
+import { store, persistor } from './redux/store';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { NotifierWrapper } from 'react-native-notifier';
 
 const Stack = createNativeStackNavigator()
 
@@ -41,157 +45,163 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={LandingPage}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="SignIn"
-          component={SignupPage}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="JobSignUp2"
-          component={CreateProfilePage}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="JobSignUp"
-          component={JobSeekersignup}
-          options={{
-            headerShown: false,
-        }}
-        />
-        <Stack.Screen
-          name="experience"
-          component={ExperiencePage}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="language"
-          component={LanguagePage}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="bank"
-          component={BankPage}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="jobseeker_jobs"
-          component={JobsPage}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="login"
-          component={LoginJobseeker}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="seeker_dash"
-          component={JobseekerDashboard}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="notifications"
-          component={NotificationsPage}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="settings"
-          component={SettingsPage}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="recruiter_signup"
-          component={ClientSignupPage}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="recruiter_dashboard"
-          component={ClientDashboard}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="recruiter_Jobs"
-          component={JobListPage}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="jobPosting"
-          component={JobPostingPage}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="payment"
-          component={PaymentPage}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="freelancerDetails"
-          component={FreelancerDetailsPage}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="acceptContract"
-          component={JobContractPage}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="acceptedClient"
-          component={FreelanceAcceptedPage}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="jobDoneClient"
-          component={JobDonePage}
-          options={{
-            headerShown: false,
-          }}
-        />
-      </Stack.Navigator>
-   
-    </NavigationContainer>
+  <Provider store={store}>
+    <NotifierWrapper>
+      <NavigationContainer>
+        <PersistGate persistor={persistor}>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Home"
+              component={LandingPage}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="SignIn"
+              component={SignupPage}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="JobSignUp2"
+              component={CreateProfilePage}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="JobSignUp"
+              component={JobSeekersignup}
+              options={{
+                headerShown: false,
+            }}
+            />
+            <Stack.Screen
+              name="experience"
+              component={ExperiencePage}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="language"
+              component={LanguagePage}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="bank"
+              component={BankPage}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="jobseeker_jobs"
+              component={JobsPage}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="login"
+              component={LoginJobseeker}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="seeker_dash"
+              component={JobseekerDashboard}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="notifications"
+              component={NotificationsPage}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="settings"
+              component={SettingsPage}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="recruiter_signup"
+              component={ClientSignupPage}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="recruiter_dashboard"
+              component={ClientDashboard}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="recruiter_Jobs"
+              component={JobListPage}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="jobPosting"
+              component={JobPostingPage}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="payment"
+              component={PaymentPage}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="freelancerDetails"
+              component={FreelancerDetailsPage}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="acceptContract"
+              component={JobContractPage}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="acceptedClient"
+              component={FreelanceAcceptedPage}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="jobDoneClient"
+              component={JobDonePage}
+              options={{
+                headerShown: false,
+              }}
+            />
+          </Stack.Navigator>
+        </PersistGate>
+      </NavigationContainer>
+    </NotifierWrapper>
+  </Provider>
+
   )
 }
