@@ -1,4 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
+import React, {useEffect} from 'react';
 import { ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -29,6 +29,8 @@ import { store, persistor } from './redux/store';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { NotifierWrapper } from 'react-native-notifier';
+import JobDetailsPage from './pages/JobDetailsPage';
+
 
 const Stack = createNativeStackNavigator()
 
@@ -193,6 +195,13 @@ export default function App() {
             <Stack.Screen
               name="jobDoneClient"
               component={JobDonePage}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="jobDescription"
+              component={JobDetailsPage}
               options={{
                 headerShown: false,
               }}

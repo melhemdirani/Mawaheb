@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView ,View, StyleSheet} from 'react-native';
+import { ScrollView ,View, StyleSheet, Text} from 'react-native';
 import { connect } from 'react-redux';
 
 import { signOut } from '../redux/user/user.actions';
@@ -32,6 +32,7 @@ const SettingsPage = ({navigation, signOut, role}) => {
         <View style={styles.container}>
             <ScrollView style={styles.container4}>
                 <Header icon={settingsIcon} hidden title="Settings"/>
+                <Text>s{role}</Text>
                 <Setting title="My Profile" icon={profileSetting}/>
                 <Setting title="Language" icon={languageSetting}/>
                 <Setting title="Privacy Policy" icon={privacySetting}/>

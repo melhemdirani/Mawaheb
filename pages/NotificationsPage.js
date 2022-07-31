@@ -19,7 +19,7 @@ const NotificationsPage = ({navigation, role, notifications, clearNotifications}
 
     return (
         <View style={styles.container}>
-            <ScrollView>
+            <ScrollView >
                 <Header icon={notificationIcon} hidden rightIcon={trash} numberHidded onTrashPress={onTrashPress}/>
                 <View style={styles.container4} />
                 {

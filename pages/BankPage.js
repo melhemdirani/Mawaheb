@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   text: {
     width: '70%',
     textAlign: 'center',
-    lineHeight: 22,
+    lineHeight: 22, 
     marginBottom: 15,
     color: 'rgba(0,0,0,0.6)',
   },

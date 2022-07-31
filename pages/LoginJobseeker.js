@@ -10,11 +10,14 @@ import Header from '../components/Header';
 import settingsIcon from '../assets/images/signUp.png';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
 import Inputs from '../components/Inputs';
+import { CustomNotification } from '../components/CustomNotifications';
 
 
-const LoginJobseeker = ({navigation, signIn}) => {
+const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
 
+    const [notificationIndex, setNotifcaitonIndex] = useState(0)
     const [password, setPassword] = useState('')
+
 
     const notify = (name, description) => {
         let newName =  name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
@@ -22,10 +25,11 @@ const LoginJobseeker = ({navigation, signIn}) => {
             title: newName,
             description: description,
             duration: 0,
+            Component: CustomNotification,
             showAnimationDuration: 800,
             showEasing: Easing.bounce,
             onHidden: () => console.log('Hidden'),
-            onPress: () => console.log('Press'),
+            onPress: () => console.log('Pressed'),
             hideOnPress: false,
         });
     }
@@ -34,7 +38,6 @@ const LoginJobseeker = ({navigation, signIn}) => {
     //       email: email,
     //       password: password
     //     })
-        
     //     .then(function (response) {
     //         if(response.data === 'success'){
     //             let role = res.data[0].role
@@ -59,25 +62,25 @@ const LoginJobseeker = ({navigation, signIn}) => {
 
     const navigate = () => { // will use the above method when backend is ready
         let role = 'freelancer' 
-        let name = 'johN'
-        let newName =  name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-
-        let notifications = [
+        let names = 'johN'
+        let newName =  names.charAt(0).toUpperCase() + names.slice(1).toLowerCase();
+        notify(name, 'Welcome back!')
+        let newNotifications = [
             {
-                notification: 'Notification lorem ipsum dolor sit ameno', 
-                urgent: false
+                notification: 'Notification lorem ipsum dolor sit amenos', 
+                urgent: false,
             },
             {
-                notification: 'Notification lorem ipsum dolor sit ameno', 
-                urgent: true
+                notification: 'Notification lorem ipsum dolor sit ameno2', 
+                urgent: true,
             },
             {
-                notification: 'Notification lorem ipsum dolor sit ameno', 
+                notification: 'Notification lorem ipsum dolor sit ameno3', 
                 urgent: false
             },
         ]
-        signIn({role: role, name: newName, notifications: notifications})
-        notify(name, 'Welcome to Mawahib!')
+
+        signIn({role: role, name: newName, notifications: newNotifications})
         if(role === 'client'){
             navigation.navigate('recruiter_Jobs')
         } else if (role === 'freelancer'){
@@ -124,8 +127,12 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps =  ({
     signedIn: {signedIn},
+    notifications: {notifications},
+    name: {name},
 })   => ({
     signedIn,
+    notifications,
+    name,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginJobseeker)

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, ImageBackground, Platform } from 'react-native'
+import { View, Text, StyleSheet, Image, ImageBackground, Platform, Pressable } from 'react-native'
 import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import calendarIcon from '../assets/images/calendarIcon.png'
@@ -9,7 +9,7 @@ import heartIcon from '../assets/images/heartIcon.png'
 import plusIcon from '../assets/images/plusIcon.png'
 import MaskedView from '@react-native-masked-view/masked-view'
 
-const Job = ({ title, description, price, client, current, heart }) => {
+const Job = ({ title, description, price, client, current, heart, navigate, i }) => {
   return (
     <View
       // style={lastOne ? [styles.wrapper, { marginBottom: 40 }] : styles.wrapper}
@@ -31,7 +31,9 @@ const Job = ({ title, description, price, client, current, heart }) => {
         </View>
         <View style={styles.subHeader}>
           {!heart && <Image source={heartIcon} style={styles.heart}></Image>}
-          <Image source={plusIcon} style={styles.plus}></Image>
+          <Pressable onPress={() => navigate(i)}>
+            <Image source={plusIcon} style={styles.plus}></Image>
+          </Pressable>
         </View>
       </View>
       <LinearGradient
@@ -78,7 +80,7 @@ const Job = ({ title, description, price, client, current, heart }) => {
                 <Text style={[styles.title, { opacity: 0 }]}>{title}</Text>
               </LinearGradient>
             </MaskedView>
-            <Text style={styles.description}>{description}</Text>
+            <Text style={styles.description}>{description.slice(0,70)}</Text>
           </View>
           <LinearGradient
             colors={

@@ -20,53 +20,98 @@ const ClientDashboard = ({navigation}) => {
     function handleCarouselScrollEnd(item, index) {
         setCurrentIndex(index);
     }
+    const navigate = (i) => {
+        navigation.navigate('jobDescription', {myjobs: true, data: Data[i] })
+    }
     const renderItem = ({item, index}) => {
-    return (
-            <TouchableOpacity
-                style={styles.item}
-                onPress={() => {
-                carouselRef.current.scrollToIndex(index);
-                }}
-            >
-                <Job
-                    heart={true}
-                    client
-                    current={true}
-                    title="Job Title Lorem Ipsum"
-                    description="Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno "
-                    price={"15,000"}
-                /> 
-            </TouchableOpacity>
-    );
+        return (
+                <TouchableOpacity
+                    style={styles.item}
+                    onPress={() => {
+                    carouselRef.current.scrollToIndex(index);
+                    }}
+                >
+                    <Job
+                        heart={true}
+                        client
+                        current={true}
+                        title={item.title}
+                        description={item.description}
+                        price={item.price}
+                        navigate={navigate}
+                        i={index}
+                    /> 
+                </TouchableOpacity>
+        );
     }
     const Data = [
         {   
             id:0,
-            title: 'Job Title Lorem Ipsum1s',
+            title: 'Job Title Lorem Ipsum1',
             description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium',
-            price: 100
+            roleDescription: 'Job description lorom ipsum dolor sit ameno Job description lorom  sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno it ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description',
+            price: 15000,
+            date: '30 May-2020',
+            shift: 'day shift',
+            location: 'Sharjah',
         },
         {
             id:1,
             title: 'Job Title Lorem Ipsum2',
             description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium1',
-            price: 200
+            roleDescription: 'Job description lorom ipsum dolor sit ameno Job description lorom  sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno it ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description',
+            price: 10000,
+            date: '30 May-2020',
+            shift: 'day shift',
+            location: 'Sharjah',
         },
         {
             id:2,
             title: 'Job Title Lorem Ipsum3',
             description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium2',
-            price: 200
+            price: 20000,
+            roleDescription: 'Job description lorom ipsum dolor sit ameno Job description lorom  sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno it ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description',
+            date: '30 May-2020',
+            shift: 'day shift',
+            location: 'Sharjah',
+        }
+    ]
+    const CurrentJobs = [
+        {   
+            id:0,
+            title: 'Job Title Lorem Ipsum10',
+            description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium',
+            roleDescription: 'Job description lorom ipsum dolor sit ameno Job description lorom  sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno it ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description',
+            price: 15000,
+            date: '30 May-2020',
+            shift: 'day shift',
+            location: 'Sharjah',
         },
         {
-            id:3,
-            title: 'Job Title Lorem Ipsum3',
-            description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium2',
-            price: 200
+            id:1,
+            title: 'Job Title Lorem Ipsum21',
+            description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium1',
+            roleDescription: 'Job description lorom ipsum dolor sit ameno Job description lorom  sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno it ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description',
+            price: 10000,
+            date: '30 May-2020',
+            shift: 'day shift',
+            location: 'Sharjah',
         },
+        {
+            id:2,
+            title: 'Job Title Lorem Ipsum32',
+            description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium2',
+            price: 20000,
+            roleDescription: 'Job description lorom ipsum dolor sit ameno Job description lorom  sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno it ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description',
+            date: '30 May-2020',
+            shift: 'day shift',
+            location: 'Sharjah',
+        }
     ]
-    const RenderItem = (data, index) => {
-        let lastOne = index === Data.length - 1 ? true : false
+
+   
+    const RenderItem = (data) => {
+        let lastOne = data.index === Data.length - 1 ? true : false
         return(
             <View style={styles.renderItem}>
                 <Job 
@@ -75,6 +120,8 @@ const ClientDashboard = ({navigation}) => {
                     price={data.data.price} 
                     lastOne={lastOne} 
                     heart={true}
+                    i={data.index}
+                    navigate={navigate}
                 /> 
             </View>
         )
@@ -169,7 +216,7 @@ const ClientDashboard = ({navigation}) => {
                         <Text style={[styles.title2]}>Current Jobs</Text>
                         <Carousel
                             ref={carouselRef}
-                            data={Array(3).fill(0)}
+                            data={CurrentJobs}
                             renderItem={renderItem}
                             style={styles.carousel}
                             itemWidth={windowWidth }

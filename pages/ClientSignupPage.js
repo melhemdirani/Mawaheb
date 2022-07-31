@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,22 +8,26 @@ import {
   Switch,
   SafeAreaView
 } from 'react-native'
-import React, { useState } from 'react'
-import Header from '../components/Header'
-import signUp from '../assets/images/signUp.png'
-import Inputs from '../components/Inputs'
-import UploadCard from '../components/UploadCard'
-import PrimaryButton from '../components/Buttons/PrimaryButton'
-import TertiaryButton from '../components/Buttons/TertiaryButton'
-import SecondaryButton from '../components/Buttons/SecondaryButton'
+import { connect } from 'react-redux';
 
-const ClientSignupPage = ({navigation}) => {
+import { signIn } from '../redux/user/user.actions';
+
+import Header from '../components/Header';
+import Inputs from '../components/Inputs';
+import UploadCard from '../components/UploadCard';
+import PrimaryButton from '../components/Buttons/PrimaryButton';
+
+import signUp from '../assets/images/signUp.png';
+
+
+const ClientSignupPage = ({navigation, signIn, name}) => {
 
   const navigateLogin = () => {
     navigation.navigate("login")
   } 
   const navigateDash = () => {
-    navigation.navigate("recruiter_Jobs")
+    signIn({role: 'client', name: name});
+    navigation.navigate("recruiter_Jobs");
   } 
   const [isEnabled, setIsEnabled] = useState(false)
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState)
@@ -122,4 +127,18 @@ const styles = StyleSheet.create({
   }
 })
 
-export default ClientSignupPage
+const mapDispatchToProps = (dispatch) => ({
+  signIn: (object) => dispatch(signIn(object))
+});
+
+const mapStateToProps =  ({
+  signedIn: {signedIn},
+  notifications: {notifications},
+  name: {name},
+})   => ({
+  signedIn,
+  notifications,
+  name,
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ClientSignupPage)

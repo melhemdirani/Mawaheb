@@ -3,7 +3,8 @@ const INITIAL_STATE = {
   signedIn: false,
   role: '',
   name: '',
-  notifications: []
+  notifications: [],
+  newNotifications: []
 };
 
 const userReducer = (state = INITIAL_STATE, action) => {

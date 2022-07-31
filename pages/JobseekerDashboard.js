@@ -15,29 +15,54 @@ const JobseekerDashboard = ({navigation}) => {
             id:0,
             title: 'Job Title Lorem Ipsum1',
             description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium',
-            price: 100
+            roleDescription: 'Job description lorom ipsum dolor sit ameno Job description lorom  sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno it ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description',
+            price: 15000,
+            date: '30 May-2020',
+            shift: 'day shift',
+            location: 'Sharjah',
         },
         {
             id:1,
             title: 'Job Title Lorem Ipsum2',
             description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium1',
-            price: 200
+            roleDescription: 'Job description lorom ipsum dolor sit ameno Job description lorom  sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno it ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description',
+            price: 10000,
+            date: '30 May-2020',
+            shift: 'day shift',
+            location: 'Sharjah',
         },
         {
             id:2,
             title: 'Job Title Lorem Ipsum3',
             description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium2',
-            price: 200
-        },
-        {
-            id:3,
-            title: 'Job Title Lorem Ipsum3',
-            description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium2',
-            price: 200
-        },
+            price: 20000,
+            roleDescription: 'Job description lorom ipsum dolor sit ameno Job description lorom  sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno it ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description',
+            date: '30 May-2020',
+            shift: 'day shift',
+            location: 'Sharjah',
+        }
     ]
+
+    const currentJob =  {   
+        id:0,
+        title: 'Job Title Lorem Ipsum1',
+        description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium',
+        roleDescription: 'Job description lorom ipsum dolor sit ameno Job description lorom  sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno it ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description',
+        price: 15000,
+        date: '30 May-2020',
+        shift: 'day shift',
+        location: 'Sharjah',
+    }
+    const navigatePrevious = (i) => {
+        console.log("iii", i)
+        navigation.navigate('jobDescription', {myjobs: true, data: currentJob })
+    }
+    const navigate = (i) => {
+        navigation.navigate('jobDescription', {myjobs: true, data: Data[i] })
+    }
     const RenderItem = (data, index) => {
-        let lastOne = index === Data.length - 1 ? true : false
+        let lastOne = data.index === Data.length - 1 ? true : false
+
         return(
             <View style={styles.renderItem}>
                 <Job 
@@ -46,10 +71,14 @@ const JobseekerDashboard = ({navigation}) => {
                     price={data.data.price} 
                     lastOne={lastOne} 
                     heart={true}
+                    navigate={navigate}
+                    i={data.index}
                 /> 
             </View>
         )
     }
+   
+  
     const MaskedTitle = ({title}) => {
         return(
             <MaskedView 
@@ -109,6 +138,7 @@ const JobseekerDashboard = ({navigation}) => {
             </ImageBackground>
         )
     }
+
     return (
         <View style={styles.container}>
             <ScrollView style={styles.container4}>
@@ -134,9 +164,10 @@ const JobseekerDashboard = ({navigation}) => {
                     <Job
                         heart={true}
                         current={true}
-                        title="Job Title Lorem Ipsum"
-                        description="Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno "
-                        price={"15,000"}
+                        title={currentJob.title}
+                        description={currentJob.description}
+                        price={currentJob.price}
+                        navigate={navigatePrevious}
                     /> 
                 </View>
             </View>
