@@ -43,11 +43,11 @@ const getAllClients = async (req, res) => {
 }
 const getSingleUser = async (req, res) => {
   const { id } = req.params
-  const userId = parseInt(id)
+
 
   const user = await prisma.user.findUnique({
     where: {
-      id: userId,
+      id: id,
     },
     select: {
       password: false,
@@ -100,7 +100,7 @@ const updateUserPassword = async (req, res) => {
 
 const user= await prisma.user.findUnique({
   where: {
-    id: parseInt(req.user.userId),
+    id: req.user.userId
   }
 })
   const isPasswordCorrect = await bcrypt.compare(oldPassword, user.password)
@@ -113,7 +113,7 @@ const user= await prisma.user.findUnique({
 
   await prisma.user.update({
     where: {
-      id: parseInt(req.user.userId),
+      id: req.user.userId,
     },
     data: {
       password:  await bcrypt.hash(newPassword, salt), 

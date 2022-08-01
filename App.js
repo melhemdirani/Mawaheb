@@ -47,6 +47,7 @@ export default function App() {
   }
 
   return (
+<<<<<<< HEAD
   <Provider store={store}>
     <NotifierWrapper>
       <NavigationContainer>
@@ -212,5 +213,103 @@ export default function App() {
     </NotifierWrapper>
   </Provider>
 
+=======
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={LandingPage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="SignIn"
+          component={JobContractPage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="JobSignUp2"
+          component={CreateProfilePage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="JobSignUp"
+          component={JobSeekersignup}
+          options={{
+            headerShown: false,
+        }}
+        />
+        <Stack.Screen
+          name="experience"
+          component={ExperiencePage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="language"
+          component={LanguagePage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="bank"
+          component={BankPage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="jobseeker_jobs"
+          component={JobsPage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="login"
+          component={LoginJobseeker}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="seeker_dash"
+          component={JobseekerDashboard}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="notifications"
+          component={NotificationsPage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="settings"
+          component={SettingsPage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="recruiter_signup"
+          component={ClientSignupPage}
+          options={{
+            headerShown: false,
+          }}
+        />
+      </Stack.Navigator>
+   
+    </NavigationContainer>
+>>>>>>> 06c3199037357ad5268007fa75de41c867bc47f2
   )
 }

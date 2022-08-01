@@ -1,7 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,53 +10,122 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
- 
- model User{
-  id Int @id @default(autoincrement())
-  name String
-  email String @unique
-  phoneNb String
-  password String
-  role Role
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
- }
-enum Role  {
-   admin
-    freelancer
-    client
-
+model User {
+  id         String      @id @default(uuid())
+  name       String
+  email      String      @unique
+  phoneNb    String
+  password   String
+  role       Role
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime   @updatedAt
+  Freelancer Freelancer?
+  client    Client?
 }
 
-  //when a user is created add JWT token to the user
-  
- 
+enum Role {
+  tester
+  admin
+  freelancer
+  client
+}
 
- 
+model Freelancer {
+  id                  String       @id @default(uuid())
+  userId              String       @unique
+  user                User         @relation(fields: [userId], references: [id])
+  emiratesId          Int?
+  expirationDate      String
+  emiratesIdFrontSide String
+  emiratesIdBackSide  String
+  passportNumber      Int?
+  copyOfPassport      String?
+  copyOfResidencyVisa String?
+  roles               Experience[] 
+  languages           Language[]
+  bankDetails         BankDetails?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
+model Experience {
+  id                  String     @id @default(uuid())
+  freelancerId        String   
+  freelancer          Freelancer? @relation(fields: [freelancerId], references: [id])
+  role                String
+  projectTitle        String
+  location            String
+  keyResponsibilities String
+  dailyRate           Int
+  startDate         String
+  endDate            String
+  isLatest            Boolean
  
+  isMostNotable       Boolean
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime @updatedAt
+    @@index([freelancerId])
+}
+
+enum Profeciency {
+  beginner
+  intermediate
+  advanced
+  expert
+}
+
+model Language {
+  id           String      @id @default(uuid())
+  freelancer   Freelancer  []
+  name         String
+  profeciency  Profeciency
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model BankDetails {
+  id           String     @id @default(uuid())
+  freelancerId String     @unique
+  freelancer   Freelancer @relation(fields: [freelancerId], references: [id])
+  iban         String
+  accountName  String
+  bankName     String
+  bankAddress  String
+  city         String
+  swiftCode    String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Client {
+  id         String      @id @default(uuid())
+  userId     String      @unique
+  user       User        @relation(fields: [userId], references: [id])
+  companyName String
+  privacy   privacy
+  Address String?
+  TRN Int?
+  signatoryName String?
+  signatoryTitle String?
+ sign String?
+
+
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+
+}
+enum privacy {
+  public
+  private
+}
+
 // for freelancer
 // emirates id (photo) and expiration date
 //passport photo  and id + residency visa 
 //table images  
 
-
 //experience 
 // roles :  roleName, projectTitle,Location,Key Responsibilities,daily rate , roleDuration, most Notable Project , latestRole 
 //languages: text , proficiency , 
-//bankDetails :Iban , Account Name, BankName,Bank Address, City,SwiftCode, 
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
+//bankDetails :Iban , Account Name, BankName,Bank Address, City,SwiftCode,
