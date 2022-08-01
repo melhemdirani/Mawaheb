@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView ,View, StyleSheet, Text} from 'react-native';
+import { ScrollView ,View, StyleSheet, Platform} from 'react-native';
 import { connect } from 'react-redux';
 
 import { signOut } from '../redux/user/user.actions';
@@ -32,34 +32,49 @@ const SettingsPage = ({navigation, signOut, role}) => {
         <View style={styles.container}>
             <ScrollView style={styles.container4}>
                 <Header icon={settingsIcon} hidden title="Settings"/>
-                <Text>s{role}</Text>
-                <Setting title="My Profile" icon={profileSetting}/>
-                <Setting title="Language" icon={languageSetting}/>
-                <Setting title="Privacy Policy" icon={privacySetting}/>
-                <Setting title="Terms and Conditions" icon={termsSetting}/>
-                <Setting title="About Mawahib" icon={aboutSetting}/>
-                <Setting title="Logout" icon={logoutSetting} action={logout}/>
+                <View style={styles.settingsContainer}>
+                    <Setting title="My Profile" icon={profileSetting}/>
+                    <Setting title="Language" icon={languageSetting}/>
+                    <Setting title="Privacy Policy" icon={privacySetting}/>
+                    <Setting title="Terms and Conditions" icon={termsSetting}/>
+                    <Setting title="About Mawahib" icon={aboutSetting}/>
+                    <Setting title="Logout" icon={logoutSetting} action={logout}/>
+                </View>
                 <View style={styles.button}>
                     <PrimaryButton title="Contact US"/> 
                 </View>
-
             </ScrollView>
             <Navbar active="Settings" navigation={navigation} client={role === 'client' ? true : false}/>
         </View>
     )
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
-    button:{
-        top: 120,
-        alignSelf: "center"
-    }
-  
-})
+const styles = Platform.OS === 'android'
+    ? StyleSheet.create({
+        container: {
+            flex: 1,
+            backgroundColor: 'white',
+        },
+        button:{
+            top: 120,
+            alignSelf: "center"
+        },
+        settingsContainer:{
+            marginTop: 35
+        }
+    
+    })
+    : StyleSheet.create({
+        container: {
+            flex: 1,
+            backgroundColor: 'white',
+        },
+        button:{
+            top: 120,
+            alignSelf: "center"
+        }
+    
+    })
 
 const mapDispatchToProps = (dispatch) => ({
     signOut: (role) => dispatch(signOut(role))

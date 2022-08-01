@@ -33,7 +33,7 @@ const JobList = ({
           >
             <View style={styles.priceAndCurrency}>
               <Text style={styles.price}>{price} </Text>
-              <Text style={styles.currency}>AED per day</Text>
+              <Text style={styles.currency}>AED</Text>
             </View>
           </ImageBackground>
         </View>

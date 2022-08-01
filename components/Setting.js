@@ -21,7 +21,7 @@ function Setting({title, icon, action}) {
 const styles = StyleSheet.create({
     container:{
         flexDirection: "row",
-        top: 70,
+        marginTop: 70,
         marginTop: 15,
         alignItems: "center",
         borderBottomColor: "rgba(16, 125, 197, .2)",

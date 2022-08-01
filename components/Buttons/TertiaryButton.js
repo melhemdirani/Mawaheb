@@ -19,26 +19,48 @@ const TertiaryButton = ({title, navigate}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: "center",
-  },
-  text: {
-    color: "black",
-    paddingTop: 10,
-    paddingBottom: 10,
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  wrapperCustom: {
-    borderRadius: 30,
-    backgroundColor: "white",
-    alignItems: "center",
-    padding: 6,
-    borderColor: "black",
-    borderWidth:1,
-    width: 255
-  },
-});
+const styles = Platform.OS ==='android' 
+  ? StyleSheet.create({
+    container: {
+      justifyContent: "center",
+    },
+    text: {
+      color: "black",
+      paddingTop: 7,
+      paddingBottom: 7,
+      fontSize: 15,
+      fontFamily: 'PoppinsS'
+    },
+    wrapperCustom: {
+      borderRadius: 30,
+      backgroundColor: "white",
+      alignItems: "center",
+      padding: 6,
+      borderColor: "black",
+      borderWidth:1,
+      width: 255
+    },
+  })
+  : StyleSheet.create({
+    container: {
+      justifyContent: "center",
+    },
+    text: {
+      color: "black",
+      paddingTop: 10,
+      paddingBottom: 10,
+      fontSize: 16,
+      fontFamily: 'PoppinsS'
+    },
+    wrapperCustom: {
+      borderRadius: 30,
+      backgroundColor: "white",
+      alignItems: "center",
+      padding: 6,
+      borderColor: "black",
+      borderWidth:1,
+      width: 255
+    },
+  })
 
 export default TertiaryButton;
