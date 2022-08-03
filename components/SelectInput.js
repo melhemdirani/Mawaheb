@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, Text, View, FlatList, Image} from 'react-native'
 
 import {Picker} from '@react-native-picker/picker';
 
-const SelectInput = ({title, list}) => {
+const SelectInput = ({title, list, onSelect}) => {
 
     const [selected, setSelected] = useState(null)
     const [showList, setShowList] = useState(false)
@@ -16,10 +16,10 @@ const SelectInput = ({title, list}) => {
         setShowList(false)
     }
 
-    const renderItem = ({ item }) => (
-        <Pressable style={styles.listItems} onPress={() => onItemClick(item)}>
-            <Text style={styles.listText} >
-                {item}
+    const RenderItem = ({ data }) => (
+        <Pressable style={styles.listItems} onPress={() => onItemClick(data)}>
+            <Text style={styles.listText} onPress={() => onSelect(data)}>
+                {data}
             </Text>
         </Pressable>
       
@@ -38,12 +38,14 @@ const SelectInput = ({title, list}) => {
             </View>
            
             {   showList &&
-                <FlatList 
-                    data={list} 
-                    renderItem={renderItem}
-                    keyExtractor={item => item}
-                    style={styles.flatlist}
-                />
+                list.map((item, i) => 
+                    <RenderItem 
+                        data={item} 
+                        style={styles.flatlist}
+                        key={i}
+                    />
+                )
+             
             }
         </View>
     );

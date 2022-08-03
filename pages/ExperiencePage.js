@@ -1,19 +1,32 @@
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Pressable, Button } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
+import { connect } from 'react-redux';
+import axios from 'axios';
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 
-import React from 'react'
-import Header from '../components/Header'
-import signUp from '../assets/images/experienceIcon.png'
-import Inputs from '../components/Inputs'
+import { setUser } from '../redux/user/user.actions';
+
+import Header from '../components/Header';
+import signUp from '../assets/images/experienceIcon.png';
+import Inputs from '../components/Inputs';
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import SelectInput from '../components/SelectInput';
 import TextArea from '../components/TextArea';
 import DurationInputs from '../components/DurationInputs';
 import DailyRate from '../components/DailyRate';
 import AddRoleButton from '../components/Buttons/AddRoleButton';
+import RoleForm from '../components/RoleForm';
 
-const ExperiencePage = ({ navigation }) => {
+const ExperiencePage = ({ navigation, setUser }) => {
+
+    const [latestRole, setLatestRole] = useState({})
+
+    const onRoleChange = () => {
+        setLatestRole
+    }
 
     const languageNavigate = () => {
         navigation.navigate('language')
@@ -54,76 +67,13 @@ const ExperiencePage = ({ navigation }) => {
                 hidden={false}
                 goBack={navigation.goBack}
             />
-            <View style={styles.subContainer}>
-                <Text style={styles.text}>
-                    Lorem ipsum dolor sit ameno
-                </Text>
-                <MaskedTitle title="Latest Role"/>
-                <SelectInput 
-                    title="Role*" 
-                    placeholder="First Name" 
-                    list={["Camera man", "option2", "option3"]}
-                /> 
-                <Inputs  placeholder="Project Title*"/> 
-                <SelectInput 
-                    title="Location*" 
-                    placeholder="First Name" 
-                    list={["Camera man", "option2", "option3"]}
-                /> 
-                <TextArea  placeholder="Key Responsibilities"/> 
-                <Inputs  placeholder="Passport Number*"/>
-                <DurationInputs placeholder="Role Duration*"/> 
-                <DailyRate placeholder="Your daily rate*"/>
-                <LinearGradient
-                    start={{x:0, y: 0}}
-                    end={{x:1, y: 1}}
-                    colors={['#31BEBB', '#655BDA' ]}
-                    style={{height: 5, width: "100%", marginTop: 5}}
-                />
-            </View>
-            <View style={styles.subContainer2}>
-                <MaskedTitle title="Most Notable Project "/>
-                <SelectInput 
-                    title="Role*" 
-                    placeholder="First Name" 
-                    list={["Camera man", "option2", "option3"]}
-                /> 
-                <Inputs  placeholder="Project Title*"/> 
-                <SelectInput 
-                    title="Location*" 
-                    placeholder="First Name" 
-                    list={["Camera man", "option2", "option3"]}
-                /> 
-                <TextArea  placeholder="Key Responsibilities"/> 
-                <Inputs  placeholder="Passport Number*"/>
-                <DurationInputs placeholder="Role Duration*"/> 
-                <DailyRate placeholder="Your daily rate*"/>
-                <LinearGradient
-                    start={{x:0, y: 0}}
-                    end={{x:1, y: 1}}
-                    colors={['#31BEBB', '#655BDA' ]}
-                    style={{height: 5, width: "100%", marginTop: 5}}
-                />
-                 <Pressable style={styles.nextButton}>
-                    <AddRoleButton title="Add another role"/> 
-                </Pressable>
-                <LinearGradient
-                    start={{x:0, y: 0}}
-                    end={{x:1, y: 1}}
-                    colors={['#31BEBB', '#655BDA' ]}
-                    style={{height: 5, width: "100%", marginTop: 5}}
-                />
-                <Pressable style={styles.nextButton}>
-                    <PrimaryButton title="Next" navigate={languageNavigate}/> 
-                </Pressable>
-                <Pressable onPress={() => navigation.navigate('language')}>
-                    <Text style={styles.skipText}>
-                        SKIP
-                    </Text>
-                </Pressable>
-               
-            </View>
-           
+            <Text style={styles.text}>
+                Lorem ipsums dolor sit ameno
+            </Text>
+            <MaskedTitle title="Latest Role "/>
+            <RoleForm />
+            <MaskedTitle title="Most Notable Project "/>
+            <RoleForm />
         </ScrollView>
     )
 }
@@ -143,10 +93,9 @@ const styles = StyleSheet.create({
 
   },
   text:{
-    width: "70%",
     textAlign: "center",
     lineHeight: 22,
-    marginBottom: 25,
+    marginTop: 50,
     color: "rgba(0,0,0,0.6)"
   },
   nextButton:{
@@ -155,7 +104,7 @@ const styles = StyleSheet.create({
   titleContainer:{
     alignSelf: "flex-start",
     left: 30,
-    marginBottom: 20
+    marginTop: 40
   },
   title:{
     fontSize: 20,
@@ -170,4 +119,19 @@ const styles = StyleSheet.create({
   }
 })
 
-export default ExperiencePage
+const mapStateToProps =  ({
+    signedIn: {signedIn},
+    notifications: {notifications},
+    name: {name},
+  })   => ({
+    signedIn,
+    notifications,
+    name,
+  })
+  
+  const mapDispatchToProps = (dispatch) => ({
+    setUser: (object) => setUser(object)
+  });
+  
+  
+  export default connect(mapStateToProps, mapDispatchToProps)(ExperiencePage)

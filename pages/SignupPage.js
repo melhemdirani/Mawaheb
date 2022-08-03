@@ -8,43 +8,14 @@ import {
   Image,
   Button,
 } from 'react-native'
-import AddRoleButton from '../components/Buttons/AddRoleButton'
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import SecondaryButton from '../components/Buttons/SecondaryButton'
 import TertiaryButton from '../components/Buttons/TertiaryButton'
-import DailyRate from '../components/DailyRate'
-import DurationInputs from '../components/DurationInputs'
-import Inputs from '../components/Inputs'
-import Notification from '../components/Notification'
-import SelectInput from '../components/SelectInput'
-import TextArea from '../components/TextArea'
-import UploadCard from '../components/UploadCard'
 import axios from 'axios'
 import { useEffect } from 'react'
 
 export default function SignupPage({ navigation }) {
-  const register = async () => {
-    let url = "http://172.20.10.13:4000/api/v1/auth/register"
-
-    try {
-      const {data} = await axios.post(url,{
-        name:"melhem",
-        email:"melhem@melhem",
-        password:"123456",
-        role:"client",
-        phoneNb:"0541234567"
-
-      })
-   const {user}=data
-    console.log(user)
-      
-    } catch (error) {
-      console.log(error.response.data.msg)
-    }
-
-  }
-
-  useEffect(() => {}, [])
+  
 
   const navigateJob = () => {
     navigation.navigate('JobSignUp')
@@ -99,7 +70,8 @@ const styles = Platform.OS === 'android'
     },
     image: {
       width: '100%',
-      height: 500,
+      height: 490,
+      marginTop: -50
     },
     spacing: {
       marginBottom: 15,
@@ -107,10 +79,10 @@ const styles = Platform.OS === 'android'
     text: {
       color: 'black',
       width: '90%',
-      marginTop: 20,
+      marginTop:15,
       fontSize: 16,
-      lineHeight: 22,
-      marginBottom: 25,
+      lineHeight: 18,
+      marginBottom: 20,
       fontFamily: 'PoppinsR',
     },
     text1: {
@@ -142,7 +114,7 @@ const styles = Platform.OS === 'android'
       height: 500,
     },
     spacing: {
-      marginBottom: 15,
+      marginBottom: 10,
     },
     text: {
       color: 'black',

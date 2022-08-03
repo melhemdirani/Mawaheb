@@ -1,7 +1,12 @@
 import React, {useEffect} from 'react';
 import { ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { store } from './redux/store';
+import { Provider } from 'react-redux';
+import { NotifierWrapper } from 'react-native-notifier';
+
 import LandingPage from './pages/LandingPage';
 import SignupPage from './pages/SignupPage';
 import SettingsPage from './pages/SettingsPage';
@@ -25,16 +30,15 @@ import LoginJobseeker from './pages/LoginJobseeker';
 import JobContractPage from './pages/JobContractPage';
 import JobSeekersignup from './pages/JobSeekersignup';
 import ClientDashboard from './pages/ClientDashboard';
-import { store, persistor } from './redux/store';
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
-import { NotifierWrapper } from 'react-native-notifier';
+
 import JobDetailsPage from './pages/JobDetailsPage';
+import JobSeekersignup2 from './pages/JobSeekersignup2';
 
 
 const Stack = createNativeStackNavigator()
 
 export default function App() {
+
   const [loaded] = useFonts({
     PoppinsR: require('./assets/fonts/Poppins-Regular.ttf'),
     PoppinsB: require('./assets/fonts/Poppins-Bold.ttf'),
@@ -49,7 +53,6 @@ export default function App() {
   return (
     <Provider store={store}>
         <NavigationContainer>
-          <PersistGate persistor={persistor}>
             <Stack.Navigator>
               <Stack.Screen
                 name="Home"
@@ -75,6 +78,13 @@ export default function App() {
               <Stack.Screen
                 name="JobSignUp"
                 component={JobSeekersignup}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="JobSignUpb"
+                component={JobSeekersignup2}
                 options={{
                   headerShown: false,
               }}
@@ -206,7 +216,6 @@ export default function App() {
                 }}
               />
             </Stack.Navigator>
-          </PersistGate>
         </NavigationContainer>
     </Provider>
 

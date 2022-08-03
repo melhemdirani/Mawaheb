@@ -68,6 +68,7 @@ const JobDonePage = ({navigation}) => {
     </View>
   )
 }
+
 const styles = Platform.OS === 'android'
   ? StyleSheet.create({
     wrapper: {

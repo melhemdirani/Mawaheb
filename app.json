@@ -2,7 +2,7 @@
   "expo": {
     "name": "mawaheb",
     "slug": "mawaheb",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
@@ -18,13 +18,17 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.melhemdirani.mawaheb",
+      "buildNumber": "1.0.0"
     },
     "android": {
+      "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.melhemdirani.mawaheb"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

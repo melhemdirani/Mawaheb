@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, TextInput} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 
-const Inputs = ({placeholder}) => {
+const Inputs = ({placeholder, onChange, numeric}) => {
 
     const [text, setText] = useState("")
     const [changed, setChanged] = useState(false)
@@ -35,12 +35,13 @@ const Inputs = ({placeholder}) => {
 
             }
             <TextInput
-              secureTextEntry={placeholder === "Password" ? true : false}
+              secureTextEntry={placeholder === "Password" || placeholder === "Password*" ? true : false}
               style={
               styles.wrapperCustom
               }
-              onChangeText={(e) => setText(e)}
+              onChangeText={(e) => onChange(e)}
               placeholder={placeholder}
+              keyboardType={numeric ? "numeric" : "default"}
               placeholderTextColor="rgba(0,0,0,.5)"
             />
             { changed && 

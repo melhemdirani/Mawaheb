@@ -4,7 +4,8 @@ const INITIAL_STATE = {
   role: '',
   name: '',
   notifications: [],
-  newNotifications: []
+  newNotifications: [],
+  user: {}
 };
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -28,6 +29,11 @@ const userReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         notifications: [],
+      };
+    case "SETUSER":
+      return {
+        ...state,
+        user: {...user, ...action.payload},
       };
     default:
     return state;

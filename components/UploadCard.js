@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Pressable, StyleSheet, Text, View, TouchableOpacity, ImageBackground, Image } from 'react-native';
+import { onPress, StyleSheet, Text, View, TouchableOpacity, ImageBackground, Image } from 'react-native';
 
-const UploadCard = ({title}) => {
+const UploadCard = ({title, selectFile}) => {
 
   return (
     <View style={styles.container}>
@@ -15,9 +15,11 @@ const UploadCard = ({title}) => {
             source={require('../assets/images/uploadCard.png')}
         />
         <View style={styles.add}>
-            <Image
+            <TouchableOpacity onPress={() => selectFile()}>
+              <Image
                 source={require('../assets/images/addButton.png')}
-            />
+              />
+            </TouchableOpacity>
             <Text style={styles.title}>
                 {title}
             </Text>
