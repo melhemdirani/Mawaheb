@@ -3,7 +3,7 @@ import { combineReducers } from 'redux'
 import customFetch from '../utils/axios'
 
 const initialState = {
-  user: {},
+  user: null,
   isLoading: false,
   error: null,
 }
@@ -14,10 +14,12 @@ export const registerUser = createAsyncThunk(
     let url = '/auth/register'
     try {
       const resp = await customFetch.post(url, user)
+      console.log(resp.data)
 
       return resp.data
     } catch (error) {
       console.log(error.response.data.msg)
+
       return thunkApi.rejectWithValue(error.response.data.msg)
     }
   }
@@ -26,12 +28,7 @@ export const registerUser = createAsyncThunk(
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {
-    toggleSidebar: (state,action)=>{
-      state.isSidebarOpen = action.payload
-    }
-    
-  },
+  reducers: {},
   extraReducers: {
     [registerUser.pending]: (state) => {
       state.isLoading = true
@@ -47,6 +44,6 @@ const userSlice = createSlice({
     },
   },
 })
-export const {toggleSidebar}=userSlice.actions
+export const { toggleSidebar } = userSlice.actions
 
 export default userSlice.reducer
