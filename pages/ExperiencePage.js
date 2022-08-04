@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Pressable, Button } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
-import { connect } from 'react-redux';
+
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
-import { setUser } from '../redux/user/user.actions';
+
 
 import Header from '../components/Header';
 import signUp from '../assets/images/experienceIcon.png';
@@ -20,7 +20,9 @@ import DailyRate from '../components/DailyRate';
 import AddRoleButton from '../components/Buttons/AddRoleButton';
 import RoleForm from '../components/RoleForm';
 
-const ExperiencePage = ({ navigation, setUser }) => {
+const ExperiencePage = ({ navigation, }) => {
+
+
 
     const [latestRole, setLatestRole] = useState({})
 
@@ -143,19 +145,7 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapStateToProps =  ({
-    signedIn: {signedIn},
-    notifications: {notifications},
-    name: {name},
-  })   => ({
-    signedIn,
-    notifications,
-    name,
-  })
+
+
   
-  const mapDispatchToProps = (dispatch) => ({
-    setUser: (object) => setUser(object)
-  });
-  
-  
-  export default connect(mapStateToProps, mapDispatchToProps)(ExperiencePage)
+  export default ExperiencePage

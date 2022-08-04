@@ -62,7 +62,7 @@ const JobSeekersignup = ({ navigation, route }) => {
     if (user) {
       user?.role === 'freelancer'
         ? navigation.navigate('JobSignUpb')
-        : navigation.navigate('JobSignUp2')
+        : navigation.navigate('recruiter_signup')
     }
   }, [user])
 
@@ -78,6 +78,7 @@ const JobSeekersignup = ({ navigation, route }) => {
         // numOfPage={<Image source={trash}></Image>}
         numOfPage='1/6'
         hidden={false}
+        goBack={navigation.goBack}
       />
       <View style={styles.subContainer}>
         <Text style={styles.text}>

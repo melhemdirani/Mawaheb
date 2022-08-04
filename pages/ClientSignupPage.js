@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'
 import {
   View,
   Text,
@@ -6,31 +6,106 @@ import {
   ScrollView,
   Pressable,
   Switch,
-  SafeAreaView
+  SafeAreaView,
+  Image,
 } from 'react-native'
-import { connect } from 'react-redux';
 
-import { signIn } from '../redux/user/user.actions';
+import { signIn } from '../redux/user/user.actions'
 
-import Header from '../components/Header';
-import Inputs from '../components/Inputs';
-import UploadCard from '../components/UploadCard';
-import PrimaryButton from '../components/Buttons/PrimaryButton';
+import Header from '../components/Header'
+import Inputs from '../components/Inputs'
+import UploadCard from '../components/UploadCard'
+import PrimaryButton from '../components/Buttons/PrimaryButton'
+import * as ImagePicker from 'expo-image-picker'
+import * as FileSystem from 'expo-file-system'
+import { useDispatch } from 'react-redux'
 
-import signUp from '../assets/images/signUp.png';
+import { createClientProfile } from '../reduxToolkit/clientSlice'
+import signUp from '../assets/images/signUp.png'
 
-
-const ClientSignupPage = ({navigation, signIn, name}) => {
-
+const ClientSignupPage = ({ navigation, signIn, name }) => {
   const navigateLogin = () => {
-    navigation.navigate("login")
-  } 
+    navigation.navigate('login')
+  }
   const navigateDash = () => {
-    signIn({role: 'client', name: name});
-    navigation.navigate("recruiter_Jobs");
-  } 
+    signIn({ role: 'client', name: name })
+    navigation.navigate('recruiter_Jobs')
+  }
+  const dispatch = useDispatch()
   const [isEnabled, setIsEnabled] = useState(false)
+  const [image, setImage] = useState(null)
+  const initialState = {
+    companyName: '',
+    privacy: '',
+    signatoryName: '',
+    signatoryTitle: '',
+    sign: '',
+    Address: '',
+    TRN: null,
+
+  }
+
+  const [values, setValues] = useState(initialState)
+  useEffect(() => {
+    isEnabled
+      ? setValues({ ...values, privacy: 'private' })
+      : setValues({ ...values, privacy: 'public' })
+  }, [isEnabled])
+
+  const handleChange = (name, value) => {
+    setValues({ ...values, [name]: value })
+  }
+  const onSubmit = () => {
+    dispatch(
+      createClientProfile({
+        ...values,
+      })
+    )
+    navigation.navigate('recruiter_dashboard')
+  }
+
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState)
+  const selectFile = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      quality: 1,
+    })
+    if (!result.cancelled) {
+      setImage(result.uri)
+      upload(result.uri)
+    }
+  }
+  const upload = async (uri) => {
+    console.log('uploading file')
+    try {
+      console.log('trying')
+      const response = await FileSystem.uploadAsync(
+        `http://194.5.157.234:4000/api/v1/freelancers/uploadImage`,
+        uri,
+        {
+          fieldName: 'files',
+          httpMethod: 'post',
+          uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
+        },
+        { body: 'front' }
+      )
+      console.log(JSON.stringify(response, null, 4))
+      console.log('response', response)
+      console.log('response body', JSON.parse(response.body).imageUrl)
+      {
+        isEnabled
+          ? setValues({
+              ...values,
+              tradingLiscence: JSON.parse(response.body).imageUrl,
+            })
+          : setValues({ ...values, sign: JSON.parse(response.body).imageUrl })
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <ScrollView style={styles.wrapper}>
       <Header title='Client Sign Up' icon={signUp} hidden={true} />
@@ -38,9 +113,15 @@ const ClientSignupPage = ({navigation, signIn, name}) => {
         <Text style={styles.text}>Answer the questions below in order to </Text>
         <Text style={styles.text}>find the best job for you</Text>
         <View style={styles.form}>
-          <Inputs placeholder='company Name*' style={styles.input} />
+          <Inputs
+            placeholder='company Name*'
+            style={styles.input}
+            onChange={(value) => handleChange('companyName', value)}
+          />
           <View style={styles.privacy}>
-            <Text style={!isEnabled ? styles.picked : styles.notPicked}>Public </Text>
+            <Text style={!isEnabled ? styles.picked : styles.notPicked}>
+              Public{' '}
+            </Text>
             <Switch
               style={styles.switch}
               ios_backgroundColor='#23CDB0'
@@ -49,17 +130,45 @@ const ClientSignupPage = ({navigation, signIn, name}) => {
               onValueChange={toggleSwitch}
               value={isEnabled}
             ></Switch>
-            <Text style={isEnabled ? styles.picked : styles.notPicked}> Private</Text>
+            <Text style={isEnabled ? styles.picked : styles.notPicked}>
+              {' '}
+              Private
+            </Text>
           </View>
-          <Inputs placeholder={isEnabled?'Address*':"Signatory Name*"} style={styles.input} />
-          <Inputs placeholder={isEnabled?'TRN(Tax Number)*':"Signatory Title"} style={styles.input} />
-          <UploadCard title={isEnabled?'Trading Liscence*':"Add Authorized Signatory"} />
+          <Inputs
+            placeholder={isEnabled ? 'Address*' : 'Signatory Name*'}
+            style={styles.input}
+            onChange={
+              isEnabled
+                ? (value) => handleChange('address', value)
+                : (value) => handleChange('signatoryName', value)
+            }
+          />
+          <Inputs
+            placeholder={isEnabled ? 'TRN(Tax Number)*' : 'Signatory Title'}
+            style={styles.input}
+            onChange={
+              isEnabled
+                ? (value) => handleChange('TRN', value)
+                : (value) => handleChange('signatoryTitle', value)
+            }
+          />
+          {image ? (
+            <Image source={{ uri: image }} style={styles.Imagecontainer} />
+          ) : (
+            <UploadCard
+              title={
+                isEnabled ? 'Trading Liscence*' : 'Add Authorized Signatory*'
+              }
+              selectFile={selectFile}
+            />
+          )}
         </View>
         <View style={styles.btnContainer}>
-          <PrimaryButton navigate={navigateDash} title='Sign up' />
+          <PrimaryButton navigate={onSubmit} title='Sign up' />
           <SafeAreaView style={styles.btn}>
             <Pressable onPress={() => navigateLogin()}>
-             <Text style={styles.btnText}>Login</Text>
+              <Text style={styles.btnText}>Login</Text>
             </Pressable>
           </SafeAreaView>
         </View>
@@ -81,7 +190,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 13,
     fontFamily: 'PoppinsR',
-    color: "rgba(0,0,0,.6)"
+    color: 'rgba(0,0,0,.6)',
   },
   form: {
     width: '100%',
@@ -93,7 +202,7 @@ const styles = StyleSheet.create({
     width: '90%',
     alignItems: 'center',
     marginTop: 10,
-    paddingBottom: 40
+    paddingBottom: 40,
   },
   btn: {
     marginTop: 10,
@@ -110,35 +219,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '80%',
     top: -5,
-    marginBottom: 8
+    marginBottom: 8,
   },
   switch: {
     transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
   },
-  notPicked:{
-    fontFamily: "PoppinsL",
-    color: "rgba(0,0,0,.5)",
-    fontSize: 15
+  notPicked: {
+    fontFamily: 'PoppinsL',
+    color: 'rgba(0,0,0,.5)',
+    fontSize: 15,
   },
-  picked:{
-    fontFamily: "PoppinsL",
-    fontSize: 15
-
-  }
+  picked: {
+    fontFamily: 'PoppinsL',
+    fontSize: 15,
+  },
+  Imagecontainer: {
+    justifyContent: 'center',
+    height: 230,
+    width: '85%',
+    borderRadius: 20,
+    marginVertical: 10,
+  },
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  signIn: (object) => dispatch(signIn(object))
-});
-
-const mapStateToProps =  ({
-  signedIn: {signedIn},
-  notifications: {notifications},
-  name: {name},
-})   => ({
-  signedIn,
-  notifications,
-  name,
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(ClientSignupPage)
+export default ClientSignupPage

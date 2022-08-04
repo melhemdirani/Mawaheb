@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { View, Text, StyleSheet, Image, Pressable, Platform } from 'react-native';
-import { connect } from 'react-redux';
+
 
 import jobsA from '../assets/images/jobsA.png'
 import jobsN from '../assets/images/jobsN.png'
@@ -144,11 +144,6 @@ const styles =  Platform.OS === 'android'
 
 
 
-const mapStateToProps =  ({
-    role: {role},
-})   => ({
-    role,
-})
-    
 
-export default connect(mapStateToProps)(Navbar)
+
+export default Navbar

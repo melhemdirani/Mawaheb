@@ -139,18 +139,8 @@ const styles = StyleSheet.create({
   
 })
 
-const mapDispatchToProps = (dispatch) => ({
-    signIn: (object) => dispatch(signIn(object))
-});
 
-const mapStateToProps =  ({
-    signedIn: {signedIn},
-    notifications: {notifications},
-    name: {name},
-})   => ({
-    signedIn,
-    notifications,
-    name,
-})
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginJobseeker)
+
+
+export default LoginJobseeker
