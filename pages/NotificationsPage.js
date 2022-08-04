@@ -11,12 +11,17 @@ import trash from '../assets/images/trash.png'
 import Notification from '../components/Notification';
 
 
-const NotificationsPage = ({navigation, role, notifications, clearNotifications}) => {
+const NotificationsPage = ({navigation, role, clearNotifications}) => {
     
     const onTrashPress = () => {
         clearNotifications()
     }
 
+    let notifications = [
+        {notification: "lorem ipsum lorem ipsum", urgent: false },
+        {notification: "lorem ipsum lorem ipsum", urgent: true },
+        {notification: "lorem ipsum lorem ipsum", urgent: false },
+    ]
     return (
         <View style={styles.container}>
             <ScrollView >
@@ -24,7 +29,7 @@ const NotificationsPage = ({navigation, role, notifications, clearNotifications}
                 <View style={styles.container4} />
                 {
                     notifications && notifications.map((n,i) =>
-                        <Notification title={n.notification} color={n.urgent ?  "#BE3142": "#31BEBB"}/>
+                        <Notification title={n.notification} color={n.urgent ?  "#BE3142": "#31BEBB"} key={i}/>
                     )
                 }
             </ScrollView>

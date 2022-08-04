@@ -1,11 +1,12 @@
-import React, {useEffect} from 'react';
+import React, { useMemo } from 'react';
 import { ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { store } from './redux/store';
+import { store , persistor} from './redux/store';
 import { Provider } from 'react-redux';
 import { NotifierWrapper } from 'react-native-notifier';
+import { PersistGate } from 'redux-persist/integration/react';
 
 import LandingPage from './pages/LandingPage';
 import SignupPage from './pages/SignupPage';
@@ -33,12 +34,13 @@ import ClientDashboard from './pages/ClientDashboard';
 
 import JobDetailsPage from './pages/JobDetailsPage';
 import JobSeekersignup2 from './pages/JobSeekersignup2';
+import * as Sentry from "@sentry/react-native";
+
 
 
 const Stack = createNativeStackNavigator()
 
-export default function App() {
-
+function App() {
   const [loaded] = useFonts({
     PoppinsR: require('./assets/fonts/Poppins-Regular.ttf'),
     PoppinsB: require('./assets/fonts/Poppins-Bold.ttf'),
@@ -52,6 +54,8 @@ export default function App() {
 
   return (
     <Provider store={store}>
+      <PersistGate persistor={persistor}>
+
         <NavigationContainer>
             <Stack.Navigator>
               <Stack.Screen
@@ -217,7 +221,10 @@ export default function App() {
               />
             </Stack.Navigator>
         </NavigationContainer>
+        </PersistGate>
     </Provider>
 
   )
 }
+
+export default App;

@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, Text, View, TouchableOpacity, TextInput} from 'r
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 
-const TextArea = ({title, placeholder}) => {
+const TextArea = ({title, placeholder, onChangeText}) => {
 
     const [text, setText] = useState("")
     const [changed, setChanged] = useState(false)

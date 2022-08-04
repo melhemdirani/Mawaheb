@@ -3,9 +3,10 @@ const INITIAL_STATE = {
   signedIn: false,
   role: '',
   name: '',
-  notifications: [],
+  notifications: ["notifications"],
   newNotifications: [],
-  user: {}
+  user: {},
+  id:{},
 };
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -33,7 +34,12 @@ const userReducer = (state = INITIAL_STATE, action) => {
     case "SETUSER":
       return {
         ...state,
-        user: {...user, ...action.payload},
+        user: {...state.user, ...action.payload},
+      };
+    case "SETUSERID":
+      return {
+        ...state,
+        id: {id: 2}
       };
     default:
     return state;

@@ -12,6 +12,7 @@ import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
+
 import { setUser } from '../redux/user/user.actions';
 
 import signUp from '../assets/images/signUp.png';
@@ -23,7 +24,7 @@ import PrimaryButton from '../components/Buttons/PrimaryButton';
 
 
 
-const CreateProfilePage = ({  navigation, setUser }) => {
+const CreateProfilePage = ({  navigation, setUser, user, id }) => {
   
   const [passnum, setPassnum] = useState()
   const [passCopy, setPassCopy] = useState(null)
@@ -34,6 +35,25 @@ const CreateProfilePage = ({  navigation, setUser }) => {
     navigation.navigate("experience")
   } 
 
+  // const register = async () => {
+  //   let url = "http://194.5.157.234:4000/api/v1/freelancers/"
+  //   if(expiration === '' || image === '' || image2 === '' || id === '' ){
+  //     return alert('Please fill in all required inputs*')
+  //   }
+  //   try {
+  //   const {data} = await axios.post(url,{
+  //       expirationDate:expiration,
+  //       emiratesIdFrontSide:imageurl1,
+  //       emiratesIdBackSide: imageurl2,
+  //       emiratesId: id
+  //   })
+  //     navigation.navigate("JobSignUp2")
+  //     console.log("data", data)
+  //   } catch (error) {
+  //     console.log(error.response.data.msg)
+  //   }
+
+  // }
   const selectFile = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -58,13 +78,14 @@ const CreateProfilePage = ({  navigation, setUser }) => {
       console.log("result", result)
     }
   };
+  console.log("user", id)
   return (
     <ScrollView style={styles.container}>
       <Header
         icon={signUp}
         title='Create Profile'
         // numOfPage={<Image source={trash}></Image>}
-        numOfPage='2/5'
+        numOfPage='3/6'
         hidden={false}
         goBack={navigation.goBack}
       />
@@ -137,13 +158,15 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps =  ({
-  signedIn: {signedIn},
+  user: {user},
+  id: {id},
   notifications: {notifications},
   name: {name},
 })   => ({
-  signedIn,
+  user,
   notifications,
   name,
+  id,
 })
 
 const mapDispatchToProps = (dispatch) => ({

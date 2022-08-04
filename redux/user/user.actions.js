@@ -17,6 +17,10 @@ export const setUser = (user) => ({
   type: "SETUSER",
   payload: user
 });
+export const setUserId = (id) => ({
+  type: "SETUSERID",
+  payload: id
+});
 export const clearNotifications = () => ({
   type: "CLEARNOTIFICATIONS",
 });

@@ -10,7 +10,7 @@ import {
 import axios from 'axios';
 import { connect } from 'react-redux';
 
-import { setUser } from '../redux/user/user.actions';
+import { clearNotifications } from '../redux/user/user.actions';
 
 import signUp from '../assets/images/signUp.png';
 
@@ -18,7 +18,7 @@ import Header from '../components/Header';
 import Inputs from '../components/Inputs';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
 
-const JobSeekersignup = ({  navigation, setUser }) => {
+const JobSeekersignup = ({  navigation, notifications, clearNotifications }) => {
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -26,13 +26,15 @@ const JobSeekersignup = ({  navigation, setUser }) => {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
 
-
+  useEffect(() => {
+    console.log("notifications")
+    clearNotifications()
+  }, [])
 
   const [clearUser, setClearUser] = useState(false)
 
   useEffect(() => {
     if(!clearUser){
-      setUser({})
       setClearUser(true)
     }
   }, [])
@@ -49,12 +51,9 @@ const JobSeekersignup = ({  navigation, setUser }) => {
     })
     const {user}=data.data
     const status = data.status
-    if(status === 200){
-      setUser({name: name, email: email, phone: phone})
-      navigate2()
-      setLoading(false)
+    navigate2()
+    setLoading(false)
 
-    }
     } catch (error) {
       console.log(error.response.data.msg)
       setLoading(false)
@@ -80,9 +79,8 @@ const JobSeekersignup = ({  navigation, setUser }) => {
     const {user}= data.data
     console.log("user", user)
     const status =  data.status
-    if(status === 201){
-      login()
-    } 
+    navigate2()
+    setLoading(false)
     } catch (error) {
       console.log(error.response.data.msg)
         setLoading(false)
@@ -91,6 +89,19 @@ const JobSeekersignup = ({  navigation, setUser }) => {
       }
     }
   }
+  const logout = async () => {
+    let url = "http://194.5.157.234:4000/api/v1/auth/logout/"
+
+    try {
+      const data = await axios.get(url)
+     console.log("data",data)
+      
+    } catch (error) {
+      console.log(error.response.data.msg)
+    }
+
+  }
+
 
 
   return loading ?
@@ -155,11 +166,22 @@ const styles = StyleSheet.create({
     height: "100%"
   }
 })
+const mapStateToProps =  ({
+  user: {user},
+  id: {id},
+  notifications: {notifications},
+  name: {name},
+})   => ({
+  user,
+  notifications,
+  name,
+  id,
+})
 
 const mapDispatchToProps = (dispatch) => ({
-  setUser: (object) => setUser(object)
+  clearNotifications: () => clearNotifications(),
 });
 
 
 
-export default connect(null, mapDispatchToProps)(JobSeekersignup)
+export default connect(mapStateToProps, mapDispatchToProps)(JobSeekersignup)

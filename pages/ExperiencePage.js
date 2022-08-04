@@ -74,6 +74,21 @@ const ExperiencePage = ({ navigation, setUser }) => {
             <RoleForm />
             <MaskedTitle title="Most Notable Project "/>
             <RoleForm />
+            <View  style={styles.buttons1}>
+              <AddRoleButton title="Add another role" />
+            </View>
+            <LinearGradient
+                start={{x:0, y: 0}}
+                end={{x:1, y: 1}}
+                colors={['#31BEBB', '#655BDA' ]}
+                style={{height: 5, width: "100%", marginTop: 5}}
+            />
+            <View  style={styles.buttons}>
+              <PrimaryButton title="Next" navigate={languageNavigate}/>
+            </View>
+            <Pressable onPress={() => languageNavigate()}>
+              <Text style={styles.skipText}>Skip</Text>
+            </Pressable>
         </ScrollView>
     )
 }
@@ -83,6 +98,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
   },
+  buttons1:{
+    alignSelf: "center",
+    marginVertical: 25
+  },  
+  buttons:{
+    alignSelf: "center",
+    marginTop: 25
+  },  
   subContainer:{
     alignItems: "center",
     paddingTop: 50,
@@ -112,8 +135,9 @@ const styles = StyleSheet.create({
   },
   skipText:{
     fontFamily: 'PoppinsS',
+    alignSelf: "center",
     fontSize: 15,
-    marginTop: -25,
+    marginTop: 25,
     marginBottom: 80,
     letterSpacing: 2
   }

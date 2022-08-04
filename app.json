@@ -23,7 +23,7 @@
       "buildNumber": "1.0.0"
     },
     "android": {
-      "versionCode": 2,
+      "versionCode": 5,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
@@ -32,6 +32,9 @@
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
-    }
+    },
+    "plugins": [
+      "sentry-expo"
+    ]
   }
 }

@@ -66,7 +66,7 @@ const styles = Platform.OS ==='android'
     backgroundColor: "white",
     alignItems: "center",
     padding: 6,
-    width: 220,
+    width: 240,
     flexDirection: "row",
     justifyContent: "center"
   },
