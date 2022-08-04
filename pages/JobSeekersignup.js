@@ -22,34 +22,51 @@ import PrimaryButton from '../components/Buttons/PrimaryButton'
 import { useSelector, useDispatch } from 'react-redux'
 import { registerUser } from '../reduxToolkit/userSlice'
 
-const JobSeekersignup = () => {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [phone, setPhone] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
+const JobSeekersignup = ({ navigation, route }) => {
+  const initialState = {
+    name: '',
+    email: '',
+    password: '',
+    phoneNb: '',
+  }
+  const [values, setValues] = useState(initialState)
   const dispatch = useDispatch()
-  const { user } = useSelector((state) => state.user)
-
-  useEffect(() => {
-    console.log(user)
-    
-  }, [user])
+  const { user, isLoading, error } = useSelector((store) => store.user)
+  const { role } = route.params
+  console.log(role)
+  const handleChange = (name, value) => {
+    console.log(values)
+    setValues({ ...values, [name]: value })
+  }
+  // setTimeout(() => {
+  //   navigation.navigate('SignIn')
+  // }, 2000)
 
   const submit = () => {
+    const { name, email, password, phoneNb } = values
+    if (!name || !email || !password || !phoneNb) {
+      alert('Please fill all the fields')
+    }
+    console.log(user, error)
     dispatch(
       registerUser({
-        name: 'mirzaaaaaa',
-        email: 'mirzaaaaa1',
-        phoneNb: '123',
-        password: 'mirzaaaaa',
-        role: 'freelancer',
+        name: values.name,
+        email: values.email,
+        password: values.password,
+        phoneNb: values.phoneNb,
+        role: role,
       })
     )
-    console.log(user)
   }
+  useEffect(() => {
+    if (user) {
+      user?.role === 'freelancer'
+        ? navigation.navigate('JobSignUpb')
+        : navigation.navigate('JobSignUp2')
+    }
+  }, [user])
 
-  return loading ? (
+  return isLoading ? (
     <View style={styles.loadingStyle}>
       <ActivityIndicator size={'large'} />
     </View>
@@ -64,31 +81,31 @@ const JobSeekersignup = () => {
       />
       <View style={styles.subContainer}>
         <Text style={styles.text}>
-          Fill and upload the below required field and documents {name}
+          Fill and upload the below required field and documents
         </Text>
         <Inputs
           title='Continue to Payment'
           placeholder='Name*'
-          onChange={setName}
+          onChange={(value) => handleChange('name', value)}
         />
         <Inputs
           title='Continue to Payment'
           placeholder='Email*'
-          onChange={setEmail}
+          onChange={(value) => handleChange('email', value)}
         />
+
         <Inputs
           title='Continue to Payment'
           placeholder='Password*'
-          onChange={setPassword}
+          onChange={(value) => handleChange('password', value)}
         />
         <Inputs
           title='Continue to Payment'
           placeholder='Phone Number*'
-          onChange={setPhone}
+          onChange={(value) => handleChange('phoneNb', value)}
         />
         <Pressable style={styles.nextButton}>
-          {/* <PrimaryButton title='Next' navigate={register} /> */}
-          <Button title='Next' onPress={() => submit()} />
+          <PrimaryButton title='Next' navigate={submit} />
         </Pressable>
       </View>
     </ScrollView>
