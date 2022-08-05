@@ -18,12 +18,13 @@ import UploadCard from '../components/UploadCard'
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { createClientProfile } from '../reduxToolkit/clientSlice'
 import signUp from '../assets/images/signUp.png'
 
 const ClientSignupPage = ({ navigation, signIn, name }) => {
+  const { client, isLoading, error } = useSelector((store) => store.client)
   const navigateLogin = () => {
     navigation.navigate('login')
   }
@@ -41,8 +42,7 @@ const ClientSignupPage = ({ navigation, signIn, name }) => {
     signatoryTitle: '',
     sign: '',
     Address: '',
-    TRN: null,
-
+    TRN: 0,
   }
 
   const [values, setValues] = useState(initialState)
@@ -56,13 +56,42 @@ const ClientSignupPage = ({ navigation, signIn, name }) => {
     setValues({ ...values, [name]: value })
   }
   const onSubmit = () => {
+    const {
+      companyName,
+      privacy,
+      signatoryName,
+      signatoryTitle,
+      sign,
+      TRN,
+      Address,
+    } = values
+    if (privacy === 'private') {
+      if (!TRN || !Address || !companyName) {
+        alert('Please fill all the fields')
+      }
+    }
+    if (privacy === 'public') {
+      if (!sign || !signatoryName || !signatoryTitle || !companyName) {
+        alert('Please fill all the fields')
+      }
+    }
     dispatch(
       createClientProfile({
-        ...values,
+        companyName,
+        privacy,
+        signatoryName,
+        signatoryTitle,
+        sign,
+        TRN,
+        Address,
       })
     )
-    navigation.navigate('recruiter_dashboard')
   }
+  useEffect(() => {
+    if (client) {
+      navigation.navigate('recruiter_dashboard')
+    }
+  }, [client])
 
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState)
   const selectFile = async () => {

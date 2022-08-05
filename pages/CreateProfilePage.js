@@ -7,7 +7,7 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import { connect } from 'react-redux';
+
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
@@ -169,9 +169,7 @@ const mapStateToProps =  ({
   id,
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  setUser: (object) => setUser(object)
-});
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateProfilePage)
+
+export default CreateProfilePage

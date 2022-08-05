@@ -15,11 +15,37 @@ import PrimaryButton from '../components/Buttons/PrimaryButton'
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable'
 import SelectInput from '../components/SelectInput'
 import AddRoleButton from '../components/Buttons/AddRoleButton'
+import { addLanguage } from '../reduxToolkit/freelancerSlice'
+import { useDispatch } from 'react-redux'
 
 const LanguagePage = ({ navigation }) => {
-  
+  const dispatch = useDispatch()
+  const mainLanguageState = {
+    name: '',
+    profeciency: '',
+  }
+  const secondaryLanguageState = {
+    name: '',
+    profeciency: '',
+  }
+  const [mainLanguage, setMainLanguage] = React.useState(mainLanguageState)
+  const [secondaryLanguage, setSecondaryLanguage] = React.useState(
+    secondaryLanguageState
+  )
+
   const navigateBank = () => {
+    dispatch(addLanguage(mainLanguage))
+    dispatch(addLanguage(secondaryLanguage))
     navigation.navigate('bank')
+  }
+
+  const handleMainLanguageChange = (name, value) => {
+    console.log(name, value)
+    setMainLanguage({ ...mainLanguage, [name]: value })
+  }
+  const handleSecondaryLanguageChange = (name, value) => {
+    console.log(name, value)
+    setSecondaryLanguage({ ...secondaryLanguage, [name]: value })
   }
   return (
     <ScrollView style={styles.container}>
@@ -35,26 +61,34 @@ const LanguagePage = ({ navigation }) => {
         <Text style={styles.text}>
           Lorem ipsum dolor sit amenoLorem ipsum dolor sit ameno
         </Text>
-        <Inputs placeholder='Main Language*' />
-        <SelectInput
-          title='Profeciency*'
-          list={['option1', 'option2', 'option3']}
+        <Inputs
+          placeholder='Main Language*'
+          onChange={(value) => handleMainLanguageChange('name', value)}
         />
-        <Inputs placeholder='Secondary Language*' />
         <SelectInput
           title='Profeciency*'
-          list={['option1', 'option2', 'option3']}
+          list={['beginner', 'intermediate', 'advanced']}
+          onSelect={(value) => handleMainLanguageChange('profeciency', value)}
+        />
+        <Inputs
+          placeholder='Secondary Language*'
+          onChange={(value) => handleSecondaryLanguageChange('name', value)}
+        />
+        <SelectInput
+          title='Profeciency*'
+          list={['beginner', 'intermediate', 'advanced']}
+          onSelect={(value) =>
+            handleSecondaryLanguageChange('profeciency', value)
+          }
         />
         <Pressable style={styles.addButton}>
           <AddRoleButton title='Add another language' />
         </Pressable>
         <Pressable style={styles.nextButton}>
-          <PrimaryButton title='Continue' navigate={navigateBank}/>
+          <PrimaryButton title='Continue' navigate={navigateBank} />
         </Pressable>
-        <Pressable onPress={() =>  navigation.navigate('bank')}>
-          <Text style={styles.skipText}>
-              SKIP
-          </Text>
+        <Pressable onPress={() => navigation.navigate('bank')}>
+          <Text style={styles.skipText}>SKIP</Text>
         </Pressable>
       </View>
     </ScrollView>
@@ -84,13 +118,13 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 60,
   },
-  skipText:{
+  skipText: {
     fontFamily: 'PoppinsS',
     fontSize: 15,
     marginTop: -25,
     marginBottom: 80,
-    letterSpacing: 2
-  }
+    letterSpacing: 2,
+  },
 })
 
 export default LanguagePage

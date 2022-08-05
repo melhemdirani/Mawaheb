@@ -1,6 +1,5 @@
 import { ScrollView ,View, StyleSheet, Platform, Text } from 'react-native';
 import React from 'react';
-import { connect } from 'react-redux';
 
 import { clearNotifications } from '../redux/user/user.actions';
 
@@ -55,16 +54,6 @@ const styles = Platform.OS === "android"
     },
 })
 
-const mapStateToProps =  ({
-    notifications: {notifications},
-    role: {role},
-    })   => ({
-    notifications,
-    role,
-})
-    
-const mapDispatchToProps = (dispatch) => ({
-    clearNotifications: (object) => dispatch(clearNotifications(object))
-});
 
-export default connect(mapStateToProps, mapDispatchToProps )(NotificationsPage)
+
+export default NotificationsPage

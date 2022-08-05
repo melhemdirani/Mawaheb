@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ScrollView ,View, StyleSheet, Platform} from 'react-native';
-import { connect } from 'react-redux';
+
 
 import { signOut } from '../redux/user/user.actions';
 
@@ -86,4 +86,4 @@ const mapStateToProps =  ({
     role
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(SettingsPage)
+export default SettingsPage

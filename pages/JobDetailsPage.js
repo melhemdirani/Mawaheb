@@ -9,7 +9,7 @@ import {
     Pressable,
     ScrollView
   } from 'react-native';
-import { connect } from 'react-redux';
+
 import MaskedView from '@react-native-masked-view/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -305,10 +305,5 @@ const JobDetailsPage = ({route, navigation, name}) => {
     },
   })
 
-  const mapStateToProps =  ({
-    name: {name},
-})   => ({
-    name,
-})
 
-export default connect(mapStateToProps)(JobDetailsPage)
+export default JobDetailsPage

@@ -8,7 +8,7 @@ import {
     ActivityIndicator
   } from 'react-native';
 import axios from 'axios';
-import { connect } from 'react-redux';
+
 
 import { clearNotifications } from '../redux/user/user.actions';
 
@@ -184,4 +184,4 @@ const mapDispatchToProps = (dispatch) => ({
 
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(JobSeekersignup)
+export default JobSeekersignup

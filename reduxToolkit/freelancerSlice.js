@@ -3,7 +3,19 @@ import { combineReducers } from 'redux'
 import customFetch from '../utils/axios'
 
 const initialState = {
-  freelancer: null,
+  freelancer: {},
+  expirationDate: '',
+  emiratesId: '',
+  emiratesIdFrontSide: '',
+  emiratesIdBackSide: '',
+  latestRole: {},
+  notableRole: {},
+  additionalRole: {},
+
+  roles: [],
+  languages: [
+  ],
+
   isLoading: false,
   error: null,
 }
@@ -25,7 +37,26 @@ export const createFreelancerProfile = createAsyncThunk(
 const freelancerSlice = createSlice({
   name: 'freelancer',
   initialState,
-  reducers: {},
+  reducers: {
+    handleChange: (state, action) => {
+      const { name, value } = action.payload
+      state[name] = value
+    },
+    addRoles: (state, action) => {
+      state.roles.push(action.payload)
+      console.log(state.roles)
+    },
+    updateLatestRole: (state, action) => {
+      state.latestRole = action.payload
+    },
+    updateNotableRole: (state, action) => {
+      state.notableRole = action.payload
+    },
+    addLanguage: (state, action) => {
+      state.languages.push(action.payload)
+      console.log(state.languages)
+    }
+  },
   extraReducers: {
     [createFreelancerProfile.pending]: (state) => {
       state.isLoading = true
@@ -41,5 +72,7 @@ const freelancerSlice = createSlice({
     },
   },
 })
+export const { handleChange, addRoles, updateLatestRole, updateNotableRole, addLanguage } =
+  freelancerSlice.actions
 
 export default freelancerSlice.reducer

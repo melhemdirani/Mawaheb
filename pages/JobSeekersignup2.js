@@ -11,7 +11,6 @@ import {
 import axios from 'axios'
 import * as ImagePicker from 'expo-image-picker'
 import * as FileSystem from 'expo-file-system'
-import { connect } from 'react-redux'
 
 import { setUserId } from '../redux/user/user.actions'
 import { signIn } from '../redux/user/user.actions'
@@ -25,6 +24,7 @@ import PrimaryButton from '../components/Buttons/PrimaryButton'
 import { useSelector, useDispatch } from 'react-redux'
 import { createFreelancerProfile } from '../reduxToolkit/freelancerSlice'
 import { setFreelancerId } from '../reduxToolkit/userSlice'
+import { handleChange } from '../reduxToolkit/freelancerSlice'
 const JobSeekersignup = ({ navigation }) => {
   const initialState = {
     expirationDate: '',
@@ -35,25 +35,28 @@ const JobSeekersignup = ({ navigation }) => {
   const dispatch = useDispatch()
 
   const [values, setValues] = useState(initialState)
-  const handleChange = (name, value) => {
-    setValues({ ...values, [name]: value })
-  }
-  const { freelancer, isLoading, error } = useSelector(
-    (store) => store.freelancer
-  )
+
+  const {
+    freelancer,
+    isLoading,
+    error,
+    expirationDate,
+    emiratesId,
+    emiratesIdFrontSide,
+    emiratesIdBackSide,
+  } = useSelector((store) => store.freelancer)
   const onSubmit = () => {
     if (
-      !values.expirationDate ||
-      !values.emiratesId ||
-      !values.emiratesIdFrontSide ||
-      !values.emiratesIdBackSide
+      !emiratesIdFrontSide ||
+      !emiratesIdBackSide ||
+      !expirationDate ||
+      !emiratesId
     ) {
       alert('Please fill all the fields')
+    } else {
+      navigation.navigate('experience')
     }
-
-    navigation.navigate('experience')
   }
-
 
   const [image, setImage] = useState(null)
   const [image2, setImage2] = useState(null)
@@ -109,10 +112,13 @@ const JobSeekersignup = ({ navigation }) => {
       console.log(JSON.stringify(response, null, 4))
       console.log('response', response)
       console.log('response body', JSON.parse(response.body).imageUrl)
-      setValues({
-        ...values,
-        emiratesIdFrontSide: JSON.parse(response.body).imageUrl,
-      })
+      const img = JSON.parse(response.body).imageUrl
+      dispatch(
+        handleChange({
+          name: 'emiratesIdFrontSide',
+          value: img,
+        })
+      )
     } catch (error) {
       console.log(error)
     }
@@ -134,11 +140,14 @@ const JobSeekersignup = ({ navigation }) => {
       console.log(JSON.stringify(response, null, 4))
       console.log('response', response)
       console.log('response body', JSON.parse(response.body).imageUrl)
+      const img = JSON.parse(response.body).imageUrl
+      dispatch(
+        handleChange({
+          name: 'emiratesIdBackSide',
+          value: img,
+        })
+      )
 
-      setValues({
-        ...values,
-        emiratesIdBackSide: JSON.parse(response.body).imageUrl,
-      })
       setUploaded(true)
     } catch (error) {
       console.log(error)
@@ -165,12 +174,21 @@ const JobSeekersignup = ({ navigation }) => {
         <Inputs
           title='Continue to Payment'
           placeholder='Expiration Date*'
-          onChange={(value) => handleChange('expirationDate', value)}
+          onChange={(value) =>
+            dispatch(
+              handleChange({
+                name: 'expirationDate',
+                value: value,
+              })
+            )
+          }
         />
         <Inputs
           title='Continue to Payment'
           placeholder='Emirates ID Number*'
-          onChange={(value) => handleChange('emiratesId', value)}
+          onChange={(value) =>
+            dispatch(handleChange({ name: 'emiratesId', value }))
+          }
           numeric
           keyboardType='numeric'
         />

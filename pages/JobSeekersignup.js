@@ -9,7 +9,7 @@ import {
   Button,
 } from 'react-native'
 import axios from 'axios'
-import { connect } from 'react-redux'
+
 
 import { clearNotifications } from '../redux/user/user.actions'
 
@@ -103,6 +103,7 @@ const JobSeekersignup = ({ navigation, route }) => {
         <Inputs
           title='Continue to Payment'
           placeholder='Phone Number*'
+          numeric={true}
           onChange={(value) => handleChange('phoneNb', value)}
         />
         <Pressable style={styles.nextButton}>
