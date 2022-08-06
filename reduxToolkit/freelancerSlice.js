@@ -50,6 +50,9 @@ const freelancerSlice = createSlice({
     updateNotableRole: (state, action) => {
       state.notableRole = action.payload
     },
+    updateAdditionalRole: (state, action) => {
+      state.additionalRole = action.payload
+    },
     addLanguage: (state, action) => {
       state.languages.push(action.payload)
       console.log(state.languages)
@@ -75,6 +78,7 @@ export const {
   addRoles,
   updateLatestRole,
   updateNotableRole,
+   updateAdditionalRole,
   addLanguage,
 } = freelancerSlice.actions
 

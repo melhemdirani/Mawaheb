@@ -40,20 +40,23 @@ const ClientSignupPage = ({ navigation, signIn, name }) => {
     privacy: '',
     signatoryName: '',
     signatoryTitle: '',
-    sign: '',
-    Address: '',
+    sign: 'ffff',
+    address: '',
     TRN: 0,
   }
 
   const [values, setValues] = useState(initialState)
   useEffect(() => {
+
     isEnabled
       ? setValues({ ...values, privacy: 'private' })
       : setValues({ ...values, privacy: 'public' })
+
   }, [isEnabled])
 
   const handleChange = (name, value) => {
     setValues({ ...values, [name]: value })
+          console.log(values)
   }
   const onSubmit = () => {
     const {
@@ -63,19 +66,18 @@ const ClientSignupPage = ({ navigation, signIn, name }) => {
       signatoryTitle,
       sign,
       TRN,
-      Address,
+      address,
     } = values
-    if (privacy === 'private') {
-      if (!TRN || !Address || !companyName) {
-        alert('Please fill all the fields')
-      }
+    if (privacy === 'private' && (!TRN || !address || !companyName)) {
+      alert('Please fill all the fields')
+      return
+    } else if (
+      privacy === 'public' &&
+      (!companyName || !signatoryName || !signatoryTitle || !sign)
+    ) {
+      alert('Please fill all the fields')
     }
-    if (privacy === 'public') {
-      if (!sign || !signatoryName || !signatoryTitle || !companyName) {
-        alert('Please fill all the fields')
-      }
-    }
-    dispatch(
+   else { dispatch(
       createClientProfile({
         companyName,
         privacy,
@@ -83,12 +85,12 @@ const ClientSignupPage = ({ navigation, signIn, name }) => {
         signatoryTitle,
         sign,
         TRN,
-        Address,
+        address,
       })
-    )
+    )}
   }
   useEffect(() => {
-    if (client) {
+    if (Object.keys(client).length > 0) {
       navigation.navigate('recruiter_dashboard')
     }
   }, [client])

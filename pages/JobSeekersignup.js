@@ -10,7 +10,6 @@ import {
 } from 'react-native'
 import axios from 'axios'
 
-
 import { clearNotifications } from '../redux/user/user.actions'
 
 import signUp from '../assets/images/signUp.png'
@@ -33,9 +32,9 @@ const JobSeekersignup = ({ navigation, route }) => {
   const dispatch = useDispatch()
   const { user, isLoading, error } = useSelector((store) => store.user)
   const { role } = route.params
-  console.log(role)
+
   const handleChange = (name, value) => {
-    console.log(values)
+ 
     setValues({ ...values, [name]: value })
   }
   // setTimeout(() => {
@@ -47,7 +46,6 @@ const JobSeekersignup = ({ navigation, route }) => {
     if (!name || !email || !password || !phoneNb) {
       alert('Please fill all the fields')
     }
-    console.log(user, error)
     dispatch(
       registerUser({
         name: values.name,
@@ -59,7 +57,7 @@ const JobSeekersignup = ({ navigation, route }) => {
     )
   }
   useEffect(() => {
-    if (user) {
+    if (Object.keys(user).length > 0) {
       user?.role === 'freelancer'
         ? navigation.navigate('JobSignUpb')
         : navigation.navigate('recruiter_signup')

@@ -38,22 +38,36 @@ const BankPage = ({ navigation }) => {
   }
 
   const navigate = () => {
-
-    dispatch(
-      createFreelancerProfile({
-        profile: {
-          expirationDate,
-          emiratesId,
-          emiratesIdFrontSide,
-          emiratesIdBackSide,
-        },
-        roles: roles,
-        languages: languages,
-        bankDetails: Object.keys(bank).length > 0 ? bank : undefined,
-      })
-    )
-    // dispatch(setFreelancerId(freelancer.id))
-    navigation.navigate('jobseeker_jobs')
+    const { iban, accountName, bankName, bankAddress, city, swiftCode } = bank
+    if (Object.keys(bank).length > 0) {
+      if (
+        !iban ||
+        !accountName ||
+        !bankName ||
+        !bankAddress ||
+        !city ||
+        !swiftCode
+      ) {
+        alert('Please fill all the fields')
+        return
+      } else {
+        dispatch(
+          createFreelancerProfile({
+            profile: {
+              expirationDate,
+              emiratesId,
+              emiratesIdFrontSide,
+              emiratesIdBackSide,
+            },
+            roles: roles,
+            languages: languages,
+            bankDetails: Object.keys(bank).length > 0 ? bank : undefined,
+          })
+        )
+        // dispatch(setFreelancerId(freelancer.id))
+        navigation.navigate('jobseeker_jobs')
+      }
+    }
   }
 
   return (

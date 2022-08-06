@@ -3,9 +3,9 @@ import { combineReducers } from 'redux'
 import customFetch from '../utils/axios'
 
 const initialState = {
-  user: undefined,
+  user: {},
   isLoading: false,
-  error: undefined,
+  error: {},
 }
 
 export const registerUser = createAsyncThunk(
@@ -19,6 +19,7 @@ export const registerUser = createAsyncThunk(
       return resp.data
     } catch (error) {
       console.log(error.response.data.msg)
+      alert(error.response.data.msg)
 
       return thunkApi.rejectWithValue(error.response.data.msg)
     }

@@ -18,6 +18,8 @@ import SecondaryButton from '../components/Buttons/SecondaryButton'
 import SelectInput from '../components/SelectInput'
 import DurationInputs from '../components/DurationInputs'
 import TextArea from '../components/TextArea'
+import { useDispatch, useSelector } from 'react-redux'
+import { createJob } from '../reduxToolkit/jobSlice'
 
 const JobPostingPage = ({ navigation }) => {
   const initialState = {
@@ -28,18 +30,39 @@ const JobPostingPage = ({ navigation }) => {
     description: '',
     budget: '',
   }
+
+  const { client } = useSelector((state) => state.client)
   const [isEnabled, setIsEnabled] = useState(false)
+  const dispatch = useDispatch()
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState)
   const [values, setValues] = useState(initialState)
   const handleChange = (name, value) => {
     console.log(name, value)
     setValues({ ...values, [name]: value })
   }
-  const onSubmit = () => {
-    console.log(values)
-  }
+  const onSubmit = () => {}
 
   const paymentNav = () => {
+    //add job with values and client id
+    dispatch(
+      createJob({
+        title: values.title,
+        duration: values.duration,
+        location: values.location,
+        yearsOfExperience: values.yearsOfExperience,
+        description: values.description,
+        budget: values.budget,
+        privacy: 'public',
+        clientId: client.id,
+      })
+      // !title ||
+      //   !duration ||
+      //   !location ||
+      //   !yearsOfExperience ||
+      //   !budget ||
+      //   !description ||
+      //   !privacy
+    )
     navigation.navigate('payment')
   }
   return (
@@ -60,7 +83,10 @@ const JobPostingPage = ({ navigation }) => {
             list={['Senior Production Manager', 'option2', 'option3']}
             onSelect={(value) => handleChange('title', value)}
           />
-          <DurationInputs placeholder='Job Duration*' />
+          <DurationInputs
+            placeholder='Job Duration*'
+            onChangeText={(value) => handleChange('duration', value)}
+          />
           <Inputs
             placeholder='Location*'
             style={styles.input}
@@ -93,7 +119,6 @@ const JobPostingPage = ({ navigation }) => {
               value={isEnabled}
             ></Switch>
             <Text style={isEnabled ? styles.picked : styles.notPicked}>
-              {' '}
               Private
             </Text>
           </View>
