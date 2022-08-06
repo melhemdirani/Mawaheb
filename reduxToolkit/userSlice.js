@@ -3,9 +3,9 @@ import { combineReducers } from 'redux'
 import customFetch from '../utils/axios'
 
 const initialState = {
-  user: null,
+  user: undefined,
   isLoading: false,
-  error: null,
+  error: undefined,
 }
 
 export const registerUser = createAsyncThunk(

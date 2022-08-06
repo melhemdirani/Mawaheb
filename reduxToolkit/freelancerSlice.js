@@ -11,11 +11,8 @@ const initialState = {
   latestRole: {},
   notableRole: {},
   additionalRole: {},
-
   roles: [],
-  languages: [
-  ],
-
+  languages: [],
   isLoading: false,
   error: null,
 }
@@ -43,6 +40,7 @@ const freelancerSlice = createSlice({
       state[name] = value
     },
     addRoles: (state, action) => {
+  
       state.roles.push(action.payload)
       console.log(state.roles)
     },
@@ -55,7 +53,7 @@ const freelancerSlice = createSlice({
     addLanguage: (state, action) => {
       state.languages.push(action.payload)
       console.log(state.languages)
-    }
+    },
   },
   extraReducers: {
     [createFreelancerProfile.pending]: (state) => {
@@ -72,7 +70,12 @@ const freelancerSlice = createSlice({
     },
   },
 })
-export const { handleChange, addRoles, updateLatestRole, updateNotableRole, addLanguage } =
-  freelancerSlice.actions
+export const {
+  handleChange,
+  addRoles,
+  updateLatestRole,
+  updateNotableRole,
+  addLanguage,
+} = freelancerSlice.actions
 
 export default freelancerSlice.reducer

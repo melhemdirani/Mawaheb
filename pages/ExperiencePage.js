@@ -32,9 +32,55 @@ const ExperiencePage = ({ navigation }) => {
   const dispatch = useDispatch()
 
   const languageNavigate = () => {
-    dispatch(addRoles(notableRole))
-    dispatch(addRoles(latestRole))
-    navigation.navigate('language')
+    const {
+      role,
+      projectTitle,
+      location,
+      keyResponsibilities,
+      dailyRate,
+      startDate,
+      endDate,
+      isLatest,
+      isMostNotable,
+    } = latestRole
+
+    const {
+      role: notableRoleRole,
+      projectTitle: notableRoleProjectTitle,
+      location: notableRoleLocation,
+      keyResponsibilities: notableRoleKeyResponsibilities,
+      dailyRate: notableRoleDailyRate,
+      startDate: notableRoleStartDate,
+      endDate: notableRoleEndDate,
+      isLatest: notableRoleIsLatest,
+      isMostNotable: notableRoleIsMostNotable,
+    } = notableRole
+    if (
+      !role ||
+      !projectTitle ||
+      !location ||
+      !keyResponsibilities ||
+      !dailyRate ||
+      !startDate ||
+      !endDate ||
+      !isLatest ||
+      !isMostNotable ||
+      !notableRoleRole ||
+      !notableRoleProjectTitle ||
+      !notableRoleLocation ||
+      !notableRoleKeyResponsibilities ||
+      !notableRoleDailyRate ||
+      !notableRoleStartDate ||
+      !notableRoleEndDate ||
+      !notableRoleIsLatest ||
+      !notableRoleIsMostNotable
+    ) {
+      alert('Please fill all the fields')
+    } else {
+      dispatch(addRoles(latestRole))
+      dispatch(addRoles(notableRole))
+      navigation.navigate('language')
+    }
   }
 
   const MaskedTitle = ({ title }) => {
@@ -84,9 +130,13 @@ const ExperiencePage = ({ navigation }) => {
       <View style={styles.buttons}>
         <PrimaryButton title='Next' navigate={languageNavigate} />
       </View>
-      <Pressable onPress={() => languageNavigate()}>
-        <Text style={styles.skipText}>Skip</Text>
-      </Pressable>
+      <Pressable onPress={() => languageNavigate()}></Pressable>
+      <Text
+        style={styles.skipText}
+        onPress={() => navigation.navigate('language')}
+      >
+        Skip
+      </Text>
     </ScrollView>
   )
 }

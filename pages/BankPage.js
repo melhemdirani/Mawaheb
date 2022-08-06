@@ -38,18 +38,21 @@ const BankPage = ({ navigation }) => {
   }
 
   const navigate = () => {
+
     dispatch(
       createFreelancerProfile({
-        expirationDate,
-        emiratesId,
-        emiratesIdFrontSide,
-        emiratesIdBackSide,
+        profile: {
+          expirationDate,
+          emiratesId,
+          emiratesIdFrontSide,
+          emiratesIdBackSide,
+        },
         roles: roles,
         languages: languages,
-        bankDetails: bank,
+        bankDetails: Object.keys(bank).length > 0 ? bank : undefined,
       })
     )
-    dispatch(setFreelancerId(freelancer.id))
+    // dispatch(setFreelancerId(freelancer.id))
     navigation.navigate('jobseeker_jobs')
   }
 

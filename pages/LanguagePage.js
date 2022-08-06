@@ -34,9 +34,16 @@ const LanguagePage = ({ navigation }) => {
   )
 
   const navigateBank = () => {
-    dispatch(addLanguage(mainLanguage))
-    dispatch(addLanguage(secondaryLanguage))
-    navigation.navigate('bank')
+    const { name, profeciency } = mainLanguage
+    const { name: name2, profeciency: profeciency2 } = secondaryLanguage
+    if (!name || !profeciency || !name2 || !profeciency2) {
+      alert('Please fill all the fields')
+      return
+    } else {
+      dispatch(addLanguage(mainLanguage))
+      dispatch(addLanguage(secondaryLanguage))
+      navigation.navigate('bank')
+    }
   }
 
   const handleMainLanguageChange = (name, value) => {

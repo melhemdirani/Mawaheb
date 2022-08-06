@@ -8,11 +8,14 @@ import SelectInput from './SelectInput'
 import TextArea from './TextArea'
 import DurationInputs from './DurationInputs'
 import DailyRate from './DailyRate'
-import { updateLatestRole,updateNotableRole} from '../reduxToolkit/freelancerSlice'
+import {
+  updateLatestRole,
+  updateNotableRole,
+} from '../reduxToolkit/freelancerSlice'
 import { useDispatch } from 'react-redux'
 
 function RoleForm({ title, submit }) {
-  const dispatch=useDispatch ()
+  const dispatch = useDispatch()
   const isLatestState = {
     role: '',
     projectTitle: '',
@@ -29,7 +32,7 @@ function RoleForm({ title, submit }) {
     projectTitle: '',
     location: '',
     keyResponsibilities: '',
-    dailyRate: '',
+    dailyRate: 0,
     startDate: 'sd',
     endDate: 'sdsd',
     isLatest: false,
@@ -42,8 +45,6 @@ function RoleForm({ title, submit }) {
     if (title === 'latest') {
       setLatestRole({ ...latestRole, [name]: value })
       dispatch(updateLatestRole(latestRole))
-      
-
     } else if (title === 'notable') {
       setNotableRole({ ...notableRole, [name]: value })
       dispatch(updateNotableRole(notableRole))
@@ -79,7 +80,7 @@ function RoleForm({ title, submit }) {
       /> */}
       <DailyRate
         placeholder='Your daily rate*'
-        onChangeText={(value) => handleChange('dailyRate', value)}
+        onChangeText={(value) => handleChange('dailyRate', parseInt(value))}
       />
       <LinearGradient
         start={{ x: 0, y: 0 }}
