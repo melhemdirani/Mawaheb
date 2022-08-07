@@ -55,8 +55,9 @@ const jobSlice = createSlice({
       state.isLoading = true
     },
     [getAllJobs.fulfilled]: (state, action) => {
+      const {jobs} = action.payload
       state.isLoading = false
-      state.jobs = action.payload
+      state.jobs = jobs
     },
   },
 })

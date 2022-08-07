@@ -14,11 +14,12 @@ import { useDispatch, useSelector } from 'react-redux'
 const JobsPage = ({ navigation, name, notifications }) => {
   const [notificationIndex, setNotifcaitonIndex] = useState(0)
   const { jobs } = useSelector((store) => store.job)
+  const {user} = useSelector((store) => store.user)
+  console.log(jobs)
 
   const dispatch = useDispatch()
   useLayoutEffect(() => {
     dispatch(getAllJobs())
-    console.log('jobs', jobs)
   }, [])
 
   const alterNotificationIndex = () => {
@@ -79,22 +80,20 @@ const JobsPage = ({ navigation, name, notifications }) => {
   }
 
   const renderItem = (data) => {
-    return <Text> {data.item.title}</Text>
+    return <Job {...data.item} navigate={navigate} />
   }
-  let welcomeMessage = `Hi `
+  let welcomeMessage = `Hi ${user?.name}` 
   return (
     <View style={styles.container}>
       <SecondaryHeader title={welcomeMessage}></SecondaryHeader>
-   
-        <FlatList
-          data={jobs.length > 0 ? jobs : [{ id: 0, title: 'No Jobs' }]}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          // contentContainerStyle={{paddingBottom: 200}}
 
-          style={styles.jobs}
-        ></FlatList>
-   
+      <FlatList
+        data={jobs.length > 0 ? jobs : [{ id: 0, title: 'No Jobs' }]}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        // contentContainerStyle={{paddingBottom: 200}}
+        style={styles.jobs}
+      ></FlatList>
 
       <Navbar active='Jobs' navigation={navigation} />
     </View>
