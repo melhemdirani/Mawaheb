@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { View, ScrollView, StyleSheet } from 'react-native'
+import React, { useState, useLayoutEffect, useEffect } from 'react'
+import { View, ScrollView, StyleSheet, FlatList, Text } from 'react-native'
 
 import { Notifier, Easing } from 'react-native-notifier'
 
@@ -8,9 +8,18 @@ import Job from '../components/Job'
 import Navbar from '../components/Navbar'
 import { CustomNotification } from '../components/CustomNotifications'
 import { notify } from '../components/Notifyme.js'
+import { getAllJobs } from '../reduxToolkit/jobSlice'
+import { useDispatch, useSelector } from 'react-redux'
 
 const JobsPage = ({ navigation, name, notifications }) => {
   const [notificationIndex, setNotifcaitonIndex] = useState(0)
+  const { jobs } = useSelector((store) => store.job)
+
+  const dispatch = useDispatch()
+  useLayoutEffect(() => {
+    dispatch(getAllJobs())
+    console.log('jobs', jobs)
+  }, [])
 
   const alterNotificationIndex = () => {
     if (notificationIndex === notifications.length - 1) {
@@ -69,27 +78,24 @@ const JobsPage = ({ navigation, name, notifications }) => {
     navigation.navigate('jobDescription', { myjobs: false, data: Data[i] })
   }
 
-  const RenderItem = ({ data, i }) => {
-    return (
-      <View style={styles.renderItem}>
-        <Job
-          title={data.title}
-          description={data.description}
-          price={data.price}
-          navigate={navigate}
-          i={i}
-        />
-      </View>
-    )
+  const renderItem = (data) => {
+    return <Text> {data.item.title}</Text>
   }
-  let welcomeMessage = `Hi ${name},`
+  let welcomeMessage = `Hi `
   return (
     <View style={styles.container}>
-      <ScrollView>
-        <SecondaryHeader title={welcomeMessage}></SecondaryHeader>
-        {Data &&
-          Data.map((data, i) => <RenderItem key={i} data={data} i={i} />)}
-      </ScrollView>
+      <SecondaryHeader title={welcomeMessage}></SecondaryHeader>
+   
+        <FlatList
+          data={jobs.length > 0 ? jobs : [{ id: 0, title: 'No Jobs' }]}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          // contentContainerStyle={{paddingBottom: 200}}
+
+          style={styles.jobs}
+        ></FlatList>
+   
+
       <Navbar active='Jobs' navigation={navigation} />
     </View>
   )
@@ -102,6 +108,7 @@ const styles = StyleSheet.create({
   },
   jobs: {
     padding: 10,
+    flex: 1,
   },
   renderItem: {},
   body: {

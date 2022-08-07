@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, FlatList } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import JobList from '../components/JobList'
 import SecondaryHeader from '../components/SecondaryHeader'
 import MaskedView from '@react-native-masked-view/masked-view'
@@ -8,17 +8,14 @@ import arrowUpIcon from '../assets/images/arrowUpIcon.png'
 import { jobs } from '../assets/data/jobs'
 import Navbar from '../components/Navbar'
 
-const JobListPage = ({navigation}) => {
 
-  const detailsNavigate = () => {
-    navigation.navigate('freelancerDetails')
-  }
+const JobListPage = ({ navigation }) => {
+
+
 
   const renderItem = (data) => {
-    return <JobList {...data.item} navigate={detailsNavigate}/>
+    return <JobList {...data.item} navigate={detailsNavigate} />
   }
-
-
 
   return (
     <View style={styles.wrapper}>
@@ -53,7 +50,7 @@ const JobListPage = ({navigation}) => {
 
           style={styles.jobs}
         ></FlatList>
-        <Navbar active="Jobs" client navigation={navigation}/>
+        <Navbar active='Jobs' client navigation={navigation} />
       </View>
     </View>
   )
@@ -73,7 +70,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop : -15,
+    marginTop: -15,
   },
   jobs: {
     padding: 7,

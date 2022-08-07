@@ -41,6 +41,22 @@ export const loginUser = createAsyncThunk(
     }
   }
 )
+export const logOutUser = createAsyncThunk(
+  'logOutUser',
+  async (_, thunkApi) => {
+    let url = '/auth/logout'
+    try {
+      const resp = await customFetch.get(url)
+      console.log(resp.data)
+
+      return resp.data
+    } catch (error) {
+      console.log(error.response.data.msg)
+
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
 
 const userSlice = createSlice({
   name: 'user',
@@ -49,6 +65,7 @@ const userSlice = createSlice({
     setFreelancerId: (state, action) => {
       state.user.freelancerId = action.payload
     },
+    
   },
   extraReducers: {
     [registerUser.pending]: (state) => {
@@ -75,6 +92,7 @@ const userSlice = createSlice({
       state.isLoading = false
       state.error = payload
     },
+    [logOutUser.fulfilled]: (state) => { state.user = {} }
   },
 })
 export const { setFreelancerId } = userSlice.actions
