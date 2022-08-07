@@ -1,63 +1,60 @@
 import React, { useState } from 'react';
-import { Pressable, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Platform, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
-const TertiaryButton = ({title, navigate}) => {
+const DeleteButton = ({title}) => {
 
   return (
-    <View
-          style={
-            styles.wrapperCustom
-          }
-        >
-          <Text style={styles.text}>
-            {title}
-          </Text>
-      </View>
+      <View
+        style={
+          styles.wrapperCustom
+        }
+      >
+        <Text style={styles.text}>
+          {title}
+        </Text>
+    </View>
   );
 };
-
 const styles = Platform.OS ==='android' 
   ? StyleSheet.create({
+    
     container: {
       justifyContent: "center",
     },
     text: {
-      color: "black",
+      color: "white",
       paddingTop: 5,
       paddingBottom: 5,
       fontSize: 15,
-      fontFamily: 'PoppinsS'
+      fontFamily: "PoppinsS"
     },
     wrapperCustom: {
       borderRadius: 30,
-      backgroundColor: "white",
+      backgroundColor: "#BE3142",
       alignItems: "center",
       padding: 6,
-      borderColor: "black",
-      borderWidth:1,
       width: 255
     },
   })
   : StyleSheet.create({
+    
     container: {
       justifyContent: "center",
     },
     text: {
-      color: "black",
+      color: "white",
       paddingTop: 10,
       paddingBottom: 10,
       fontSize: 16,
-      fontFamily: 'PoppinsS'
+      fontFamily: "PoppinsS"
     },
     wrapperCustom: {
       borderRadius: 30,
-      backgroundColor: "white",
+      backgroundColor: "#BE3142",
       alignItems: "center",
       padding: 6,
-      borderColor: "black",
-      borderWidth:1,
       width: 255
     },
   })
 
-export default TertiaryButton;
+export default DeleteButton;

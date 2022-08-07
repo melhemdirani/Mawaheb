@@ -1,19 +1,88 @@
+import React from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
-} from 'react-native'
-import React from 'react'
-import Header from '../components/Header'
-import Icon from '../assets/images/bankIcon.png'
-import Inputs from '../components/Inputs'
+  Pressable
+} from 'react-native';
+
+import { createFreelancerProfile } from '../reduxToolkit/freelancerSlice'
+import { useSelector, useDispatch } from 'react-redux'
+import Header from '../components/Header';
+import Icon from '../assets/images/bankIcon.png';
+import Inputs from '../components/Inputs';
 import PrimaryButton from '../components/Buttons/PrimaryButton'
-import Pressable from 'react-native/Libraries/Components/Pressable/Pressable'
 
 const BankPage = ({  navigation }) => {
-  const navigate = () => {
+  const bankState = {
+    iban: '',
+    accountName: '',
+    bankName: '',
+    bankAddress: '',
+    city: '',
+    swiftCode: '',
+  }
+  const [bank, setBank] = React.useState(bankState)
+
+  const {
+    freelancer,
+    isLoading,
+    error,
+    expirationDate,
+    emiratesId,
+    emiratesIdFrontSide,
+    emiratesIdBackSide,
+    roles,
+    languages,
+  } = useSelector((store) => store.freelancer)
+  const dispatch = useDispatch()
+  const handleChange = (name, value) => {
+    console.log(name, value)
+    setBank({ ...bank, [name]: value })
+  }
+
+  const checkBankEmpty = () => {
+    if(
+      bank.iban === ''
+      || bank.accountName === ''
+      || bank.bankName === ''
+      || bank.bankAddress === ''
+      || bank.city === ''
+      || bank.swiftCode === ''
+    ){
+      return true
+    } else{
+      return false
+    }
+  }
+
+  const createJobSeeker = () => {
+    dispatch(
+      createFreelancerProfile({
+        profile: {
+          expirationDate,
+          emiratesId,
+          emiratesIdFrontSide,
+          emiratesIdBackSide,
+        },
+        roles: roles,
+        languages: languages,
+        bankDetails: !checkBankEmpty ? bank : undefined,
+      })
+    )
+  }
+  const registerWithoutBank = () => {
+    createJobSeeker()
     navigation.navigate('jobseeker_jobs')
+  }
+
+  const registerWithBank = () =>{
+    if(checkBankEmpty ){
+      alert("Please fill out all fields")
+    } else{
+      registerWithoutBank()
+    }
   }
 
   return (
@@ -22,7 +91,7 @@ const BankPage = ({  navigation }) => {
         icon={Icon}
         title='Bank Details'
         // numOfPage={<Image source={trash}></Image>}
-        numOfPage='5/5'
+        numOfPage='6/6'
         hidden={false}
         goBack={navigation.goBack}
       />
@@ -30,16 +99,35 @@ const BankPage = ({  navigation }) => {
         <Text style={styles.text}>
           Lorem ipsum dolor sit amenoLorem ipsum dolor sit ameno
         </Text>
-        <Inputs placeholder='IBAN*' />
-        <Inputs placeholder='Account Name*' />
-        <Inputs placeholder='Bank Name*' />
-        <Inputs placeholder='Bank Address*' />
-        <Inputs placeholder='City*' />
-        <Inputs placeholder='Swift Code*' />
-        <Pressable style={styles.nextButton}>
-          <PrimaryButton title='Create Profile' navigate={navigate}/>
+        <Inputs
+          placeholder='IBAN*'
+          onChange={(value) => handleChange('iban', value)}
+        />
+        <Inputs
+          placeholder='Account Name*'
+          onChange={(value) => handleChange('accountName', value)}
+        />
+        <Inputs
+          placeholder='Bank Name*'
+          onChange={(value) => handleChange('bankName', value)}
+        />
+        <Inputs
+          placeholder='Bank Address*'
+          onChange={(value) => handleChange('bankAddress', value)}
+        />
+
+        <Inputs
+          placeholder='City*'
+          onChange={(value) => handleChange('city', value)}
+        />
+        <Inputs
+          placeholder='Swift Code*'
+          onChange={(value) => handleChange('swiftCode', value)}
+        />
+        <Pressable style={styles.nextButton} onPress={() => registerWithBank()}>
+          <PrimaryButton title='Create Profile' />
         </Pressable>
-        <Pressable onPress={() =>  navigation.navigate('jobseeker_jobs')}>
+        <Pressable onPress={() =>  registerWithoutBank()}>
           <Text style={styles.skipText}>
               SKIP
           </Text>

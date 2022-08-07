@@ -1,8 +1,6 @@
 import { ScrollView ,View, StyleSheet, Platform, Text } from 'react-native';
 import React from 'react';
-import { connect } from 'react-redux';
 
-import { clearNotifications } from '../redux/user/user.actions';
 
 import Navbar from '../components/Navbar';
 import Header from '../components/Header';
@@ -11,11 +9,9 @@ import trash from '../assets/images/trash.png'
 import Notification from '../components/Notification';
 
 
-const NotificationsPage = ({navigation, role, clearNotifications}) => {
+const NotificationsPage = ({navigation, role}) => {
     
-    const onTrashPress = () => {
-        clearNotifications()
-    }
+   
 
     let notifications = [
         {notification: "lorem ipsum lorem ipsum", urgent: false },
@@ -25,13 +21,14 @@ const NotificationsPage = ({navigation, role, clearNotifications}) => {
     return (
         <View style={styles.container}>
             <ScrollView >
-                <Header icon={notificationIcon} hidden rightIcon={trash} numberHidded onTrashPress={onTrashPress}/>
-                <View style={styles.container4} />
-                {
-                    notifications && notifications.map((n,i) =>
-                        <Notification title={n.notification} color={n.urgent ?  "#BE3142": "#31BEBB"} key={i}/>
-                    )
-                }
+                <Header icon={notificationIcon} hidden rightIcon={trash} numberHidded title={"Notifications"} />
+                <View style={styles.container4} >
+                    {
+                        notifications && notifications.map((n,i) =>
+                            <Notification title={n.notification} color={n.urgent ?  true: false} key={i}/>
+                        )
+                    }
+                </View>
             </ScrollView>
             <Navbar active="Notifications" navigation={navigation} client={role === 'client' ? true : false}/>
         </View>
@@ -53,18 +50,10 @@ const styles = Platform.OS === "android"
         flex: 1,
         backgroundColor: 'white',
     },
+    container4:{
+        marginTop: 40
+    }
 })
 
-const mapStateToProps =  ({
-    notifications: {notifications},
-    role: {role},
-    })   => ({
-    notifications,
-    role,
-})
-    
-const mapDispatchToProps = (dispatch) => ({
-    clearNotifications: (object) => dispatch(clearNotifications(object))
-});
 
-export default connect(mapStateToProps, mapDispatchToProps )(NotificationsPage)
+export default NotificationsPage

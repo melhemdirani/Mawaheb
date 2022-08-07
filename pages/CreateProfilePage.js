@@ -2,18 +2,16 @@ import React, {useState} from 'react';
 import {
   View,
   Text,
-  Pressable,
   StyleSheet,
   Image,
   ScrollView,
+  TouchableOpacity
 } from 'react-native';
-import { connect } from 'react-redux';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
 
-import { setUser } from '../redux/user/user.actions';
 
 import signUp from '../assets/images/signUp.png';
 
@@ -24,14 +22,10 @@ import PrimaryButton from '../components/Buttons/PrimaryButton';
 
 
 
-const CreateProfilePage = ({  navigation, setUser, user, id }) => {
+const CreateProfilePage = ({  navigation }) => {
   
-  const [passnum, setPassnum] = useState()
-  const [passCopy, setPassCopy] = useState(null)
-  const [visaCopy, setVisaCopy] = useState(null)
 
   const navigateExperience = () => {
-    setUser({passportNumber: passnum, copyOfPassport: "", visaCopy: ""})
     navigation.navigate("experience")
   } 
 
@@ -62,8 +56,6 @@ const CreateProfilePage = ({  navigation, setUser, user, id }) => {
       quality: 1,
     });
     if (!result.cancelled) {
-      setPassCopy(result.uri);
-      console.log("result", result)
     }
   };
   const selectFile2 = async () => {
@@ -74,11 +66,9 @@ const CreateProfilePage = ({  navigation, setUser, user, id }) => {
       quality: 1,
     });
     if (!result.cancelled) {
-      setVisaCopy(result.uri);
-      console.log("result", result)
     }
   };
-  console.log("user", id)
+  
   return (
     <ScrollView style={styles.container}>
       <Header
@@ -91,29 +81,18 @@ const CreateProfilePage = ({  navigation, setUser, user, id }) => {
       />
       <View style={styles.subContainer}>
         <Text style={styles.text}>
-          Fill and upload the below required field and documents
+          Upload the below documents
         </Text>
-        <Inputs title='Continue to Payment' placeholder='Passport Number*' onChange={setPassnum}/>
-        {
-          passCopy 
-          ? <Image source={{uri:passCopy}} style={styles.Imagecontainer} />
-          : <UploadCard title='Copy of passport' selectFile={selectFile} />
-        }
-        {
-          visaCopy 
-          ? <Image source={{uri:visaCopy}} style={styles.Imagecontainer} />
-          : <UploadCard title='Copy of residency visa' selectFile={selectFile2} />
-
-        }
-      
-        <Pressable style={styles.nextButton} >
-          <PrimaryButton title='Next' navigate={navigateExperience} />
-        </Pressable>
-        <Pressable onPress={() => navigation.navigate("experience")}>
+            <UploadCard title='Copy of passport' selectFile={selectFile} />
+            <UploadCard title='Copy of residency visa' selectFile={selectFile2} />
+        <TouchableOpacity onPress={() => navigateExperience()} style={styles.nextButton} >
+          <PrimaryButton title='Next' />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("experience")}>
           <Text style={styles.skipText}>
               SKIP
           </Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   )
@@ -157,21 +136,7 @@ const styles = StyleSheet.create({
   },
 })
 
-const mapStateToProps =  ({
-  user: {user},
-  id: {id},
-  notifications: {notifications},
-  name: {name},
-})   => ({
-  user,
-  notifications,
-  name,
-  id,
-})
-
-const mapDispatchToProps = (dispatch) => ({
-  setUser: (object) => setUser(object)
-});
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateProfilePage)
+
+export default CreateProfilePage

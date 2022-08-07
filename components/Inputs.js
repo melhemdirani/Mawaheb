@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, TextInput} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 
-const Inputs = ({placeholder, onChange, numeric}) => {
+const Inputs = ({placeholder, onChange, numeric, value}) => {
 
     const [text, setText] = useState("")
     const [changed, setChanged] = useState(false)
@@ -18,7 +18,11 @@ const Inputs = ({placeholder, onChange, numeric}) => {
         }
     }, [text])
 
- 
+    const onChangeText = (e) => {
+      setText(e)
+      onChange(e)
+    }
+
     return (
         <View style={!changed ? [styles.container, styles.borderBottom] : styles.container}>
             {
@@ -34,16 +38,19 @@ const Inputs = ({placeholder, onChange, numeric}) => {
                 </MaskedView>
 
             }
-            <TextInput
+           
+             <TextInput
               secureTextEntry={placeholder === "Password" || placeholder === "Password*" ? true : false}
               style={
               styles.wrapperCustom
               }
-              onChangeText={(e) => onChange(e)}
               placeholder={placeholder}
               keyboardType={numeric ? "numeric" : "default"}
               placeholderTextColor="rgba(0,0,0,.5)"
+              onChangeText={(e) => onChangeText(e)}
+              value={value}
             />
+
             { changed && 
                 <LinearGradient
                     start={{x:0, y: 0}}
@@ -81,14 +88,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 6,
     width: "100%",
-    paddingLeft: 20
-
+    paddingLeft: 20,
+    fontFamily: 'PoppinsR'
   },
   label:{
     paddingLeft: 20,
     fontSize: 10,
     textTransform: "uppercase",
-    fontWeight: "600"
   }
 });
 

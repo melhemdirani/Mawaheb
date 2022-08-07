@@ -10,9 +10,14 @@ function Setting({title, icon, action}) {
                 style={styles.image}
                 source={icon}
             />
-            <Pressable onPress={() => action()}>
+           { action ?  <Pressable onPress={() => action()}>
                 <Text style={styles.text}>{title}</Text>
             </Pressable>
+            :<Pressable >
+            <Text style={styles.text}>{title}</Text>
+        </Pressable>
+        
+        }
 
         </View>
     )

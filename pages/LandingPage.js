@@ -1,36 +1,39 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { StatusBar } from 'expo-status-bar';
-import { ImageBackground, StyleSheet, Text, View, Image } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View, Image, Pressable } from 'react-native';
 
 
-export default function LandingPage({navigation}) {
+export default function LandingPage() {
 
-  setTimeout(() => {
-    navigation.navigate('SignIn')
-  }, 2000)
-  
   return (
-    <ImageBackground style={ styles.container } 
-      resizeMode='cover' 
-      source={require('../assets/images/backgroundColors.png')}
 
-    >
-      <ImageBackground style={ styles.bgImage2 } 
+      <ImageBackground style={ styles.container } 
         resizeMode='cover' 
-        source={require('../assets/images/background1.png')}
+        source={require('../assets/images/backgroundColors.png')}
+
       >
-        <View style={styles.container}>
-          <Image
-            style={styles.logo}
-            source={require('../assets/images/mawaheb_logo.png')}
-          />
-          <Text style={styles.text}>© 2022 Mawahib. All rights reserved.</Text>
-          <Text style={styles.text2}>Powered by Reboost</Text>
-          <StatusBar style="auto" />
-        </View>
+        <ImageBackground style={ styles.bgImage2 } 
+          resizeMode='cover' 
+          source={require('../assets/images/background1.png')}
+        >
+
+          <View style={styles.container}>
+          <Pressable style={styles.container} >
+            <Image
+              style={styles.logo}
+              source={require('../assets/images/mawaheb_logo.png')}
+            />
+            <Text style={styles.text}>© 2022 Mawahib. All rights reserved.</Text>
+            <Text style={styles.text2}>Powered by Reboost</Text>
+            <StatusBar style="auto" />
+            </Pressable>
+          </View>
+
+        </ImageBackground>
       </ImageBackground>
-    </ImageBackground>
+
+
   );
 }
 

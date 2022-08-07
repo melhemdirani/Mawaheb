@@ -3,7 +3,7 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Button,
+  TouchableOpacity,
   Switch,
   SafeAreaView
 } from 'react-native'
@@ -58,9 +58,9 @@ const JobPostingPage = ({navigation}) => {
                 <Text style={isEnabled ? styles.picked : styles.notPicked}> Private</Text>
             </View>
         </View>
-        <View style={styles.btnContainer}>
-          <PrimaryButton title='Continue to Payment' navigate={paymentNav}/>
-        </View>
+        <TouchableOpacity style={styles.btnContainer} onPress={() => paymentNav()}>
+          <PrimaryButton title='Continue to Payment' />
+        </TouchableOpacity>
       </View>
     </ScrollView>
   )

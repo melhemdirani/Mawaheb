@@ -5,11 +5,10 @@ import {
     StyleSheet,
     Image,
     ImageBackground,
-    SafeAreaView,
+    TouchableOpacity,
     Pressable,
     ScrollView
   } from 'react-native';
-import { connect } from 'react-redux';
 import MaskedView from '@react-native-masked-view/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -20,14 +19,12 @@ import priceRectangle from '../assets/images/priceRectangle.png'
 import heartIcon from '../assets/images/heartIcon.png'
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import minusIcon from '../assets/images/minusIcon.png'
-import { notify } from '../components/Notifyme'
 
 const JobDetailsPage = ({route, navigation, name}) => {
 
   const { title, price, location, shift, roleDescription, date } = route.params.data
   
   const navigateApply = () => {
-    notify(name, 'Thank you for applying!')
     navigation.navigate('jobseeker_jobs')
   }
 
@@ -49,8 +46,8 @@ const JobDetailsPage = ({route, navigation, name}) => {
         </View>
         <View style={styles.subHeader}>
           <Image source={heartIcon} style={styles.heart}></Image>
-          <Pressable onPress={() => navigation.goBack()}>
-            <Image source={minusIcon} style={styles.plus}></Image>
+          <Pressable onPress={() => navigation.goBack()} style={styles.minusContainer}>
+            <Image source={minusIcon} style={styles.plus} />
           </Pressable>
         </View>
       </View>
@@ -125,9 +122,9 @@ const JobDetailsPage = ({route, navigation, name}) => {
         </View>
       </LinearGradient>
       { !route.params.myjobs &&
-        <View style={styles.button}>
-          <PrimaryButton title='Apply' navigate={navigateApply} />
-        </View>
+        <TouchableOpacity style={styles.button} onPress={() => navigateApply()}>
+          <PrimaryButton title='Apply'  />
+        </TouchableOpacity>
       }
     </ScrollView>
   )
@@ -141,6 +138,13 @@ const JobDetailsPage = ({route, navigation, name}) => {
       alignSelf: "center",
       marginTop: 70,
       flex: 1,
+    },
+    minusContainer:{
+      padding: 15,
+      marginLeft: 15,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center"
     },
     linear: {
       borderRadius: 30,
@@ -204,7 +208,6 @@ const JobDetailsPage = ({route, navigation, name}) => {
     },
     heart: {},
     plus: {
-      left: 10,
     },
     text: {
       color: 'rgba(16, 125, 197, 1)',
@@ -305,10 +308,5 @@ const JobDetailsPage = ({route, navigation, name}) => {
     },
   })
 
-  const mapStateToProps =  ({
-    name: {name},
-})   => ({
-    name,
-})
 
-export default connect(mapStateToProps)(JobDetailsPage)
+export default JobDetailsPage

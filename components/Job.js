@@ -31,7 +31,7 @@ const Job = ({ title, description, price, client, current, heart, navigate, i })
         </View>
         <View style={styles.subHeader}>
           {!heart && <Image source={heartIcon} style={styles.heart}></Image>}
-          <Pressable onPress={() => navigate(i)}>
+          <Pressable onPress={() => navigate(i)} style={styles.plusContainer}>
             <Image source={plusIcon} style={styles.plus}></Image>
           </Pressable>
         </View>
@@ -127,6 +127,13 @@ const styles = Platform.OS === 'android'
       width: "90%",
       alignSelf: "center",
       top: -5
+    },
+    plusContainer:{
+      paddingHorizontal: 5,
+      paddingVertical: 15,
+      marginRight: -10,
+      backgroundColor: "transparent",
+      marginLeft: 15
     },
     linear: {
       borderRadius: 20,
@@ -245,6 +252,12 @@ const styles = Platform.OS === 'android'
       width: "90%",
       alignSelf: "center",
       top: -5
+    },
+    plusContainer:{
+      paddingHorizontal: 5,
+      paddingVertical: 15,
+      marginRight: -10,
+      marginLeft: 15
     },
     linear: {
       borderRadius: 20,

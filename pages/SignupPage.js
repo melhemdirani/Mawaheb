@@ -1,12 +1,16 @@
-import { StatusBar } from 'expo-status-bar'
+import React, {useState} from 'react';
+import Carousel from 'react-native-anchor-carousel'; 
+import PaginationDot from 'react-native-animated-pagination-dot'
 import {
-  ImageBackground,
+  Dimensions,
   StyleSheet,
   Text,
   View,
+  ScrollView,
   Platform,
   Image,
-  Button,
+  TouchableOpacity,
+  Pressable
 } from 'react-native'
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import SecondaryButton from '../components/Buttons/SecondaryButton'
@@ -14,7 +18,16 @@ import TertiaryButton from '../components/Buttons/TertiaryButton'
 import axios from 'axios'
 import { useEffect } from 'react'
 
+
+const height = Dimensions.get('window').height
+
 export default function SignupPage({ navigation }) {
+  const {width: windowWidth} = Dimensions.get('window');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const carouselRef = React.useRef(null);
+  function handleCarouselScrollEnd(item, index) {
+      setCurrentIndex(index);
+  }
   const navigateJob = () => {
     navigation.navigate('JobSignUp', { role: 'freelancer' })
   }
@@ -22,27 +35,67 @@ export default function SignupPage({ navigation }) {
     navigation.navigate('login')
   }
   const navigateCSignup = () => {
-    navigation.navigate('recruiter_signup', { role: 'client' })
+    navigation.navigate('JobSignUp', { role: 'client' })
+
   }
 
+  const renderItem = ({item, index}) => {
+    return(
+      <Pressable
+        onPress={() => {
+        carouselRef.current.scrollToIndex(index);
+        }}
+      >
+        <Image
+          style={styles.image}
+          source={require('../assets/images/signupheader.png')}
+        />
+        <Text style={styles.header}>Quick Easy Simple!</Text>
+      </Pressable>
+
+    )
+  }
+  
   return (
-    <View style={styles.container}>
-      <Image
-        style={styles.image}
-        source={require('../assets/images/signupheader.png')}
-      />
-      <Text style={styles.header}>Quick Easy Simple!</Text>
+    <ScrollView style={styles.container}>
+        <Carousel
+          ref={carouselRef}
+          data={[1, 2, 3, 4, 5]}
+          renderItem={renderItem}
+          style={styles.carousel}
+          itemWidth={windowWidth }
+          containerWidth={windowWidth}
+          separatorWidth={0}
+          onScrollEnd={handleCarouselScrollEnd}
+        />
+        <View style={styles.dots}>
+          <PaginationDot
+              activeDotColor={'#16DBC7'}
+              curPage={currentIndex}
+              maxPage={5}
+          />
+        </View>
+       
       <Text style={styles.text}>
         <Text style={styles.text1}>Mawahib </Text>
         connects businesses with independent professionals and agencies around
         the MENA region.
       </Text>
-      <PrimaryButton title='Jobseeker Sign up' navigate={navigateJob} />
-      <View style={styles.spacing} />
-      <SecondaryButton title='Recruiter Sign up' navigate={navigateCSignup} />
-      <View style={styles.spacing} />
-      <TertiaryButton title='Login' navigate={navigateLogin} />
-    </View>
+      <View style={styles.buttons}>
+        <TouchableOpacity onPress={() => {navigateJob()}}>
+          <PrimaryButton title='Jobseeker Sign up' />
+        </TouchableOpacity>
+        <View style={styles.spacing} />
+        <TouchableOpacity onPress={() => {navigateCSignup()}}>
+          <SecondaryButton title='Recruiter Sign up'  />
+        </TouchableOpacity>
+        <View style={styles.spacing} />
+        <TouchableOpacity onPress={() => {navigateLogin()}}>
+        <TertiaryButton title='Login' />
+        </TouchableOpacity>
+      </View>
+ 
+    </ScrollView>
   )
 }
 
@@ -51,8 +104,20 @@ const styles =
     ? StyleSheet.create({
         container: {
           flex: 1,
-          alignItems: 'center',
           backgroundColor: 'white',
+        },
+        buttons:{
+          alignSelf: "center"
+        },
+        dots:{
+          zIndex: 999,
+          marginTop: -30,
+          marginLeft: 30,
+          alignSelf: "flex-start"
+        },
+        carousel: {
+          flexGrow: 0,
+          zIndex:999,
         },
         header: {
           position: 'absolute',
@@ -71,15 +136,17 @@ const styles =
           width: '100%',
           height: 490,
           marginTop: -50,
+          zIndex: -1
         },
         spacing: {
-          marginBottom: 15,
+          marginBottom: 12,
         },
         text: {
           color: 'black',
           width: '90%',
-          marginTop: 15,
+          marginTop: 25,
           fontSize: 16,
+          alignSelf: "center",
           lineHeight: 18,
           marginBottom: 20,
           fontFamily: 'PoppinsR',
@@ -92,8 +159,20 @@ const styles =
     : StyleSheet.create({
         container: {
           flex: 1,
-          alignItems: 'center',
           backgroundColor: 'white',
+        },
+        buttons:{
+          alignSelf: "center"
+        },
+        carousel: {
+          flexGrow: 0,
+          zIndex:999,
+        },
+        dots:{
+          zIndex: 999,
+          marginTop: -30,
+          marginLeft: 30,
+          alignSelf: "flex-start"
         },
         header: {
           position: 'absolute',
@@ -119,6 +198,7 @@ const styles =
           color: 'black',
           width: '90%',
           marginTop: 30,
+          alignSelf: "center",
           fontSize: 17,
           lineHeight: 25,
           marginBottom: 30,

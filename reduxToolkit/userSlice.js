@@ -3,15 +3,36 @@ import { combineReducers } from 'redux'
 import customFetch from '../utils/axios'
 
 const initialState = {
-  user: null,
+  user: {},
   isLoading: false,
-  error: null,
+  error: undefined,
 }
 
 export const registerUser = createAsyncThunk(
   'registerUser',
   async (user, thunkApi) => {
     let url = '/auth/register'
+    console.log("user", user)
+    try {
+      const resp = await customFetch.post(url, user)
+      return resp.data
+    } catch (error) {
+      console.log("rrer",error.response.data.msg)
+      if(error.response.data.msg === "Email already in use"){
+        alert("This email is already in use, please register using another email address")
+      } else{
+        alert("Error registering")
+      }
+      console.log("dones")
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+
+  }
+)
+export const loginUser = createAsyncThunk(
+  'loginUser',
+  async (user, thunkApi) => {
+    let url = '/auth/login'
     try {
       const resp = await customFetch.post(url, user)
       console.log(resp.data)
@@ -28,7 +49,11 @@ export const registerUser = createAsyncThunk(
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    setFreelancerId: (state, action) => {
+      state.user.freelancerId = action.payload
+    },
+  },
   extraReducers: {
     [registerUser.pending]: (state) => {
       state.isLoading = true
@@ -37,13 +62,26 @@ const userSlice = createSlice({
       const { user } = payload
       state.isLoading = false
       state.user = user
+      console.log("user")
     },
     [registerUser.rejected]: (state, { payload }) => {
       state.isLoading = false
       state.error = payload
     },
+    [loginUser.pending]: (state) => {
+      state.isLoading = true
+    },
+    [loginUser.fulfilled]: (state, { payload }) => {
+      const { user } = payload
+      state.isLoading = false
+      state.user = user
+    },
+    [loginUser.rejected]: (state, { payload }) => {
+      state.isLoading = false
+      state.error = payload
+    },
   },
 })
-export const { toggleSidebar } = userSlice.actions
+export const { setFreelancerId } = userSlice.actions
 
 export default userSlice.reducer

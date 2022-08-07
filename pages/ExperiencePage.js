@@ -1,96 +1,246 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable, Button } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, Pressable, Button , TouchableOpacity} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
-import { connect } from 'react-redux';
-import axios from 'axios';
-import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
-
-import { setUser } from '../redux/user/user.actions';
+import { useDispatch } from 'react-redux';
 
 import Header from '../components/Header';
 import signUp from '../assets/images/experienceIcon.png';
-import Inputs from '../components/Inputs';
 import PrimaryButton from '../components/Buttons/PrimaryButton'
-import SelectInput from '../components/SelectInput';
-import TextArea from '../components/TextArea';
-import DurationInputs from '../components/DurationInputs';
-import DailyRate from '../components/DailyRate';
 import AddRoleButton from '../components/Buttons/AddRoleButton';
 import RoleForm from '../components/RoleForm';
 
-const ExperiencePage = ({ navigation, setUser }) => {
+import {
+  addRoles
+} from '../reduxToolkit/freelancerSlice'
 
-    const [latestRole, setLatestRole] = useState({})
 
-    const onRoleChange = () => {
-        setLatestRole
+const ExperiencePage = ({ navigation }) => {
+  const form = {
+    role: '',
+    projectTitle: '',
+    location: '',
+    keyResponsibilities: '',
+    dailyRate: '',
+    startDate: '',
+    endDate: '',
+    isLatest: true,
+    isMostNotable: false,
+  }
+  const form2 = {
+    role: '',
+    projectTitle: '',
+    location: '',
+    keyResponsibilities: '',
+    dailyRate: '',
+    startDate: '',
+    endDate: '',
+    isLatest: false,
+    isMostNotable: true,
+  }
+  const form3 = {
+    role: '',
+    projectTitle: '',
+    location: '',
+    keyResponsibilities: '',
+    dailyRate: '',
+    startDate: '',
+    endDate: '',
+    isLatest: false,
+    isMostNotable: false,
+  }
+  const [latestRole, setLatestRole] = useState(form)
+  const [notableRole, setNotableRole] = useState(form2)
+  const [additionalRoles, setAdditionalRoles] = useState([])
+  const [addIndex, setAddIndex] = useState(0)
+  let AllRoles = []
+
+
+  const onRoleChange = () => {
+      setLatestRole
+  }
+
+  const goBack = () => {
+    console.log("go back")
+    navigation.goBack()
+  }
+ 
+  const dispatch = useDispatch()
+ 
+  const checkIfEmpty = (val) => {
+    if(val === ''){
+      return true
+    } else return false
+  }
+  const checkRoleEmpty = (object) => {
+    let {
+      role, 
+      projectTitle, 
+      location, 
+      keyResponsibilities, 
+      dailyRate, 
+      startDate, 
+      endDate, 
+      isLatest, 
+      isMostNotable
+    } = object
+    if(
+      checkIfEmpty(role) 
+      || checkIfEmpty(projectTitle) 
+      || checkIfEmpty(location) 
+      || checkIfEmpty(keyResponsibilities) 
+      || checkIfEmpty(dailyRate) 
+      || checkIfEmpty(startDate) 
+      || checkIfEmpty(endDate) 
+      || checkIfEmpty(isLatest) 
+      || checkIfEmpty(isMostNotable) 
+    ) {
+      return true
+    } else return false
+  }
+
+  const handleChange = (name, value, title) => {
+    
+    if (title === 'latest') {
+      setLatestRole({ ...latestRole, [name]: value })
+    } else if (title === 'notable') {
+      setNotableRole({ ...notableRole, [name]: value })
+    } else {
+      setAdditionalRoles(additionalRoles => {
+        return [ ...additionalRoles.slice(0, title), 
+          {...additionalRoles[title], [name]: value },
+            ...additionalRoles.slice(title+1)]
+      });
+    }
+  }
+  const onRoleDelete = (index) => {
+    console.log("hi")
+    setAdditionalRoles(additionalRoles => {
+      return [ ...additionalRoles.slice(0, index),  ...additionalRoles.slice(index+1)]
+    });
+    setAddIndex(addIndex - 1)
+  }
+
+  const handleSubmit = () => {
+    if(
+      checkRoleEmpty(latestRole) || checkRoleEmpty(notableRole)
+    ){
+      console.log("latesst", latestRole)
+      console.log("notable", notableRole)
+      return(
+         alert("Please fill in the above roles first")
+      )
+    } else{
+      AllRoles.push(latestRole)
+      AllRoles.push(notableRole)
+      if(additionalRoles.length > 0){
+        additionalRoles.map( roles => {
+          if( checkRoleEmpty(roles) ){
+            return(
+              alert("Please fill in the above roles first")
+            )
+          } else{
+            AllRoles.push(roles)
+          }
+        })
+      }
+      dispatch(addRoles(AllRoles));
+      navigation.navigate('language');
     }
 
-    const languageNavigate = () => {
-        navigation.navigate('language')
-    }
+    console.log("ALl Roles", AllRoles)
+  }
+  const languageNavigate = () => {
+    navigation.navigate('language');
 
-    const MaskedTitle = ({title}) => {
-        return(
-            <MaskedView 
-                style={styles.titleContainer}
-                maskElement={ 
-                    <Text 
-                        style={[
-                            styles.title, 
-                            {backgroundColor: "transparent"}
-                        ]}
-                    >
-                        {title}
-                    </Text>
-                }
-            >
-                <LinearGradient
-                    start={{x:0, y: 0}}
-                    end={{x:1, y: 1}}
-                    colors={['#31BEBB', '#655BDA' ]}
-                >
-                    <Text style={[styles.title, {opacity: 0}]}>{title}</Text>
-                </LinearGradient>
-            </MaskedView>
-        )
-    }
-    return (
-        <ScrollView style={styles.container}>
-            <Header
-                icon={signUp}
-                title='Experience'
-                // numOfPage={<Image source={trash}></Image>}
-                numOfPage='3/5'
-                hidden={false}
-                goBack={navigation.goBack}
-            />
-            <Text style={styles.text}>
-                Lorem ipsums dolor sit ameno
-            </Text>
-            <MaskedTitle title="Latest Role "/>
-            <RoleForm />
-            <MaskedTitle title="Most Notable Project "/>
-            <RoleForm />
-            <View  style={styles.buttons1}>
-              <AddRoleButton title="Add another role" />
-            </View>
-            <LinearGradient
-                start={{x:0, y: 0}}
-                end={{x:1, y: 1}}
-                colors={['#31BEBB', '#655BDA' ]}
-                style={{height: 5, width: "100%", marginTop: 5}}
-            />
-            <View  style={styles.buttons}>
-              <PrimaryButton title="Next" navigate={languageNavigate}/>
-            </View>
-            <Pressable onPress={() => languageNavigate()}>
-              <Text style={styles.skipText}>Skip</Text>
-            </Pressable>
-        </ScrollView>
+  }
+  useEffect(() => {
+    console.log("additional roles", additionalRoles)
+  }, [additionalRoles])
+
+  const MaskedTitle = ({title}) => {
+      return(
+          <MaskedView 
+              style={styles.titleContainer}
+              maskElement={ 
+                  <Text 
+                      style={[
+                          styles.title, 
+                          {backgroundColor: "transparent"}
+                      ]}
+                  >
+                      {title}
+                  </Text>
+              }
+          >
+              <LinearGradient
+                  start={{x:0, y: 0}}
+                  end={{x:1, y: 1}}
+                  colors={['#31BEBB', '#655BDA' ]}
+              >
+                  <Text style={[styles.title, {opacity: 0}]}>{title}</Text>
+              </LinearGradient>
+          </MaskedView>
+      )
+  }
+
+
+  const onAddClick = () => {
+    setAddIndex(addIndex + 1);
+    setAdditionalRoles(
+      data => ([
+        ...data,
+        form3
+      ])
     )
+  }
+  
+  return (
+      <ScrollView style={styles.container}>
+          <Header
+              icon={signUp}
+              title='Experience'
+              // numOfPage={<Image source={trash}></Image>}
+              numOfPage='4/6'
+              hidden={false}
+              goBack={goBack}
+          />
+          <Text style={styles.text}>
+              Lorem ipsums dolor sit ameno
+          </Text>
+          <MaskedTitle title="Latest Role "/>
+          <RoleForm handleChange={handleChange} title={"latest"}/>
+          <MaskedTitle title="Most Notable Project "/>
+          <RoleForm handleChange={handleChange} title="notable"/>
+          { addIndex > 0 &&
+            <View>
+              <MaskedTitle title="Additional Roles "/>
+              {
+                additionalRoles.map((role, i) => 
+                <View key={i}>
+                  <RoleForm handleChange={handleChange} title={i} additional onRoleDelete={onRoleDelete}/>
+                </View>
+              )}
+            </View>
+          }
+        
+          <Pressable  style={styles.buttons1} onPress={() => onAddClick()}>
+            <AddRoleButton title="Add another role" />
+          </Pressable>
+          <LinearGradient
+              start={{x:0, y: 0}}
+              end={{x:1, y: 1}}
+              colors={['#31BEBB', '#655BDA' ]}
+              style={{height: 5, width: "100%", marginTop: 5}}
+          />
+          <TouchableOpacity  style={styles.buttons} onPress={() => handleSubmit()}>
+            <PrimaryButton title="Next" />
+          </TouchableOpacity>
+          <Pressable onPress={() => languageNavigate()}>
+            <Text style={styles.skipText}>Skip</Text>
+          </Pressable>
+      </ScrollView>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -143,19 +293,6 @@ const styles = StyleSheet.create({
   }
 })
 
-const mapStateToProps =  ({
-    signedIn: {signedIn},
-    notifications: {notifications},
-    name: {name},
-  })   => ({
-    signedIn,
-    notifications,
-    name,
-  })
+
   
-  const mapDispatchToProps = (dispatch) => ({
-    setUser: (object) => setUser(object)
-  });
-  
-  
-  export default connect(mapStateToProps, mapDispatchToProps)(ExperiencePage)
+  export default ExperiencePage

@@ -6,15 +6,13 @@ import {
     StyleSheet,
     Image,
     ScrollView,
-    Pressable,
+    TouchableOpacity,
   } from 'react-native';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
-import { setUserId } from '../redux/user/user.actions';
-import { signIn } from '../redux/user/user.actions';
 
 import signUp from '../assets/images/signUp.png';
 
@@ -22,153 +20,205 @@ import Header from '../components/Header';
 import Inputs from '../components/Inputs';
 import UploadCard from '../components/UploadCard';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
+import DateInputs from '../components/DateInputs';
+import { handleChange } from '../reduxToolkit/freelancerSlice';
 
-const JobSeekersignup = ({  navigation, setUserId, signIn }) => {
-  setUserId()
-  const [id, setId] = useState()
-  const [expiration, setExpiration] = useState('')
-  const [image, setImage] = useState(null);
-  const [image2, setImage2] = useState(null);
-  const [imageurl1, setImageurl1] = useState()
-  const [imageurl2, setImageurl2] = useState()
-  const [uploaded, setUploaded]  = useState(false)
+
+const JobSeekersignup2 = ({  navigation, }) => {
+  const initialState = {
+    expirationDate: new Date(),
+    emiratesId: '',
+    emiratesIdFrontSide: '',
+    emiratesIdBackSide: '',
+  }
+  const dispatch = useDispatch()
+
+  const [values, setValues] = useState(initialState)
+
+  const {
+    freelancer,
+    isLoading,
+    error,
+    expirationDate,
+    emiratesId,
+    emiratesIdFrontSide,
+    emiratesIdBackSide,
+  } = useSelector((store) => store.freelancer)
+  
+  const onSubmit = () => {
+    if(!isLoading && uploaded && uploaded2){
+
+    if (
+      !emiratesIdFrontSide ||
+      !emiratesIdBackSide ||
+      !expirationDate ||
+      !emiratesId
+    ) {
+      alert('Please fill all the fields')
+    } else {
+      navigation.navigate('experience')
+    }
+  }
+  else {
+    if(!uploaded || !uploaded2){
+      alert("Uploading, please wait")
+    }
+  }
+
+  }
+
+  const [image, setImage] = useState({})
+  const [image2, setImage2] = useState({})
+
+  const [uploaded, setUploaded] = useState(false)
+  const [uploaded2, setUploaded2] = useState(false)
 
   const [loading, setLoading] = useState(false)
 
   const navigateExperience = () => {
-    navigation.navigate("JobSignUp2")
-  } 
-  signIn()
-  const register = async () => {
-    let url = "http://194.5.157.234:4000/api/v1/freelancers/"
-    if(expiration === '' || image === '' || image2 === '' || id === '' ){
-      return alert('Please fill in all required inputs*')
-    }
-    try {
-    const {data} = await axios.post(url,{
-        expirationDate:expiration,
-        emiratesIdFrontSide:imageurl1,
-        emiratesIdBackSide: imageurl2,
-        emiratesId: id
-    })
-      navigation.navigate("JobSignUp2")
-      console.log("data", data)
-    } catch (error) {
-      console.log(error.response.data.msg)
-    }
-
+    navigation.navigate('JobSignUp2')
   }
 
-  
   const selectFile = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       quality: 1,
-    });
+    })
     if (!result.cancelled) {
-      setImage(result.uri);
+      setImage(result.uri)
       upload(result.uri)
     }
-  };
+  }
   const selectFile2 = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       quality: 1,
-    });
+    })
     if (!result.cancelled) {
-      setImage2(result.uri);
-      console.log("result", result.uri)
+      setImage2(result.uri)
+      console.log('result', result.uri)
       upload2(result.uri)
-
+      setUploaded2(true)
     }
-  };
+  }
 
-  const upload = async(uri) => {
-    console.log("uploading file")
+  const upload = async (uri) => {
+      try {
+        console.log('trying')
+        const response = await FileSystem.uploadAsync(
+          `http://194.5.157.234:4000/api/v1/freelancers/uploadImage`,
+          uri,
+          {
+            fieldName: 'files',
+            httpMethod: 'post',
+            uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
+          },
+          { body: 'front' }
+        )
+        console.log('response', response)
+        console.log('response body', JSON.parse(response.body).imageUrl)
+        const img = JSON.parse(response.body).imageUrl
+        dispatch(
+          handleChange({
+            name: 'emiratesIdFrontSide',
+            value: img,
+          })
+        )
+      } catch (error) {
+        console.log(error)
+      }
+
+  }
+  const upload2 = async (uri) => {
+    console.log('uploading file')
     try {
-      console.log("trying")
+      console.log('trying')
       const response = await FileSystem.uploadAsync(
         `http://194.5.157.234:4000/api/v1/freelancers/uploadImage`,
         uri,
         {
-          fieldName: "files",
-          httpMethod: "post",
+          fieldName: 'files',
+          httpMethod: 'post',
           uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
         },
-        {body: "front"}
+        { body: 'back' }
       )
-      console.log(JSON.stringify(response, null, 4))
-      console.log("response", response)
-      console.log("response body", JSON.parse(response.body).imageUrl)
-      setImageurl1(JSON.parse(response.body).imageUrl)
-    } catch(error) {
+      console.log('response', response)
+      console.log('response body', JSON.parse(response.body).imageUrl)
+      const img = JSON.parse(response.body).imageUrl
+      dispatch(
+        handleChange({
+          name: 'emiratesIdBackSide',
+          value: img,
+        })
+      )
+
+      setUploaded(true)
+    } catch (error) {
       console.log(error)
     }
   }
-  const upload2 = async(uri) => {
-    console.log("uploading file")
-    try {
-      console.log("trying")
-      const response = await FileSystem.uploadAsync(
-        `http://194.5.157.234:4000/api/v1/freelancers/uploadImage`,
-        uri,
-        {
-          fieldName: "files",
-          httpMethod: "post",
-          uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
-        },
-        {body: "back"}
-
-      )
-      console.log(JSON.stringify(response, null, 4))
-      console.log("response", response)
-      console.log("response body", JSON.parse(response.body).imageUrl)
-
-      setImageurl2(JSON.parse(response.body).imageUrl)
-
-    } catch(error) {
-      console.log(error)
-    }
-  }
-    return loading? <View  style={styles.loadingStyle}>
-            <ActivityIndicator size={'large'}/>
-        </View>
-    :(
-        <ScrollView style={styles.container}>
-        <Header
-            icon={signUp}
-            title='Create Profile'
-            // numOfPage={<Image source={trash}></Image>}
-            numOfPage='2/6'
-            hidden={false}
-            goBack={navigation.goBack}
-        />
-        <View style={styles.subContainer}>
-            <Text style={styles.text}>
-            Fill and upload the below required field and documents 
-            </Text> 
-            <Inputs title='Continue to Payment' placeholder='Expiration Date*'onChange={setExpiration}/>
-            <Inputs title='Continue to Payment' placeholder='Emirates ID Number*' onChange={setId} numeric/>
-            { 
-            image 
-            ? <Image source={{uri:image}} style={styles.Imagecontainer} />
-            : <UploadCard title='Emirates ID front side' selectFile={selectFile}/>
+  
+  useEffect(( ) => {
+    console.log("expirationDate",typeof values.expirationDate.toDateString())
+  }, [values.expirationDate])
+  return loading? <View  style={styles.loadingStyle}>
+          <ActivityIndicator size={'large'}/>
+      </View>
+  :(
+      <ScrollView style={styles.container}>
+      <Header
+          icon={signUp}
+          title='Create Profile'
+          // numOfPage={<Image source={trash}></Image>}
+          numOfPage='2/6'
+          hidden={false}
+          goBack={navigation.goBack}
+      />
+      <View style={styles.subContainer}>
+          <Text style={styles.text}>
+          Fill and upload the below required field and documents {values.expirationDate.toDateString()}
+          </Text> 
+          <DateInputs 
+            placeholder='Expiration Date*'
+            onChange={(value) =>
+              dispatch(
+                handleChange({
+                  name: 'expirationDate',
+                  value: value,
+                })
+              )
             }
-            { 
-            image2 
-            ? <Image source={{uri:image2}} style={styles.Imagecontainer} />
-            : <UploadCard title='Emirates ID back side' selectFile={selectFile2}/>
+            value={values.expirationDate}
+          />
+          <Inputs 
+            title='Continue to Payment' 
+            placeholder='Emirates ID Number*'  
+            numeric
+            onChange={(value) =>
+              dispatch(handleChange({ name: 'emiratesId', value }))
             }
-            <Pressable style={styles.nextButton} >
-            <PrimaryButton title='Next' navigate={register} />
-            </Pressable>
+          />
+          { 
+          image.length 
+          ? <Image source={{uri:image}} style={styles.Imagecontainer} />
+          : <UploadCard title='Emirates ID front side' selectFile={selectFile}/>
+          }
+          { 
+          image2.length 
+          ? <Image source={{uri:image2}} style={styles.Imagecontainer} />
+          : <UploadCard title='Emirates ID back side' selectFile={selectFile2}/>
+          }
+          <TouchableOpacity style={styles.nextButton} onPress={() => onSubmit()}>
+            <PrimaryButton title='Next'/>
+          </TouchableOpacity>
         </View>
-        </ScrollView>
-    )
+      </ScrollView>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -201,13 +251,6 @@ const styles = StyleSheet.create({
 })
 
 ;
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setUserId: (id) => dispatch(id),
-    signIn: () => signIn(),
-  }
-}
 
 
-
-export default connect(null, mapDispatchToProps)(JobSeekersignup)
+export default JobSeekersignup2

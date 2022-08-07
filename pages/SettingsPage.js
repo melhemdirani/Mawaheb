@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { ScrollView ,View, StyleSheet, Platform} from 'react-native';
-import { connect } from 'react-redux';
+import { ScrollView ,View, StyleSheet, Platform, TouchableOpacity} from 'react-native';
 
-import { signOut } from '../redux/user/user.actions';
 
 import Navbar from '../components/Navbar';
 import Header from '../components/Header';
@@ -19,13 +17,12 @@ import logoutSetting from '../assets/images/logoutSetting.png';
 
 
 
-const SettingsPage = ({navigation, signOut, role}) => {
+const SettingsPage = ({navigation, role}) => {
 
     const [reload, setReload] = useState(true)
     
     const logout = () => {
-        signOut()
-        navigation.navigate('Home', {reload})
+        navigation.navigate('SignIn', {reload})
     }
  
     return (
@@ -72,18 +69,12 @@ const styles = Platform.OS === 'android'
         button:{
             top: 120,
             alignSelf: "center"
+        },
+        settingsContainer:{
+            marginTop: 35
         }
     
     })
 
-const mapDispatchToProps = (dispatch) => ({
-    signOut: (role) => dispatch(signOut(role))
-});
 
-const mapStateToProps =  ({
-    role: {role},
-})   => ({
-    role
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(SettingsPage)
+export default SettingsPage

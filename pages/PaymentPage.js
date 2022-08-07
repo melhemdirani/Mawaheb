@@ -5,7 +5,8 @@ import {
     ScrollView,
     Image,
     Switch,
-    Pressable
+    Pressable,
+    TouchableOpacity
   } from 'react-native'
   import React, { useState } from 'react'
   import Header from '../components/Header'
@@ -104,9 +105,9 @@ import {
                 </View>
 
             }
-            <View style={styles.btnContainer}>
-                <PrimaryButton title='Pay and Post Job' navigate={onPostClick} />
-            </View>
+            <TouchableOpacity style={styles.btnContainer} onPress={() => onPostClick()}>
+                <PrimaryButton title='Pay and Post Job' />
+            </TouchableOpacity>
         </View>
       </ScrollView>
     )

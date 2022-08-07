@@ -4,14 +4,13 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Pressable,
+  KeyboardAvoidingView,
+  TouchableOpacity,
+  Platform,
   ActivityIndicator,
-  Button,
 } from 'react-native'
 import axios from 'axios'
-import { connect } from 'react-redux'
 
-import { clearNotifications } from '../redux/user/user.actions'
 
 import signUp from '../assets/images/signUp.png'
 
@@ -21,10 +20,16 @@ import Inputs from '../components/Inputs'
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import { useSelector, useDispatch } from 'react-redux'
 import { registerUser } from '../reduxToolkit/userSlice'
+import PhoneInputs from '../components/PhoneInput'
 
 const JobSeekersignup = ({ navigation, route }) => {
+
+  const [clearedUser, setClearedUser] = useState(false)
+
+ 
   const initialState = {
     name: '',
+    lastName: '',
     email: '',
     password: '',
     phoneNb: '',
@@ -33,14 +38,12 @@ const JobSeekersignup = ({ navigation, route }) => {
   const dispatch = useDispatch()
   const { user, isLoading, error } = useSelector((store) => store.user)
   const { role } = route.params
-  console.log(role)
+
   const handleChange = (name, value) => {
     console.log(values)
     setValues({ ...values, [name]: value })
   }
-  // setTimeout(() => {
-  //   navigation.navigate('SignIn')
-  // }, 2000)
+
 
   const submit = () => {
     const { name, email, password, phoneNb } = values
@@ -50,7 +53,7 @@ const JobSeekersignup = ({ navigation, route }) => {
     console.log(user, error)
     dispatch(
       registerUser({
-        name: values.name,
+        name: values.name + " " + values.lastName,
         email: values.email,
         password: values.password,
         phoneNb: values.phoneNb,
@@ -59,10 +62,12 @@ const JobSeekersignup = ({ navigation, route }) => {
     )
   }
   useEffect(() => {
-    if (user) {
-      user?.role === 'freelancer'
+    console.log("navigating users", Object.keys(user).length !== 0)
+    console.log("navigating users2", user)
+    if (Object.keys(user).length !== 0) {
+      user.role === 'freelancer'
         ? navigation.navigate('JobSignUpb')
-        : navigation.navigate('JobSignUp2')
+        : navigation.navigate('recruiter_signup')
     }
   }, [user])
 
@@ -71,44 +76,60 @@ const JobSeekersignup = ({ navigation, route }) => {
       <ActivityIndicator size={'large'} />
     </View>
   ) : (
-    <ScrollView style={styles.container}>
-      <Header
-        icon={signUp}
-        title='Create Profile'
-        // numOfPage={<Image source={trash}></Image>}
-        numOfPage='1/6'
-        hidden={false}
-      />
-      <View style={styles.subContainer}>
-        <Text style={styles.text}>
-          Fill and upload the below required field and documents
-        </Text>
-        <Inputs
-          title='Continue to Payment'
-          placeholder='Name*'
-          onChange={(value) => handleChange('name', value)}
-        />
-        <Inputs
-          title='Continue to Payment'
-          placeholder='Email*'
-          onChange={(value) => handleChange('email', value)}
-        />
+      <View style={styles.container}>
+        <KeyboardAvoidingView   behavior={Platform.OS === 'ios' ? 'position' : 'paddingBottom'}   style={{backgroundColor: "white"}}  >
+          <ScrollView>
+            <Header
+              icon={signUp}
+              title='Create Profile'
+              // numOfPage={<Image source={trash}></Image>}
+              numOfPage='1/6'
+              hidden={false}
+              goBack={navigation.goBack}
+            />
+            <View style={styles.subContainer}>
+              <Text style={styles.text}>
+                Fill and upload the below required field and documents
+              </Text>
+              <Inputs
+                title='Continue to Payment'
+                placeholder='First Name*'
+                onChange={(value) => handleChange('name', value)}
+                value={values.name}
+              />
+              <Inputs
+                title='Continue to Payment'
+                placeholder='Last Name*'
+                onChange={(value) => handleChange('lastName', value)}
+                value={values.lastName}
+              />
+              <Inputs
+                title='Continue to Payment'
+                placeholder='Email*'
+                onChange={(value) => handleChange('email', value)}
+                value={values.email}
+              />
 
-        <Inputs
-          title='Continue to Payment'
-          placeholder='Password*'
-          onChange={(value) => handleChange('password', value)}
-        />
-        <Inputs
-          title='Continue to Payment'
-          placeholder='Phone Number*'
-          onChange={(value) => handleChange('phoneNb', value)}
-        />
-        <Pressable style={styles.nextButton}>
-          <PrimaryButton title='Next' navigate={submit} />
-        </Pressable>
-      </View>
-    </ScrollView>
+              <Inputs
+                title='Continue to Payment'
+                placeholder='Password*'
+                onChange={(value) => handleChange('password', value)}
+                value={values.password}
+              />
+              <PhoneInputs
+                title='Continue to Payment'
+                placeholder='Phone Number*'
+                onChange={(value) => handleChange('phoneNb', value)}
+                value={values.phoneNb}
+              />
+              <TouchableOpacity style={styles.nextButton} onPress={() => submit()}>
+                <PrimaryButton title='Next' />
+              </TouchableOpacity>
+            </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </View>
+
   )
 }
 

@@ -5,6 +5,7 @@ import {
   Image,
   ImageBackground,
   SafeAreaView,
+  TouchableOpacity,
   Pressable,
   ScrollView
 } from 'react-native'
@@ -138,9 +139,9 @@ const FreelancerDetailsPage = ({navigation}) => {
           </LinearGradient>
         </View>
       </LinearGradient>
-      <View style={styles.button}>
-        <PrimaryButton title='Accept Applicant' navigate={navigateContract} />
-      </View>
+      <TouchableOpacity style={styles.button} onPress={() => navigateContract()}>
+        <PrimaryButton title='Accept Applicant' />
+      </TouchableOpacity>
     </ScrollView>
   )
 }

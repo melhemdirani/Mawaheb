@@ -39,7 +39,7 @@ const DurationInputs = ({title, placeholder}) => {
                   style={
                   styles.wrapperCustom
                   }
-                  onChangeText={(e) => setText(e)}
+                  // onChangeText={(e) => setText(e)}
                   placeholder={placeholder}
                   placeholderTextColor="rgba(0,0,0,.5)"
                 />
@@ -83,14 +83,15 @@ const styles = StyleSheet.create({
   wrapperCustom: {
     borderRadius: 3,
     alignItems: "center",
-    paddingLeft: 20
+    paddingLeft: 20,
+    fontFamily: 'PoppinsR'
 
   },
   label:{
     paddingLeft: 20,
     fontSize: 10,
     textTransform: "uppercase",
-    fontWeight: "600"
+    fontFamily: 'PoppinsS'
   },
   rate:{
     marginRight: 10,

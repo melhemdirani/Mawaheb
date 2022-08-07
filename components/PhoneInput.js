@@ -1,31 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { Pressable, StyleSheet, Text, View, TouchableOpacity, TextInput} from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, Text, View, TextInput} from 'react-native';
+import PhoneInput from 'react-native-phone-input';
 
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 
-const TextArea = ({placeholder, onChange}) => {
+const PhoneInputs = ({placeholder, onChange, numeric, value}) => {
 
-    const [text, setText] = useState("")
+    const [text, setText] = useState(false)
     const [changed, setChanged] = useState(false)
+    const phoneRef = useRef(undefined);
 
     useEffect(() => {
-        if(text.length > 0 && !changed){
+        if(text && !changed){
             setChanged(true)
         }
-        if(text.length < 1 && changed){
+        if(!text && changed){
             setChanged(false)
         }
     }, [text])
-    const onChangeText = (e) => {
-      console.log("e", e)
-      onChange(e)
+
+    const onChangePhonenumber = (e) => {
       setText(e)
+      onChange(e)
     }
  
     return (
-        <View style={!changed ? [styles.container, styles.borderBottom] : styles.container}>
-            <View style={styles.view2}>
+         <View  style={!changed ? [styles.container, styles.borderBottom] : styles.container}>
             {
                 changed && 
                 <MaskedView maskElement={ <Text style={[styles.label, {backgroundColor: "transparent"}]}>{placeholder}</Text>}>
@@ -39,22 +40,26 @@ const TextArea = ({placeholder, onChange}) => {
                 </MaskedView>
 
             }
-            <TextInput
-                multiline
-                style={
-                styles.wrapperCustom
-                }
-                placeholder={placeholder}
-                placeholderTextColor="rgba(0,0,0,.5)"
-                onChangeText={(e) => onChangeText(e)}
+           
+             <PhoneInput
+              style={
+              styles.wrapperCustom
+              }
+              ref={phoneRef}
+              placeholder={placeholder}
+              placeholderTextColor="rgba(0,0,0,.5)"
+              onChangePhoneNumber={(e) => onChangePhonenumber(e)}
+              initialCountry={'ae'}
+              value={value}
+              autoFormat={true}
             />
-            </View>
+
             { changed && 
                 <LinearGradient
                     start={{x:0, y: 0}}
                     end={{x:1, y: 1}}
                     colors={['#23CDB0', '#9C88FD','#9C88FD', '#9C88FD', ]}
-                    style={{height: 2}}
+                    style={{height: 2, marginBottom: -5}}
                 />
             }
         </View>
@@ -63,20 +68,16 @@ const TextArea = ({placeholder, onChange}) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 20,
-    justifyContent: "space-between",
     width: "85%",
     backgroundColor: "rgba(202, 218, 221, .2)",
-    height: 150,
+    height: 50,
     borderTopLeftRadius: 8,
+    justifyContent: "center",
     borderTopRightRadius: 8,
   },
   borderBottom:{
     borderBottomColor: "#107DC5",
     borderBottomWidth: 1,
-  },
-  view2:{
-    paddingTop: 5
   },
   text: {
     paddingTop: 10,
@@ -90,13 +91,13 @@ const styles = StyleSheet.create({
     padding: 6,
     width: "100%",
     paddingLeft: 20,
+    fontFamily: 'PoppinsR'
   },
   label:{
     paddingLeft: 20,
     fontSize: 10,
     textTransform: "uppercase",
-    fontWeight: "600"
-  }
+  },
 });
 
-export default TextArea;
+export default PhoneInputs;

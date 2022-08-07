@@ -1,5 +1,5 @@
 import React, { useState} from 'react';
-import { View, Text, StyleSheet, Image, ImageBackground, Platform } from 'react-native';
+import { View, Text, StyleSheet, Image, ImageBackground, Platform, Pressable, TouchableOpacity } from 'react-native';
 
 import Header from '../components/Header';
 import congratsBg from '../assets/images/congratsBg.png';
@@ -10,7 +10,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import profile from '../assets/images/profile.png';
 import emptyStar from '../assets/images/emptyStar.png';
 import fullStar from '../assets/images/fullStar.png';
-import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
 
 
 const JobDonePage = ({navigation}) => {
@@ -53,16 +52,18 @@ const JobDonePage = ({navigation}) => {
           resizeMode='stretch'
         >
         {[...Array(5)].map((e, i) =>   
-          <Pressable onPress={() => setRate(i)}>
+          <Pressable onPress={() => setRate(i)} key={i}>
             <Image source={i > rate ? emptyStar : fullStar} style={styles.starts} />
           </Pressable>
         )}
         </ImageBackground>
         <View style={styles.btnContainer}>
-          <View style={styles.primary}>
-            <PrimaryButton title='Confirm' navigate={confirmPress}/>
-          </View>
-          <TertiaryButton title='Dismiss' style={styles.contactLater}  navigate={navigateDash}/>
+          <TouchableOpacity style={styles.primary} onPress={() => confirmPress() }>
+            <PrimaryButton title='Confirm' />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.primary} onPress={() => navigateDash() }>
+            <TertiaryButton title='Dismiss' style={styles.contactLater}  />
+          </TouchableOpacity>
         </View>
       </View>
     </View>

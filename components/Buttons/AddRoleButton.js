@@ -5,7 +5,7 @@ const AddRoleButton = ({title}) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
+      <View
         style={
           styles.wrapperCustom
         }>
@@ -16,7 +16,7 @@ const AddRoleButton = ({title}) => {
             <Text style={styles.text}>
                 {title}
             </Text>
-      </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -28,8 +28,8 @@ const styles = Platform.OS ==='android'
   },
   text: {
     color: "#23CDB0",
-    paddingTop: 7,
-    paddingBottom: 7,
+    paddingTop: 5,
+    paddingBottom: 5,
     fontSize: 15,
     fontFamily: 'PoppinsS'
   },

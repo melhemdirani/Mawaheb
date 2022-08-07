@@ -15,11 +15,18 @@ const UploadCard = ({title, selectFile}) => {
             source={require('../assets/images/uploadCard.png')}
         />
         <View style={styles.add}>
-            <TouchableOpacity onPress={() => selectFile()}>
+            { selectFile ?
+              <TouchableOpacity onPress={() => selectFile()}>
               <Image
                 source={require('../assets/images/addButton.png')}
               />
             </TouchableOpacity>
+             : <TouchableOpacity>
+              <Image
+                source={require('../assets/images/addButton.png')}
+              />
+            </TouchableOpacity>
+            }
             <Text style={styles.title}>
                 {title}
             </Text>

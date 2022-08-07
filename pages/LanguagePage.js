@@ -1,25 +1,108 @@
+import React, {useState} from 'react';
 import {
   View,
   Text,
   SafeAreaView,
   StyleSheet,
-  Image,
+  Pressable,
   ScrollView,
-} from 'react-native'
-import React from 'react'
-import Header from '../components/Header'
-import icon from '../assets/images/language.png'
-import Inputs from '../components/Inputs'
-import UploadCard from '../components/UploadCard'
-import PrimaryButton from '../components/Buttons/PrimaryButton'
-import Pressable from 'react-native/Libraries/Components/Pressable/Pressable'
-import SelectInput from '../components/SelectInput'
-import AddRoleButton from '../components/Buttons/AddRoleButton'
+} from 'react-native';
 
+import { useDispatch } from 'react-redux';
+
+import Header from '../components/Header';
+import icon from '../assets/images/language.png';
+import PrimaryButton from '../components/Buttons/PrimaryButton';
+import SelectInput from '../components/SelectInput';
+import AddRoleButton from '../components/Buttons/AddRoleButton';
+import { addLanguage } from '../reduxToolkit/freelancerSlice';
 const LanguagePage = ({ navigation }) => {
   
+  const [addedLanguages, setAddedLanguages] = useState([])
+
+  const dispatch = useDispatch()
+  const mainLanguageState = {
+    name: '',
+    profeciency: '',
+  }
+  const secondaryLanguageState = {
+    name: '',
+    profeciency: '',
+  }
+  const [mainLanguage, setMainLanguage] = React.useState(mainLanguageState)
+  const [secondaryLanguage, setSecondaryLanguage] = React.useState(
+    secondaryLanguageState
+  )
+
   const navigateBank = () => {
-    navigation.navigate('bank')
+    const { name, profeciency } = mainLanguage
+    const { name: name2, profeciency: profeciency2 } = secondaryLanguage
+    if (!name || !profeciency || !name2 || !profeciency2) {
+      alert('Please fill all the fields')
+      return
+    } else {
+      dispatch(addLanguage(mainLanguage))
+      dispatch(addLanguage(secondaryLanguage))
+      addedLanguages.map(language => 
+        dispatch(addLanguage(language))
+      )
+      navigation.navigate('bank')
+    }
+  }
+  const handleMainLanguageChange = (name, value) => {
+    console.log(name, value)
+    setMainLanguage({ ...mainLanguage, [name]: value })
+  }
+  const handleSecondaryLanguageChange = (name, value) => {
+    console.log(name, value)
+    setSecondaryLanguage({ ...secondaryLanguage, [name]: value })
+  }
+  const handleAdditionalLanguages = (name, value, i) => {
+    setAddedLanguages(data => {
+      return [ ...data.slice(0, i), 
+        {...data[i], [name]: value },
+          ...data.slice(i + 1)]
+    });
+
+
+  }
+
+
+  const RenderAddedIndex = () => {
+    return  (
+      <View style={{width: "100%"}}>
+        {
+          addedLanguages.map((e, i) =>
+          <View key={i} style={{width: "100%", alignItems: "center"}}>
+            <SelectInput
+              title='Language*'
+              list={['English', 'Arabic', 'French']}
+              onSelect={(value) => handleAdditionalLanguages('name', value, i)}
+              valued
+              value={e.name}
+            />
+            <SelectInput
+              title='Profeciency*'
+              list={['beginner', 'intermediate', 'advanced']}
+              onSelect={(value) => handleAdditionalLanguages('profeciency', value, i)}
+              valued
+              value={e.profeciency}
+            />
+          </View>
+        )}
+      </View>
+
+    )
+  }
+
+  const handleAddButton = () => {
+
+    setAddedLanguages(
+      data => ([
+        ...data,
+        mainLanguageState
+      ])
+    )
   }
   return (
     <ScrollView style={styles.container}>
@@ -27,7 +110,7 @@ const LanguagePage = ({ navigation }) => {
         icon={icon}
         title='Language'
         // numOfPage={<Image source={trash}></Image>}
-        numOfPage='4/5'
+        numOfPage='5/6'
         goBack={navigation.goBack}
         hidden={false}
       />
@@ -35,21 +118,33 @@ const LanguagePage = ({ navigation }) => {
         <Text style={styles.text}>
           Lorem ipsum dolor sit amenoLorem ipsum dolor sit ameno
         </Text>
-        <Inputs placeholder='Main Language*' />
+        <SelectInput
+          title='Main Language*'
+          list={['English', 'Arabic', 'French']}
+          onSelect={(value) => handleMainLanguageChange('name', value)}
+        />
         <SelectInput
           title='Profeciency*'
-          list={['option1', 'option2', 'option3']}
+          list={['beginner', 'intermediate', 'advanced']}
+          onSelect={(value) => handleMainLanguageChange('profeciency', value)}
         />
-        <Inputs placeholder='Secondary Language*' />
+        <SelectInput
+          title='Secondary Language*'
+          list={['English', 'Arabic', 'French']}
+          onSelect={(value) => handleSecondaryLanguageChange('name', value)}
+
+        />
         <SelectInput
           title='Profeciency*'
-          list={['option1', 'option2', 'option3']}
+          list={['beginner', 'intermediate', 'advanced']}
+          onSelect={(value) => handleSecondaryLanguageChange('profeciency', value)}
         />
-        <Pressable style={styles.addButton}>
+        {addedLanguages.length > 0 && <RenderAddedIndex />}
+        <Pressable style={styles.addButton} onPress={() => handleAddButton()}>
           <AddRoleButton title='Add another language' />
         </Pressable>
-        <Pressable style={styles.nextButton}>
-          <PrimaryButton title='Continue' navigate={navigateBank}/>
+        <Pressable style={styles.nextButton} onPress={() => navigateBank()}>
+          <PrimaryButton title='Continue' />
         </Pressable>
         <Pressable onPress={() =>  navigation.navigate('bank')}>
           <Text style={styles.skipText}>
@@ -68,6 +163,7 @@ const styles = StyleSheet.create({
   },
   subContainer: {
     alignItems: 'center',
+    justifyContent: "center",
     paddingTop: 50,
   },
   text: {

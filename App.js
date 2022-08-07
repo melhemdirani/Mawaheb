@@ -3,9 +3,7 @@ import { ActivityIndicator } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { store, persistor } from './redux/store'
 import { Provider } from 'react-redux'
-import { NotifierWrapper } from 'react-native-notifier'
 import { PersistGate } from 'redux-persist/integration/react'
 import { toolkitStore } from './reduxToolkit/store'
 
@@ -37,9 +35,18 @@ import JobDetailsPage from './pages/JobDetailsPage'
 import JobSeekersignup2 from './pages/JobSeekersignup2'
 import * as Sentry from '@sentry/react-native'
 
-const Stack = createNativeStackNavigator()
 
+Sentry.init({
+  dsn: "https://bcf01992e9f248daa3e02179837016a2@o1345605.ingest.sentry.io/6625163",
+  // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+  // We recommend adjusting this value in production.
+  tracesSampleRate: 1.0,
+  enableNative: false
+});
+
+const Stack = createNativeStackNavigator()
 function App() {
+
   const [loaded] = useFonts({
     PoppinsR: require('./assets/fonts/Poppins-Regular.ttf'),
     PoppinsB: require('./assets/fonts/Poppins-Bold.ttf'),
@@ -47,26 +54,20 @@ function App() {
     PoppinsS: require('./assets/fonts/Poppins-SemiBold.ttf'),
   })
 
-  if (!loaded) {
-    return <ActivityIndicator size={'large'} />
-  }
 
-  return (
+
+  return !loaded ?
+  <ActivityIndicator size={'large'} />
+  : (
+
     <Provider store={toolkitStore}>
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
-            name='Home'
-            component={LandingPage}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
             name='SignIn'
             component={SignupPage}
             options={{
-              headerShown: false,
+              headerShown: false
             }}
           />
           <Stack.Screen
@@ -219,7 +220,8 @@ function App() {
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
+
   )
 }
 
-export default App
+export default Sentry.wrap(App);

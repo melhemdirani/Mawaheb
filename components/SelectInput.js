@@ -5,20 +5,23 @@ import { Pressable, StyleSheet, Text, View, FlatList, Image} from 'react-native'
 
 import {Picker} from '@react-native-picker/picker';
 
-const SelectInput = ({title, list, onSelect}) => {
+const SelectInput = ({title, list, onSelect, value, valued}) => {
 
-    const [selected, setSelected] = useState(null)
+    const [selected, setSelected] = useState(valued ? value : "")
     const [showList, setShowList] = useState(false)
     const [selectedLanguage, setSelectedLanguage] = useState();
 
     const onItemClick = (item) => {
-        setSelected(item)
+        if(!valued){setSelected(item)}
         setShowList(false)
+        onSelect(item)
+
     }
 
+  
     const RenderItem = ({ data }) => (
         <Pressable style={styles.listItems} onPress={() => onItemClick(data)}>
-            <Text style={styles.listText} onPress={() => onSelect(data)}>
+            <Text style={styles.listText}>
                 {data}
             </Text>
         </Pressable>
@@ -27,7 +30,7 @@ const SelectInput = ({title, list, onSelect}) => {
     return (
         <View style={styles.container}>
             <View style={styles.subContainer}>
-                <Text style={selected ? styles.text2 : styles.text}>{selected === null ? title : selected}</Text>
+                <Text style={selected ? styles.text2 : styles.text}> {selected === ""  ? title : selected}</Text>
                 <Pressable onPress={() => setShowList(!showList)} style={styles.arrowButton}>
                     <Image
                         style={showList ? [styles.image, styles.rotate] : styles.image}
@@ -72,12 +75,14 @@ const styles = StyleSheet.create({
     },
     text: {
         paddingLeft: 20,
-        color: "rgba(0,0,0, .5)"
+        color: "rgba(0,0,0, .5)",
+        fontFamily: "PoppinsR"
     },
  
     text2: {
         paddingLeft: 20,
-        color: "rgba(0,0,0, 1)"
+        color: "rgba(0,0,0, 1)",
+        fontFamily: "PoppinsR"
     },
  
     listItems:{
@@ -87,6 +92,7 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         marginTop: 5,
         marginBottom: 5,
+        fontFamily: 'PoppinsR',
         color: "rgba(0,0,0, .5)"
 
     },

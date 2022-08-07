@@ -54,7 +54,6 @@ const JobseekerDashboard = ({navigation}) => {
         location: 'Sharjah',
     }
     const navigatePrevious = (i) => {
-        console.log("iii", i)
         navigation.navigate('jobDescription', {myjobs: true, data: currentJob })
     }
     const navigate = (i) => {

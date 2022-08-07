@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity } from 'react-native';
 import React from 'react';
 
 import Header from '../components/Header';
@@ -44,9 +44,9 @@ const FreelanceAcceptedPage = ({navigation}) => {
           <Text style={styles.name}>Ahmad Mohamad</Text>
         </ImageBackground>
         <View style={styles.btnContainer}>
-          <View style={styles.primary}>
-            <PrimaryButton title='Contact Ahmad' navigate={navigateDone} />
-          </View>
+          <TouchableOpacity style={styles.primary} onPress={() => navigateDone()}>
+            <PrimaryButton title='Contact Ahmad'  />
+          </TouchableOpacity>
           <TertiaryButton title='Contact later' style={styles.contactLater} />
         </View>
       </View>

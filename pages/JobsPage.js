@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { View, ScrollView, StyleSheet } from 'react-native'
-import { connect } from 'react-redux';
 import { Notifier, Easing } from 'react-native-notifier';
 
 import SecondaryHeader from '../components/SecondaryHeader'
 import Job from '../components/Job'
 import Navbar from '../components/Navbar'
 import { CustomNotification } from '../components/CustomNotifications';
-import { notify } from '../components/Notifyme.js'
 
-const JobsPage = ({navigation, name, notifications}) => {
+const JobsPage = ({navigation, notifications}) => {
 
     const [notificationIndex, setNotifcaitonIndex] = useState(0)
 
@@ -23,7 +21,6 @@ const JobsPage = ({navigation, name, notifications}) => {
 
     // useEffect(() => {
     //     if(notifications.length)
-    //     notify(name, notifications[notificationIndex].notification, alterNotificationIndex)
     // }, [notifications, notificationIndex])
 
     const Data = [
@@ -59,7 +56,6 @@ const JobsPage = ({navigation, name, notifications}) => {
     ]
 
     const navigate = (i) => {
-        console.log("routing")
         navigation.navigate('jobDescription', {myjobs: false, data: Data[i]})
     }
     
@@ -70,7 +66,7 @@ const JobsPage = ({navigation, name, notifications}) => {
             </View>
         )
     }
-    let welcomeMessage = `Hi ${name},`
+    let welcomeMessage = `Hi John,`
     return (
         <View style={styles.container}>
             <ScrollView >
@@ -106,14 +102,5 @@ const styles = StyleSheet.create({
     },
 })
 
-const mapStateToProps =  ({
-    name: {name},
-    role: {role},
-    notifications: {notifications},
-})   => ({
-    name,
-    role,
-    notifications,
-});
 
-export default connect(mapStateToProps)(JobsPage)
+export default JobsPage

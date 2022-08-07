@@ -4,17 +4,14 @@ import { Platform, StyleSheet, Text, View, TouchableOpacity } from 'react-native
 const SecondaryButton = ({title, navigate}) => {
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
+      <View
         style={
           styles.wrapperCustom
         }
-        onPress={() =>navigate()}
       >
-          <Text style={styles.text}>
-            {title}
-          </Text>
-      </TouchableOpacity>
+        <Text style={styles.text}>
+          {title}
+        </Text>
     </View>
   );
 };
@@ -26,8 +23,8 @@ const styles = Platform.OS ==='android'
     },
     text: {
       color: "white",
-      paddingTop: 7,
-      paddingBottom: 7,
+      paddingTop: 5,
+      paddingBottom: 5,
       fontSize: 15,
       fontFamily: "PoppinsS"
     },

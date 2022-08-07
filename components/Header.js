@@ -1,12 +1,15 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, ImageBackground, Pressable } from 'react-native';
+import { View, Text, Image, StyleSheet, ImageBackground, Pressable, Dimensions } from 'react-native';
 
 import backgroundImage from '../assets/images/backgroundHeader.jpg'
 import backIcon from '../assets/images/backIcon.png'
 import testImage from '../assets/images/test.png'
 import { LinearGradient } from 'expo-linear-gradient'
 
+const width = Dimensions.get('window').width
+
 const Header = ({ icon, title, numOfPage, rightIcon, hidden, numberHidded, goBack, profile, rating, onTrashPress}) => {
+  
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -16,14 +19,20 @@ const Header = ({ icon, title, numOfPage, rightIcon, hidden, numberHidded, goBac
       >
         <View style={!hidden ? styles.info : !numberHidded ? styles.info2 : styles.info3}>
           {
-            !hidden && 
+            !hidden && goBack ?  
             <Pressable onPress={() => goBack()} style={styles.backIcon}>
-              <Image onPress={() => goBack()} source={backIcon} />
+              <Image source={backIcon} />
             </Pressable>
+            : !hidden ?
+            <Pressable  style={styles.backIcon}>
+            <Image source={backIcon} />
+          </Pressable>
+          : null
+
           }
           {
             numberHidded
-            ? <Pressable onPress={() => onTrashPress()}>
+            ? <Pressable >
                 <Image source={rightIcon} style={styles.page2}  />
               </Pressable>
             : <Text style={styles.page}>{numOfPage}</Text>
@@ -72,7 +81,8 @@ const styles = StyleSheet.create({
   icon: {
     position: 'absolute',
     top: 140,
-    left: 140,
+    left: .5 * width - 50,
+    width: 100
   },
   iconContainer: {
     borderRadius: 100,
@@ -94,7 +104,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: "center",
     width: "90%",
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: "space-between",
   },
   info2: {
@@ -103,14 +113,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: "center",
     width: "90%",
-    alignItems: 'center',
+    alignItems: 'flex-start',
+
     justifyContent: "center"
   },
   info3: {
     position: 'relative',
     top: 100,
     flexDirection: 'row',
-    alignSelf: "center",
+    alignItems: 'flex-start',
+
     width: "90%",
     alignItems: 'center',
     justifyContent: "flex-end"
@@ -143,7 +155,11 @@ const styles = StyleSheet.create({
 
   rightIcon: {},
   backIcon: {
-   
+   height: 40,
+   width: 40,
+   alignItems: "center",
+   justifyContent: "center",
+   marginTop: -10
   },
 })
 

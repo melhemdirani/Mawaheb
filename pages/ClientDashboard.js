@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ScrollView ,View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
-import Carousel from 'react-native-anchor-carousel';
+import Carousel from 'react-native-anchor-carousel'; 
 import { Dimensions } from 'react-native';
 
 import SecondaryHeader from '../components/SecondaryHeader';
@@ -16,7 +16,7 @@ import SimplePaginationDot from '../components/SimplePaginationDot';
 const ClientDashboard = ({navigation}) => {
     const {width: windowWidth} = Dimensions.get('window');
     const [currentIndex, setCurrentIndex] = useState(0);
-    const carouselRef = React.useRef(null);
+    const carouselRef = React.useRef();
     function handleCarouselScrollEnd(item, index) {
         setCurrentIndex(index);
     }
@@ -192,9 +192,9 @@ const ClientDashboard = ({navigation}) => {
         <View style={styles.container}>
             <ScrollView style={styles.container4}>
                 <SecondaryHeader title={'Welcome'} heart={true}/>
-                <View style={styles.button}>
-                    <PrimaryButton title="Post a new job" navigate={navigatePosting} />
-                </View>
+                <TouchableOpacity style={styles.button} onPress={() => navigatePosting() }>
+                    <PrimaryButton title="Post a new job"  />
+                </TouchableOpacity>
                 <View style={styles.row2}>
                     <View style={styles.col}>
                         <Text style={styles.colText}>Number of Contracts</Text>
