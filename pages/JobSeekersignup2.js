@@ -56,7 +56,7 @@ const JobSeekersignup2 = ({  navigation, }) => {
     ) {
       alert('Please fill all the fields')
     } else {
-      navigation.navigate('experience')
+      navigation.navigate('JobSignUp2')
     }
   }
   else {
@@ -75,9 +75,6 @@ const JobSeekersignup2 = ({  navigation, }) => {
 
   const [loading, setLoading] = useState(false)
 
-  const navigateExperience = () => {
-    navigation.navigate('JobSignUp2')
-  }
 
   const selectFile = async () => {
     // No permissions request is necessary for launching the image library

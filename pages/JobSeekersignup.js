@@ -64,7 +64,7 @@ const JobSeekersignup = ({ navigation, route }) => {
   useEffect(() => {
     console.log("navigating users", Object.keys(user).length !== 0)
     console.log("navigating users2", user)
-    if (Object.keys(user).length !== 0) {
+    if (Object.keys(user).length > 0) {
       user.role === 'freelancer'
         ? navigation.navigate('JobSignUpb')
         : navigation.navigate('recruiter_signup')

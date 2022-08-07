@@ -35,7 +35,22 @@ export const loginUser = createAsyncThunk(
     let url = '/auth/login'
     try {
       const resp = await customFetch.post(url, user)
-      console.log(resp.data)
+      console.log("user login",resp.data)
+      return resp.data
+    } catch (error) {
+      console.log("erre",error.response.data.msg)
+
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
+export const logout = createAsyncThunk(
+  'logout',
+  async (user, thunkApi) => {
+    let url = '/auth/logout'
+    try {
+      console.log("logging out")
+      const resp = await customFetch.get(url, user)
 
       return resp.data
     } catch (error) {
@@ -62,7 +77,6 @@ const userSlice = createSlice({
       const { user } = payload
       state.isLoading = false
       state.user = user
-      console.log("user")
     },
     [registerUser.rejected]: (state, { payload }) => {
       state.isLoading = false
@@ -70,6 +84,11 @@ const userSlice = createSlice({
     },
     [loginUser.pending]: (state) => {
       state.isLoading = true
+    },
+    [logout.fulfilled]: (state) => {
+      state.user = {}
+      console.log("LOGOUT")
+
     },
     [loginUser.fulfilled]: (state, { payload }) => {
       const { user } = payload

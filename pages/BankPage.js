@@ -33,6 +33,8 @@ const BankPage = ({  navigation }) => {
     emiratesId,
     emiratesIdFrontSide,
     emiratesIdBackSide,
+    copyOfPassport,
+    copyOfResidencyVisa,
     roles,
     languages,
   } = useSelector((store) => store.freelancer)
@@ -65,6 +67,8 @@ const BankPage = ({  navigation }) => {
           emiratesId,
           emiratesIdFrontSide,
           emiratesIdBackSide,
+          copyOfPassport,
+          copyOfResidencyVisa
         },
         roles: roles,
         languages: languages,

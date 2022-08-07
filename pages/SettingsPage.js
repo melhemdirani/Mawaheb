@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { ScrollView ,View, StyleSheet, Platform, TouchableOpacity} from 'react-native';
+import { useDispatch ,useSelector} from 'react-redux'
 
+import { logout } from '../reduxToolkit/userSlice'
 
 import Navbar from '../components/Navbar';
 import Header from '../components/Header';
@@ -20,8 +22,12 @@ import logoutSetting from '../assets/images/logoutSetting.png';
 const SettingsPage = ({navigation, role}) => {
 
     const [reload, setReload] = useState(true)
+    const dispatch = useDispatch()
     
-    const logout = () => {
+    const logoutUser = () => {
+        dispatch(
+            logout()
+        )
         navigation.navigate('SignIn', {reload})
     }
  
@@ -35,7 +41,7 @@ const SettingsPage = ({navigation, role}) => {
                     <Setting title="Privacy Policy" icon={privacySetting}/>
                     <Setting title="Terms and Conditions" icon={termsSetting}/>
                     <Setting title="About Mawahib" icon={aboutSetting}/>
-                    <Setting title="Logout" icon={logoutSetting} action={logout}/>
+                    <Setting title="Logout" icon={logoutSetting} action={logoutUser}/>
                 </View>
                 <View style={styles.button}>
                     <PrimaryButton title="Contact US"/> 

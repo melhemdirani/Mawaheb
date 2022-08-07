@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Platform, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
 const DeleteButton = ({title}) => {
-
   return (
       <View
         style={

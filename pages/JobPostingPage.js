@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,23 +8,58 @@ import {
   Switch,
   SafeAreaView
 } from 'react-native'
-import React, { useState } from 'react'
-import Header from '../components/Header'
-import post from '../assets/images/postJob.png'
-import Inputs from '../components/Inputs'
-import UploadCard from '../components/UploadCard'
-import PrimaryButton from '../components/Buttons/PrimaryButton'
-import TertiaryButton from '../components/Buttons/TertiaryButton'
-import SecondaryButton from '../components/Buttons/SecondaryButton'
-import SelectInput from '../components/SelectInput'
-import DurationInputs from '../components/DurationInputs'
-import TextArea from '../components/TextArea'
+import { useDispatch, useSelector } from 'react-redux';
+
+import { createJob } from '../reduxToolkit/jobSlice';
+
+import Header from '../components/Header';
+import post from '../assets/images/postJob.png';
+import Inputs from '../components/Inputs';
+import PrimaryButton from '../components/Buttons/PrimaryButton';
+import SelectInput from '../components/SelectInput';
+import DurationInputs from '../components/DurationInputs';
+import TextArea from '../components/TextArea';
 
 const JobPostingPage = ({navigation}) => {
-  const [isEnabled, setIsEnabled] = useState(false)
-  const toggleSwitch = () => setIsEnabled((previousState) => !previousState)
+  const initialState = {
+    title: '',
+    duration: '',
+    location: '',
+    yearsOfExperience: '',
+    description: '',
+    budget: '',
+  }
 
+  const { client } = useSelector((state) => state.client)
+  const [isEnabled, setIsEnabled] = useState(false)
+  const dispatch = useDispatch()
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState)
+  const [values, setValues] = useState(initialState)
+  const handleChange = (name, value) => {
+    console.log(name, value)
+    setValues({ ...values, [name]: value })
+  }
   const paymentNav = () => {
+    //add job with values and client id
+    dispatch(
+      createJob({
+        title: values.title,
+        duration: values.duration,
+        location: values.location,
+        yearsOfExperience: values.yearsOfExperience,
+        description: values.description,
+        budget: values.budget,
+        privacy: 'public',
+        clientId: client.id,
+      })
+      // !title ||
+      //   !duration ||
+      //   !location ||
+      //   !yearsOfExperience ||
+      //   !budget ||
+      //   !description ||
+      //   !privacy
+    )
     navigation.navigate('payment')
   }
   return (
@@ -39,12 +75,40 @@ const JobPostingPage = ({navigation}) => {
         <Text style={styles.text}>Answer the questions below in order to </Text>
         <Text style={styles.text}>find the best job for you</Text>
         <View style={styles.form}>
-            <SelectInput title="Job Title" list={["Senior Production Manager", "option2", "option3"]}/> 
-            <DurationInputs placeholder="Job Duration*"/>  
-            <Inputs placeholder='Location*' style={styles.input} />
-            <Inputs placeholder='Years of experience*' style={styles.input} />
-            <SelectInput title="Budget" list={["option1", "option2", "option3"]}/> 
-            <TextArea  placeholder="Job Description*"/>  
+            <SelectInput
+              title='Job Title'
+              list={['Senior Production Manager', 'option2', 'option3']}
+              onSelect={(value) => handleChange('title', value)}
+              value={values.title}
+            />
+            <DurationInputs
+              placeholder='Job Duration*'
+              onChangeText={(value) => handleChange('duration', value)}
+              value={values.duration}
+            />
+            <Inputs
+              placeholder='Location*'
+              style={styles.input}
+              onChange={(value) => handleChange('location', value)}
+              value={values.location}
+            />
+            <Inputs
+              placeholder='Years of experience*'
+              style={styles.input}
+              onChange={(value) => handleChange('yearsOfExperience', value)}
+              value={values.yearsOfExperience}
+            />
+            <SelectInput
+              title='Budget'
+              list={['option1', 'option2', 'option3']}
+              onSelect={(value) => handleChange('budget', value)}
+              value={values.budget}
+            />
+            <TextArea
+              placeholder='Job Description*'
+              onChangeText={(value) => handleChange('description', value)}
+              value={values.description}
+            />
             <View style={styles.privacy}>
                 <Text style={!isEnabled ? styles.picked : styles.notPicked}>Public </Text>
                 <Switch

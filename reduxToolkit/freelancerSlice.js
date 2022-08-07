@@ -15,6 +15,9 @@ const initialState = {
   languages: [],
   isLoading: false,
   error: undefined,
+  copyOfPassport: '',
+  copyOfResidencyVisa:''
+
 }
 export const createFreelancerProfile = createAsyncThunk(
   'createFreelancerProfile',
