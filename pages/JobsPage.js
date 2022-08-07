@@ -14,11 +14,11 @@ import { useDispatch, useSelector } from 'react-redux'
 const JobsPage = ({ navigation, name, notifications }) => {
   const [notificationIndex, setNotifcaitonIndex] = useState(0)
   const { jobs } = useSelector((store) => store.job)
-  const {user} = useSelector((store) => store.user)
-  console.log(jobs)
+  const { user } = useSelector((store) => store.user)
+
 
   const dispatch = useDispatch()
-  useLayoutEffect(() => {
+  useEffect(() => {
     dispatch(getAllJobs())
   }, [])
 
@@ -74,21 +74,21 @@ const JobsPage = ({ navigation, name, notifications }) => {
     },
   ]
 
-  const navigate = (i) => {
+  const navigate = (id) => {
     console.log('routing')
-    navigation.navigate('jobDescription', { myjobs: false, data: Data[i] })
+    navigation.navigate('jobDescription', { id })
   }
 
   const renderItem = (data) => {
     return <Job {...data.item} navigate={navigate} />
   }
-  let welcomeMessage = `Hi ${user?.name}` 
+  let welcomeMessage = `Hi ${user?.name}`
   return (
     <View style={styles.container}>
       <SecondaryHeader title={welcomeMessage}></SecondaryHeader>
 
       <FlatList
-        data={jobs.length > 0 ? jobs : [{ id: 0, title: 'No Jobs' }]}
+        data={jobs.length ? jobs : { id: 0, title: 'No Jobs Found' }}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         // contentContainerStyle={{paddingBottom: 200}}

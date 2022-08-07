@@ -47,16 +47,14 @@ const ClientSignupPage = ({ navigation, signIn, name }) => {
 
   const [values, setValues] = useState(initialState)
   useEffect(() => {
-
     isEnabled
       ? setValues({ ...values, privacy: 'private' })
       : setValues({ ...values, privacy: 'public' })
-
   }, [isEnabled])
 
   const handleChange = (name, value) => {
     setValues({ ...values, [name]: value })
-          console.log(values)
+    console.log(values)
   }
   const onSubmit = () => {
     const {
@@ -76,18 +74,19 @@ const ClientSignupPage = ({ navigation, signIn, name }) => {
       (!companyName || !signatoryName || !signatoryTitle || !sign)
     ) {
       alert('Please fill all the fields')
+    } else {
+      dispatch(
+        createClientProfile({
+          companyName,
+          privacy,
+          signatoryName,
+          signatoryTitle,
+          sign,
+          TRN,
+          address,
+        })
+      )
     }
-   else { dispatch(
-      createClientProfile({
-        companyName,
-        privacy,
-        signatoryName,
-        signatoryTitle,
-        sign,
-        TRN,
-        address,
-      })
-    )}
   }
   useEffect(() => {
     if (Object.keys(client).length > 0) {

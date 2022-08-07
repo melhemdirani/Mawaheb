@@ -9,7 +9,7 @@ import heartIcon from '../assets/images/heartIcon.png'
 import plusIcon from '../assets/images/plusIcon.png'
 import MaskedView from '@react-native-masked-view/masked-view'
 
-const Job = ({ title, description, budget, client, current, heart, navigate, i }) => {
+const Job = ({ title, description, budget, client, current, heart, navigate, id }) => {
   return (
     <View
       // style={lastOne ? [styles.wrapper, { marginBottom: 40 }] : styles.wrapper}
@@ -31,7 +31,7 @@ const Job = ({ title, description, budget, client, current, heart, navigate, i }
         </View>
         <View style={styles.subHeader}>
           {!heart && <Image source={heartIcon} style={styles.heart}></Image>}
-          <Pressable onPress={() => navigate(i)}>
+          <Pressable onPress={() => navigate(id)}>
             <Image source={plusIcon} style={styles.plus}></Image>
           </Pressable>
         </View>

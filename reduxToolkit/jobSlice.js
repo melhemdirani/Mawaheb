@@ -27,9 +27,34 @@ export const getAllJobs = createAsyncThunk(
     try {
       const resp = await customFetch.get(url)
 
-
       return resp.data
     } catch (error) {
+      console.log(error.response.data.msg)
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
+export const getJob = createAsyncThunk('getJob', async (id, thunkApi) => {
+  let url = `/jobs/${id}/job`
+  try {
+    const resp = await customFetch.get(url)
+
+    return resp.data
+  } catch (error) {
+    console.log(error.response.data.msg)
+    return thunkApi.rejectWithValue(error.response.data.msg)
+  }
+})
+export const applyJob = createAsyncThunk(
+  'applyJob',
+  async (proposal, thunkApi) => {
+    let url = '/proposals'
+    try {
+      const resp = await customFetch.post(url, proposal)
+      console.log(resp.data)
+      return resp.data
+    } catch (error) {
+      alert(error.response.data.msg)
       console.log(error.response.data.msg)
       return thunkApi.rejectWithValue(error.response.data.msg)
     }
@@ -55,9 +80,37 @@ const jobSlice = createSlice({
       state.isLoading = true
     },
     [getAllJobs.fulfilled]: (state, action) => {
-      const {jobs} = action.payload
+      const { jobs } = action.payload
       state.isLoading = false
       state.jobs = jobs
+    },
+    [getAllJobs.rejected]: (state, action) => {
+      state.isLoading = false
+      state.error = action.payload
+    },
+    [getJob.pending]: (state, action) => {
+      state.isLoading = true
+    },
+    [getJob.fulfilled]: (state, action) => {
+      const { job } = action.payload
+      state.isLoading = false
+      state.job = job
+    },
+    [getJob.rejected]: (state, action) => {
+      state.isLoading = false
+      state.error = action.payload
+    },
+    [applyJob.pending]: (state, action) => {
+      state.isLoading = true
+    },
+    [applyJob.fulfilled]: (state, action) => {
+      const { job } = action.payload
+      state.isLoading = false
+      state.job = job
+    },
+    [applyJob.rejected]: (state, action) => {
+      state.isLoading = false
+      state.error = action.payload
     },
   },
 })

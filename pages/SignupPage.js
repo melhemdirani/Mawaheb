@@ -13,6 +13,7 @@ import SecondaryButton from '../components/Buttons/SecondaryButton'
 import TertiaryButton from '../components/Buttons/TertiaryButton'
 import axios from 'axios'
 import { useEffect } from 'react'
+import { useSelector } from 'react-redux'
 
 export default function SignupPage({ navigation }) {
   const navigateJob = () => {
@@ -24,6 +25,17 @@ export default function SignupPage({ navigation }) {
   const navigateCSignup = () => {
     navigation.navigate('JobSignUp', { role: 'client' })
   }
+  const { user } = useSelector((store) => store.user)
+  useEffect(() => {
+    if (Object.keys(user).length > 0) {
+      if (user.role === 'freelancer') {
+        navigation.navigate('jobseeker_jobs')
+      }
+      if (user.role === 'client') {
+        navigation.navigate('recruiter_dashboard')
+      }
+    }
+  }, [user])
 
   return (
     <View style={styles.container}>
