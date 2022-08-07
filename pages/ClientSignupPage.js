@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import {
   View,
   Text,
@@ -8,22 +8,21 @@ import {
   Switch,
   SafeAreaView,
   TouchableOpacity,
-  Image
+  Image,
 } from 'react-native'
 
-import { useDispatch, useSelector } from 'react-redux';
-import { createClientProfile } from '../reduxToolkit/clientSlice';
+import { useDispatch, useSelector } from 'react-redux'
+import { createClientProfile } from '../reduxToolkit/clientSlice'
 
-import Header from '../components/Header';
-import Inputs from '../components/Inputs';
-import UploadCard from '../components/UploadCard';
-import PrimaryButton from '../components/Buttons/PrimaryButton';
-import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
-import signUp from '../assets/images/signUp.png';
+import Header from '../components/Header'
+import Inputs from '../components/Inputs'
+import UploadCard from '../components/UploadCard'
+import PrimaryButton from '../components/Buttons/PrimaryButton'
+import * as ImagePicker from 'expo-image-picker'
+import * as FileSystem from 'expo-file-system'
+import signUp from '../assets/images/signUp.png'
 
-
-const ClientSignupPage = ({navigation}) => {
+const ClientSignupPage = ({ navigation }) => {
   const { client, isLoading, error } = useSelector((store) => store.client)
   const navigateLogin = () => {
     navigation.navigate('login')
@@ -34,7 +33,7 @@ const ClientSignupPage = ({navigation}) => {
   }
   const dispatch = useDispatch()
   const [isEnabled, setIsEnabled] = useState(false)
-  const [image, setImage] = useState("")
+  const [image, setImage] = useState('')
   const initialState = {
     companyName: '',
     privacy: '',
@@ -48,16 +47,14 @@ const ClientSignupPage = ({navigation}) => {
   const [values, setValues] = useState(initialState)
   const [uploaded, setUploaded] = useState(false)
   useEffect(() => {
-
     isEnabled
       ? setValues({ ...values, privacy: 'private' })
       : setValues({ ...values, privacy: 'public' })
-
   }, [isEnabled])
 
   const handleChange = (name, value) => {
     setValues({ ...values, [name]: value })
-          console.log(values)
+    console.log(values)
   }
   const onSubmit = () => {
     const {
@@ -77,8 +74,9 @@ const ClientSignupPage = ({navigation}) => {
       (!companyName || !signatoryName || !signatoryTitle || !sign)
     ) {
       alert('Please fill all fields')
+      return
     }
-   else { dispatch(
+    return dispatch(
       createClientProfile({
         companyName,
         privacy,
@@ -88,7 +86,7 @@ const ClientSignupPage = ({navigation}) => {
         TRN,
         Address: address,
       })
-    )}
+    )
   }
   useEffect(() => {
     if (Object.keys(client).length > 0) {
@@ -97,7 +95,7 @@ const ClientSignupPage = ({navigation}) => {
   }, [client])
   const toggleSwitch = () => {
     setUploaded(false)
-    setImage("")
+    setImage('')
     setIsEnabled(!isEnabled)
   }
   const selectFile = async () => {
@@ -110,7 +108,7 @@ const ClientSignupPage = ({navigation}) => {
     if (!result.cancelled) {
       upload(result.uri)
       setUploaded(true)
-      console.log("image uri", result.uri)
+      console.log('image uri', result.uri)
       setImage(result.uri)
     }
   }
@@ -156,7 +154,9 @@ const ClientSignupPage = ({navigation}) => {
             value={values.companyName}
           />
           <View style={styles.privacy}>
-            <Text style={!isEnabled ? styles.picked : styles.notPicked}>Public </Text>
+            <Text style={!isEnabled ? styles.picked : styles.notPicked}>
+              Public{' '}
+            </Text>
             <Switch
               style={styles.switch}
               ios_backgroundColor='#23CDB0'
@@ -165,67 +165,67 @@ const ClientSignupPage = ({navigation}) => {
               onValueChange={toggleSwitch}
               value={isEnabled}
             ></Switch>
-            <Text style={isEnabled ? styles.picked : styles.notPicked}> Private</Text>
+            <Text style={isEnabled ? styles.picked : styles.notPicked}>
+              {' '}
+              Private
+            </Text>
           </View>
-          { isEnabled 
-            ? <View style={{width: "100%", alignItems: "center"}}>
+          {isEnabled ? (
+            <View style={{ width: '100%', alignItems: 'center' }}>
               <Inputs
                 placeholder={'Address*'}
                 style={styles.input}
                 value={values.address}
-                onChange={ (value) => handleChange('address', value) }
+                onChange={(value) => handleChange('address', value)}
               />
               <Inputs
                 placeholder={'TRN(Tax Number)*'}
                 style={styles.input}
-                value={ values.TRN}
+                value={values.TRN}
                 numeric
-                onChange={ (value) => handleChange('TRN', parseInt(value)) }
+                onChange={(value) => handleChange('TRN', parseInt(value))}
               />
-              { 
-                uploaded ? (
-                  <Image source={{ uri: image }} style={styles.Imagecontainer} />
-                ) : (
-                  <UploadCard
-                    title={ 'Trading Liscence*'}
-                    selectFile={selectFile}
-                  />
-                )
-              }
+              {uploaded ? (
+                <Image source={{ uri: image }} style={styles.Imagecontainer} />
+              ) : (
+                <UploadCard
+                  title={'Trading Liscence*'}
+                  selectFile={selectFile}
+                />
+              )}
             </View>
-            : <View style={{width: "100%", alignItems: "center"}}>
+          ) : (
+            <View style={{ width: '100%', alignItems: 'center' }}>
               <Inputs
-                placeholder={ 'Signatory Name*'}
+                placeholder={'Signatory Name*'}
                 style={styles.input}
                 value={values.signatoryName}
-                onChange={ (value) => handleChange('signatoryName', value) }
+                onChange={(value) => handleChange('signatoryName', value)}
               />
               <Inputs
-                placeholder={ 'Signatory Title'}
+                placeholder={'Signatory Title'}
                 style={styles.input}
                 value={values.signatoryTitle}
-                onChange={  (value) => handleChange('signatoryTitle', value) }
+                onChange={(value) => handleChange('signatoryTitle', value)}
               />
-              { 
-                image ? (
-                  <Image source={{ uri: image }} style={styles.Imagecontainer} />
-                ) : (
-                  <UploadCard
-                    title={ 'Add Authorized Signatory*' }
-                    selectFile={selectFile}
-                  />
-                )
-              }
+              {image ? (
+                <Image source={{ uri: image }} style={styles.Imagecontainer} />
+              ) : (
+                <UploadCard
+                  title={'Add Authorized Signatory*'}
+                  selectFile={selectFile}
+                />
+              )}
             </View>
-          }
+          )}
         </View>
         <View style={styles.btnContainer}>
           <TouchableOpacity onPress={() => onSubmit()}>
-           <PrimaryButton  title='Sign up' />
+            <PrimaryButton title='Sign up' />
           </TouchableOpacity>
           <SafeAreaView style={styles.btn}>
             <Pressable onPress={() => navigateLogin()}>
-             <Text style={styles.btnText}>Login</Text>
+              <Text style={styles.btnText}>Login</Text>
             </Pressable>
           </SafeAreaView>
         </View>
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 13,
     fontFamily: 'PoppinsR',
-    color: "rgba(0,0,0,.6)"
+    color: 'rgba(0,0,0,.6)',
   },
   form: {
     width: '100%',
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     width: '90%',
     alignItems: 'center',
     marginTop: 10,
-    paddingBottom: 40
+    paddingBottom: 40,
   },
   btn: {
     marginTop: 10,
@@ -276,34 +276,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '80%',
     top: -5,
-    marginBottom: 8
+    marginBottom: 8,
   },
   switch: {
     transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
   },
-  notPicked:{
-    fontFamily: "PoppinsL",
-    color: "rgba(0,0,0,.5)",
-    fontSize: 15
+  notPicked: {
+    fontFamily: 'PoppinsL',
+    color: 'rgba(0,0,0,.5)',
+    fontSize: 15,
   },
-  picked:{
-    fontFamily: "PoppinsL",
-    fontSize: 15
-
+  picked: {
+    fontFamily: 'PoppinsL',
+    fontSize: 15,
   },
   Imagecontainer: {
-    justifyContent: "center",
+    justifyContent: 'center',
     height: 230,
-    width: "85%",
+    width: '85%',
     borderRadius: 20,
-    marginVertical: 10
+    marginVertical: 10,
   },
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  signIn: (object) => dispatch(signIn(object))
-});
-
-
+  signIn: (object) => dispatch(signIn(object)),
+})
 
 export default ClientSignupPage

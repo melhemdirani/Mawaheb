@@ -11,8 +11,11 @@ export const createClientProfile = createAsyncThunk(
   async (client, thunkAPI) => {
     try {
       const resp = await customFetch.post('/clients', client)
+      alert('Client created successfully')
       return resp.data
     } catch (error) {
+      alert(error.response.data.msg)
+
       return thunkAPI.rejectWithValue(error.response.data.msg)
     }
   }
