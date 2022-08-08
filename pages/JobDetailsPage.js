@@ -42,7 +42,6 @@ const JobDetailsPage = ({ route, navigation, name }) => {
       applyJob({
         jobId: id,
         freelancerId: freelancer?.id || user?.freelancerId,
-
         price: 2000,
       })
     )

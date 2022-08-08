@@ -6,6 +6,7 @@ const initialState = {
   job: {},
   jobs: [],
   proposals: [],
+  myJobs: [],
 }
 export const createJob = createAsyncThunk(
   'createJobPost',
@@ -75,6 +76,17 @@ export const getApplicants = createAsyncThunk(
     }
   }
 )
+export const getMyJobs = createAsyncThunk('getMyJobs', async (id, thunkApi) => {
+  let url = `/jobs/${id}`
+  try {
+    const resp = await customFetch.get(url)
+    console.log('redux', resp.data)
+    return resp.data
+  } catch (error) {
+    console.log(error.response.data.msg)
+    return thunkApi.rejectWithValue(error.response.data.msg)
+  }
+})
 const jobSlice = createSlice({
   name: 'job',
   initialState,
@@ -134,6 +146,22 @@ const jobSlice = createSlice({
       const { proposals } = action.payload
       state.isLoading = false
       state.proposals = proposals
+    },
+    [getApplicants.rejected]: (state, action) => {
+      state.isLoading = false
+      state.error = action.payload
+    },
+    [getMyJobs.pending]: (state, action) => {
+      state.isLoading = true
+    },
+    [getMyJobs.fulfilled]: (state, action) => {
+      const { myJobs } = action.payload
+      state.isLoading = false
+      state.myJobs = myJobs
+    },
+    [getMyJobs.rejected]: (state, action) => {
+      state.isLoading = false
+      state.error = action.payload
     },
   },
 })

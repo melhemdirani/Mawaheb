@@ -1,4 +1,12 @@
-import { View, Text, StyleSheet, Image, FlatList } from 'react-native'
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  FlatList,
+  Pressable,
+  ScrollView,
+} from 'react-native'
 import React, { useEffect } from 'react'
 import JobList from '../components/JobList'
 import SecondaryHeader from '../components/SecondaryHeader'
@@ -8,28 +16,55 @@ import arrowUpIcon from '../assets/images/arrowUpIcon.png'
 import { jobs } from '../assets/data/jobs'
 import Navbar from '../components/Navbar'
 import { useDispatch, useSelector } from 'react-redux'
-import { getApplicants } from '../reduxToolkit/jobSlice'
+import { getApplicants, getMyJobs } from '../reduxToolkit/jobSlice'
 
 const JobListPage = ({ navigation }) => {
   const dispatch = useDispatch()
-  const { applicants } = useSelector((state) => state.job)
-  useEffect(() => {
-    dispatch(getApplicants())
-  })
+  const [showApplicants, setShowApplicants] = React.useState(false)
 
-  const renderItem = (data) => {
-    return <JobList {...data.item} navigate={detailsNavigate} />
+  const { proposals, myJobs } = useSelector((state) => state.job)
+  const { user } = useSelector((state) => state.user)
+  const { client } = useSelector((state) => state.client)
+  useEffect(() => {
+    dispatch(getMyJobs(client?.id || user?.clientId))
+    console.log('myjobs', proposals)
+  }, [user])
+  const getProposals = (id) => {
+    console.log(id)
+
+    dispatch(getApplicants(id))
+    console.log('useEffect', proposals)
+  }
+  const navigate = (id) => {
+    console.log('routing')
+    navigation.navigate('freelancerDetails', { id })
   }
 
-  return (
-    <View style={styles.wrapper}>
-      <SecondaryHeader title='Find the right person' />
+  const renderItem = (data) => {
+    console.log(data.item, 'proposal')
+    if (!data) {
+      return <Text>No Jobs</Text>
+    }
+    return (
+      <JobList
+        {...data.item}
+        navigate={navigate}
+        style={styles.jobs}
+      />
+    )
+  }
+  const renderMyJobs = (data) => {
+    console.log('myjobs', data.item)
+    if (!data) {
+      return <Text>Loading</Text>
+    }
+    return (
       <View style={styles.container}>
         <View style={styles.title}>
           <MaskedView
             maskElement={
               <Text style={[styles.text, { backgroundColor: 'transparent' }]}>
-                Job Title Applicants
+                {data.item.title} Applicants
               </Text>
             }
           >
@@ -43,17 +78,32 @@ const JobListPage = ({ navigation }) => {
               </Text>
             </LinearGradient>
           </MaskedView>
-          <Image source={arrowUpIcon} style={styles.arrowUp}></Image>
+          <Pressable onPress={()=>setShowApplicants(!showApplicants)}>
+            <Image source={arrowUpIcon} style={styles.arrowUp}></Image>
+          </Pressable>
         </View>
 
-        <FlatList
-          data={jobs}
+       { showApplicants &&<FlatList
+          data={data.item.proposals}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
-          // contentContainerStyle={{paddingBottom: 200}}
-
           style={styles.jobs}
+        />}
+      </View>
+    )
+  }
+
+  return (
+    <View style={styles.wrapper}>
+      <SecondaryHeader title='Find the right person' />
+      <View style={styles.container}>
+        <FlatList
+          data={myJobs}
+          renderItem={renderMyJobs}
+          keyExtractor={(item) => item.id}
+          style={styles.list}
         ></FlatList>
+
         <Navbar active='Jobs' client navigation={navigation} />
       </View>
     </View>
@@ -66,6 +116,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    padding: 5,
   },
   title: {
     padding: 7,
@@ -74,10 +125,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: -15,
+    marginBottom: 20,
+    marginTop: 20,
   },
   jobs: {
-    padding: 7,
+  
+  
   },
   text: {
     fontSize: 20,

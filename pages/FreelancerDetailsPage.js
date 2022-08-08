@@ -25,6 +25,7 @@ import minusIcon from '../assets/images/minusIcon.png'
 
 const FreelancerDetailsPage = ({navigation}) => {
   const { id, title, price, roles, languages, location, shift } = freelancerDetails
+  
 
   const navigateContract = () => {
     navigation.navigate('acceptContract')

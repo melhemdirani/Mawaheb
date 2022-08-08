@@ -18,7 +18,7 @@ export const registerUser = createAsyncThunk(
 
       return resp.data
     } catch (error) {
-  alert(error.response.data.msg)
+      alert(error.response.data.msg)
       console.log(error.response.data.msg)
       alert(error.response.data.msg)
 
@@ -36,7 +36,7 @@ export const loginUser = createAsyncThunk(
 
       return resp.data
     } catch (error) {
-        alert(error.response.data.msg)
+      alert(error.response.data.msg)
       console.log(error.response.data.msg)
 
       return thunkApi.rejectWithValue(error.response.data.msg)
@@ -67,7 +67,6 @@ const userSlice = createSlice({
     setFreelancerId: (state, action) => {
       state.user.freelancerId = action.payload
     },
-    
   },
   extraReducers: {
     [registerUser.pending]: (state) => {
@@ -94,7 +93,9 @@ const userSlice = createSlice({
       state.isLoading = false
       state.error = payload
     },
-    [logOutUser.fulfilled]: (state) => { state.user = {} }
+    [logOutUser.fulfilled]: (state) => {
+      state.user = {}
+    },
   },
 })
 export const { setFreelancerId } = userSlice.actions

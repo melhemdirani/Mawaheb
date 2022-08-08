@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, Image, ImageBackground, Pressable } from 'react-native'
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ImageBackground,
+  Pressable,
+} from 'react-native'
 import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import calendarIcon from '../assets/images/calendarIcon.png'
@@ -12,14 +19,12 @@ import languageIcon from '../assets/images/LanguageIcon.png'
 import languageCircle from '../assets/images/languageCircle.png'
 
 const JobList = ({
-  title,
-  description,
   price,
-  date,
-  shift,
-  location,
-  languages,
-  navigate
+
+  navigate,
+  job,
+  freelancer,
+  id,
 }) => {
   return (
     <View style={styles.wrapper}>
@@ -39,7 +44,7 @@ const JobList = ({
         </View>
         <View style={styles.subHeader}>
           <Image source={heartIcon} style={styles.heart}></Image>
-          <Pressable onPress={() => navigate()}>
+          <Pressable onPress={() => navigate(id)}>
             <Image source={plusIcon} style={styles.plus}></Image>
           </Pressable>
         </View>
@@ -64,7 +69,7 @@ const JobList = ({
                 <Text
                   style={[styles.title, { backgroundColor: 'transparent' }]}
                 >
-                  {title}
+                  {job.title}
                 </Text>
               }
             >
@@ -73,20 +78,15 @@ const JobList = ({
                 end={{ x: 1, y: 1 }}
                 colors={['rgba(49, 190, 187, 1)', 'rgba(101, 91, 218, 1)']}
               >
-                <Text style={[styles.title, { opacity: 0 }]}>{title}</Text>
+                <Text style={[styles.title, { opacity: 0 }]}>{job.title}</Text>
               </LinearGradient>
             </MaskedView>
-            <Text style={styles.description}>{description}</Text>
+            <Text style={styles.description}>{job.description}</Text>
           </View>
           <View style={styles.languages}>
             <Image source={languageIcon} style={styles.languageIcon}></Image>
-
-            {languages.map((item, i) => {
-              return (
-                <Text key={i} style={styles.language}>
-                  {item}
-                </Text>
-              )
+            {freelancer.languages.map((language) => {
+              return <Text style={styles.language}>{language.name}</Text>
             })}
           </View>
           <LinearGradient
@@ -101,15 +101,15 @@ const JobList = ({
             <View style={styles.footer}>
               <View style={styles.footerInfo}>
                 <Image source={calendarIcon} style={styles.icon}></Image>
-                <Text style={styles.text}> {date}</Text>
+                <Text style={styles.text}> {job.duration}</Text>
               </View>
               <View style={styles.footerInfo}>
                 <Image source={clockIcon} style={styles.icon}></Image>
-                <Text style={styles.text}> {shift}</Text>
+                <Text style={styles.text}>day shift</Text>
               </View>
               <View style={styles.footerInfo}>
                 <Image source={locationIcon} style={styles.icon}></Image>
-                <Text style={styles.text}>{location}</Text>
+                <Text style={styles.text}>{job.location}</Text>
               </View>
             </View>
           </LinearGradient>
@@ -121,7 +121,7 @@ const JobList = ({
 const styles = StyleSheet.create({
   wrapper: {
     height: 300,
-    marginTop: -5
+    marginTop: -5,
   },
   linear: {
     borderRadius: 30,
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontFamily: 'PoppinsR',
-    color: "rgba(10, 8, 75, .6)"
+    color: 'rgba(10, 8, 75, .6)',
   },
   subHeader: {
     flexDirection: 'row',
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
   },
   language: {
     fontFamily: 'PoppinsR',
-    color: "rgba(10, 8, 75, .6)"
+    color: 'rgba(10, 8, 75, .6)',
   },
   languageIcon: {
     marginLeft: 20,
