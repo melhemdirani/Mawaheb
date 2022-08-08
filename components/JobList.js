@@ -44,7 +44,7 @@ const JobList = ({
         </View>
         <View style={styles.subHeader}>
           <Image source={heartIcon} style={styles.heart}></Image>
-          <Pressable onPress={() => navigate(id)}>
+          <Pressable onPress={() => navigate(freelancer.id,price,job.location,job.id)}>
             <Image source={plusIcon} style={styles.plus}></Image>
           </Pressable>
         </View>

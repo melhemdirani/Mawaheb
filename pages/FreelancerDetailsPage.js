@@ -6,9 +6,9 @@ import {
   ImageBackground,
   SafeAreaView,
   Pressable,
-  ScrollView
+  ScrollView,
 } from 'react-native'
-import React from 'react'
+import React, { useEffect, useLayoutEffect } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import calendarIcon from '../assets/images/calendarIcon.png'
 import clockIcon from '../assets/images/clockIcon.png'
@@ -22,14 +22,46 @@ import languageCircle from '../assets/images/languageCircle.png'
 import { freelancerDetails } from '../assets/data/freelancerDetails'
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import minusIcon from '../assets/images/minusIcon.png'
+import { useSelector, useDispatch } from 'react-redux'
+import { getFreelancer } from '../reduxToolkit/freelancerSlice'
+import { createContract } from '../reduxToolkit/jobSlice'
 
-const FreelancerDetailsPage = ({navigation}) => {
-  const { id, title, price, roles, languages, location, shift } = freelancerDetails
-  
+const FreelancerDetailsPage = ({ navigation, route }) => {
+  const { id: freelancerId, price, location, jobId } = route.params
+  const { freelancer } = useSelector((state) => state.freelancer)
+  const { client } = useSelector((state) => state.client)
+  const { user: userState } = useSelector((state) => state.user)
+  console.log('freelancerId', freelancerId)
+
+  console.log('jobId', jobId)
+  const dispatch = useDispatch()
 
   const navigateContract = () => {
+    console.log({
+      freelancerId: freelancerId,
+      clientId: client?.id || userState?.clientId,
+      jobId: jobId,
+      freelancerFee: price,
+    })
+    dispatch(
+      createContract({
+        freelancerId,
+        clientId: client?.id || userState?.clientId,
+        jobId,
+        freelancerFee: price,
+      })
+    )
+
     navigation.navigate('acceptContract')
   }
+  useLayoutEffect(() => {
+    dispatch(getFreelancer(freelancerId))
+    console.log('freelancer', freelancer)
+  }, [freelancerId])
+  if (Object.keys(freelancer).length === 0) {
+    return <Text>Loading</Text>
+  }
+  const { id, user, roles, languages } = freelancer
 
   return (
     <ScrollView style={styles.wrapper}>
@@ -69,51 +101,51 @@ const FreelancerDetailsPage = ({navigation}) => {
       >
         <View style={[styles.container, styles.shadow]}>
           <View style={styles.info}>
-              <MaskedView
-                maskElement={
-                  <Text
-                    style={[styles.title, { backgroundColor: 'transparent' }]}
-                  >
-                    {title}
-                  </Text>
-                }
-              >
-                <LinearGradient
-                  start={{ x: 1, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  colors={['rgba(49, 190, 187, 1)', 'rgba(101, 91, 218, 1)']}
+            <MaskedView
+              maskElement={
+                <Text
+                  style={[styles.title, { backgroundColor: 'transparent' }]}
                 >
-                  <Text style={[styles.title, { opacity: 0 }]}>{title}</Text>
-                </LinearGradient>
-              </MaskedView>
-              <View style={styles.roles}>
-                {roles.map((role) => {
-                  return (
-                    <View key={role.id} style={styles.role}>
-                      <View style={{paddingHorizontal: 20}}>
-                        <Text style={styles.roleName}>{role.name}</Text>
-                        <Text style={styles.roleDescription}>
-                          {role.description}
-                        </Text>
-                        <View style={styles.roleDate}>
-                          <Image
-                            source={calendarIcon}
-                            style={styles.calendarIcon}
-                          ></Image>
-                          <Text style={styles.roleDateText}>{role.date}</Text>
-                        </View>
+                  {user.name} ssssss
+                </Text>
+              }
+            >
+              <LinearGradient
+                start={{ x: 1, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                colors={['rgba(49, 190, 187, 1)', 'rgba(101, 91, 218, 1)']}
+              >
+                <Text style={[styles.title, { opacity: 0 }]}>{user.name}</Text>
+              </LinearGradient>
+            </MaskedView>
+            <View style={styles.roles}>
+              {roles.map((role) => {
+                return (
+                  <View key={role.id} style={styles.role}>
+                    <View style={{ paddingHorizontal: 20 }}>
+                      <Text style={styles.roleName}>{role.role}</Text>
+                      <Text style={styles.roleDescription}>
+                        {role.projectTitle}
+                      </Text>
+                      <View style={styles.roleDate}>
+                        <Image
+                          source={calendarIcon}
+                          style={styles.calendarIcon}
+                        ></Image>
+                        <Text style={styles.roleDateText}>{role.endDate}</Text>
                       </View>
                     </View>
-                  )
-                })}
-              </View>
+                  </View>
+                )
+              })}
+            </View>
           </View>
           <View style={styles.languages}>
             <Image source={languageIcon} style={styles.languageIcon}></Image>
-            {languages.map((item, i) => {
+            {languages.map((item) => {
               return (
-                <Text key={i} style={styles.language}>
-                  {item}
+                <Text key={item.id} style={styles.language}>
+                  {item.name}
                 </Text>
               )
             })}
@@ -130,7 +162,7 @@ const FreelancerDetailsPage = ({navigation}) => {
           >
             <View style={styles.footerInfo}>
               <Image source={clockIcon} style={styles.icon}></Image>
-              <Text style={styles.text}> {shift}</Text>
+              <Text style={styles.text}> day shift</Text>
             </View>
             <View style={styles.footerInfo}>
               <Image source={locationIcon} style={styles.icon}></Image>
@@ -149,8 +181,8 @@ const styles = StyleSheet.create({
   wrapper: {
     height: 300,
     padding: 20,
-    width: "100%",
-    alignSelf: "center",
+    width: '100%',
+    alignSelf: 'center',
     marginTop: 70,
     flex: 1,
   },
@@ -243,7 +275,7 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: -30,
     marginBottom: 20,
-    paddingRight: 20
+    paddingRight: 20,
   },
   language: {
     fontFamily: 'PoppinsR',
@@ -301,18 +333,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#107DC5',
   },
-  button:{
-   alignItems: 'center',
-   marginTop: 40,
-   marginBottom: 90
-
+  button: {
+    alignItems: 'center',
+    marginTop: 40,
+    marginBottom: 90,
   },
-  footerContainer:{
-    flexDirection: "row",
-    width: "100%",
-    alignItems: "flex-start",
+  footerContainer: {
+    flexDirection: 'row',
+    width: '100%',
+    alignItems: 'flex-start',
     paddingVertical: 20,
-    paddingLeft: 20
+    paddingLeft: 20,
   },
 })
 export default FreelancerDetailsPage

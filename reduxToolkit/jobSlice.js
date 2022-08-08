@@ -7,6 +7,7 @@ const initialState = {
   jobs: [],
   proposals: [],
   myJobs: [],
+  contract: {},
 }
 export const createJob = createAsyncThunk(
   'createJobPost',
@@ -87,6 +88,20 @@ export const getMyJobs = createAsyncThunk('getMyJobs', async (id, thunkApi) => {
     return thunkApi.rejectWithValue(error.response.data.msg)
   }
 })
+export const createContract = createAsyncThunk(
+  'createContract',
+  async (contract, thunkApi) => {
+    let url = '/contracts'
+    try {
+      const resp = await customFetch.post(url, contract)
+      console.log(resp.data)
+      return resp.data
+    } catch (error) {
+      console.log(error.response.data.msg)
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
 const jobSlice = createSlice({
   name: 'job',
   initialState,
@@ -163,7 +178,21 @@ const jobSlice = createSlice({
       state.isLoading = false
       state.error = action.payload
     },
+    [createContract.pending]: (state, action) => {
+      state.isLoading = true
+    },
+    [createContract.fulfilled]: (state, action) => {
+      const { contract } = action.payload
+      state.isLoading = false
+      state.contract = contract
+    },
+    [createContract.rejected]: (state, action) => {
+      state.isLoading = false
+      state.error = action.payload
+    }
+
   },
+   
 })
 
 export default jobSlice.reducer

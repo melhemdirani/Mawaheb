@@ -30,6 +30,22 @@ export const createFreelancerProfile = createAsyncThunk(
     }
   }
 )
+export const getFreelancer=createAsyncThunk(
+  'getFreelancer',
+  async (id, thunkApi) => {
+    let url = `/freelancers/${id}`
+    try {
+      const resp = await customFetch.get(url)
+     
+
+      return resp.data
+    } catch (error) {
+      alert(error.response.data.msg)
+      console.log(error.response.data.msg)
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
 
 const freelancerSlice = createSlice({
   name: 'freelancer',
@@ -71,6 +87,14 @@ const freelancerSlice = createSlice({
       state.isLoading = false
       state.error = payload
     },
+    [getFreelancer.pending]: (state) => {
+      state.isLoading = true
+    },
+    [getFreelancer.fulfilled]: (state, { payload }) => {
+      const { freelancer } = payload
+      state.isLoading = false
+      state.freelancer = freelancer
+    }
   },
 })
 export const {

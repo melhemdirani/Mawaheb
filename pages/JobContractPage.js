@@ -21,7 +21,7 @@ import checkbox from '../assets/images/checkbox.png'
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import btnBackground from '../assets/images/btnBackground.png'
 
-const JobContractPage = ({navigation}) => {
+const JobContractPage = ({ navigation }) => {
   const [toggleCheckBox, setToggleCheckBox] = useState(false)
   const { id, title, price, roles, languages, location, shift } =
     freelancerDetails
@@ -29,11 +29,14 @@ const JobContractPage = ({navigation}) => {
 
   const navigateAccept = () => {
     navigation.navigate('acceptedClient')
-
   }
   return (
     <ScrollView style={styles.wrapper}>
-      <Header title='Job Contract' icon={jobContractIcon} goBack={navigation.goBack} />
+      <Header
+        title='Job Contract'
+        icon={jobContractIcon}
+        goBack={navigation.goBack}
+      />
       <SafeAreaView style={styles.container}>
         <View style={styles.titleHeader}>
           <Text style={styles.text}>
@@ -215,10 +218,10 @@ const JobContractPage = ({navigation}) => {
       <ImageBackground
         source={btnBackground}
         style={styles.btnBg}
-        resizeMode="stretch"
+        resizeMode='stretch'
       >
         <View style={styles.btn}>
-          <PrimaryButton title='Accept and Sign' navigate={navigateAccept}/>
+          <PrimaryButton title='Accept and Sign' navigate={navigateAccept} />
         </View>
       </ImageBackground>
     </ScrollView>
@@ -231,23 +234,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   container: {
-    width: "90%",
-    alignSelf: "center"
+    width: '90%',
+    alignSelf: 'center',
   },
-  container2:{
-  },
+  container2: {},
   info: {
     padding: 20,
     paddingLeft: 35,
   },
   titleHeader: {
     marginTop: 50,
-    alignItems: "center"
+    alignItems: 'center',
   },
   text: {
     fontSize: 13,
     fontFamily: 'PoppinsR',
-    textAlign: "center",
+    textAlign: 'center',
     color: 'rgba(0, 0, 0, .6)',
   },
   header: {
@@ -344,7 +346,7 @@ const styles = StyleSheet.create({
   partyAndName: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15
+    marginBottom: 15,
   },
   companyName: {
     color: 'rgba(0,0,0,.6)',
@@ -376,11 +378,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   btnBg: {
-
     height: '100%',
     marginTop: 20,
-
-
   },
   btn: {
     alignItems: 'center',
@@ -389,10 +388,10 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     padding: 40,
   },
-  linear:{
-    width: "100%",
-    borderRadius: 20
-  }
+  linear: {
+    width: '100%',
+    borderRadius: 20,
+  },
 })
 
 export default JobContractPage

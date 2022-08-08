@@ -35,9 +35,9 @@ const JobListPage = ({ navigation }) => {
     dispatch(getApplicants(id))
     console.log('useEffect', proposals)
   }
-  const navigate = (id) => {
+  const navigate = (id,price ,location,jobId) => {
     console.log('routing')
-    navigation.navigate('freelancerDetails', { id })
+    navigation.navigate('freelancerDetails', { id ,price,location ,jobId} )
   }
 
   const renderItem = (data) => {
