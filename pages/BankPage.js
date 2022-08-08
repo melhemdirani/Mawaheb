@@ -38,19 +38,7 @@ const BankPage = ({ navigation }) => {
   }
 
   const navigate = () => {
-    const { iban, accountName, bankName, bankAddress, city, swiftCode } = bank
-    if (Object.keys(bank).length > 0) {
-      if (
-        !iban ||
-        !accountName ||
-        !bankName ||
-        !bankAddress ||
-        !city ||
-        !swiftCode
-      ) {
-        alert('Please fill all the fields')
-        return
-      } else {
+    
         dispatch(
           createFreelancerProfile({
             profile: {
@@ -66,9 +54,9 @@ const BankPage = ({ navigation }) => {
         )
         // dispatch(setFreelancerId(freelancer.id))
         navigation.navigate('jobseeker_jobs')
-      }
+      
     }
-  }
+  
 
   return (
     <ScrollView style={styles.container}>

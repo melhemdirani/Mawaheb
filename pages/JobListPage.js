@@ -7,11 +7,15 @@ import { LinearGradient } from 'expo-linear-gradient'
 import arrowUpIcon from '../assets/images/arrowUpIcon.png'
 import { jobs } from '../assets/data/jobs'
 import Navbar from '../components/Navbar'
-
+import { useDispatch, useSelector } from 'react-redux'
+import { getApplicants } from '../reduxToolkit/jobSlice'
 
 const JobListPage = ({ navigation }) => {
-
-
+  const dispatch = useDispatch()
+  const { applicants } = useSelector((state) => state.job)
+  useEffect(() => {
+    dispatch(getApplicants())
+  })
 
   const renderItem = (data) => {
     return <JobList {...data.item} navigate={detailsNavigate} />

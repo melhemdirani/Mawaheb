@@ -5,6 +5,7 @@ import customFetch from '../utils/axios'
 const initialState = {
   job: {},
   jobs: [],
+  proposals: [],
 }
 export const createJob = createAsyncThunk(
   'createJobPost',
@@ -55,6 +56,20 @@ export const applyJob = createAsyncThunk(
       return resp.data
     } catch (error) {
       alert(error.response.data.msg)
+      console.log(error.response.data.msg)
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
+export const getApplicants = createAsyncThunk(
+  'getApplicants',
+  async (id, thunkApi) => {
+    let url = `/proposals/${id}/job`
+    try {
+      const resp = await customFetch.get(url)
+
+      return resp.data
+    } catch (error) {
       console.log(error.response.data.msg)
       return thunkApi.rejectWithValue(error.response.data.msg)
     }
@@ -111,6 +126,14 @@ const jobSlice = createSlice({
     [applyJob.rejected]: (state, action) => {
       state.isLoading = false
       state.error = action.payload
+    },
+    [getApplicants.pending]: (state, action) => {
+      state.isLoading = true
+    },
+    [getApplicants.fulfilled]: (state, action) => {
+      const { proposals } = action.payload
+      state.isLoading = false
+      state.proposals = proposals
     },
   },
 })

@@ -1,4 +1,4 @@
-import React, { useEffect,useLayoutEffect } from 'react'
+import React, { useEffect, useLayoutEffect } from 'react'
 import {
   View,
   Text,
@@ -33,11 +33,15 @@ const JobDetailsPage = ({ route, navigation, name }) => {
 
   const navigateApply = () => {
     notify('Thank you for applying!')
+    console.log({
+      jobId: id,
+      freelancerId: freelancer.id || user.freelancerId,
+    })
 
     dispatch(
       applyJob({
         jobId: id,
-        freelancerId: '68562a90-8f51-4924-bb85-95f580ffe770',
+        freelancerId: freelancer?.id || user?.freelancerId,
 
         price: 2000,
       })
@@ -50,13 +54,10 @@ const JobDetailsPage = ({ route, navigation, name }) => {
     dispatch(getJob(id))
     console.log(job)
   }, [id])
-    if (!job) {
-      return <Text>Loading...</Text>
-    }
-  const { title, description, budget, duration, location, createdAt } = job 
-  
-
-
+  if (!job) {
+    return <Text>Loading...</Text>
+  }
+  const { title, description, budget, duration, location, createdAt } = job
 
   return (
     <ScrollView style={styles.wrapper}>

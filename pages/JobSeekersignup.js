@@ -51,7 +51,7 @@ const JobSeekersignup = ({ navigation, route }) => {
         name: values.name,
         email: values.email,
         password: values.password,
-        phoneNb: values.phoneNb,
+        phoneNb: parseInt(values.phoneNb),
         role: role,
       })
     )

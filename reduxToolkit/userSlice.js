@@ -18,6 +18,7 @@ export const registerUser = createAsyncThunk(
 
       return resp.data
     } catch (error) {
+  alert(error.response.data.msg)
       console.log(error.response.data.msg)
       alert(error.response.data.msg)
 
@@ -35,6 +36,7 @@ export const loginUser = createAsyncThunk(
 
       return resp.data
     } catch (error) {
+        alert(error.response.data.msg)
       console.log(error.response.data.msg)
 
       return thunkApi.rejectWithValue(error.response.data.msg)
