@@ -18,7 +18,6 @@ const TextArea = ({placeholder, onChange}) => {
         }
     }, [text])
     const onChangeText = (e) => {
-      console.log("e", e)
       onChange(e)
       setText(e)
     }

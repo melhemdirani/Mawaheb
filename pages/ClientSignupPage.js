@@ -8,7 +8,8 @@ import {
   Switch,
   SafeAreaView,
   TouchableOpacity,
-  Image
+  Image,
+  ActivityIndicator
 } from 'react-native'
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,11 +22,15 @@ import PrimaryButton from '../components/Buttons/PrimaryButton';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import signUp from '../assets/images/signUp.png';
+import { setUserAfterRegister } from '../reduxToolkit/userSlice';
 
 
 const ClientSignupPage = ({navigation}) => {
   const { client, isLoading, error } = useSelector((store) => store.client)
+  const { user } = useSelector((store) => store.user)
+  const [uploaded, setUploaded] = useState(false)
   const navigateLogin = () => {
+   
     navigation.navigate('login')
   }
   const navigateDash = () => {
@@ -42,11 +47,10 @@ const ClientSignupPage = ({navigation}) => {
     signatoryTitle: '',
     sign: 'ffff',
     address: '',
-    TRN: 0,
+    TRN: "",
   }
 
   const [values, setValues] = useState(initialState)
-  const [uploaded, setUploaded] = useState(false)
   useEffect(() => {
 
     isEnabled
@@ -57,9 +61,15 @@ const ClientSignupPage = ({navigation}) => {
 
   const handleChange = (name, value) => {
     setValues({ ...values, [name]: value })
-          console.log(values)
   }
+
+  useEffect(() => {
+    console.log("client user", user)
+  }, [user])
   const onSubmit = () => {
+    if(!uploaded){
+      return alert("Uploading please wait")
+    }
     const {
       companyName,
       privacy,
@@ -76,25 +86,31 @@ const ClientSignupPage = ({navigation}) => {
       privacy === 'public' &&
       (!companyName || !signatoryName || !signatoryTitle || !sign)
     ) {
-      alert('Please fill all fields')
+      alert('Please fill all fieldss')
+      console.log(values)
     }
-   else { dispatch(
-      createClientProfile({
-        companyName,
-        privacy,
-        signatoryName,
-        signatoryTitle,
-        sign,
-        TRN,
-        Address: address,
-      })
-    )}
+    else { dispatch(
+        createClientProfile({
+          companyName,
+          privacy,
+          signatoryName,
+          signatoryTitle,
+          sign,
+          TRN: parseInt(TRN),
+          Address: address,
+        })
+      )
+      dispatch(
+        setUserAfterRegister(client.id)
+      )
+    }
+  
   }
   useEffect(() => {
-    if (Object.keys(client).length > 0) {
+    if (Object.keys(client).length > 0 && uploaded && !isLoading) {
       navigation.navigate('recruiter_dashboard')
     }
-  }, [client])
+  }, [client, isLoading])
   const toggleSwitch = () => {
     setUploaded(false)
     setImage("")
@@ -109,9 +125,9 @@ const ClientSignupPage = ({navigation}) => {
     })
     if (!result.cancelled) {
       upload(result.uri)
-      setUploaded(true)
-      console.log("image uri", result.uri)
       setImage(result.uri)
+      console.log("uploaded")
+
     }
   }
   const upload = async (uri) => {
@@ -128,8 +144,6 @@ const ClientSignupPage = ({navigation}) => {
         },
         { body: 'front' }
       )
-      console.log('response', response)
-      console.log('response body', JSON.parse(response.body).imageUrl)
       {
         isEnabled
           ? setValues({
@@ -138,7 +152,8 @@ const ClientSignupPage = ({navigation}) => {
             })
           : setValues({ ...values, sign: JSON.parse(response.body).imageUrl })
       }
-    } catch (error) {
+      setUploaded(true)
+     } catch (error) {
       console.log(error)
     }
   }
@@ -183,14 +198,16 @@ const ClientSignupPage = ({navigation}) => {
                 onChange={ (value) => handleChange('TRN', parseInt(value)) }
               />
               { 
-                uploaded ? (
-                  <Image source={{ uri: image }} style={styles.Imagecontainer} />
-                ) : (
-                  <UploadCard
-                    title={ 'Trading Liscence*'}
-                    selectFile={selectFile}
-                  />
-                )
+                image.length && !uploaded
+                ? <View style={{width: "100%", alignItems: "center"}}>
+                    <View style={styles.ActivityIndicator}>
+                      <ActivityIndicator size={"large"} />
+                    </View>
+                    <Image source={{uri:image}} style={styles.Imagecontainer} />
+                  </View>
+                : image.length && uploaded
+                ? <Image source={{uri:image}} style={styles.Imagecontainer} />
+              : <UploadCard title='Trading Liscence*' selectFile={selectFile}/>
               }
             </View>
             : <View style={{width: "100%", alignItems: "center"}}>
@@ -207,14 +224,16 @@ const ClientSignupPage = ({navigation}) => {
                 onChange={  (value) => handleChange('signatoryTitle', value) }
               />
               { 
-                image ? (
-                  <Image source={{ uri: image }} style={styles.Imagecontainer} />
-                ) : (
-                  <UploadCard
-                    title={ 'Add Authorized Signatory*' }
-                    selectFile={selectFile}
-                  />
-                )
+                image.length && !uploaded
+                ? <View style={{width: "100%", alignItems: "center"}}>
+                    <View style={styles.ActivityIndicator}>
+                      <ActivityIndicator size={"large"} />
+                    </View>
+                    <Image source={{uri:image}} style={styles.Imagecontainer} />
+                  </View>
+                : image.length && uploaded
+                ? <Image source={{uri:image}} style={styles.Imagecontainer} />
+                : <UploadCard title='Add Authorized Signatory*' selectFile={selectFile}/>
               }
             </View>
           }
@@ -298,6 +317,16 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginVertical: 10
   },
+  ActivityIndicator:{
+    position: "absolute",
+    zIndex: 999,
+    alignItems: "center",
+    justifyContent: "center",
+    height: 230,
+    backgroundColor:"rgba(255,255,255,.8)",
+    width: "85%",
+    marginVertical: 10
+  }
 })
 
 const mapDispatchToProps = (dispatch) => ({

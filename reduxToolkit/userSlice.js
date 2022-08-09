@@ -5,28 +5,38 @@ import customFetch from '../utils/axios'
 const initialState = {
   user: {},
   isLoading: false,
-  error: undefined,
+  error: {},
+  notifications: []
 }
-
+export const getNotifications = createAsyncThunk(
+  'getNotifications',
+  async ({id, role}, thunkApi) => {
+    let url =  `/notifications/${role}/${id}` 
+    try {
+      const resp = await customFetch.get(url)
+      console.log("res date notifications", resp.data)
+      return resp.data
+    } catch (error) {
+      console.log(error)
+      console.log("error")
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
 export const registerUser = createAsyncThunk(
   'registerUser',
   async (user, thunkApi) => {
     let url = '/auth/register'
-    console.log("user", user)
     try {
       const resp = await customFetch.post(url, user)
-      return resp.data
+      console.log(resp.data)
     } catch (error) {
-      console.log("rrer",error.response.data.msg)
-      if(error.response.data.msg === "Email already in use"){
-        alert("This email is already in use, please register using another email address")
-      } else{
-        alert("Error registering")
-      }
-      console.log("dones")
+      alert(error.response.data.msg)
+      console.log(error.response.data.msg)
+      alert(error.response.data.msg)
+
       return thunkApi.rejectWithValue(error.response.data.msg)
     }
-
   }
 )
 export const loginUser = createAsyncThunk(
@@ -35,23 +45,22 @@ export const loginUser = createAsyncThunk(
     let url = '/auth/login'
     try {
       const resp = await customFetch.post(url, user)
-      console.log("user login",resp.data)
       return resp.data
     } catch (error) {
-      console.log("erre",error.response.data.msg)
+        alert(error.response.data.msg)
+      console.log(error.response.data.msg)
 
       return thunkApi.rejectWithValue(error.response.data.msg)
     }
   }
 )
+
 export const logout = createAsyncThunk(
   'logout',
   async (user, thunkApi) => {
     let url = '/auth/logout'
     try {
-      console.log("logging out")
       const resp = await customFetch.get(url, user)
-
       return resp.data
     } catch (error) {
       console.log(error.response.data.msg)
@@ -68,6 +77,9 @@ const userSlice = createSlice({
     setFreelancerId: (state, action) => {
       state.user.freelancerId = action.payload
     },
+    setUserAfterRegister: (state,action) => {
+      state.user.clientId = action.payload
+    }
   },
   extraReducers: {
     [registerUser.pending]: (state) => {
@@ -85,11 +97,6 @@ const userSlice = createSlice({
     [loginUser.pending]: (state) => {
       state.isLoading = true
     },
-    [logout.fulfilled]: (state) => {
-      state.user = {}
-      console.log("LOGOUT")
-
-    },
     [loginUser.fulfilled]: (state, { payload }) => {
       const { user } = payload
       state.isLoading = false
@@ -99,8 +106,25 @@ const userSlice = createSlice({
       state.isLoading = false
       state.error = payload
     },
+    [logout.fulfilled]: (state) => {
+      state.user = {}
+    },
+    [getNotifications.pending]: (state) => {
+      state.isLoading = true
+    },
+    [getNotifications.fulfilled]: (state, { payload }) => {
+      state.notifications =  payload
+      state.isLoading = false
+
+    },
+    [getNotifications.rejected]: (state, { payload }) => {
+      state.isLoading = false
+      state.error = payload
+    },
   },
 })
+
 export const { setFreelancerId } = userSlice.actions
+export const { setUserAfterRegister } = userSlice.actions
 
 export default userSlice.reducer

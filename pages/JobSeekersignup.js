@@ -48,7 +48,7 @@ const JobSeekersignup = ({ navigation, route }) => {
   const submit = () => {
     const { name, email, password, phoneNb } = values
     if (!name || !email || !password || !phoneNb) {
-      alert('Please fill all the fields')
+      alert('Please fill all the fieldss')
     }
     console.log(user, error)
     dispatch(
@@ -56,7 +56,7 @@ const JobSeekersignup = ({ navigation, route }) => {
         name: values.name + " " + values.lastName,
         email: values.email,
         password: values.password,
-        phoneNb: values.phoneNb,
+        phoneNb: parseInt(values.phoneNb.replace(/\s/g, "")),
         role: role,
       })
     )

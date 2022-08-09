@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useLayoutEffect} from 'react';
 import {
     View,
     Text,
@@ -7,28 +7,53 @@ import {
     ImageBackground,
     TouchableOpacity,
     Pressable,
-    ScrollView
+    ScrollView,
+    ActivityIndicator,
   } from 'react-native';
 import MaskedView from '@react-native-masked-view/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useDispatch, useSelector } from 'react-redux';
 
-import calendarIcon from '../assets/images/calendarIcon.png'
-import clockIcon from '../assets/images/clockIcon.png'
-import locationIcon from '../assets/images/locationIcon.png'
-import priceRectangle from '../assets/images/priceRectangle.png'
-import heartIcon from '../assets/images/heartIcon.png'
-import PrimaryButton from '../components/Buttons/PrimaryButton'
-import minusIcon from '../assets/images/minusIcon.png'
+import calendarIcon from '../assets/images/calendarIcon.png';
+import clockIcon from '../assets/images/clockIcon.png';
+import locationIcon from '../assets/images/locationIcon.png';
+import priceRectangle from '../assets/images/priceRectangle.png';
+import heartIcon from '../assets/images/heartIcon.png';
+import PrimaryButton from '../components/Buttons/PrimaryButton';
+import minusIcon from '../assets/images/minusIcon.png';
+import { getJob, applyJob } from '../reduxToolkit/jobSlice';
 
-const JobDetailsPage = ({route, navigation, name}) => {
-
-  const { title, price, location, shift, roleDescription, date } = route.params.data
+const JobDetailsPage = ({route, navigation}) => {
+  const { id } = route.params
+  const { job } = useSelector((state) => state.job)
+  const { freelancer } = useSelector((state) => state.freelancer)
+  const { user } = useSelector((state) => state.user)
+  const dispatch = useDispatch()
   
   const navigateApply = () => {
+    dispatch(
+      applyJob({
+        jobId: id,
+        freelancerId: freelancer?.id || user?.freelancerId,
+
+        price: 2000,
+      })
+    )
+
     navigation.navigate('jobseeker_jobs')
   }
 
-  return (
+  useLayoutEffect(() => {
+    dispatch(getJob(id))  
+  }, [id])
+
+  const { title, description, budget, location, createdAt } = job
+
+  return  !job ? 
+    <View style={styles.loadingStyle}>
+      <ActivityIndicator size={'large'} />
+    </View>
+  :(
     <ScrollView style={styles.wrapper}>
       <View style={styles.header}>
         <View style={styles.subHeader}>
@@ -39,7 +64,7 @@ const JobDetailsPage = ({route, navigation, name}) => {
             resizeMode='contain'
           >
             <View style={styles.priceAndCurrency}>
-              <Text style={styles.price}>{price} </Text>
+              <Text style={styles.price}>{budget} </Text>
               <Text style={styles.currency}>AED</Text>
             </View>
           </ImageBackground>
@@ -87,7 +112,7 @@ const JobDetailsPage = ({route, navigation, name}) => {
                     <View >
                       <View style={{paddingHorizontal: 20}}>
                         <Text style={styles.roleDescription}>
-                          {roleDescription}
+                          {description}
                         </Text>
                       </View>
                     </View>
@@ -105,7 +130,7 @@ const JobDetailsPage = ({route, navigation, name}) => {
           >
               <View style={styles.footerInfo}>
                   <Image source={clockIcon} style={styles.icon}></Image>
-                  <Text style={styles.text}> {shift}</Text>
+                  <Text style={styles.text}> day</Text>
               </View>
               <View style={styles.footerInfo}>
                   <Image source={locationIcon} style={styles.icon}></Image>
@@ -116,7 +141,7 @@ const JobDetailsPage = ({route, navigation, name}) => {
                       source={calendarIcon}
                       style={styles.calendarIcon}
                   ></Image>
-                  <Text style={styles.roleDateText}>{date}</Text>
+                  <Text style={styles.roleDateText}>{createdAt}</Text>
               </View>
           </LinearGradient>
         </View>
@@ -305,6 +330,11 @@ const JobDetailsPage = ({route, navigation, name}) => {
       justifyContent: "space-between",
       paddingVertical: 20,
       paddingHorizontal: 20
+    },
+    loadingStyle: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100%',
     },
   })
 

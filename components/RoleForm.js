@@ -38,7 +38,7 @@ function RoleForm({handleChange, title, additional, onRoleDelete, role}) {
             /> 
             <DailyRate  
                 placeholder="Your daily rate*"
-                onChange={(value) => handleChange('dailyRate', value, title)}
+                onChange={(value) => handleChange('dailyRate', parseInt(value), title)}
             />
             <DateInputs 
                 placeholder="Role Start Date*"

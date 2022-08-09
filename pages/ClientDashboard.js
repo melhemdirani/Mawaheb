@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView ,View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 import Carousel from 'react-native-anchor-carousel'; 
 import { Dimensions } from 'react-native';
+
+import { useDispatch, useSelector } from 'react-redux';
 
 import SecondaryHeader from '../components/SecondaryHeader';
 import Job from '../components/Job';
@@ -15,6 +17,13 @@ import SimplePaginationDot from '../components/SimplePaginationDot';
 
 const ClientDashboard = ({navigation}) => {
     const {width: windowWidth} = Dimensions.get('window');
+    const { client } = useSelector((store) => store.client)
+    const { user } = useSelector((store) => store.user)
+    useEffect(() => {
+        console.log("client", client)
+        console.log("user", user)
+    }, [])
+
     const [currentIndex, setCurrentIndex] = useState(0);
     const carouselRef = React.useRef();
     function handleCarouselScrollEnd(item, index) {
@@ -39,7 +48,7 @@ const ClientDashboard = ({navigation}) => {
                         description={item.description}
                         price={item.price}
                         navigate={navigate}
-                        i={index}
+                        id={index}
                     /> 
                 </TouchableOpacity>
         );
@@ -120,7 +129,7 @@ const ClientDashboard = ({navigation}) => {
                     price={data.data.price} 
                     lastOne={lastOne} 
                     heart={true}
-                    i={data.index}
+                    id={data.index}
                     navigate={navigate}
                 /> 
             </View>

@@ -1,18 +1,26 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import customFetch from '../utils/axios'
+import customFetch from '../utils/axios';
+
+import { setUserAfterRegister } from './userSlice';
 
 const initialState = {
   client: {},
-  isLoading: false,
-  error: null,
+  isLoading: true,
+  error: undefined,
 }
 export const createClientProfile = createAsyncThunk(
   'client/createClientProfile',
   async (client, thunkAPI) => {
     try {
+      console.log('started')
       const resp = await customFetch.post('/clients', client)
+      console.log("client resp",resp.data)
+
       return resp.data
     } catch (error) {
+      console.log(error)
+      console.log(error.response.data.msg)
+      alert(error.response.data.msg)
       return thunkAPI.rejectWithValue(error.response.data.msg)
     }
   }

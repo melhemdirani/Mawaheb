@@ -9,7 +9,7 @@ import heartIcon from '../assets/images/heartIcon.png'
 import plusIcon from '../assets/images/plusIcon.png'
 import MaskedView from '@react-native-masked-view/masked-view'
 
-const Job = ({ title, description, price, client, current, heart, navigate, i }) => {
+const Job = ({ title, description, price, client, current, heart, navigate, id }) => {
   return (
     <View
       // style={lastOne ? [styles.wrapper, { marginBottom: 40 }] : styles.wrapper}
@@ -31,9 +31,14 @@ const Job = ({ title, description, price, client, current, heart, navigate, i })
         </View>
         <View style={styles.subHeader}>
           {!heart && <Image source={heartIcon} style={styles.heart}></Image>}
-          <Pressable onPress={() => navigate(i)} style={styles.plusContainer}>
-            <Image source={plusIcon} style={styles.plus}></Image>
-          </Pressable>
+          { id 
+            ? <Pressable onPress={() => navigate(id)} style={styles.plusContainer}>
+              <Image source={plusIcon} style={styles.plus}></Image>
+            </Pressable>
+            : <Pressable onPress={() => navigate()} style={styles.plusContainer}>
+              <Image source={plusIcon} style={styles.plus}></Image>
+            </Pressable>
+          }
         </View>
       </View>
       <LinearGradient

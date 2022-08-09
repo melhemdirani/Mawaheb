@@ -71,7 +71,7 @@ const JobseekerDashboard = ({navigation}) => {
                     lastOne={lastOne} 
                     heart={true}
                     navigate={navigate}
-                    i={data.index}
+                    id={data.index}
                 /> 
             </View>
         )

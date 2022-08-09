@@ -14,10 +14,8 @@ const initialState = {
   roles: [],
   languages: [],
   isLoading: false,
-  error: undefined,
-  copyOfPassport: '',
-  copyOfResidencyVisa:''
-
+  error: null,
+  completedProfile: []
 }
 export const createFreelancerProfile = createAsyncThunk(
   'createFreelancerProfile',
@@ -33,7 +31,22 @@ export const createFreelancerProfile = createAsyncThunk(
     }
   }
 )
+export const getFreelancer=createAsyncThunk(
+  'getFreelancer',
+  async (id, thunkApi) => {
+    let url = `/freelancers/${id}`
+    try {
+      const resp = await customFetch.get(url)
+     
 
+      return resp.data
+    } catch (error) {
+      alert(error.response.data.msg)
+      console.log(error.response.data.msg)
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
 const freelancerSlice = createSlice({
   name: 'freelancer',
   initialState,
@@ -43,7 +56,9 @@ const freelancerSlice = createSlice({
       state[name] = value
     },
     addRoles: (state, action) => {
-      state.roles.push(action.payload)
+  
+      state.roles = (action.payload)
+      console.log(state.roles)
     },
     updateLatestRole: (state, action) => {
       state.latestRole = action.payload
@@ -51,9 +66,16 @@ const freelancerSlice = createSlice({
     updateNotableRole: (state, action) => {
       state.notableRole = action.payload
     },
+    updateAdditionalRole: (state, action) => {
+      state.additionalRole = action.payload
+    },
     addLanguage: (state, action) => {
       state.languages.push(action.payload)
       console.log(state.languages)
+    },
+    completedProfile: (state, action) => {
+      state.completedProfile.push(action.payload)
+      
     },
   },
   extraReducers: {
@@ -69,6 +91,18 @@ const freelancerSlice = createSlice({
       state.isLoading = false
       state.error = payload
     },
+    [getFreelancer.pending]: (state) => {
+      state.isLoading = true
+    },
+    [getFreelancer.fulfilled]: (state, { payload }) => {
+      const { freelancer } = payload
+      state.isLoading = false
+      state.freelancer = freelancer
+    },
+    [getFreelancer.rejected]: (state, { payload }) => {
+      state.isLoading = false
+      state.error = payload
+    },
   },
 })
 export const {
@@ -76,7 +110,9 @@ export const {
   addRoles,
   updateLatestRole,
   updateNotableRole,
+  updateAdditionalRole,
   addLanguage,
+  completedProfile
 } = freelancerSlice.actions
 
 export default freelancerSlice.reducer

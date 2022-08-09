@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,8 +8,9 @@ import {
   ScrollView,
   SafeAreaView,
   TouchableOpacity,
-} from 'react-native'
-import React, { useState } from 'react'
+} from 'react-native';
+import Checkbox from 'expo-checkbox';
+
 import Header from '../components/Header'
 import jobContractIcon from '../assets/images/jobContractIcon.png'
 import priceRectangle from '../assets/images/priceRectangle.png'
@@ -23,12 +25,15 @@ import PrimaryButton from '../components/Buttons/PrimaryButton'
 import btnBackground from '../assets/images/btnBackground.png'
 
 const JobContractPage = ({navigation}) => {
-  const [toggleCheckBox, setToggleCheckBox] = useState(false)
+  const [isChecked, setChecked] = useState(false);
   const { id, title, price, roles, languages, location, shift } =
     freelancerDetails
   const { id: roleId, description, name, date } = roles[0]
 
   const navigateAccept = () => {
+    if(!isChecked){
+      return alert("Please read and accept the terms and conditions")
+    }
     navigation.navigate('acceptedClient')
 
   }
@@ -206,7 +211,12 @@ const JobContractPage = ({navigation}) => {
             description lorom ipsum dolor sit ame
           </Text>
           <View style={styles.checkboxAndConfirm}>
-            <Image source={checkbox}></Image>
+            <Checkbox
+              style={styles.checkbox}
+              value={isChecked}
+              onValueChange={setChecked}
+              color={"#31BEBB"}
+            />
             <Text style={styles.confirm}>
               I hereby confirm all the mentioned in this contract
             </Text>
@@ -393,6 +403,8 @@ const styles = StyleSheet.create({
   linear:{
     width: "100%",
     borderRadius: 20
+  },
+  checkbox:{
   }
 })
 

@@ -1,106 +1,64 @@
-import React, { useState, useEffect } from 'react'
-import { View, ScrollView, StyleSheet } from 'react-native'
-import { Notifier, Easing } from 'react-native-notifier';
+import React, { useEffect } from 'react'
+import { View, StyleSheet, FlatList } from 'react-native'
 
 import SecondaryHeader from '../components/SecondaryHeader'
 import Job from '../components/Job'
 import Navbar from '../components/Navbar'
-import { CustomNotification } from '../components/CustomNotifications';
+import { getAllJobs } from '../reduxToolkit/jobSlice'
+import { useDispatch, useSelector } from 'react-redux'
 
-const JobsPage = ({navigation, notifications}) => {
+const JobsPage = ({ navigation }) => {
+  
+  const { jobs } = useSelector((store) => store.job)
+  const { user } = useSelector((store) => store.user)
 
-    const [notificationIndex, setNotifcaitonIndex] = useState(0)
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(getAllJobs())
+  }, [])
 
-    const alterNotificationIndex = () => {
-        if (notificationIndex === notifications.length - 1) {
-            return
-        } else {
-            setNotifcaitonIndex(notificationIndex + 1)
-        }
-    }
+  const navigate = (id) => {
+    console.log('routing')
+    navigation.navigate('jobDescription', { id })
+  }
 
-    // useEffect(() => {
-    //     if(notifications.length)
-    // }, [notifications, notificationIndex])
+  const renderItem = (data) => {
+    return <Job {...data.item} navigate={navigate} />
+  }
+  let welcomeMessage = `Hi ${user?.name}`
+  return (
+    <View style={styles.container}>
+      <SecondaryHeader title={welcomeMessage}></SecondaryHeader>
 
-    const Data = [
-        {   
-            id:0,
-            title: 'Job Title Lorem Ipsum1',
-            description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium',
-            roleDescription: 'Job description lorom ipsum dolor sit ameno Job description lorom  sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno it ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description',
-            price: 15000,
-            date: '30 May-2020',
-            shift: 'day shift',
-            location: 'Sharjah',
-        },
-        {
-            id:1,
-            title: 'Job Title Lorem Ipsum2',
-            description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium1',
-            roleDescription: 'Job description lorom ipsum dolor sit ameno Job description lorom  sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno it ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description',
-            price: 10000,
-            date: '30 May-2020',
-            shift: 'day shift',
-            location: 'Sharjah',},
-        {
-            id:2,
-            title: 'Job Title Lorem Ipsum3',
-            description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium2',
-            price: 20000,
-            roleDescription: 'Job description lorom ipsum dolor sit ameno Job description lorom  sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno it ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description',
-            date: '30 May-2020',
-            shift: 'day shift',
-            location: 'Sharjah',
-        }
-    ]
+      <FlatList
+        data={jobs.length ? jobs : { id: 0, title: 'No Jobs Found' }}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        // contentContainerStyle={{paddingBottom: 200}}
+        style={styles.jobs}
+      />
 
-    const navigate = (i) => {
-        navigation.navigate('jobDescription', {myjobs: false, data: Data[i]})
-    }
-    
-    const RenderItem = ({data, i}) => {
-        return(
-            <View style={styles.renderItem}>
-                <Job title={data.title} description={data.description} price={data.price} navigate={navigate} i={i} /> 
-            </View>
-        )
-    }
-    let welcomeMessage = `Hi John,`
-    return (
-        <View style={styles.container}>
-            <ScrollView >
-                <SecondaryHeader title={welcomeMessage}></SecondaryHeader>
-                {
-                    Data && Data.map((data, i) => 
-                        <RenderItem key={i} data={data} i={i} />
-                    )
-
-                }
-            </ScrollView>
-            <Navbar active="Jobs" navigation={navigation}/>
-        </View>
-
-    )
+      <Navbar active='Jobs' navigation={navigation} />
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
-    jobs: {
-        padding: 10,
-    },
-    renderItem:{
-    },
-    body: {
-        padding: 20,
-    },
-    backIcon: {
-        display: 'none',
-    },
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  jobs: {
+    padding: 10,
+    flex: 1,
+  },
+  renderItem: {},
+  body: {
+    padding: 20,
+  },
+  backIcon: {
+    display: 'none',
+  },
 })
-
 
 export default JobsPage

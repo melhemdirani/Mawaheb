@@ -5,14 +5,15 @@ import {
   StyleSheet,
   Image,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from 'react-native';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { handleChange } from '../reduxToolkit/freelancerSlice';
+import { handleChange, completedProfile } from '../reduxToolkit/freelancerSlice';
 
 
 import signUp from '../assets/images/signUp.png';
@@ -36,37 +37,72 @@ const CreateProfilePage = ({  navigation }) => {
   const [uploaded, setUploaded] = useState(false)
   const [uploaded2, setUploaded2] = useState(false)
 
-  const [passCopy, setPassCopy] = useState({})
-  const [visaCopy, setVisaCopy] = useState({})
+  const [passCopy, setPassCopy] = useState("")
+  const [visaCopy, setVisaCopy] = useState("")
 
-  useEffect(() => {
-    console.log("copyOfResidencyVisa", copyOfResidencyVisa)
-    console.log("copyOfPassport", copyOfPassport)
-  }, [copyOfPassport,copyOfResidencyVisa ])
+
   const navigateExperience = () => {
     // setUser({copyOfPassport: "", copyOfResidencyVisa: ""})
     navigation.navigate("experience")
   } 
 
-  // const register = async () => {
-  //   let url = "http://194.5.157.234:4000/api/v1/freelancers/"
-  //   if(expiration === '' || image === '' || image2 === '' || id === '' ){
-  //     return alert('Please fill in all required inputs*')
-  //   }
-  //   try {
-  //   const {data} = await axios.post(url,{
-  //       expirationDate:expiration,
-  //       emiratesIdFrontSide:imageurl1,
-  //       emiratesIdBackSide: imageurl2,
-  //       emiratesId: id
-  //   })
-  //     navigation.navigate("JobSignUp2")
-  //     console.log("data", data)
-  //   } catch (error) {
-  //     console.log(error.response.data.msg)
-  //   } 
 
-  // }
+
+  const upload2 = async (uri) => {
+    console.log('uploading file')
+    try {
+      console.log('trying')
+      const response = await FileSystem.uploadAsync(
+        `http://194.5.157.234:4000/api/v1/freelancers/uploadImage`,
+        uri,
+        {
+          fieldName: 'files',
+          httpMethod: 'post',
+          uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
+        },
+        { body: 'back' }
+      )
+
+      const img = JSON.parse(response.body).imageUrl
+      dispatch(
+        handleChange({
+          name: 'copyOfResidencyVisa',
+          value: img,
+        })
+      )
+      setUploaded2(true)
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const upload = async (uri) => {
+    console.log('uploading file')
+    try {
+      console.log('trying')
+      const response = await FileSystem.uploadAsync(
+        `http://194.5.157.234:4000/api/v1/freelancers/uploadImage`,
+        uri,
+        {
+          fieldName: 'files',
+          httpMethod: 'post',
+          uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
+        },
+        { body: 'back' }
+      )
+
+      const img = JSON.parse(response.body).imageUrl
+      dispatch(
+        handleChange({
+          name: 'copyOfPassport',
+          value: img,
+        })
+      )
+      setUploaded(true)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   const selectFile = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -75,14 +111,9 @@ const CreateProfilePage = ({  navigation }) => {
       quality: 1,
     });
     if (!result.cancelled) {
-      setPassCopy(result.uri);
-      setUploaded(true)
-      dispatch(
-        handleChange({
-          name: 'copyOfPassport',
-          value: result.uri,
-        })
-      )
+      setPassCopy(result.uri)
+      upload(result.uri)
+
     }
   };
   const selectFile2 = async () => {
@@ -93,23 +124,23 @@ const CreateProfilePage = ({  navigation }) => {
       quality: 1,
     });
     if (!result.cancelled) {
-      setVisaCopy(result.uri);
-      setUploaded2(true)
-      dispatch(
-        handleChange({
-          name: 'copyOfResidencyVisa',
-          value: result.uri,
-        })
-      )
+      setVisaCopy(result.uri)
+      upload2(result.uri)
     }
   };
   const handleSubmit = () => {
     console.log("pass",copyOfPassport )
     console.log("res",copyOfResidencyVisa )
-    if(copyOfPassport === '' || copyOfResidencyVisa === ''){
+    if(copyOfPassport === '' || copyOfResidencyVisa === '' || !uploaded2 || !uploaded){
       alert("Please upload all required documents")
+      console.log("pas",copyOfPassport )
     } else{
+      
+      dispatch(
+        completedProfile(true)
+      )
       navigation.navigate("experience")
+
     }
   }
   return (
@@ -126,15 +157,29 @@ const CreateProfilePage = ({  navigation }) => {
         <Text style={styles.text}>
           Upload the below documents
         </Text>
-          {
-            uploaded  
+          { 
+            passCopy.length && !uploaded
+            ? <View style={{width: "100%", alignItems: "center"}}>
+                <View style={styles.ActivityIndicator}>
+                  <ActivityIndicator size={"large"} />
+                </View>
+                <Image source={{uri:passCopy}} style={styles.Imagecontainer} />
+              </View>
+            : passCopy.length && uploaded
             ? <Image source={{uri:passCopy}} style={styles.Imagecontainer} />
-            : <UploadCard title='Copy of passport' selectFile={selectFile} />
+            : <UploadCard title='Emirates ID back side' selectFile={selectFile}/>
           }
-          {
-            uploaded2  
+          { 
+            visaCopy.length && !uploaded2
+            ? <View style={{width: "100%", alignItems: "center"}}>
+                <View style={styles.ActivityIndicator}>
+                  <ActivityIndicator size={"large"} />
+                </View>
+                <Image source={{uri:visaCopy}} style={styles.Imagecontainer} />
+              </View>
+            : visaCopy.length && uploaded2
             ? <Image source={{uri:visaCopy}} style={styles.Imagecontainer} />
-            : <UploadCard title='Copy of residency visa' selectFile={selectFile2} />
+          : <UploadCard title='Emirates ID back side' selectFile={selectFile2}/>
           }
         <TouchableOpacity onPress={() => handleSubmit()} style={styles.nextButton} >
           <PrimaryButton title='Next' />
@@ -185,6 +230,22 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginVertical: 10
   },
+  loadingStyle: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+    position: "absolute"
+  },
+  ActivityIndicator:{
+    position: "absolute",
+    zIndex: 999,
+    alignItems: "center",
+    justifyContent: "center",
+    height: 230,
+    backgroundColor:"rgba(255,255,255,.8)",
+    width: "85%",
+    marginVertical: 10
+  }
 })
 
 

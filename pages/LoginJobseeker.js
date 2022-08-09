@@ -1,8 +1,7 @@
 
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import { Notifier, Easing } from 'react-native-notifier';
-import axios from 'axios';
+
 
 
 import Header from '../components/Header';
@@ -17,7 +16,7 @@ const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
 
     const {
         user
-      } = useSelector((store) => store.user)
+    } = useSelector((store) => store.user)
 
     const dispatch = useDispatch()
 
@@ -26,10 +25,8 @@ const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
 
     const login = async () => {
         if (email === '' || password === '') {
-          notify(name, 'Please fill all the fields')
         } else {
           dispatch(loginUser({ email, password }))
-
         }
     }
   

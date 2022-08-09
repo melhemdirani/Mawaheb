@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, Pressable, Button , TouchableOpacity} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import MaskedView from '@react-native-masked-view/masked-view';
-import { useDispatch } from 'react-redux';
 
+
+import { useDispatch } from 'react-redux';
+import MaskedView from '@react-native-masked-view/masked-view';
 import Header from '../components/Header';
 import signUp from '../assets/images/experienceIcon.png';
 import PrimaryButton from '../components/Buttons/PrimaryButton'
@@ -11,7 +12,8 @@ import AddRoleButton from '../components/Buttons/AddRoleButton';
 import RoleForm from '../components/RoleForm';
 
 import {
-  addRoles
+  addRoles,
+  completedProfile
 } from '../reduxToolkit/freelancerSlice'
 
 
@@ -145,6 +147,7 @@ const ExperiencePage = ({ navigation }) => {
         })
       }
       dispatch(addRoles(AllRoles));
+      dispatch(completedProfile(true));
       navigation.navigate('language');
     }
 
@@ -154,9 +157,7 @@ const ExperiencePage = ({ navigation }) => {
     navigation.navigate('language');
 
   }
-  useEffect(() => {
-    console.log("additional roles", additionalRoles)
-  }, [additionalRoles])
+
 
   const MaskedTitle = ({title}) => {
       return(

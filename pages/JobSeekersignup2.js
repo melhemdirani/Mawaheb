@@ -21,7 +21,7 @@ import Inputs from '../components/Inputs';
 import UploadCard from '../components/UploadCard';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
 import DateInputs from '../components/DateInputs';
-import { handleChange } from '../reduxToolkit/freelancerSlice';
+import { handleChange, completedProfile } from '../reduxToolkit/freelancerSlice';
 
 
 const JobSeekersignup2 = ({  navigation, }) => {
@@ -34,6 +34,8 @@ const JobSeekersignup2 = ({  navigation, }) => {
   const dispatch = useDispatch()
 
   const [values, setValues] = useState(initialState)
+  const [imageLoading, setImageLoading] = useState(false)
+  const [imageLoading2, setImageLoading2] = useState(false)
 
   const {
     freelancer,
@@ -56,6 +58,9 @@ const JobSeekersignup2 = ({  navigation, }) => {
     ) {
       alert('Please fill all the fields')
     } else {
+      dispatch(
+        completedProfile(true)
+      )
       navigation.navigate('JobSignUp2')
     }
   }
@@ -99,7 +104,6 @@ const JobSeekersignup2 = ({  navigation, }) => {
       setImage2(result.uri)
       console.log('result', result.uri)
       upload2(result.uri)
-      setUploaded2(true)
     }
   }
 
@@ -125,6 +129,8 @@ const JobSeekersignup2 = ({  navigation, }) => {
             value: img,
           })
         )
+        setUploaded(true)
+
       } catch (error) {
         console.log(error)
       }
@@ -153,8 +159,8 @@ const JobSeekersignup2 = ({  navigation, }) => {
           value: img,
         })
       )
+      setUploaded2(true)
 
-      setUploaded(true)
     } catch (error) {
       console.log(error)
     }
@@ -178,7 +184,7 @@ const JobSeekersignup2 = ({  navigation, }) => {
       />
       <View style={styles.subContainer}>
           <Text style={styles.text}>
-          Fill and upload the below required field and documents {values.expirationDate.toDateString()}
+          Fill and upload the below required field and documents 
           </Text> 
           <DateInputs 
             placeholder='Expiration Date*'
@@ -193,7 +199,7 @@ const JobSeekersignup2 = ({  navigation, }) => {
             value={values.expirationDate}
           />
           <Inputs 
-            title='Continue to Payment' 
+            title='Post Job' 
             placeholder='Emirates ID Number*'  
             numeric
             onChange={(value) =>
@@ -201,13 +207,27 @@ const JobSeekersignup2 = ({  navigation, }) => {
             }
           />
           { 
-          image.length 
-          ? <Image source={{uri:image}} style={styles.Imagecontainer} />
-          : <UploadCard title='Emirates ID front side' selectFile={selectFile}/>
+            image.length && !uploaded
+            ? <View style={{width: "100%", alignItems: "center"}}>
+                <View style={styles.ActivityIndicator}>
+                  <ActivityIndicator size={"large"} />
+                </View>
+                <Image source={{uri:image}} style={styles.Imagecontainer} />
+              </View>
+            : image.length && uploaded
+            ? <Image source={{uri:image}} style={styles.Imagecontainer} />
+          : <UploadCard title='Emirates ID back side' selectFile={selectFile}/>
           }
           { 
-          image2.length 
-          ? <Image source={{uri:image2}} style={styles.Imagecontainer} />
+            image2.length && !uploaded2
+            ? <View style={{width: "100%", alignItems: "center"}}>
+                <View style={styles.ActivityIndicator}>
+                  <ActivityIndicator size={"large"} />
+                </View>
+                <Image source={{uri:image2}} style={styles.Imagecontainer} />
+              </View>
+            : image2.length && uploaded2
+            ? <Image source={{uri:image2}} style={styles.Imagecontainer} />
           : <UploadCard title='Emirates ID back side' selectFile={selectFile2}/>
           }
           <TouchableOpacity style={styles.nextButton} onPress={() => onSubmit()}>
@@ -244,7 +264,21 @@ const styles = StyleSheet.create({
   nextButton: {
     paddingVertical: 40,
   },
-
+  loadingStyle: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+  },
+  ActivityIndicator:{
+    position: "absolute",
+    zIndex: 999,
+    alignItems: "center",
+    justifyContent: "center",
+    height: 230,
+    backgroundColor:"rgba(255,255,255,.8)",
+    width: "85%",
+    marginVertical: 10
+  }
 })
 
 ;

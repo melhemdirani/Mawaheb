@@ -5,7 +5,7 @@ import DateTimePicker, {DateTimePickerAndroid} from '@react-native-community/dat
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 
-const DateInputs = ({title, placeholder, onChange}) => {
+const DateInputs = ({title, placeholder, onChange, dateType}) => {
     // const [text, setText] = useState("")
 
     let shown = Platform.OS === 'ios' ? false : true
@@ -26,10 +26,19 @@ const DateInputs = ({title, placeholder, onChange}) => {
     
     const onChangeDate = (event, selectedDate) => {
       const currentDate = selectedDate;
-      setShow(false);
+      if(Platform.OS === 'ios'){
+        setShow(true);
+      } else{
+        setShow(false);
+      }
       setDate(currentDate);
-      setChanged(true)
-      onChange(date.toDateString())
+      setChanged(true);
+      if(!dateType){
+        onChange(date.toDateString())
+      } else{
+        onChange(date)
+
+      }
     };
     
     const showMode = (currentMode) => {

@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import { View, Text, StyleSheet, Image, Pressable, Platform } from 'react-native';
 
+import { useDispatch , useSelector} from 'react-redux';
+
 import jobsA from '../assets/images/jobsA.png'
 import jobsN from '../assets/images/jobsN.png'
 import notifcationN from '../assets/images/notifcationN.png'
@@ -11,17 +13,21 @@ import dashboardA from '../assets/images/dashboardA.png'
 import dashboardN from '../assets/images/dashboardN.png'
 
 
-function Navbar({active, navigation, client}) {
+function Navbar({active, navigation}) {
+    const {
+        user
+    } = useSelector((store) => store.user)
+
 
     const onJobsPress = () => {
-        if(client){
+        if(user.role === 'client'){
             navigation.navigate('recruiter_Jobs')
         }  else {
             navigation.navigate('jobseeker_jobs')
         }
     }
     const onDashPress = () => {
-        if(client){
+        if(user.role === 'client'){
             navigation.navigate('recruiter_dashboard')
         }   else {
             navigation.navigate('seeker_dash')

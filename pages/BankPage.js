@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -35,9 +35,25 @@ const BankPage = ({  navigation }) => {
     emiratesIdBackSide,
     copyOfPassport,
     copyOfResidencyVisa,
+    completedProfile,
     roles,
     languages,
   } = useSelector((store) => store.freelancer)
+
+  const [isCompleted, setIsCompleted] = useState(true)
+
+  const checkComplete = () => {
+    completedProfile.map( item =>{
+      if(item === false){
+        return setIsCompleted(false)
+      }
+
+    }) 
+  }
+  useEffect(() => {
+    checkComplete()
+  }, [])
+
   const dispatch = useDispatch()
   const handleChange = (name, value) => {
     console.log(name, value)
@@ -53,12 +69,16 @@ const BankPage = ({  navigation }) => {
       || bank.city === ''
       || bank.swiftCode === ''
     ){
+      console.log("bank empty", bank)
       return true
     } else{
+      console.log("bank not empty", bank)
+
       return false
     }
   }
 
+ 
   const createJobSeeker = () => {
     dispatch(
       createFreelancerProfile({
@@ -68,13 +88,16 @@ const BankPage = ({  navigation }) => {
           emiratesIdFrontSide,
           emiratesIdBackSide,
           copyOfPassport,
-          copyOfResidencyVisa
+          copyOfResidencyVisa,
+          isCompleted: true
         },
         roles: roles,
         languages: languages,
-        bankDetails: !checkBankEmpty ? bank : undefined,
+        bankDetails: !checkBankEmpty() ? bank : undefined,
       })
     )
+    console.log("free", freelancer)
+
   }
   const registerWithoutBank = () => {
     createJobSeeker()
@@ -82,11 +105,7 @@ const BankPage = ({  navigation }) => {
   }
 
   const registerWithBank = () =>{
-    if(checkBankEmpty ){
-      alert("Please fill out all fields")
-    } else{
       registerWithoutBank()
-    }
   }
 
   return (
@@ -128,7 +147,7 @@ const BankPage = ({  navigation }) => {
           placeholder='Swift Code*'
           onChange={(value) => handleChange('swiftCode', value)}
         />
-        <Pressable style={styles.nextButton} onPress={() => registerWithBank()}>
+        <Pressable style={styles.nextButton} onPress={() => registerWithoutBank()}>
           <PrimaryButton title='Create Profile' />
         </Pressable>
         <Pressable onPress={() =>  registerWithoutBank()}>

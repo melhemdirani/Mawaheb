@@ -18,14 +18,14 @@ import plusIcon from '../assets/images/plusIcon.png';
 import MaskedView from '@react-native-masked-view/masked-view';
 import languageIcon from '../assets/images/LanguageIcon.png';
 
-const JobList = ({
-  price,
-  navigate,
-  job,
-  freelancer,
+const JobList2 = ({
+  roles,
+  languages,
+  user,
   id,
+  navigate
 }) => {
-  console.log("freelancer", freelancer.user)
+  let invite = true
   return (
     <View style={styles.wrapper}>
       <View style={styles.header}>
@@ -37,14 +37,14 @@ const JobList = ({
             resizeMode='contain'
           >
             <View style={styles.priceAndCurrency}>
-              <Text style={styles.price}>{price} </Text>
+              <Text style={styles.price}>{roles[0].dailyRate}</Text>
               <Text style={styles.currency}>AED</Text>
             </View>
           </ImageBackground>
         </View>
         <View style={styles.subHeader}>
           <Image source={heartIcon} style={styles.heart}></Image>
-          <Pressable onPress={() => navigate(freelancer.id,price,job.location,job.id, {invite: false})}>
+          <Pressable onPress={() => navigate(id,2000,"job.location","job.id")}>
             <Image source={plusIcon} style={styles.plus}></Image>
           </Pressable>
         </View>
@@ -69,7 +69,7 @@ const JobList = ({
                 <Text
                   style={[styles.title, { backgroundColor: 'transparent' }]}
                 >
-                  {job.title}
+                  {user.name}
                 </Text>
               }
             >
@@ -78,14 +78,14 @@ const JobList = ({
                 end={{ x: 1, y: 1 }}
                 colors={['rgba(49, 190, 187, 1)', 'rgba(101, 91, 218, 1)']}
               >
-                <Text style={[styles.title, { opacity: 0 }]}>{job.title}</Text>
+                <Text style={[styles.title, { opacity: 0 }]}>{user.name}</Text>
               </LinearGradient>
             </MaskedView>
-            <Text style={styles.description}>{job.description}</Text>
+            
           </View>
           <View style={styles.languages}>
             <Image source={languageIcon} style={styles.languageIcon}></Image>
-            {freelancer.languages.map((language, i) => {
+            {languages.length > 0 && languages.map((language, i) => {
               return <Text key={i} style={styles.language}>{language.name}</Text>
             })}
           </View>
@@ -101,7 +101,7 @@ const JobList = ({
             <View style={styles.footer}>
               <View style={styles.footerInfo}>
                 <Image source={calendarIcon} style={styles.icon}></Image>
-                <Text style={styles.text}> {job.duration.slice(0,9)}</Text>
+                <Text style={styles.text}> {user.createdAt.slice(0,9)}</Text>
               </View>
               <View style={styles.footerInfo}>
                 <Image source={clockIcon} style={styles.icon}></Image>
@@ -109,7 +109,7 @@ const JobList = ({
               </View>
               <View style={styles.footerInfo}>
                 <Image source={locationIcon} style={styles.icon}></Image>
-                <Text style={styles.text}>{job.location}</Text>
+                <Text style={styles.text}>Location</Text>
               </View>
             </View>
           </LinearGradient>
@@ -241,8 +241,9 @@ const styles = StyleSheet.create({
     fontFamily: 'PoppinsR',
     fontSize: 10,
     marginTop: 3,
+    marginLeft: 7,
     color: '#107DC5',
     padding: 10,
   },
 })
-export default JobList
+export default JobList2

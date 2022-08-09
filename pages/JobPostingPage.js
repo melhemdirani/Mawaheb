@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,7 +6,8 @@ import {
   ScrollView,
   TouchableOpacity,
   Switch,
-  SafeAreaView
+  SafeAreaView,
+  KeyboardAvoidingView
 } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -18,52 +19,69 @@ import Inputs from '../components/Inputs';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
 import SelectInput from '../components/SelectInput';
 import DurationInputs from '../components/DurationInputs';
+import DateInputs from '../components/DateInputs';
 import TextArea from '../components/TextArea';
 
 const JobPostingPage = ({navigation}) => {
   const initialState = {
     title: '',
-    duration: '',
+    startDate: new Date(),
+    endDate: new Date(),
     location: '',
     yearsOfExperience: '',
     description: '',
     budget: '',
+    duration: 2
   }
 
   const { client } = useSelector((state) => state.client)
+  const { user } = useSelector((state) => state.user)
   const [isEnabled, setIsEnabled] = useState(false)
   const dispatch = useDispatch()
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState)
   const [values, setValues] = useState(initialState)
   const handleChange = (name, value) => {
-    console.log(name, value)
     setValues({ ...values, [name]: value })
   }
   const paymentNav = () => {
     //add job with values and client id
-    dispatch(
-      createJob({
-        title: values.title,
-        duration: values.duration,
-        location: values.location,
-        yearsOfExperience: values.yearsOfExperience,
-        description: values.description,
-        budget: values.budget,
-        privacy: 'public',
-        clientId: client.id,
-      })
-      // !title ||
-      //   !duration ||
-      //   !location ||
-      //   !yearsOfExperience ||
-      //   !budget ||
-      //   !description ||
-      //   !privacy
-    )
-    navigation.navigate('payment')
+    if(
+      values.title === '' ||
+      values.startDate  === '' ||
+      values.endDate  === '' ||
+      values.location === '' ||
+      values.yearsOfExperience  === '' ||
+      values.budget  === '' ||
+      values.description === '' ||
+      values.privacy === ''
+    ){
+      console.log("values", values)
+      return alert("Please fill in all required Information")
+    } else{
+      dispatch(
+        createJob({
+          title: values.title,
+          startDate: values.startDate,
+          endDate: values.endDate,
+          location: values.location,
+          yearsOfExperience: values.yearsOfExperience,
+          description: values.description,
+          budget: values.budget,
+          privacy: 'public',
+          clientId: user.clientId,
+          duration: new Date()
+        })
+      )
+      navigation.navigate("recruiter_dashboard")
+    }
+
+  
   }
+
   return (
     <ScrollView style={styles.wrapper}>
+      <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={-109}>
+
       <Header 
         title='Post a Job' 
         icon={post} 
@@ -71,9 +89,11 @@ const JobPostingPage = ({navigation}) => {
         hidden={false}
         goBack={navigation.goBack}
         />
+
       <View style={styles.container}>
         <Text style={styles.text}>Answer the questions below in order to </Text>
         <Text style={styles.text}>find the best job for you</Text>
+
         <View style={styles.form}>
             <SelectInput
               title='Job Title'
@@ -81,11 +101,8 @@ const JobPostingPage = ({navigation}) => {
               onSelect={(value) => handleChange('title', value)}
               value={values.title}
             />
-            <DurationInputs
-              placeholder='Job Duration*'
-              onChangeText={(value) => handleChange('duration', value)}
-              value={values.duration}
-            />
+            <DateInputs onChange={(value) => handleChange('startDate', value)} placeholder="Start Date" dateType/>
+            <DateInputs onChange={(value) => handleChange('endDate', value)} placeholder="End Date" dateType/>
             <Inputs
               placeholder='Location*'
               style={styles.input}
@@ -106,7 +123,7 @@ const JobPostingPage = ({navigation}) => {
             />
             <TextArea
               placeholder='Job Description*'
-              onChangeText={(value) => handleChange('description', value)}
+              onChange={(value) => handleChange('description', value)}
               value={values.description}
             />
             <View style={styles.privacy}>
@@ -121,11 +138,15 @@ const JobPostingPage = ({navigation}) => {
                 ></Switch>
                 <Text style={isEnabled ? styles.picked : styles.notPicked}> Private</Text>
             </View>
+
         </View>
+
         <TouchableOpacity style={styles.btnContainer} onPress={() => paymentNav()}>
           <PrimaryButton title='Continue to Payment' />
         </TouchableOpacity>
       </View>
+      </KeyboardAvoidingView>
+
     </ScrollView>
   )
 }
