@@ -18,7 +18,6 @@ import post from '../assets/images/postJob.png';
 import Inputs from '../components/Inputs';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
 import SelectInput from '../components/SelectInput';
-import DurationInputs from '../components/DurationInputs';
 import DateInputs from '../components/DateInputs';
 import TextArea from '../components/TextArea';
 
@@ -34,7 +33,6 @@ const JobPostingPage = ({navigation}) => {
     duration: 2
   }
 
-  const { client } = useSelector((state) => state.client)
   const { user } = useSelector((state) => state.user)
   const [isEnabled, setIsEnabled] = useState(false)
   const dispatch = useDispatch()
@@ -80,7 +78,7 @@ const JobPostingPage = ({navigation}) => {
 
   return (
     <ScrollView style={styles.wrapper}>
-      <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={-109}>
+      <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={-409}>
 
       <Header 
         title='Post a Job' 
@@ -95,10 +93,11 @@ const JobPostingPage = ({navigation}) => {
         <Text style={styles.text}>find the best job for you</Text>
 
         <View style={styles.form}>
-            <SelectInput
-              title='Job Title'
-              list={['Senior Production Manager', 'option2', 'option3']}
-              onSelect={(value) => handleChange('title', value)}
+         
+            <Inputs
+              placeholder='Job Title*'
+              style={styles.input}
+              onChange={(value) => handleChange('title', value)}
               value={values.title}
             />
             <DateInputs onChange={(value) => handleChange('startDate', value)} placeholder="Start Date" dateType/>

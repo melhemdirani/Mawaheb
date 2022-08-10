@@ -14,9 +14,10 @@ const JobsPage = ({ navigation }) => {
 
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(getAllJobs())
+      dispatch(getAllJobs(user.freelancerId))
   }, [])
 
+  
   const navigate = (id) => {
     console.log('routing')
     navigation.navigate('jobDescription', { id })
@@ -26,7 +27,7 @@ const JobsPage = ({ navigation }) => {
     return <Job {...data.item} navigate={navigate} />
   }
   let welcomeMessage = `Hi ${user?.name}`
-  return (
+  return jobs !== undefined &&(
     <View style={styles.container}>
       <SecondaryHeader title={welcomeMessage}></SecondaryHeader>
 

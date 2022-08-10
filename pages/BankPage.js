@@ -96,8 +96,6 @@ const BankPage = ({  navigation }) => {
         bankDetails: !checkBankEmpty() ? bank : undefined,
       })
     )
-    console.log("free", freelancer)
-
   }
   const registerWithoutBank = () => {
     createJobSeeker()

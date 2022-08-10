@@ -1,6 +1,6 @@
 {
   "name": "mawaheb",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
@@ -21,6 +21,7 @@
     "axios": "^0.27.2",
     "expo": "~45.0.0",
     "expo-application": "~4.1.0",
+    "expo-checkbox": "~2.1.0",
     "expo-constants": "~13.1.1",
     "expo-device": "~4.2.0",
     "expo-document-picker": "~10.2.1",
@@ -34,6 +35,7 @@
     "jetifier": "^2.0.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "react-email-validator": "^1.0.2",
     "react-native": "0.68.2",
     "react-native-anchor-carousel": "^4.0.1",
     "react-native-animated-pagination-dot": "^0.3.2",
@@ -47,8 +49,7 @@
     "redux": "^4.2.0",
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
-    "sentry-expo": "^4.2.0",
-    "expo-checkbox": "~2.1.0"
+    "sentry-expo": "^4.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

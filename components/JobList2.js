@@ -25,7 +25,20 @@ const JobList2 = ({
   id,
   navigate
 }) => {
-  let invite = true
+
+  const uniqueIds = [];
+
+  const newLanguages = languages.filter(element => {
+    const isDuplicate = uniqueIds.includes(element.name);
+
+    if (!isDuplicate) {
+      uniqueIds.push(element.name);
+
+      return true;
+    }
+
+    return false;
+  });
   return (
     <View style={styles.wrapper}>
       <View style={styles.header}>
@@ -85,7 +98,7 @@ const JobList2 = ({
           </View>
           <View style={styles.languages}>
             <Image source={languageIcon} style={styles.languageIcon}></Image>
-            {languages.length > 0 && languages.map((language, i) => {
+            {newLanguages.length > 0 && newLanguages.map((language, i) => {
               return <Text key={i} style={styles.language}>{language.name}</Text>
             })}
           </View>
@@ -217,7 +230,7 @@ const styles = StyleSheet.create({
   },
   languages: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     width: '80%',
     marginEnd: 60,
@@ -227,6 +240,7 @@ const styles = StyleSheet.create({
   language: {
     fontFamily: 'PoppinsR',
     color: 'rgba(10, 8, 75, .6)',
+    marginLeft: 10
   },
   languageIcon: {
     marginLeft: 20,

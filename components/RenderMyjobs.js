@@ -17,7 +17,6 @@ import arrowUpIcon from '../assets/images/arrowUpIcon.png';
 
 
 export default function RenderMyjobs({data, navigate}) {
-
     const [showApplicants, setShowApplicants] = useState(false)
  
     const renderItem = (data) => {

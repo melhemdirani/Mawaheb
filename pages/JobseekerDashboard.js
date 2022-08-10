@@ -1,7 +1,12 @@
 import { ScrollView ,View, Text, FlatList, StyleSheet, Image, ImageBackground } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
+
+import { useSelector, useDispatch } from 'react-redux';
+
+import { getFreelancerDashboard } from '../reduxToolkit/freelancerSlice';
+
 
 import SecondaryHeader from '../components/SecondaryHeader';
 import Job from '../components/Job';
@@ -10,6 +15,16 @@ import backgroundImage from '../assets/images/currentBg.png'
 import totalBg from '../assets/images/totalBg.png'
 
 const JobseekerDashboard = ({navigation}) => {
+    const {
+        user
+    } = useSelector((store) => store.user)
+
+    const dispatch = useDispatch()
+    useEffect(() => {
+        dispatch(
+            getFreelancerDashboard(user.freelancerId)
+        )
+    }, [])
     const Data = [
         {   
             id:0,
@@ -72,6 +87,7 @@ const JobseekerDashboard = ({navigation}) => {
                     heart={true}
                     navigate={navigate}
                     id={data.index}
+                    disabled
                 /> 
             </View>
         )
@@ -167,6 +183,7 @@ const JobseekerDashboard = ({navigation}) => {
                         description={currentJob.description}
                         price={currentJob.price}
                         navigate={navigatePrevious}
+                        disabled
                     /> 
                 </View>
             </View>

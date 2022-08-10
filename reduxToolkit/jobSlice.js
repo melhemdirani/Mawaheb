@@ -29,14 +29,16 @@ export const createJob = createAsyncThunk(
 )
 export const getAllJobs = createAsyncThunk(
   'getAllJobs',
-  async (_, thunkApi) => {
-    let url = '/jobs'
+  async (id, thunkApi) => {
+    let url = `jobs/${id}/freelancerJobs`
+    console.log("url", url)
     try {
       const resp = await customFetch.get(url)
 
-      return resp.data
+      return ("all jobs",resp.data)
     } catch (error) {
-      console.log(error.response.data.msg)
+
+      console.log("errors",error)
       return thunkApi.rejectWithValue(error.response.data.msg)
     }
   }
@@ -57,8 +59,10 @@ export const applyJob = createAsyncThunk(
     let url = '/proposals'
     try {
       const resp = await customFetch.post(url, proposal)
+      console.log("resp.data applied", resp.data)
       return resp.data
     } catch (error) {
+      console.log("error applying", error)
       return thunkApi.rejectWithValue(error.response.data.msg)
     }
   }
@@ -96,10 +100,10 @@ export const createContract = createAsyncThunk(
     let url = '/contracts'
     try {
       const resp = await customFetch.post(url, contract)
-      console.log(resp.data)
+      console.log("CREAT RESP",resp.data)
       return resp.data
     } catch (error) {
-      console.log(error.response.data.msg)
+      console.log("error creating",error.response.data.msg)
       return thunkApi.rejectWithValue(error.response.data.msg)
     }
   }

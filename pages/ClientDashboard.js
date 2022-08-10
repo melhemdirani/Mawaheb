@@ -43,6 +43,7 @@ const ClientDashboard = ({navigation}) => {
                     <Job
                         heart={true}
                         client
+                        disabled
                         current={true}
                         title={item.title}
                         description={item.description}
@@ -131,6 +132,7 @@ const ClientDashboard = ({navigation}) => {
                     heart={true}
                     id={data.index}
                     navigate={navigate}
+                    disabled
                 /> 
             </View>
         )

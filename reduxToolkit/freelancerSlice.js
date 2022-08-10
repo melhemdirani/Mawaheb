@@ -15,7 +15,8 @@ const initialState = {
   languages: [],
   isLoading: false,
   error: null,
-  completedProfile: []
+  completedProfile: [],
+  dashboard: {}
 }
 export const createFreelancerProfile = createAsyncThunk(
   'createFreelancerProfile',
@@ -42,6 +43,21 @@ export const getFreelancer=createAsyncThunk(
       return resp.data
     } catch (error) {
       alert(error.response.data.msg)
+      console.log(error.response.data.msg)
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
+export const getFreelancerDashboard = createAsyncThunk(
+  'getFreelancerDashboard',
+  async (id, thunkApi) => {
+    let url = `/freelancers/${id}/dashboard`
+    console.log("dash id", id)
+    try {
+      const resp = await customFetch.get(url)
+      console.log("dashh", resp.data)
+      return resp.data
+    } catch (error) {
       console.log(error.response.data.msg)
       return thunkApi.rejectWithValue(error.response.data.msg)
     }
@@ -100,6 +116,17 @@ const freelancerSlice = createSlice({
       state.freelancer = freelancer
     },
     [getFreelancer.rejected]: (state, { payload }) => {
+      state.isLoading = false
+      state.error = payload
+    },
+    [getFreelancerDashboard.pending]: (state) => {
+      state.isLoading = true
+    },
+    [getFreelancerDashboard.fulfilled]: (state, { payload }) => {
+      console.log("state payload", payload)
+      state.isLoading = false
+    },
+    [getFreelancerDashboard.rejected]: (state, { payload }) => {
       state.isLoading = false
       state.error = payload
     },

@@ -8,11 +8,13 @@ import {
   TouchableOpacity,
   Platform,
   ActivityIndicator,
+  Image
 } from 'react-native'
-import axios from 'axios'
-
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 
 import signUp from '../assets/images/signUp.png'
+import { validate } from 'react-email-validator';
 
 import Header from '../components/Header'
 import Inputs from '../components/Inputs'
@@ -20,11 +22,13 @@ import Inputs from '../components/Inputs'
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import { useSelector, useDispatch } from 'react-redux'
 import { registerUser } from '../reduxToolkit/userSlice'
-import PhoneInputs from '../components/PhoneInput'
+import PhoneInputs from '../components/PhoneInput';
+import UploadCard from '../components/UploadCard';
 
 const JobSeekersignup = ({ navigation, route }) => {
 
-  const [clearedUser, setClearedUser] = useState(false)
+  const [uploaded, setUploaded] = useState(false)
+  const [image, setImage] = useState({})
 
  
   const initialState = {
@@ -47,8 +51,12 @@ const JobSeekersignup = ({ navigation, route }) => {
 
   const submit = () => {
     const { name, email, password, phoneNb } = values
+    
     if (!name || !email || !password || !phoneNb) {
-      alert('Please fill all the fieldss')
+      return alert('Please fill all the fields')
+    } 
+    if( !validate(email)){
+      return alert("Please enter a valid email address")
     }
     console.log(user, error)
     dispatch(
@@ -56,7 +64,7 @@ const JobSeekersignup = ({ navigation, route }) => {
         name: values.name + " " + values.lastName,
         email: values.email,
         password: values.password,
-        phoneNb: parseInt(values.phoneNb.replace(/\s/g, "")),
+        phoneNb: parseInt(values.phoneNb),
         role: role,
       })
     )
@@ -71,6 +79,56 @@ const JobSeekersignup = ({ navigation, route }) => {
     }
   }, [user])
 
+  const selectFile = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      quality: 1,
+    })
+    if (!result.cancelled) {
+      setImage(result.uri)
+      upload(result.uri)
+    }
+  }
+  const upload = async (uri) => {
+    try {
+      console.log('trying')
+      const response = await FileSystem.uploadAsync(
+        `http://194.5.157.234:4000/api/v1/freelancers/uploadImage`,
+        uri,
+        {
+          fieldName: 'files',
+          httpMethod: 'post',
+          uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
+        },
+        { body: 'front' }
+      )
+      console.log('response', response)
+      console.log('response body', JSON.parse(response.body).imageUrl)
+      const img = JSON.parse(response.body).imageUrl
+      handleChange({
+        name: 'profileImage',
+        value: img,
+      })
+      setUploaded(true)
+
+    } catch (error) {
+      console.log(error)
+    }
+    // { 
+    //   image.length && !uploaded
+    //   ? <View style={{width: "100%", alignItems: "center"}}>
+    //       <View style={styles.ActivityIndicator}>
+    //         <ActivityIndicator size={"large"} />
+    //       </View>
+    //       <Image source={{uri:image}} style={styles.Imagecontainer} />
+    //     </View>
+    //   : image.length && uploaded
+    //   ? <Image source={{uri:image}} style={styles.Imagecontainer} />
+    //   : <UploadCard title='Upload A Profile Photo' selectFile={selectFile}/>
+    // }
+}
   return isLoading ? (
     <View style={styles.loadingStyle}>
       <ActivityIndicator size={'large'} />
@@ -91,6 +149,7 @@ const JobSeekersignup = ({ navigation, route }) => {
               <Text style={styles.text}>
                 Fill and upload the below required field and documents
               </Text>
+       
               <Inputs
                 title='Continue to Payment'
                 placeholder='First Name*'
@@ -164,6 +223,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: '100%',
   },
+  ActivityIndicator:{
+    position: "absolute",
+    zIndex: 999,
+    alignItems: "center",
+    justifyContent: "center",
+    height: 230,
+    backgroundColor:"rgba(255,255,255,.8)",
+    width: "85%",
+    marginVertical: 10
+  }
 })
 
 export default JobSeekersignup

@@ -2,7 +2,7 @@
   "expo": {
     "name": "mawaheb",
     "slug": "mawaheb",
-    "version": "1.1.0",
+    "version": "1.1.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
@@ -12,7 +12,8 @@
       "backgroundColor": "#FFFFFF"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/1957d287-34b6-489e-b424-f9f9a6a75a5a"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -20,10 +21,11 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.melhemdirani.mawaheb",
-      "buildNumber": "1.0.0"
+      "buildNumber": "2.0.3",
+      "version": "2.0.4"
     },
     "android": {
-      "versionCode": 17,
+      "versionCode": 20,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
@@ -35,6 +37,9 @@
     },
     "plugins": [
       "sentry-expo"
-    ]
+    ],
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    }
   }
 }

@@ -9,7 +9,7 @@ import heartIcon from '../assets/images/heartIcon.png'
 import plusIcon from '../assets/images/plusIcon.png'
 import MaskedView from '@react-native-masked-view/masked-view'
 
-const Job = ({ title, description, price, client, current, heart, navigate, id }) => {
+const Job = ({ title, description, price, client, current, heart, navigate, id, startDate, disabled }) => {
   return (
     <View
       // style={lastOne ? [styles.wrapper, { marginBottom: 40 }] : styles.wrapper}
@@ -31,13 +31,15 @@ const Job = ({ title, description, price, client, current, heart, navigate, id }
         </View>
         <View style={styles.subHeader}>
           {!heart && <Image source={heartIcon} style={styles.heart}></Image>}
-          { id 
+          { !disabled && id 
             ? <Pressable onPress={() => navigate(id)} style={styles.plusContainer}>
               <Image source={plusIcon} style={styles.plus}></Image>
             </Pressable>
-            : <Pressable onPress={() => navigate()} style={styles.plusContainer}>
+            : !disabled 
+            ? <Pressable onPress={() => navigate()} style={styles.plusContainer}>
               <Image source={plusIcon} style={styles.plus}></Image>
             </Pressable>
+            :null
           }
         </View>
       </View>
@@ -108,7 +110,7 @@ const Job = ({ title, description, price, client, current, heart, navigate, id }
             <View style={styles.footer}>
               <View style={styles.footerInfo}>
                 <Image source={calendarIcon} style={styles.icon}></Image>
-                <Text style={styles.text}> 10/10/2020</Text>
+                <Text style={styles.text}> {startDate}</Text>
               </View>
               <View style={styles.footerInfo}>
                 <Image source={clockIcon} style={styles.icon}></Image>
@@ -269,7 +271,6 @@ const styles = Platform.OS === 'android'
     },
     container: {
       justifyContent: 'center',
-      alignItems: 'center',
       borderWidth: 1,
       borderColor: 'rgba(0,0,0,.03)',
       position: 'relative',

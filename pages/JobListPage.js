@@ -37,6 +37,7 @@ const JobListPage = ({ navigation }) => {
   },[])
 
 
+
   const navigate = (id,price ,location,jobId) => {
     navigation.navigate('freelancerDetails', { id ,price,location ,jobId} )
   }

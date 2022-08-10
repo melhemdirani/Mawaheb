@@ -1,4 +1,4 @@
-import React, {useLayoutEffect} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
     View,
     Text,
@@ -24,6 +24,16 @@ import minusIcon from '../assets/images/minusIcon.png';
 import { getJob, applyJob } from '../reduxToolkit/jobSlice';
 
 const JobDetailsPage = ({route, navigation}) => {
+
+  const initialState = {
+    title:'',
+    description: '',
+    budget:'',
+    location:'',
+    createdAt:'',
+  }
+  const [jobs, setJobs] = useState(initialState)
+
   const { id } = route.params
   const { job } = useSelector((state) => state.job)
   const { freelancer } = useSelector((state) => state.freelancer)
@@ -47,9 +57,21 @@ const JobDetailsPage = ({route, navigation}) => {
     dispatch(getJob(id))  
   }, [id])
 
-  const { title, description, budget, location, createdAt } = job
+  useEffect(() => {
+    if( job !== {} && job !== undefined){
+      console.log("job", job)
+      setJobs({
+        title:job.title,
+        description: job.description,
+        budget: job.budget,
+        location: job.location,
+        createdAt: job.createdAt,
+      })
+    }
+  }, [job])
+  const { title, description, budget, location, createdAt } = jobs
 
-  return  !job ? 
+  return  Object.keys(jobs).length === 0 ? 
     <View style={styles.loadingStyle}>
       <ActivityIndicator size={'large'} />
     </View>
@@ -173,6 +195,7 @@ const JobDetailsPage = ({route, navigation}) => {
     },
     linear: {
       borderRadius: 30,
+      width: "100%"
     },
     container: {
       justifyContent: 'center',
@@ -187,6 +210,7 @@ const JobDetailsPage = ({route, navigation}) => {
       paddingVertical: 20,
       borderBottomColor: 'rgba(16, 125, 197, .3)',
       borderBottomWidth: 1,
+      width: "100%"
     },
     header: {
       zIndex: 1,
