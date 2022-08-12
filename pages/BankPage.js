@@ -118,22 +118,22 @@ const BankPage = ({  navigation }) => {
       />
       <View style={styles.subContainer}>
         <Text style={styles.text}>
-          Lorem ipsum dolor sit amenoLorem ipsum dolor sit ameno
+          Fill your bank account details in the fields provided below for secure banking proccesses .
         </Text>
         <Inputs
-          placeholder='IBAN*'
+          placeholder='Your IBAN*'
           onChange={(value) => handleChange('iban', value)}
         />
         <Inputs
-          placeholder='Account Name*'
+          placeholder='Account holder*'
           onChange={(value) => handleChange('accountName', value)}
         />
         <Inputs
-          placeholder='Bank Name*'
+          placeholder={`Bank's name*`}
           onChange={(value) => handleChange('bankName', value)}
         />
         <Inputs
-          placeholder='Bank Address*'
+          placeholder={`Bank's address*`}
           onChange={(value) => handleChange('bankAddress', value)}
         />
 

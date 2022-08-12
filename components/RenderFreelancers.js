@@ -46,7 +46,7 @@ export default function RenderFreelancers({navigate, loaded, freelancers}) {
 
             <ScrollView>
                 {
-                    showApplicants && loaded && freelancers.map((freelancer, i) => {
+                    showApplicants && loaded && Object.keys(freelancers) !== 0 && freelancers.map((freelancer, i) => {
                     return freelancer.isCompleted && (
                         <JobList2 
                             languages={freelancer.languages} 

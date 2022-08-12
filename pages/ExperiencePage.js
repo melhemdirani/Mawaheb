@@ -207,15 +207,15 @@ const ExperiencePage = ({ navigation }) => {
               goBack={goBack}
           />
           <Text style={styles.text}>
-              Lorem ipsums dolor sit ameno
+            Fill below your latest role and any projects you think would make stand out to potential recruiters.
           </Text>
           <MaskedTitle title="Latest Role "/>
           <RoleForm handleChange={handleChange} title={"latest"}/>
-          <MaskedTitle title="Most Notable Project "/>
+          <MaskedTitle title="Projects that makes you stand out"/>
           <RoleForm handleChange={handleChange} title="notable"/>
           { addIndex > 0 &&
             <View>
-              <MaskedTitle title="Additional Roles "/>
+              <MaskedTitle title="Add another project"/>
               {
                 additionalRoles.map((role, i) => 
                 <View key={i}>

@@ -78,16 +78,15 @@ export default function SignupPage({ navigation }) {
        
       <Text style={styles.text}>
         <Text style={styles.text1}>Mawahib </Text>
-        connects businesses with independent professionals and agencies around
-        the MENA region.
+        connects businesses with professional freelancers and agencies around the MENA region.
       </Text>
       <View style={styles.buttons}>
         <TouchableOpacity onPress={() => {navigateJob()}}>
-          <PrimaryButton title='Jobseeker Sign up' />
+          <PrimaryButton title='Looking for a job' />
         </TouchableOpacity>
         <View style={styles.spacing} />
         <TouchableOpacity onPress={() => {navigateCSignup()}}>
-          <SecondaryButton title='Recruiter Sign up'  />
+          <SecondaryButton title='Looking for a resource'  />
         </TouchableOpacity>
         <View style={styles.spacing} />
         <TouchableOpacity onPress={() => {navigateLogin()}}>

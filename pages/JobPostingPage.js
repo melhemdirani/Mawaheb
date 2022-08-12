@@ -89,9 +89,7 @@ const JobPostingPage = ({navigation}) => {
         />
 
       <View style={styles.container}>
-        <Text style={styles.text}>Answer the questions below in order to </Text>
-        <Text style={styles.text}>find the best job for you</Text>
-
+        <Text style={styles.text}>Let us know what are you looking for, and fill in some details find better qualified matches. </Text>
         <View style={styles.form}>
          
             <Inputs
@@ -163,7 +161,8 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 13,
     fontFamily: 'PoppinsR',
-    color: "rgba(0,0,0,.6)"
+    color: "rgba(0,0,0,.6)",
+    width: "60%"
   },
   form: {
     width: '100%',

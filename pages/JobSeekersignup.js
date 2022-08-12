@@ -44,7 +44,8 @@ const JobSeekersignup = ({ navigation, route }) => {
   const { role } = route.params
 
   const handleChange = (name, value) => {
-    console.log(values)
+    console.log("phoneNb", values.phoneNb)
+
     setValues({ ...values, [name]: value })
   }
 
@@ -58,7 +59,7 @@ const JobSeekersignup = ({ navigation, route }) => {
     if( !validate(email)){
       return alert("Please enter a valid email address")
     }
-    console.log(user, error)
+    console.log("phoneNb submitted", phoneNb)
     dispatch(
       registerUser({
         name: values.name + " " + values.lastName,
@@ -147,7 +148,7 @@ const JobSeekersignup = ({ navigation, route }) => {
             />
             <View style={styles.subContainer}>
               <Text style={styles.text}>
-                Fill and upload the below required field and documents
+                Create and verify your profile in less than 2 minutes. Fill in your name and upload a picture of your passport, ID, and Visa.
               </Text>
        
               <Inputs

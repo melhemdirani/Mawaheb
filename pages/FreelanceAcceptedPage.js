@@ -18,7 +18,7 @@ const FreelanceAcceptedPage = ({navigation}) => {
   }
   return (
     <View style={styles.wrapper}>
-      <Header title='Let’s get the job done' hidden={true} />
+      <Header title='Something big is going to happen. We can feel it!' hidden={true} />
       <View style={styles.container}>
         <Text style={styles.text}> Congratulations!</Text>
         <ImageBackground

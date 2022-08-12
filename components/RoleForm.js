@@ -33,11 +33,11 @@ function RoleForm({handleChange, title, additional, onRoleDelete, role}) {
                 list={["Camera man", "option2", "option3"]}
             /> 
             <TextArea  
-                placeholder="Key Responsibilities" 
+                placeholder="Your key responsibilities" 
                 onChange={(value) => handleChange('keyResponsibilities', value, title)}
             /> 
             <DailyRate  
-                placeholder="Your daily rate*"
+                placeholder="Your daily wages*"
                 onChange={(value) => handleChange('dailyRate', parseInt(value), title)}
             />
             <DateInputs 

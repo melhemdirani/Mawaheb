@@ -7,6 +7,7 @@ import {
     Image,
     ScrollView,
     TouchableOpacity,
+    Pressable,
   } from 'react-native';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
@@ -22,6 +23,8 @@ import UploadCard from '../components/UploadCard';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
 import DateInputs from '../components/DateInputs';
 import { handleChange, completedProfile } from '../reduxToolkit/freelancerSlice';
+import DeleteButton2 from '../components/Buttons/DeleteButton2';
+import ImageCard from '../components/ImageCard';
 
 
 const JobSeekersignup2 = ({  navigation, }) => {
@@ -34,8 +37,8 @@ const JobSeekersignup2 = ({  navigation, }) => {
   const dispatch = useDispatch()
 
   const [values, setValues] = useState(initialState)
-  const [imageLoading, setImageLoading] = useState(false)
-  const [imageLoading2, setImageLoading2] = useState(false)
+  const [activity, setActivity] = useState(false)
+  const [startingToUpload, setStartingTopUpload] = useState(false)
 
   const {
     freelancer,
@@ -48,24 +51,27 @@ const JobSeekersignup2 = ({  navigation, }) => {
   } = useSelector((store) => store.freelancer)
   
   const onSubmit = () => {
+    if (
+      !emiratesIdFrontSide.length > 0 ||
+      !emiratesIdBackSide.length >0 ||
+      !expirationDate.length > 0 ||
+      !emiratesId.length > 0
+    ) {
+      if(activity && expirationDate.length > 0 && emiratesId.length > 0){return alert("Uploading please wait")}
+      else return alert('Please fill all the fields')
+    } 
     if(!isLoading && uploaded && uploaded2){
 
-    if (
-      !emiratesIdFrontSide ||
-      !emiratesIdBackSide ||
-      !expirationDate ||
-      !emiratesId
-    ) {
-      alert('Please fill all the fields')
-    } else {
+
       dispatch(
         completedProfile(true)
       )
       navigation.navigate('JobSignUp2')
-    }
+ 
   }
   else {
-    if(!uploaded || !uploaded2){
+    console.log("emiratesIdFrontSide", emiratesIdFrontSide.length)
+    if(activity){
       alert("Uploading, please wait")
     }
   }
@@ -89,6 +95,7 @@ const JobSeekersignup2 = ({  navigation, }) => {
       quality: 1,
     })
     if (!result.cancelled) {
+      !startingToUpload && setStartingTopUpload(true)
       setImage(result.uri)
       upload(result.uri)
     }
@@ -101,6 +108,7 @@ const JobSeekersignup2 = ({  navigation, }) => {
       quality: 1,
     })
     if (!result.cancelled) {
+      !startingToUpload && setStartingTopUpload(true)
       setImage2(result.uri)
       console.log('result', result.uri)
       upload2(result.uri)
@@ -165,10 +173,38 @@ const JobSeekersignup2 = ({  navigation, }) => {
       console.log(error)
     }
   }
-  
+
+  const onImageDelete = () => {
+    setStartingTopUpload(false)
+    setUploaded(false);
+    setImage({});
+    dispatch(
+      handleChange({
+        name: 'emiratesIdFrontSide',
+        value: "",
+      })
+    )
+  }
+
+  const onImageDelete2 = () => {
+    setStartingTopUpload(false)
+    setUploaded2(false)
+    setImage2({})
+    dispatch(
+      handleChange({
+        name: 'emiratesIdBackSide',
+        value: "",
+      })
+    )
+  }
   useEffect(( ) => {
-    console.log("expirationDate",typeof values.expirationDate.toDateString())
-  }, [values.expirationDate])
+    if(uploaded && uploaded2 && activity){
+      setActivity(false)
+    }
+    if((!uploaded || !uploaded2) && !activity && startingToUpload){
+      setActivity(true)
+    }
+  }, [uploaded, uploaded2, startingToUpload])
   return loading? <View  style={styles.loadingStyle}>
           <ActivityIndicator size={'large'}/>
       </View>
@@ -184,7 +220,7 @@ const JobSeekersignup2 = ({  navigation, }) => {
       />
       <View style={styles.subContainer}>
           <Text style={styles.text}>
-          Fill and upload the below required field and documents 
+            Create and verify your profile in less than 2 minutes. Fill in your name and upload a picture of your passport, ID, and Visa.
           </Text> 
           <DateInputs 
             placeholder='Expiration Date*'
@@ -215,8 +251,8 @@ const JobSeekersignup2 = ({  navigation, }) => {
                 <Image source={{uri:image}} style={styles.Imagecontainer} />
               </View>
             : image.length && uploaded
-            ? <Image source={{uri:image}} style={styles.Imagecontainer} />
-          : <UploadCard title='Emirates ID back side' selectFile={selectFile}/>
+            ? <ImageCard uri={image} onImageDelete={onImageDelete} />
+            : <UploadCard title='Front side of your Emirates ID' selectFile={selectFile}/>
           }
           { 
             image2.length && !uploaded2
@@ -227,11 +263,11 @@ const JobSeekersignup2 = ({  navigation, }) => {
                 <Image source={{uri:image2}} style={styles.Imagecontainer} />
               </View>
             : image2.length && uploaded2
-            ? <Image source={{uri:image2}} style={styles.Imagecontainer} />
-          : <UploadCard title='Emirates ID back side' selectFile={selectFile2}/>
+            ? <ImageCard uri={image2} onImageDelete={onImageDelete2} />
+            : <UploadCard title='Back side of your Emirates ID' selectFile={selectFile2}/>
           }
           <TouchableOpacity style={styles.nextButton} onPress={() => onSubmit()}>
-            <PrimaryButton title='Next'/>
+            <PrimaryButton title='Next' activity={activity}/>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -255,7 +291,7 @@ const styles = StyleSheet.create({
     paddingTop: 50,
   },
   text: {
-    width: '70%',
+    width: '72%',
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: 15,
@@ -278,6 +314,11 @@ const styles = StyleSheet.create({
     backgroundColor:"rgba(255,255,255,.8)",
     width: "85%",
     marginVertical: 10
+  },
+  deletebutton:{
+    position: "absolute",
+    top: 20,
+    right: 40
   }
 })
 

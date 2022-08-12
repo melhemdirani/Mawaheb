@@ -21,8 +21,8 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.melhemdirani.mawaheb",
-      "buildNumber": "2.0.3",
-      "version": "2.0.4"
+      "buildNumber": "2.0.5",
+      "version": "2.0.5"
     },
     "android": {
       "versionCode": 20,

@@ -79,6 +79,7 @@ import {
           goBack={navigation.goBack}
         />
         <View style={styles.container}>
+          <Text>Upload a PO document to finalize your job posting.</Text>
             <View style={styles.form}>
                 <View style={styles.privacy}>
                     <Text style={!isEnabled ? styles.picked : styles.notPicked}>Pre-paid </Text>

@@ -43,7 +43,7 @@ const JobListPage = ({ navigation }) => {
   }
   return (
     <View style={styles.wrapper}>
-      <SecondaryHeader title='Find the right person' />
+      <SecondaryHeader title='Find the right talent.' />
       <View style={styles.container}>
         {
           myJobs && myJobs.map((item, i) => 

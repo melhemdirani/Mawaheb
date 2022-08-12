@@ -23,23 +23,18 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import signUp from '../assets/images/signUp.png';
 import { setUserAfterRegister } from '../reduxToolkit/userSlice';
+import ImageCard from '../components/ImageCard';
 
 
 const ClientSignupPage = ({navigation}) => {
   const { client, isLoading, error } = useSelector((store) => store.client)
   const { user } = useSelector((store) => store.user)
   const [uploaded, setUploaded] = useState(false)
-  const navigateLogin = () => {
-   
-    navigation.navigate('login')
-  }
-  const navigateDash = () => {
-    signIn({ role: 'client', name: name })
-    navigation.navigate('recruiter_Jobs')
-  }
-  const dispatch = useDispatch()
+  const [activity, setActivity] = useState(false)
   const [isEnabled, setIsEnabled] = useState(false)
+  const [startingToUpload, setStartingToUpload] = useState(false)
   const [image, setImage] = useState("")
+
   const initialState = {
     companyName: '',
     privacy: '',
@@ -51,6 +46,12 @@ const ClientSignupPage = ({navigation}) => {
   }
 
   const [values, setValues] = useState(initialState)
+  const dispatch = useDispatch()
+
+  const navigateLogin = () => {
+   
+    navigation.navigate('login')
+  }
   useEffect(() => {
 
     isEnabled
@@ -63,9 +64,7 @@ const ClientSignupPage = ({navigation}) => {
     setValues({ ...values, [name]: value })
   }
 
-  useEffect(() => {
-    console.log("client user", user)
-  }, [user])
+
   const onSubmit = () => {
     if(!uploaded){
       return alert("Uploading please wait")
@@ -124,6 +123,7 @@ const ClientSignupPage = ({navigation}) => {
       quality: 1,
     })
     if (!result.cancelled) {
+      setStartingToUpload(true)
       upload(result.uri)
       setImage(result.uri)
       console.log("uploaded")
@@ -157,6 +157,21 @@ const ClientSignupPage = ({navigation}) => {
       console.log(error)
     }
   }
+  const onImageDelete = () => {
+    startingToUpload && setStartingToUpload(false)
+    setUploaded(false);
+    setImage("");
+  }
+
+  useEffect(( ) => {
+    if(uploaded && activity){
+      setActivity(false)
+    }
+    if((!uploaded) && !activity && startingToUpload){
+      setActivity(true)
+    }
+  }, [uploaded, startingToUpload])
+
   return (
     <ScrollView style={styles.wrapper}>
       <Header title='Client Sign Up' icon={signUp} hidden={true} />
@@ -206,8 +221,8 @@ const ClientSignupPage = ({navigation}) => {
                     <Image source={{uri:image}} style={styles.Imagecontainer} />
                   </View>
                 : image.length && uploaded
-                ? <Image source={{uri:image}} style={styles.Imagecontainer} />
-              : <UploadCard title='Trading Liscence*' selectFile={selectFile}/>
+                ? <ImageCard uri={image} style={styles.Imagecontainer} onImageDelete={onImageDelete}/>
+                : <UploadCard title='Trading Liscence*' selectFile={selectFile}/>
               }
             </View>
             : <View style={{width: "100%", alignItems: "center"}}>
@@ -232,7 +247,7 @@ const ClientSignupPage = ({navigation}) => {
                     <Image source={{uri:image}} style={styles.Imagecontainer} />
                   </View>
                 : image.length && uploaded
-                ? <Image source={{uri:image}} style={styles.Imagecontainer} />
+                ? <ImageCard uri={image} style={styles.Imagecontainer} onImageDelete={onImageDelete}/>
                 : <UploadCard title='Add Authorized Signatory*' selectFile={selectFile}/>
               }
             </View>
@@ -240,7 +255,7 @@ const ClientSignupPage = ({navigation}) => {
         </View>
         <View style={styles.btnContainer}>
           <TouchableOpacity onPress={() => onSubmit()}>
-           <PrimaryButton  title='Sign up' />
+           <PrimaryButton  title='Sign up' activity={activity}/>
           </TouchableOpacity>
           <SafeAreaView style={styles.btn}>
             <Pressable onPress={() => navigateLogin()}>

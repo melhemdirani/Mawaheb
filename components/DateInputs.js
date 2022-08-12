@@ -78,7 +78,7 @@ const DateInputs = ({title, placeholder, onChange, dateType}) => {
                     </LinearGradient>
                 </MaskedView>   
                 }
-                { !show && <DateTimePicker
+                {  <DateTimePicker
                     testID="dateTimePicker"
                     value={date}
                     mode={'date'}

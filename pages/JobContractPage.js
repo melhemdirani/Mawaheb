@@ -46,10 +46,10 @@ const JobContractPage = ({navigation}) => {
             Please read carefully the below contract and accept
           </Text>
           <Text style={styles.text}>
-            the terms and conditions, your contract will be
+            the terms and conditions. Your contract will be 
           </Text>
           <Text style={styles.text}>
-            legally registered once the freelancer signed it .
+            legally registered once the freelancer signs it.
           </Text>
         </View>
         <View style={styles.header}>

@@ -116,7 +116,7 @@ const LanguagePage = ({ navigation }) => {
       />
       <View style={styles.subContainer}>
         <Text style={styles.text}>
-          Lorem ipsum dolor sit amenoLorem ipsum dolor sit ameno
+          Add below the languages you can speak and your level of influency for more accurate results.
         </Text>
         <SelectInput
           title='Main Language*'

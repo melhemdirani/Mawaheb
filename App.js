@@ -34,6 +34,7 @@ import ClientDashboard from './pages/ClientDashboard'
 import JobDetailsPage from './pages/JobDetailsPage'
 import JobSeekersignup2 from './pages/JobSeekersignup2'
 import * as Sentry from '@sentry/react-native'
+import FreelancerProfile from './pages/FreelancerProfile'
 
 
 Sentry.init({
@@ -41,6 +42,7 @@ Sentry.init({
   // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
   // We recommend adjusting this value in production.
   tracesSampleRate: 1.0,
+  enableNative: false
 });
 
 const Stack = createNativeStackNavigator()
@@ -212,6 +214,13 @@ function App() {
           <Stack.Screen
             name='jobDescription'
             component={JobDetailsPage}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name='freelancerProfile'
+            component={FreelancerProfile}
             options={{
               headerShown: false,
             }}

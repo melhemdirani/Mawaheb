@@ -30,13 +30,18 @@ const SettingsPage = ({navigation, role}) => {
         )
         navigation.navigate('SignIn', {reload})
     }
+
+    const navigateProfile = () => {
+        navigation.navigate('freelancerProfile')
+
+    }
  
     return (
         <View style={styles.container}>
             <ScrollView style={styles.container4}>
                 <Header icon={settingsIcon} hidden title="Settings"/>
                 <View style={styles.settingsContainer}>
-                    <Setting title="My Profile" icon={profileSetting}/>
+                    <Setting title="My Profile" icon={profileSetting} action={navigateProfile}/>
                     <Setting title="Language" icon={languageSetting}/>
                     <Setting title="Privacy Policy" icon={privacySetting}/>
                     <Setting title="Terms and Conditions" icon={termsSetting}/>

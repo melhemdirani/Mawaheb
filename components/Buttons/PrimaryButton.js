@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Platform, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Platform, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 
-const PrimaryButton = ({title, navigate}) => {
+const PrimaryButton = ({title, activity}) => {
 
   return (
       <View
@@ -9,9 +9,17 @@ const PrimaryButton = ({title, navigate}) => {
           styles.wrapperCustom
         }
       >
-        <Text style={styles.text}>
-          {title}
-        </Text>
+        { activity ?
+          <View style={{flexDirection: "row"}}>
+            <Text style={[styles.text, {marginRight: 15}]}>
+            {title}
+          </Text>
+            <ActivityIndicator  size={"small"} color="white"/>
+          </View>
+          :<Text style={styles.text}>
+            {title}
+          </Text>
+        }
       </View>
   );
 };

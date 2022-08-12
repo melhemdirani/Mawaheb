@@ -22,6 +22,7 @@ import Header from '../components/Header';
 import Inputs from '../components/Inputs';
 import UploadCard from '../components/UploadCard';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
+import ImageCard from '../components/ImageCard';
 
 
 
@@ -39,6 +40,9 @@ const CreateProfilePage = ({  navigation }) => {
 
   const [passCopy, setPassCopy] = useState("")
   const [visaCopy, setVisaCopy] = useState("")
+
+  const [startingToUpload, setStartingToUpload] = useState(false)
+  const [activity, setActivity] = useState(false)
 
 
   const navigateExperience = () => {
@@ -111,6 +115,7 @@ const CreateProfilePage = ({  navigation }) => {
       quality: 1,
     });
     if (!result.cancelled) {
+      !startingToUpload && setStartingToUpload(true)
       setPassCopy(result.uri)
       upload(result.uri)
 
@@ -124,18 +129,18 @@ const CreateProfilePage = ({  navigation }) => {
       quality: 1,
     });
     if (!result.cancelled) {
+      !startingToUpload && setStartingToUpload(true)
       setVisaCopy(result.uri)
       upload2(result.uri)
     }
   };
   const handleSubmit = () => {
-    console.log("pass",copyOfPassport )
-    console.log("res",copyOfResidencyVisa )
+    if(!uploaded || !uploaded2){
+      return alert("Uploading, please wait")
+    }
     if(copyOfPassport === '' || copyOfResidencyVisa === '' || !uploaded2 || !uploaded){
       alert("Please upload all required documents")
-      console.log("pas",copyOfPassport )
     } else{
-      
       dispatch(
         completedProfile(true)
       )
@@ -143,6 +148,37 @@ const CreateProfilePage = ({  navigation }) => {
 
     }
   }
+  const onImageDelete = () => {
+    startingToUpload && setStartingToUpload(false)
+    setUploaded(false);
+    setPassCopy({});
+    dispatch(
+      handleChange({
+        name: 'copyOfPassport',
+        value: "",
+      })
+    )
+  }
+  const onImageDelete2 = () => {
+    startingToUpload && setStartingToUpload(false)
+    setUploaded2(false);
+    setVisaCopy({});
+    dispatch(
+      handleChange({
+        name: 'copyOfResidencyVisa',
+        value: "",
+      })
+    )
+  }
+  useEffect(( ) => {
+    if(uploaded && uploaded2 && activity){
+      setActivity(false)
+    }
+    if((!uploaded || !uploaded2) && !activity && startingToUpload){
+      setActivity(true)
+    }
+  }, [uploaded, uploaded2, startingToUpload])
+
   return (
     <ScrollView style={styles.container}>
       <Header
@@ -155,7 +191,7 @@ const CreateProfilePage = ({  navigation }) => {
       />
       <View style={styles.subContainer}>
         <Text style={styles.text}>
-          Upload the below documents
+          All you need now is to fill your information below and upload a document to create your profile.
         </Text>
           { 
             passCopy.length && !uploaded
@@ -166,8 +202,8 @@ const CreateProfilePage = ({  navigation }) => {
                 <Image source={{uri:passCopy}} style={styles.Imagecontainer} />
               </View>
             : passCopy.length && uploaded
-            ? <Image source={{uri:passCopy}} style={styles.Imagecontainer} />
-            : <UploadCard title='Emirates ID back side' selectFile={selectFile}/>
+            ? <ImageCard uri={passCopy} onImageDelete={onImageDelete} />
+            : <UploadCard title='Copy of your passport’s information page' selectFile={selectFile}/>
           }
           { 
             visaCopy.length && !uploaded2
@@ -178,11 +214,11 @@ const CreateProfilePage = ({  navigation }) => {
                 <Image source={{uri:visaCopy}} style={styles.Imagecontainer} />
               </View>
             : visaCopy.length && uploaded2
-            ? <Image source={{uri:visaCopy}} style={styles.Imagecontainer} />
-          : <UploadCard title='Emirates ID back side' selectFile={selectFile2}/>
+            ? <ImageCard uri={visaCopy} onImageDelete={onImageDelete2} />
+            : <UploadCard title='Copy of your residency visa' selectFile={selectFile2}/>
           }
         <TouchableOpacity onPress={() => handleSubmit()} style={styles.nextButton} >
-          <PrimaryButton title='Next' />
+          <PrimaryButton title='Next' activity={activity}/>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate("experience")}>
           <Text style={styles.skipText}>

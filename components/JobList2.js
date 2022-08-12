@@ -26,6 +26,7 @@ const JobList2 = ({
   navigate
 }) => {
 
+  console.log("roles", roles)
   const uniqueIds = [];
 
   const newLanguages = languages.filter(element => {
@@ -37,7 +38,7 @@ const JobList2 = ({
       return true;
     }
 
-    return false;
+    return false
   });
   return (
     <View style={styles.wrapper}>
@@ -50,7 +51,7 @@ const JobList2 = ({
             resizeMode='contain'
           >
             <View style={styles.priceAndCurrency}>
-              <Text style={styles.price}>{roles[0].dailyRate}</Text>
+              <Text style={styles.price}>{roles.length > 0 && roles[0].dailyRate}</Text>
               <Text style={styles.currency}>AED</Text>
             </View>
           </ImageBackground>
@@ -82,7 +83,7 @@ const JobList2 = ({
                 <Text
                   style={[styles.title, { backgroundColor: 'transparent' }]}
                 >
-                  {user.name}
+                  Blurred Name
                 </Text>
               }
             >

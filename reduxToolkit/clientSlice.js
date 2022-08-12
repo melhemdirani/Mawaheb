@@ -8,14 +8,12 @@ const initialState = {
   isLoading: true,
   error: undefined,
 }
+
 export const createClientProfile = createAsyncThunk(
   'client/createClientProfile',
   async (client, thunkAPI) => {
     try {
-      console.log('started')
       const resp = await customFetch.post('/clients', client)
-      console.log("client resp",resp.data)
-
       return resp.data
     } catch (error) {
       console.log(error)

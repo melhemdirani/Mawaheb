@@ -6,10 +6,9 @@ const UploadCard = ({title, selectFile}) => {
   return (
     <View style={styles.container}>
         <ImageBackground style={ styles.backgroundImage } 
-            resizeMode='stretch' 
-            source={require('../assets/images/uploadCard2.png')}
+          resizeMode='stretch' 
+          source={require('../assets/images/uploadCard2.png')}
         >
-          
         <Image
             style={styles.card}
             source={require('../assets/images/uploadCard.png')}
