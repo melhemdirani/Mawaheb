@@ -24,7 +24,6 @@ import minusIcon from '../assets/images/minusIcon.png';
 import { getJob, applyJob } from '../reduxToolkit/jobSlice';
 
 const JobDetailsPage = ({route, navigation}) => {
-
   const initialState = {
     title:'',
     description: '',
@@ -33,7 +32,6 @@ const JobDetailsPage = ({route, navigation}) => {
     createdAt:'',
   }
   const [jobs, setJobs] = useState(initialState)
-
   const { id } = route.params
   const { job } = useSelector((state) => state.job)
   const { freelancer } = useSelector((state) => state.freelancer)
@@ -41,16 +39,19 @@ const JobDetailsPage = ({route, navigation}) => {
   const dispatch = useDispatch()
   
   const navigateApply = () => {
-    dispatch(
-      applyJob({
-        jobId: id,
-        freelancerId: freelancer?.id || user?.freelancerId,
-
-        price: 2000,
-      })
-    )
-
-    navigation.navigate('jobseeker_jobs')
+    if(freelancer !== undefined && freelancer !== {} && !freelancer.isCompleted){
+      return alert("Please complete your profile before applying")
+    } else{
+      dispatch(
+        applyJob({
+          jobId: id,
+          freelancerId: freelancer?.id || user?.freelancerId,
+          price: 2000,
+        })
+      )
+      navigation.navigate('jobseeker_jobs')
+    }
+   
   }
 
   useLayoutEffect(() => {
@@ -59,7 +60,7 @@ const JobDetailsPage = ({route, navigation}) => {
 
   useEffect(() => {
     if( job !== {} && job !== undefined){
-      console.log("job", job)
+      console.log("job", freelancer.isCompleted)
       setJobs({
         title:job.title,
         description: job.description,
@@ -71,11 +72,11 @@ const JobDetailsPage = ({route, navigation}) => {
   }, [job])
   const { title, description, budget, location, createdAt } = jobs
 
-  return  Object.keys(jobs).length === 0 ? 
-    <View style={styles.loadingStyle}>
+  return  Object.keys(jobs).length === 0 
+    ?<View style={styles.loadingStyle}>
       <ActivityIndicator size={'large'} />
     </View>
-  :(
+    :(
     <ScrollView style={styles.wrapper}>
       <View style={styles.header}>
         <View style={styles.subHeader}>

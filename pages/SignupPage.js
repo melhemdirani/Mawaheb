@@ -35,7 +35,7 @@ export default function SignupPage({ navigation }) {
     navigation.navigate('login')
   }
   const navigateCSignup = () => {
-    navigation.navigate('JobSignUp', { role: 'client' })
+    navigation.navigate('recruiter_signup', { role: 'client' })
 
   }
 

@@ -5,7 +5,9 @@ import customFetch from '../utils/axios'
 const initialState = {
   user: {},
   isLoading: false,
+  registerIsLoading: false,
   error: undefined,
+  registerError: undefined,
   notifications: []
 }
 export const getNotifications = createAsyncThunk(
@@ -54,8 +56,7 @@ export const loginUser = createAsyncThunk(
       console.log("user login",resp.data)
       return resp.data
     } catch (error) {
-      console.log("erre",error.response.data.msg)
-
+      alert("Error logging in, make sure you are entering the right credentials")
       return thunkApi.rejectWithValue(error.response.data.msg)
     }
   }
@@ -90,16 +91,16 @@ const userSlice = createSlice({
   },
   extraReducers: {
     [registerUser.pending]: (state) => {
-      state.isLoading = true
+      state.registerIsLoading = true
     },
     [registerUser.fulfilled]: (state, { payload }) => {
       const { user } = payload
-      state.isLoading = false
+      state.registerIsLoading = false
       state.user = user
     },
     [registerUser.rejected]: (state, { payload }) => {
-      state.isLoading = false
-      state.error = payload
+      state.registerIsLoading = false
+      state.registerError = payload
     },
     [loginUser.pending]: (state) => {
       state.isLoading = true

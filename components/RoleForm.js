@@ -3,6 +3,8 @@ import { View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 
+import { RoleList, listofCities } from '../assets/data/RolesList';
+
 import Inputs from './Inputs';
 import SelectInput from './SelectInput';
 import TextArea from './TextArea';
@@ -12,16 +14,27 @@ import DateInputs from './DateInputs';
 import DeleteButton from './Buttons/DeleteButton';
 
 function RoleForm({handleChange, title, additional, onRoleDelete, role}) {
+    const [index, setIndex] = useState(0)
 
+    const list = RoleList.map(role => role.category)
+    console.log("roles list", role)
 
     return (
         <View style={styles.subContainer}>
             <SelectInput 
-                title="Role*" 
-                placeholder="First Name" 
-                list={["Camera man", "option2", "option3"]}
+                title="Role Category*" 
+                list={list}
                 onSelect={(value) => handleChange('role', value, title)}
+                setIndex={setIndex}
+                role={true}
             /> 
+           { role !== undefined && role.length > 0 &&
+            <SelectInput 
+                    title="Role Subcategory*" 
+                    list={RoleList[index].subCategories}
+                    onSelect={(value) => console.log("value", value)}
+                /> 
+            }
             <Inputs  
                 placeholder="Project Title*"
                 onChange={(value) => handleChange('projectTitle', value, title)}
@@ -30,7 +43,7 @@ function RoleForm({handleChange, title, additional, onRoleDelete, role}) {
                 title="Location*" 
                 placeholder="First Name" 
                 onSelect={(value) => handleChange('location', value, title)}
-                list={["Camera man", "option2", "option3"]}
+                list={listofCities}
             /> 
             <TextArea  
                 placeholder="Your key responsibilities" 

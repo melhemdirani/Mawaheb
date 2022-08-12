@@ -24,10 +24,13 @@ import { useSelector, useDispatch } from 'react-redux'
 import { registerUser } from '../reduxToolkit/userSlice'
 import PhoneInputs from '../components/PhoneInput';
 import UploadCard from '../components/UploadCard';
+import ImageCard from '../components/ImageCard';
 
 const JobSeekersignup = ({ navigation, route }) => {
 
   const [uploaded, setUploaded] = useState(false)
+  const [activity, setActivity] = useState(false)
+  const [startUpload, setStartUpload] = useState(false)
   const [image, setImage] = useState({})
 
  
@@ -37,6 +40,7 @@ const JobSeekersignup = ({ navigation, route }) => {
     email: '',
     password: '',
     phoneNb: '',
+    profileImage: '' 
   }
   const [values, setValues] = useState(initialState)
   const dispatch = useDispatch()
@@ -44,8 +48,6 @@ const JobSeekersignup = ({ navigation, route }) => {
   const { role } = route.params
 
   const handleChange = (name, value) => {
-    console.log("phoneNb", values.phoneNb)
-
     setValues({ ...values, [name]: value })
   }
 
@@ -54,12 +56,13 @@ const JobSeekersignup = ({ navigation, route }) => {
     const { name, email, password, phoneNb } = values
     
     if (!name || !email || !password || !phoneNb) {
+        console.log("phoneNb submitted", values)
+
       return alert('Please fill all the fields')
     } 
     if( !validate(email)){
       return alert("Please enter a valid email address")
     }
-    console.log("phoneNb submitted", phoneNb)
     dispatch(
       registerUser({
         name: values.name + " " + values.lastName,
@@ -67,6 +70,7 @@ const JobSeekersignup = ({ navigation, route }) => {
         password: values.password,
         phoneNb: parseInt(values.phoneNb),
         role: role,
+        profileImage: image
       })
     )
   }
@@ -88,6 +92,7 @@ const JobSeekersignup = ({ navigation, route }) => {
       quality: 1,
     })
     if (!result.cancelled) {
+      setActivity(true)
       setImage(result.uri)
       upload(result.uri)
     }
@@ -103,7 +108,7 @@ const JobSeekersignup = ({ navigation, route }) => {
           httpMethod: 'post',
           uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
         },
-        { body: 'front' }
+        { "name": uri }
       )
       console.log('response', response)
       console.log('response body', JSON.parse(response.body).imageUrl)
@@ -113,23 +118,22 @@ const JobSeekersignup = ({ navigation, route }) => {
         value: img,
       })
       setUploaded(true)
+      setActivity(false)
 
     } catch (error) {
       console.log(error)
     }
-    // { 
-    //   image.length && !uploaded
-    //   ? <View style={{width: "100%", alignItems: "center"}}>
-    //       <View style={styles.ActivityIndicator}>
-    //         <ActivityIndicator size={"large"} />
-    //       </View>
-    //       <Image source={{uri:image}} style={styles.Imagecontainer} />
-    //     </View>
-    //   : image.length && uploaded
-    //   ? <Image source={{uri:image}} style={styles.Imagecontainer} />
-    //   : <UploadCard title='Upload A Profile Photo' selectFile={selectFile}/>
-    // }
-}
+  }
+  const onImageDelete = () => {
+    setUploaded(false)
+    setImage('')
+    activity && setActivity(false)
+    handleChange({
+      name: 'profileImage',
+      value: '',
+    })
+
+  }
   return isLoading ? (
     <View style={styles.loadingStyle}>
       <ActivityIndicator size={'large'} />
@@ -150,7 +154,18 @@ const JobSeekersignup = ({ navigation, route }) => {
               <Text style={styles.text}>
                 Create and verify your profile in less than 2 minutes. Fill in your name and upload a picture of your passport, ID, and Visa.
               </Text>
-       
+              { 
+                image.length && !uploaded
+                ? <View style={{width: "100%", alignItems: "center"}}>
+                    <View style={styles.ActivityIndicator}>
+                      <ActivityIndicator size={"large"} />
+                    </View>
+                    <Image source={{uri:image}} style={styles.Imagecontainer} />
+                  </View>
+                : image.length && uploaded
+                ? <ImageCard uri={image} onImageDelete={onImageDelete} />
+                : <UploadCard title='Profile Picture' selectFile={selectFile}/>
+              }
               <Inputs
                 title='Continue to Payment'
                 placeholder='First Name*'
@@ -183,7 +198,7 @@ const JobSeekersignup = ({ navigation, route }) => {
                 value={values.phoneNb}
               />
               <TouchableOpacity style={styles.nextButton} onPress={() => submit()}>
-                <PrimaryButton title='Next' />
+                <PrimaryButton title='Next' activity={activity}/>
               </TouchableOpacity>
             </View>
         </ScrollView>

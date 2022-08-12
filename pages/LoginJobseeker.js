@@ -25,7 +25,7 @@ const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
 
     const login = async () => {
         if (email === '' || password === '') {
-            alert("Please fill in email and password")
+           return alert("Please fill in email and password")
         } else {
           dispatch(loginUser({ email, password }))
         }

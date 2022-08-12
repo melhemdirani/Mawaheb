@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
     View,
     Text,
@@ -7,20 +8,17 @@ import {
     Switch,
     Pressable,
     TouchableOpacity
-  } from 'react-native'
-  import React, { useState } from 'react'
-  import Header from '../components/Header'
-  import payment from '../assets/images/paymentIcon.png'
-  import checked from '../assets/images/checked.png'
-  import unChecked from '../assets/images/unChecked.png'
-  import Inputs from '../components/Inputs'
-  import UploadCard from '../components/UploadCard'
-  import PrimaryButton from '../components/Buttons/PrimaryButton'
-  import TertiaryButton from '../components/Buttons/TertiaryButton'
-  import SecondaryButton from '../components/Buttons/SecondaryButton'
-  import SelectInput from '../components/SelectInput'
-  import DurationInputs from '../components/DurationInputs'
-  import TextArea from '../components/TextArea'
+  } from 'react-native';
+
+  import Inputs from '../components/Inputs';
+  import UploadCard from '../components/UploadCard';
+  import PrimaryButton from '../components/Buttons/PrimaryButton';
+
+  import Header from '../components/Header';
+  import payment from '../assets/images/paymentIcon.png';
+  import checked from '../assets/images/checked.png';
+  import unChecked from '../assets/images/unChecked.png';
+
   
   const PaymentPage = ({navigation}) => {
     const [isEnabled, setIsEnabled] = useState(false)

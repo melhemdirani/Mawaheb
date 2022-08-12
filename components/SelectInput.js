@@ -1,26 +1,30 @@
 
 import React, { useState, useEffect } from 'react';
-import { Pressable, StyleSheet, Text, View, FlatList, Image} from 'react-native';
+import { Pressable, StyleSheet, Text, View, ScrollView, Image} from 'react-native';
 
 
 import {Picker} from '@react-native-picker/picker';
 
-const SelectInput = ({title, list, onSelect, value, valued}) => {
+const SelectInput = ({title, list, onSelect, value, valued, setIndex, role}) => {
 
     const [selected, setSelected] = useState(valued ? value : "")
     const [showList, setShowList] = useState(false)
     const [selectedLanguage, setSelectedLanguage] = useState();
 
-    const onItemClick = (item) => {
+    const onItemClick = (item, index) => {
         if(!valued){setSelected(item)}
         setShowList(false)
+        if(role){
+            setIndex(index)
+        }
         onSelect(item)
+       
 
     }
 
   
-    const RenderItem = ({ data }) => (
-        <Pressable style={styles.listItems} onPress={() => onItemClick(data)}>
+    const RenderItem = ({ data, index }) => (
+        <Pressable style={styles.listItems} onPress={() => onItemClick(data, index)}>
             <Text style={styles.listText}>
                 {data}
             </Text>
@@ -39,17 +43,20 @@ const SelectInput = ({title, list, onSelect, value, valued}) => {
                 </Pressable>
                
             </View>
-           
-            {   showList &&
-                list.map((item, i) => 
-                    <RenderItem 
-                        data={item} 
-                        style={styles.flatlist}
-                        key={i}
-                    />
-                )
-             
+            {   showList && list && list.length &&
+                <ScrollView style={styles.ScrollView}>
+                    {    list.map((item, i) => 
+                            <RenderItem 
+                                data={item} 
+                                style={styles.flatlist}
+                                key={i}
+                                index={i}
+                            />
+                        )
+                    }
+                </ScrollView>
             }
+           
         </View>
     );
 };
@@ -101,6 +108,9 @@ const styles = StyleSheet.create({
     },
     arrowButton:{
         padding: 20
+    },
+    ScrollView:{
+        maxHeight: 200,
     }
 });
 

@@ -4,8 +4,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 import Carousel from 'react-native-anchor-carousel'; 
 import { Dimensions } from 'react-native';
-
 import { useDispatch, useSelector } from 'react-redux';
+
+import { getClientDashboard } from '../reduxToolkit/clientSlice';
 
 import SecondaryHeader from '../components/SecondaryHeader';
 import Job from '../components/Job';
@@ -19,7 +20,12 @@ const ClientDashboard = ({navigation}) => {
     const {width: windowWidth} = Dimensions.get('window');
     const { client } = useSelector((store) => store.client)
     const { user } = useSelector((store) => store.user)
+
+    const dispatch = useDispatch()
     useEffect(() => {
+        dispatch(
+            getClientDashboard(user.clientId)
+        )
         console.log("client", client)
         console.log("user", user)
     }, [])

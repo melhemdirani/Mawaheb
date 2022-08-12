@@ -17,8 +17,6 @@ function Navbar({active, navigation}) {
     const {
         user
     } = useSelector((store) => store.user)
-
-
     const onJobsPress = () => {
         if(user.role === 'client'){
             navigation.navigate('recruiter_Jobs')

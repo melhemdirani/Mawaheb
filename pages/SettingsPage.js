@@ -20,7 +20,8 @@ import logoutSetting from '../assets/images/logoutSetting.png';
 
 
 const SettingsPage = ({navigation, role}) => {
-
+    const { user } = useSelector((state) => state.user)
+    
     const [reload, setReload] = useState(true)
     const dispatch = useDispatch()
     
@@ -32,7 +33,12 @@ const SettingsPage = ({navigation, role}) => {
     }
 
     const navigateProfile = () => {
-        navigation.navigate('freelancerProfile')
+        if(user.role === 'freelancer'){
+            navigation.navigate('freelancerProfile')
+        } else{
+            // navigation.navigate('clientProfile', )
+            
+        }
 
     }
  

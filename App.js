@@ -35,6 +35,7 @@ import JobDetailsPage from './pages/JobDetailsPage'
 import JobSeekersignup2 from './pages/JobSeekersignup2'
 import * as Sentry from '@sentry/react-native'
 import FreelancerProfile from './pages/FreelancerProfile'
+import ClientProfile from './pages/ClientProfile'
 
 
 Sentry.init({
@@ -221,6 +222,13 @@ function App() {
           <Stack.Screen
             name='freelancerProfile'
             component={FreelancerProfile}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name='clientProfile'
+            component={ClientProfile}
             options={{
               headerShown: false,
             }}

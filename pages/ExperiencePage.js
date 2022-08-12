@@ -210,16 +210,23 @@ const ExperiencePage = ({ navigation }) => {
             Fill below your latest role and any projects you think would make stand out to potential recruiters.
           </Text>
           <MaskedTitle title="Latest Role "/>
-          <RoleForm handleChange={handleChange} title={"latest"}/>
+          <RoleForm handleChange={handleChange} title={"latest"}  role={latestRole.role}/>
           <MaskedTitle title="Projects that makes you stand out"/>
-          <RoleForm handleChange={handleChange} title="notable"/>
+          <RoleForm handleChange={handleChange} title="notable" role={notableRole.role}/>
           { addIndex > 0 &&
             <View>
               <MaskedTitle title="Add another project"/>
               {
                 additionalRoles.map((role, i) => 
                 <View key={i}>
-                  <RoleForm handleChange={handleChange} title={i} additional onRoleDelete={onRoleDelete}/>
+                  <RoleForm 
+                    handleChange={handleChange} 
+                    title={i} 
+                    additional 
+                    onRoleDelete={onRoleDelete} 
+                    data={role} 
+                    role={role.role}
+                  />
                 </View>
               )}
             </View>
@@ -270,7 +277,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 22,
     marginTop: 50,
-    color: "rgba(0,0,0,0.6)"
+    width: "80%",
+    color: "rgba(0,0,0,0.6)",
+    alignSelf: "center"
   },
   nextButton:{
     paddingVertical: 40

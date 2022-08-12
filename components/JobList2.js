@@ -78,23 +78,13 @@ const JobList2 = ({
       >
         <View style={[styles.container, styles.shadow]}>
           <View style={styles.info}>
-            <MaskedView
-              maskElement={
-                <Text
-                  style={[styles.title, { backgroundColor: 'transparent' }]}
-                >
-                  Blurred Name
-                </Text>
-              }
+           
+            <Text
+              style={[styles.blurredStyle]}
             >
-              <LinearGradient
-                start={{ x: 1, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                colors={['rgba(49, 190, 187, 1)', 'rgba(101, 91, 218, 1)']}
-              >
-                <Text style={[styles.title, { opacity: 0 }]}>{user.name}</Text>
-              </LinearGradient>
-            </MaskedView>
+              Blurred Name
+            </Text>
+         
             
           </View>
           <View style={styles.languages}>
@@ -150,7 +140,8 @@ const styles = StyleSheet.create({
     paddingTop: 30,
   },
   info: {
-    padding: 20,
+    paddingVertical: 50,
+    paddingHorizontal: 20
   },
   header: {
     zIndex: 1,
@@ -260,5 +251,17 @@ const styles = StyleSheet.create({
     color: '#107DC5',
     padding: 10,
   },
+  blurredStyle: {
+    height: 4,
+    width: 70,
+    shadowOpacity: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowRadius: 5 ,
+    elevation: 100,
+    borderWidth: 0.5,
+    borderColor: "white",
+    backgroundColor: "rgba(255, 255, 255, .8)"
+  }
 })
 export default JobList2

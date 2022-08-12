@@ -10,8 +10,9 @@ import {
   TouchableOpacity,
   Image,
   ActivityIndicator
-} from 'react-native'
-
+} from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 import { useDispatch, useSelector } from 'react-redux';
 import { createClientProfile } from '../reduxToolkit/clientSlice';
 
@@ -19,8 +20,7 @@ import Header from '../components/Header';
 import Inputs from '../components/Inputs';
 import UploadCard from '../components/UploadCard';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
-import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
+
 import signUp from '../assets/images/signUp.png';
 import { setUserAfterRegister } from '../reduxToolkit/userSlice';
 import ImageCard from '../components/ImageCard';
@@ -30,10 +30,12 @@ const ClientSignupPage = ({navigation}) => {
   const { client, isLoading, error } = useSelector((store) => store.client)
   const { user } = useSelector((store) => store.user)
   const [uploaded, setUploaded] = useState(false)
+  const [uploaded2, setUploaded2] = useState(false)
   const [activity, setActivity] = useState(false)
   const [isEnabled, setIsEnabled] = useState(false)
   const [startingToUpload, setStartingToUpload] = useState(false)
   const [image, setImage] = useState("")
+  const [image2, setImage2] = useState("")
 
   const initialState = {
     companyName: '',
@@ -43,6 +45,9 @@ const ClientSignupPage = ({navigation}) => {
     sign: 'ffff',
     address: '',
     TRN: "",
+    email:"",
+    password:"",
+    profileImage: ""
   }
 
   const [values, setValues] = useState(initialState)
@@ -106,7 +111,8 @@ const ClientSignupPage = ({navigation}) => {
   
   }
   useEffect(() => {
-    if (Object.keys(client).length > 0 && uploaded && !isLoading) {
+    console.log("client", client)
+    if (client !== undefined && Object.keys(client).length > 0 && uploaded && !isLoading) {
       navigation.navigate('recruiter_dashboard')
     }
   }, [client, isLoading])
@@ -130,6 +136,21 @@ const ClientSignupPage = ({navigation}) => {
 
     }
   }
+  const selectFile2 = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      quality: 1,
+    })
+    if (!result.cancelled) {
+      setStartingToUpload(true)
+      upload(result.uri)
+      setImage2(result.uri)
+      console.log("uploaded")
+
+    }
+  }
   const upload = async (uri) => {
     console.log('uploading file')
     try {
@@ -142,17 +163,29 @@ const ClientSignupPage = ({navigation}) => {
           httpMethod: 'post',
           uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
         },
-        { body: 'front' }
+        { "name": uri }
       )
-      {
-        isEnabled
-          ? setValues({
-              ...values,
-              tradingLiscence: JSON.parse(response.body).imageUrl,
-            })
-          : setValues({ ...values, sign: JSON.parse(response.body).imageUrl })
-      }
+      setValues({ ...values, profileImage: JSON.parse(response.body).imageUrl })
       setUploaded(true)
+     } catch (error) {
+      console.log(error)
+    }
+  }
+  const upload2 = async (uri) => {
+    console.log('uploading file')
+    try {
+      console.log('trying')
+      const response = await FileSystem.uploadAsync(
+        `http://194.5.157.234:4000/api/v1/freelancers/uploadImage`,
+        uri,
+        {
+          fieldName: 'files',
+          httpMethod: 'post',
+          uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
+        },
+        { "name": uri }
+      )
+      setUploaded2(true)
      } catch (error) {
       console.log(error)
     }
@@ -174,17 +207,42 @@ const ClientSignupPage = ({navigation}) => {
 
   return (
     <ScrollView style={styles.wrapper}>
-      <Header title='Client Sign Up' icon={signUp} hidden={true} />
+      <Header title='Client Sign Up' icon={signUp} hidden={false} goBack={navigation.goBack}/>
       <View style={styles.container}>
         <Text style={styles.text}>Answer the questions below in order to </Text>
         <Text style={styles.text}>find the best job for you</Text>
         <View style={styles.form}>
           <Inputs
-            placeholder='company Name*'
+            placeholder='Company Name*'
             style={styles.input}
             onChange={(value) => handleChange('companyName', value)}
             value={values.companyName}
           />
+          <Inputs
+            title='Continue to Payment'
+            placeholder='Email*'
+            onChange={(value) => handleChange('email', value)}
+            value={values.email}
+          />
+
+          <Inputs
+            title='Continue to Payment'
+            placeholder='Password*'
+            onChange={(value) => handleChange('password', value)}
+            value={values.password}
+          />
+          { 
+            image2.length && !uploaded2
+            ? <View style={{width: "100%", alignItems: "center"}}>
+                <View style={styles.ActivityIndicator}>
+                  <ActivityIndicator size={"large"} />
+                </View>
+                <Image source={{uri:image2}} style={styles.Imagecontainer} />
+              </View>
+            : image2.length && uploaded2
+            ? <ImageCard uri={image2} onImageDelete={onImageDelete2} />
+            : <UploadCard title='Profile Picture' selectFile={selectFile2}/>
+          }
           <View style={styles.privacy}>
             <Text style={!isEnabled ? styles.picked : styles.notPicked}>Public </Text>
             <Switch

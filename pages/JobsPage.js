@@ -1,5 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, FlatList } from 'react-native'
+
+import { getFreelancer } from '../reduxToolkit/freelancerSlice'
 
 import SecondaryHeader from '../components/SecondaryHeader'
 import Job from '../components/Job'
@@ -8,19 +10,21 @@ import { getAllJobs } from '../reduxToolkit/jobSlice'
 import { useDispatch, useSelector } from 'react-redux'
 
 const JobsPage = ({ navigation }) => {
-  
+   
   const { jobs } = useSelector((store) => store.job)
+  const { freelancer } = useSelector((store) => store.freelancer)
   const { user } = useSelector((store) => store.user)
 
   const dispatch = useDispatch()
   useEffect(() => {
       dispatch(getAllJobs(user.freelancerId))
+      dispatch(getFreelancer(user.freelancerId))
   }, [])
 
   
+
   const navigate = (id) => {
-    console.log('routing')
-    navigation.navigate('jobDescription', { id })
+    navigation.navigate('jobDescription', { id})
   }
 
   const renderItem = (data) => {

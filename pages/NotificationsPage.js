@@ -35,7 +35,6 @@ const NotificationsPage = ({navigation, role, route}) => {
                     getNotifications({id: user.freelancerId, role : user.role})
                 )  
             }
-          
         }
     }, [])
 
