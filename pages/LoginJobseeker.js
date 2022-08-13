@@ -30,8 +30,14 @@ const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
           dispatch(loginUser({ email, password }))
         }
     }
+    useEffect(()=> {
+        console.log("email", email)
+        console.log("password", password)
+
+    }, [email, password])
   
     useEffect(() => {
+        console.log("user", user)
         console.log("userrr", Object.keys(user).length > 0)
         if(Object.keys(user).length > 0){
             if(user.role === 'freelancer'){

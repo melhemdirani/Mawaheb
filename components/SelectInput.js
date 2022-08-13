@@ -19,11 +19,6 @@ const SelectInput = ({title, list, onSelect, value, valued, setIndex, role}) => 
         }
         onSelect(item)
     }
-
-    console.log({
-        valued: valued,
-        value: value
-    })
     const RenderItem = ({ data, index }) => (
         <Pressable style={styles.listItems} onPress={() => onItemClick(data, index)}>
             <Text style={styles.listText}>

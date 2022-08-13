@@ -1,6 +1,8 @@
 import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity } from 'react-native';
 import React from 'react';
 
+import { useDispatch, useSelector } from 'react-redux'
+
 import Header from '../components/Header';
 import congratsBg from '../assets/images/congratsBg.png';
 import party from '../assets/images/party.png';
@@ -11,14 +13,20 @@ import TertiaryButton from '../components/Buttons/TertiaryButton';
 import { LinearGradient } from 'expo-linear-gradient';
 
 
-const FreelanceAcceptedPage = ({navigation}) => {
-
+const FreelanceAcceptedPage = ({navigation, route}) => {
+  const { user } = useSelector((store) => store.user)
+  const {role} = route.params
+  console.log("user", user)
   const navigateDone = () => {
-    navigation.navigate('jobDoneClient')
+    if(role === 'client'){
+      navigation.navigate('recruiter_dashboard')
+    } else{
+       navigation.navigate('seeker_dash')
+    }
   }
   return (
     <View style={styles.wrapper}>
-      <Header title='Something big is going to happen. We can feel it!' hidden={true} />
+      <Header title='Something big is going to happen. We can feel it!' hidden={true} center/>
       <View style={styles.container}>
         <Text style={styles.text}> Congratulations!</Text>
         <ImageBackground
@@ -44,10 +52,12 @@ const FreelanceAcceptedPage = ({navigation}) => {
           <Text style={styles.name}>Ahmad Mohamad</Text>
         </ImageBackground>
         <View style={styles.btnContainer}>
-          <TouchableOpacity style={styles.primary} onPress={() => navigateDone()}>
             <PrimaryButton title='Contact Ahmad'  />
+            <TouchableOpacity style={styles.primary} onPress={() => navigateDone()}>
           </TouchableOpacity>
-          <TertiaryButton title='Contact later' style={styles.contactLater} />
+          <TouchableOpacity style={styles.primary} onPress={() => navigateDone()}>
+           <TertiaryButton title='Contact later' style={styles.contactLater} />
+          </TouchableOpacity>
         </View>
       </View>
     </View>

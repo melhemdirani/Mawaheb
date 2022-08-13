@@ -8,7 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 
 const width = Dimensions.get('window').width
 
-const Header = ({ icon, title, numOfPage, rightIcon, hidden, numberHidded, goBack, profile, rating, onTrashPress}) => {
+const Header = ({ icon, title, numOfPage, rightIcon, hidden, numberHidded, goBack, profile, rating, center}) => {
   
   return (
     <View style={styles.container}>
@@ -38,7 +38,7 @@ const Header = ({ icon, title, numOfPage, rightIcon, hidden, numberHidded, goBac
             : <Text style={styles.page}>{numOfPage}</Text>
           }
         </View>
-        <Text style={styles.text}>{title}</Text>
+        <Text style={[styles.text, center &&{ textAlign: "center"}]}>{title}</Text>
         <ImageBackground
           source={testImage}
           style={styles.body}

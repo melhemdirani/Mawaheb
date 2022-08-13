@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, StyleSheet, FlatList } from 'react-native'
+import { View, StyleSheet, FlatList, RecyclerViewBackedScrollViewComponent, ActivityIndicator } from 'react-native'
 
 import { getFreelancer } from '../reduxToolkit/freelancerSlice'
 
@@ -9,17 +9,36 @@ import Navbar from '../components/Navbar'
 import { getAllJobs } from '../reduxToolkit/jobSlice'
 import { useDispatch, useSelector } from 'react-redux'
 
-const JobsPage = ({ navigation }) => {
+const JobsPage = ({ navigation, route }) => {
    
   const { jobs } = useSelector((store) => store.job)
   const { freelancer } = useSelector((store) => store.freelancer)
   const { user } = useSelector((store) => store.user)
+  const [loading, setLoading] = useState(false)
+
 
   const dispatch = useDispatch()
   useEffect(() => {
-      dispatch(getAllJobs(user.freelancerId))
+    setLoading(true)
+    dispatch(getAllJobs(user.freelancerId))
+    .unwrap()
+    .then((response) => {
+      console.log("response registiring", response)
       dispatch(getFreelancer(user.freelancerId))
-  }, [])
+      .unwrap()
+      .then(() => {
+        setLoading(false)
+      })
+      .catch((error) => {
+        console.log("error", error.message)
+        setLoading(false)
+      })
+    })
+    .catch((error) => {
+      console.log("error", error.message)
+      setLoading(false)
+    })
+  }, [route])
 
   
 
@@ -31,18 +50,21 @@ const JobsPage = ({ navigation }) => {
     return <Job {...data.item} navigate={navigate} />
   }
   let welcomeMessage = `Hi ${user?.name}`
-  return jobs !== undefined &&(
+  return (
     <View style={styles.container}>
       <SecondaryHeader title={welcomeMessage}></SecondaryHeader>
-
-      <FlatList
+      {(jobs === undefined  || loading)
+        ?<View style={{alignItems: "center", justifyContent: "center", flex: 1}}>
+          <ActivityIndicator size={"large"} color="#4E84D5"/>
+        </View>
+      :<FlatList
         data={jobs.length ? jobs : { id: 0, title: 'No Jobs Found' }}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         // contentContainerStyle={{paddingBottom: 200}}
         style={styles.jobs}
       />
-
+    }
       <Navbar active='Jobs' navigation={navigation} />
     </View>
   )

@@ -1,14 +1,28 @@
-import React from 'react'
-import { Image, StyleSheet, Text, View, ImageBackground} from 'react-native';
-import notificationImage from '../assets/images/notification.png'
-import notificationImage2 from '../assets/images/notificationR.png'
+import React from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, ImageBackground, Pressable} from 'react-native';
 
-function Notification({title, color}) {
+import notificationImage from '../assets/images/notification.png';
+import notificationImage2 from '../assets/images/notificationR.png';
 
+function Notification({title, color, action, acceptContract, navCongrats, navJobs}) {
+    const onPress = () => {
+        if(title === 'You have a new contract to accept or reject'){
+            acceptContract(action)
+        } else{
+            if (title.includes('has accepted')){
+               navCongrats()
+            } else if (title.includes('has applied')){
+                navJobs()
+            }
+        }
+    }
     return (
-        <ImageBackground style={[styles.container]} source={!color ? notificationImage : notificationImage2 }>
-            <Text style={styles.text}>{title}</Text>
-        </ImageBackground>
+        <TouchableOpacity onPress={() => onPress ()}>
+            <ImageBackground style={[styles.container]} source={!color ? notificationImage : notificationImage2 }>
+                    <Text style={styles.text}>{title}</Text>
+            </ImageBackground>
+        </TouchableOpacity>
+
     )
 }
 

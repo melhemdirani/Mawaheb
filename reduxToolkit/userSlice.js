@@ -71,6 +71,7 @@ export const loginUser = createAsyncThunk(
   'loginUser',
   async (user, thunkApi) => {
     let url = '/auth/login'
+    console.log("loggin in")
     try {
       const resp = await customFetch.post(url, user)
       console.log('user login', resp.data)
@@ -79,6 +80,7 @@ export const loginUser = createAsyncThunk(
       alert(
         'Error logging in, make sure you are entering the right credentials'
       )
+      console.log("error", error)
       return thunkApi.rejectWithValue(error.response.data.msg)
     }
   }

@@ -143,15 +143,15 @@ const JobseekerDashboard = ({ navigation }) => {
         resizeMode='contain'
       >
         <View style={styles.sub}>
-          <Text style={styles.totalText}>{month}</Text>
+          <Text style={styles.totalText}>{Math.round(month)}</Text>
           <Text style={styles.totalText2}>
             {month === 1 ? 'month' : 'months'}
           </Text>
         </View>
         <View style={styles.borderL} />
         <View style={[styles.sub]}>
-          <Text style={styles.totalText}>{day}</Text>
-          <Text style={styles.totalText2}>{day === 1 ? 'day' : 'days'}</Text>
+          <Text style={styles.totalText}>{Math.ceil(day) !== NaN ? Math.ceil(day) : 0}</Text>
+          <Text style={styles.totalText2}>{Math.ceil(day) === 1 ? 'day' : 'days'}</Text>
         </View>
       </ImageBackground>
     )

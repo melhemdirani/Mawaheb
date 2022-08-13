@@ -32,7 +32,6 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
   const { freelancer } = useSelector((state) => state.freelancer)
   const { client } = useSelector((state) => state.client)
   const { user: userState } = useSelector((state) => state.user)
-
   const [loaded, setLoaded] = useState(false)
 
   const dispatch = useDispatch()
@@ -41,17 +40,8 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
       alert("Invitation sent!")
       navigation.navigate('recruiter_dashboard')
     } else{
-      dispatch(
-        createContract({
-          freelancerId: freelancerId,
-          clientId: client?.id || userState?.clientId,
-          jobId,
-          freelancerFee: 500,
-        })
-      )
-      // navigation.navigate('acceptContract')
+       navigation.navigate('acceptContract', {role : 'client', freelancerId, client, userState, jobId})
     }
-
   }
   useLayoutEffect(() => {
     if(!loaded){

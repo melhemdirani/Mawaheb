@@ -39,7 +39,7 @@ const JobList = ({
 
     return false;
   });
-
+  console.log("freelancer", freelancer)
   return (
     <View style={styles.wrapper}>
       <View style={styles.header}>
@@ -83,7 +83,7 @@ const JobList = ({
                 <Text
                   style={[styles.title, { backgroundColor: 'transparent' }]}
                 >
-                  {job.title}
+                 {freelancer.user.name}
                 </Text>
               }
             >
@@ -92,9 +92,10 @@ const JobList = ({
                 end={{ x: 1, y: 1 }}
                 colors={['rgba(49, 190, 187, 1)', 'rgba(101, 91, 218, 1)']}
               >
-                <Text style={[styles.title, { opacity: 0 }]}>{job.title}</Text>
+                <Text style={[styles.title, { opacity: 0 }]}> {freelancer.user.name}</Text>
               </LinearGradient>
             </MaskedView>
+            
             <Text style={styles.description}>{job.description}</Text>
           </View>
           <View style={styles.languages}>
@@ -262,5 +263,17 @@ const styles = StyleSheet.create({
     color: '#107DC5',
     padding: 10,
   },
+  blurredStyle: {
+    height: 4,
+    width: 70,
+    shadowOpacity: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowRadius: 5 ,
+    elevation: 100,
+    borderWidth: 0.5,
+    borderColor: "white",
+    backgroundColor: "rgba(255, 255, 255, .8)"
+  }
 })
 export default JobList

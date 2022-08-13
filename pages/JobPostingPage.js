@@ -134,7 +134,7 @@ const JobPostingPage = ({navigation}) => {
             <SelectInput 
                 title="Shift*" 
                 onSelect={(value) => handleChange('shift', value)}
-                list={['Day shift', 'Night shift']}
+                list={['day', 'night']}
             /> 
             <Inputs
               placeholder='Years of experience*'

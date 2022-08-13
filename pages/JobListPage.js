@@ -47,8 +47,8 @@ const JobListPage = ({ navigation }) => {
   }
   return (
     <View style={styles.wrapper}>
-      <SecondaryHeader title='Find the right talent.' />
-      <View style={styles.container}>
+      <ScrollView style={styles.container} >
+        <SecondaryHeader title='Find the right talent.' />
         {showJobs && myJobs.map((item, i) => (
             <RenderMyjobs
               data={item}
@@ -69,7 +69,7 @@ const JobListPage = ({ navigation }) => {
             setShowJobs={setShowJobs}
           />
         }
-      </View>
+      </ScrollView>
       <Navbar active='Jobs' client navigation={navigation} />
     </View>
   )
@@ -81,7 +81,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 5,
   },
   title: {
     padding: 7,

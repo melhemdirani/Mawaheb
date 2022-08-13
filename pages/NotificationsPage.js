@@ -16,13 +16,24 @@ import Header from '../components/Header'
 import notificationIcon from '../assets/images/notificationIcon.png'
 import trash from '../assets/images/trash.png'
 import Notification from '../components/Notification'
+import { acceptContractFreelancer } from '../reduxToolkit/freelancerSlice'
+import { getClientDashboard } from '../reduxToolkit/clientSlice'
 
 const NotificationsPage = ({ navigation, role, route }) => {
   const { user, notifications, isLoading } = useSelector((store) => store.user)
   const testing = []
 
   const dispatch = useDispatch()
+  const acceptContract = (action) => {
+    navigation.navigate('acceptContract', {action, role: "freelancer"})
+  }
+  const navCongrats = (action) => {
+    navigation.navigate('acceptedClient')
+  }
+  const navJobs = (action) => {
+    navigation.navigate('recruiter_Jobs')
 
+  }
   useEffect(() => {
     if (user?.role === 'client' && user.clientId) {
       dispatch(getNotifications({ id: user.clientId, role: user.role }))
@@ -54,8 +65,12 @@ const NotificationsPage = ({ navigation, role, route }) => {
             {notifications.map((n, i) => (
               <Notification
                 title={n.message}
+                action={n.text}
                 color={n.text === 'urgent' ? true : false}
                 key={i}
+                acceptContract={acceptContract}
+                navJobs={navJobs}
+                navCongrats={navCongrats}
               />
             ))}
           </View>

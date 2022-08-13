@@ -30,7 +30,7 @@ export const getClientDashboard = createAsyncThunk(
     let url = `/clients/${id}/dashboard`
     try {
       const resp = await customFetch.get(url)
-      // console.log('get client', resp.data)
+      console.log('get client', resp.data)
       return resp.data
     } catch (error) {
       console.log(error)

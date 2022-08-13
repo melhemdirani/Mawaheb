@@ -171,14 +171,6 @@ const ClientDashboard = ({ navigation }) => {
             <TotalContainer2 n={numOfJobs} />
           </View>
         </View>
-        {!isLoading && (
-          <ActivityIndicator
-            size='large'
-            color='#31BEBB'
-            style={styles.loading}
-          />
-        )}
-
         {currentJobs?.length >= 1 ? (
           <View style={styles.current}>
             <Image style={styles.background} source={backgroundImage} />
@@ -212,9 +204,11 @@ const ClientDashboard = ({ navigation }) => {
               <RenderItem data={data} index={i} key={data.id} />
             ))}
           </View>
-        ) : (
+        ) : !currentJobs?.length >= 1 
+        ?(
           <Text style={styles.noCurrent}>No previous jobs</Text>
-        )}
+        ): null
+      }
       </ScrollView>
       <Navbar active='Dashboard' navigation={navigation} client />
     </View>

@@ -37,7 +37,8 @@ const JobDetailsPage = ({route, navigation}) => {
   const { freelancer } = useSelector((state) => state.freelancer)
   const { user } = useSelector((state) => state.user)
   const dispatch = useDispatch()
-  
+
+  const [applied, setApplied] = useState(false)
   const navigateApply = () => {
     if(freelancer !== undefined && freelancer !== {} && !freelancer.isCompleted){
       return alert("Please complete your profile before applying")
@@ -49,7 +50,8 @@ const JobDetailsPage = ({route, navigation}) => {
           price: 2000,
         })
       )
-      navigation.navigate('jobseeker_jobs')
+      setApplied(!applied)
+      navigation.navigate('jobseeker_jobs', {applied: applied})
     }
    
   }

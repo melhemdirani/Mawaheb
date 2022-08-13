@@ -17,6 +17,7 @@ const initialState = {
   error: null,
   completedProfile: [],
   dashboard: {},
+  contract: {}
 }
 export const createFreelancerProfile = createAsyncThunk(
   'createFreelancerProfile',
@@ -38,9 +39,24 @@ export const getFreelancer = createAsyncThunk(
     let url = `/freelancers/${id}`
     try {
       const resp = await customFetch.get(url)
+      console.log("got freelancer", resp.data)
       return resp.data
     } catch (error) {
       console.log('getting freelancer error', error.response.data.msg)
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
+export const acceptContractFreelancer = createAsyncThunk(
+  'acceptContractFreelancer',
+  async (id, thunkApi) => {
+    console.log("id", id)
+    let url = `/contracts/${id}/accept`
+    try {
+      const resp = await customFetch.put(url)
+      return resp.data
+    } catch (error) {
+      console.log('contract freelancer error', error)
       return thunkApi.rejectWithValue(error.response.data.msg)
     }
   }
@@ -109,6 +125,10 @@ const freelancerSlice = createSlice({
       const { freelancer } = payload
       state.isLoading = false
       state.freelancer = freelancer
+    },
+    [acceptContractFreelancer.fulfilled]: (state, { payload }) => {
+      const {contract} = payload
+      state.contract = contract
     },
     [getFreelancer.rejected]: (state, { payload }) => {
       state.isLoading = false
