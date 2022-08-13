@@ -59,60 +59,59 @@ const DateInputs = ({title, placeholder, onChange, dateType}) => {
     };
   
     return (
-        <Pressable 
-            style={
-                !changed 
-                ? [styles.container, styles.borderBottom] 
-                : styles.container
-            }
-            onPress={() => showDatepicker()}
-        >
-           
-                {changed && <MaskedView maskElement={ <Text style={[styles.label, {backgroundColor: "transparent"}]}>{placeholder}</Text>}>
-                    <LinearGradient
-                      start={{x:0, y: 0}}
-                      end={{x:1, y: 1}}
-                      colors={['#23CDB0', '#9C88FD','#9C88FD', '#9C88FD', ]}
-                    >
-                      <Text style={[styles.label, {opacity: 0}]}>{placeholder}</Text>
-                    </LinearGradient>
-                </MaskedView>   
-                }
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={date}
-                  mode={'date'}
-                  is24Hour={true}
-                  onChange={onChangeDate}
-                  style={{left: 20, opacity: 0.011, width: "100%", position: "absolute", zIndex: 999, padding: 20}}
-                />
-                
-                <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                    { 
-                      changed 
-                      ? <Text style={[
-                        styles.wrapperCustom,
-                        ]}
-                      >
-                        {date.toDateString()}
-                      </Text>
-                      :<Text style={styles.wrapperCustom2}> {placeholder}</Text>
-                    }
-                    <Image
-                      style={styles.rate}
-                      source={require('../assets/images/date.png')}
-                    />
-                </View>
-             
-              { changed && 
-                <LinearGradient
-                  start={{x:0, y: 0}}
-                  end={{x:1, y: 1}}
-                  colors={['#23CDB0', '#9C88FD','#9C88FD', '#9C88FD', ]}
-                  style={{height: 2, marginBottom: -10, marginTop: 10}}
-                />
-              } 
-        </Pressable>
+      <Pressable 
+          style={
+              !changed 
+              ? [styles.container, styles.borderBottom] 
+              : styles.container
+          }
+          onPress={() => showDatepicker()}
+      >
+        {changed && <MaskedView maskElement={ <Text style={[styles.label, {backgroundColor: "transparent"}]}>{placeholder}</Text>}>
+              <LinearGradient
+                start={{x:0, y: 0}}
+                end={{x:1, y: 1}}
+                colors={['#23CDB0', '#9C88FD','#9C88FD', '#9C88FD', ]}
+              >
+                <Text style={[styles.label, {opacity: 0}]}>{placeholder}</Text>
+              </LinearGradient>
+          </MaskedView>   
+          }
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={date}
+            mode={'date'}
+            is24Hour={true}
+            onChange={onChangeDate}
+            style={{left: 20, opacity: 0.011, width: "100%", position: "absolute", zIndex: 999, padding: 20}}
+          />
+          
+          <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+              { 
+                changed 
+                ? <Text style={[
+                  styles.wrapperCustom,
+                  ]}
+                >
+                  {date.toDateString()}
+                </Text>
+                :<Text style={styles.wrapperCustom2}> {placeholder}</Text>
+              }
+              <Image
+                style={styles.rate}
+                source={require('../assets/images/date.png')}
+              />
+          </View>
+        
+        { changed && 
+          <LinearGradient
+            start={{x:0, y: 0}}
+            end={{x:1, y: 1}}
+            colors={['#23CDB0', '#9C88FD','#9C88FD', '#9C88FD', ]}
+            style={{height: 2, marginBottom: -10, marginTop: 10}}
+          />
+        } 
+      </Pressable>
     );
 };
 

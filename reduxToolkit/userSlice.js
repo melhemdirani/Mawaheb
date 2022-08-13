@@ -8,19 +8,19 @@ const initialState = {
   registerIsLoading: false,
   error: undefined,
   registerError: undefined,
-  notifications: []
+  notifications: [],
 }
 export const getNotifications = createAsyncThunk(
   'getNotifications',
-  async ({id, role}, thunkApi) => {
-    let url =  `/notifications/${role}/${id}` 
+  async ({ id, role }, thunkApi) => {
+    let url = `/notifications/${role}/${id}`
     try {
       const resp = await customFetch.get(url)
-      console.log("res date notifications", resp.data)
+
       return resp.data
     } catch (error) {
       console.log(error)
-      console.log("error")
+      console.log('error')
       return thunkApi.rejectWithValue(error.response.data.msg)
     }
   }
@@ -34,10 +34,9 @@ export const registerUser = createAsyncThunk(
       const resp = await customFetch.post(url, user)
       return resp.data
     } catch (error) {
-      console.log("rrer",error.response.data.msg)
+      console.log('rrer', error.response.data.msg)
       return thunkApi.rejectWithValue(error.response.data.msg)
     }
-
   }
 )
 export const updateUser = createAsyncThunk(
@@ -63,10 +62,9 @@ export const updateUserPassword = createAsyncThunk(
       const resp = await customFetch.patch(url, passwords)
       return resp.data
     } catch (error) {
-      console.log("rrer",error)
+      console.log('rrer', error)
       return thunkApi.rejectWithValue(error.response.data.msg)
     }
-
   }
 )
 export const loginUser = createAsyncThunk(
@@ -75,30 +73,29 @@ export const loginUser = createAsyncThunk(
     let url = '/auth/login'
     try {
       const resp = await customFetch.post(url, user)
-      console.log("user login",resp.data)
+      console.log('user login', resp.data)
       return resp.data
     } catch (error) {
-      alert("Error logging in, make sure you are entering the right credentials")
+      alert(
+        'Error logging in, make sure you are entering the right credentials'
+      )
       return thunkApi.rejectWithValue(error.response.data.msg)
     }
   }
 )
-export const logout = createAsyncThunk(
-  'logout',
-  async (user, thunkApi) => {
-    let url = '/auth/logout'
-    try {
-      console.log("logging out")
-      const resp = await customFetch.get(url, user)
+export const logout = createAsyncThunk('logout', async (user, thunkApi) => {
+  let url = '/auth/logout'
+  try {
+    console.log('logging out')
+    const resp = await customFetch.get(url, user)
 
-      return resp.data
-    } catch (error) {
-      console.log(error.response.data.msg)
+    return resp.data
+  } catch (error) {
+    console.log(error.response.data.msg)
 
-      return thunkApi.rejectWithValue(error.response.data.msg)
-    }
+    return thunkApi.rejectWithValue(error.response.data.msg)
   }
-)
+})
 
 const userSlice = createSlice({
   name: 'user',
@@ -107,9 +104,9 @@ const userSlice = createSlice({
     setFreelancerId: (state, action) => {
       state.user.freelancerId = action.payload
     },
-    setUserAfterRegister: (state,action) => {
+    setUserAfterRegister: (state, action) => {
       state.user.clientId = action.payload
-    }
+    },
   },
   extraReducers: {
     [registerUser.pending]: (state) => {
@@ -141,8 +138,7 @@ const userSlice = createSlice({
     },
     [logout.fulfilled]: (state) => {
       state.user = {}
-      console.log("LOGOUT")
-
+      console.log('LOGOUT')
     },
     [loginUser.fulfilled]: (state, { payload }) => {
       const { user } = payload
@@ -157,9 +153,9 @@ const userSlice = createSlice({
       state.isLoading = true
     },
     [getNotifications.fulfilled]: (state, { payload }) => {
-      state.notifications =  payload
+      const { notifications } = payload
       state.isLoading = false
-
+      state.notifications = notifications
     },
     [getNotifications.rejected]: (state, { payload }) => {
       state.isLoading = false
@@ -169,6 +165,5 @@ const userSlice = createSlice({
 })
 export const { setFreelancerId } = userSlice.actions
 export const { setUserAfterRegister } = userSlice.actions
-
 
 export default userSlice.reducer
