@@ -11,4 +11,6 @@ export const toolkitStore = configureStore({
     client: clientSlice,
     job: jobSlice,
   },
+  //disable serialazable state
+
 })

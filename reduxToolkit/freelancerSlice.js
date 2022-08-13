@@ -16,7 +16,7 @@ const initialState = {
   isLoading: false,
   error: null,
   completedProfile: [],
-  dashboard: {}
+  dashboard: {},
 }
 export const createFreelancerProfile = createAsyncThunk(
   'createFreelancerProfile',
@@ -32,7 +32,7 @@ export const createFreelancerProfile = createAsyncThunk(
     }
   }
 )
-export const getFreelancer=createAsyncThunk(
+export const getFreelancer = createAsyncThunk(
   'getFreelancer',
   async (id, thunkApi) => {
     let url = `/freelancers/${id}`
@@ -40,7 +40,7 @@ export const getFreelancer=createAsyncThunk(
       const resp = await customFetch.get(url)
       return resp.data
     } catch (error) {
-      console.log("getting freelancer error",error.response.data.msg)
+      console.log('getting freelancer error', error.response.data.msg)
       return thunkApi.rejectWithValue(error.response.data.msg)
     }
   }
@@ -49,10 +49,10 @@ export const getFreelancerDashboard = createAsyncThunk(
   'getFreelancerDashboard',
   async (id, thunkApi) => {
     let url = `/freelancers/${id}/dashboard`
-    console.log("dash id", id)
+
     try {
       const resp = await customFetch.get(url)
-      console.log("dashh", resp.data)
+
       return resp.data
     } catch (error) {
       console.log(error.response.data.msg)
@@ -69,8 +69,7 @@ const freelancerSlice = createSlice({
       state[name] = value
     },
     addRoles: (state, action) => {
-  
-      state.roles = (action.payload)
+      state.roles = action.payload
       console.log(state.roles)
     },
     updateLatestRole: (state, action) => {
@@ -88,7 +87,6 @@ const freelancerSlice = createSlice({
     },
     completedProfile: (state, action) => {
       state.completedProfile.push(action.payload)
-      
     },
   },
   extraReducers: {
@@ -120,7 +118,14 @@ const freelancerSlice = createSlice({
       state.isLoading = true
     },
     [getFreelancerDashboard.fulfilled]: (state, { payload }) => {
-      console.log("state payload", payload)
+      const { pastJobs, currentJobs, freelancer } = payload
+      state.dashboard = {
+        pastJobs,
+        currentJobs,
+        totalWorkingTime: freelancer?.totalWorkingTime,
+        totalCashEarned: freelancer?.totalCashEarned,
+      }
+
       state.isLoading = false
     },
     [getFreelancerDashboard.rejected]: (state, { payload }) => {
@@ -136,7 +141,7 @@ export const {
   updateNotableRole,
   updateAdditionalRole,
   addLanguage,
-  completedProfile
+  completedProfile,
 } = freelancerSlice.actions
 
 export default freelancerSlice.reducer

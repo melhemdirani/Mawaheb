@@ -105,7 +105,7 @@ const JobList2 = ({
             <View style={styles.footer}>
               <View style={styles.footerInfo}>
                 <Image source={calendarIcon} style={styles.icon}></Image>
-                <Text style={styles.text}> {user.createdAt.slice(0,9)}</Text>
+                <Text style={styles.text}> {user?.createdAt?.slice(0,9)}</Text>
               </View>
               <View style={styles.footerInfo}>
                 <Image source={clockIcon} style={styles.icon}></Image>

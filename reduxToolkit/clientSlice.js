@@ -1,13 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import customFetch from '../utils/axios';
+import customFetch from '../utils/axios'
 
-import { setUserAfterRegister } from './userSlice';
+import { setUserAfterRegister } from './userSlice'
 
 const initialState = {
   client: {},
   isLoading: true,
   error: undefined,
-  clientDashboard:{}
+  clientDashboard: {},
 }
 
 export const createClientProfile = createAsyncThunk(
@@ -30,7 +30,7 @@ export const getClientDashboard = createAsyncThunk(
     let url = `/clients/${id}/dashboard`
     try {
       const resp = await customFetch.get(url)
-      console.log("get client", resp.data)
+      // console.log('get client', resp.data)
       return resp.data
     } catch (error) {
       console.log(error)
@@ -62,10 +62,17 @@ const clientSlice = createSlice({
       state.isLoading = true
     },
     [getClientDashboard.fulfilled]: (state, { payload }) => {
-      const { client } = payload
+      const { currentJobs, numOfContracts, numOfJobs, pastJobs } = payload
       state.isLoading = false
-      state.clientDashboard = client
+      state.clientDashboard = {
+        currentJobs,
+        numOfContracts,
+        numOfJobs,
+        pastJobs,
+      }
+
     },
+
     [getClientDashboard.rejected]: (state, { payload }) => {
       state.isLoading = false
       state.error = payload
