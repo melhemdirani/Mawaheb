@@ -16,14 +16,23 @@ import arrowUpIcon from '../assets/images/arrowUpIcon.png';
   
 
 
-export default function RenderFreelancers({navigate, loaded, freelancers}) {
+export default function RenderFreelancers({navigate, loaded, freelancers, setShowJobs}) {
 
     const [showApplicants, setShowApplicants] = useState(false)
  
-  
+    const handlePress = () => {
+        if(showApplicants){
+            setShowJobs(true)
+        } else{
+            setShowJobs(false)
+
+        }
+        setShowApplicants(!showApplicants)
+
+    }
     return (
         <View style={styles.container}>
-            <Pressable style={styles.title} onPress={()=>setShowApplicants(!showApplicants)}>
+            <Pressable style={styles.title} onPress={()=>handlePress()}>
                 <MaskedView
                     maskElement={
                     <Text style={[styles.text, { backgroundColor: 'transparent' }]}>

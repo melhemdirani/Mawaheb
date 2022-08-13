@@ -78,14 +78,14 @@ const DateInputs = ({title, placeholder, onChange, dateType}) => {
                     </LinearGradient>
                 </MaskedView>   
                 }
-                {  <DateTimePicker
-                    testID="dateTimePicker"
-                    value={date}
-                    mode={'date'}
-                    is24Hour={true}
-                    onChange={onChangeDate}
-                    style={{left: 20, opacity: 0.02, width: "100%", position: "absolute", zIndex: 999, padding: 20}}
-                  />}
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  mode={'date'}
+                  is24Hour={true}
+                  onChange={onChangeDate}
+                  style={{left: 20, opacity: 0.011, width: "100%", position: "absolute", zIndex: 999, padding: 20}}
+                />
                 
                 <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                     { 

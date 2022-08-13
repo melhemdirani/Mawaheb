@@ -42,10 +42,11 @@ export const registerUser = createAsyncThunk(
 )
 export const updateUser = createAsyncThunk(
   'updateUser',
-  async (user, userId, thunkApi) => {
+  async (user, thunkApi) => {
     let url = '/users/updateUser'
+    console.log("user", user)
     try {
-      const resp = await customFetch.post(url, userId, user)
+      const resp = await customFetch.post(url, user.userId, user)
       return resp.data
     } catch (error) {
       console.log("rrer",error)
@@ -102,6 +103,7 @@ const userSlice = createSlice({
     },
     [registerUser.fulfilled]: (state, { payload }) => {
       const { user } = payload
+      console.log("payload register", payload)
       state.registerIsLoading = false
       state.user = user
     },

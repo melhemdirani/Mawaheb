@@ -31,6 +31,7 @@ const JobSeekersignup = ({ navigation, route }) => {
 
   const [uploaded, setUploaded] = useState(false)
   const [activity, setActivity] = useState(false)
+  const [changedValues, setChangedValues] = useState(false)
   const [startUpload, setStartUpload] = useState(false)
   const [image, setImage] = useState("")
 
@@ -50,6 +51,7 @@ const JobSeekersignup = ({ navigation, route }) => {
 
   const handleChange = (name, value) => {
     setValues({ ...values, [name]: value })
+    setChangedValues(true)
   }
 
   const navigateNext =() => {
@@ -68,34 +70,41 @@ const JobSeekersignup = ({ navigation, route }) => {
     if( !validate(email)){
       return alert("Please enter a valid email address")
     }
-    if(user !== undefined && user.length && user.userId.id !== undefined && user !== {}){
+    if(user !== undefined &&  user.userId !== undefined && user !== {}){
+      if(changedValues){
+        console.log("updating")
         dispatch(
           updateUser({
             name: values.name + " " + values.lastName,
             email: values.email,
-            password: values.password,  
-            phoneNb: parseInt(values.phoneNb),
+            phoneNb: parseFloat(values.phoneNb),
             role: role,
-            profileImage: image
-          }, {userId: user.userId.id})
+            profileImage: "image",
+            userId: user.userId.id
+          },)
         )
         .unwrap()
         .then((response) => {
           console.log("response updating", response)
           navigateNext()
+          setChangedValues(false)
         })
         .catch((error) => {
-          console.log("error updating", values)
+          console.log("error updating", error.message)
   
         })
+      } else {
+        console.log("navigating no updates")
+        navigateNext()
+      }
     } else {
-      console.log("values", values)
+      console.log("user", user)
       dispatch(
         registerUser({
           name: values.name + " " + values.lastName,
           email: values.email,
           password: values.password,  
-          phoneNb: parseInt(values.phoneNb),
+          phoneNb: parseFloat(values.phoneNb),
           role: role,
           profileImage: image
         })
@@ -103,6 +112,7 @@ const JobSeekersignup = ({ navigation, route }) => {
       .unwrap()
       .then((response) => {
         console.log("response registiring", response)
+        setChangedValues(false)
         navigateNext()
       })
       .catch((error) => {
@@ -134,19 +144,16 @@ const JobSeekersignup = ({ navigation, route }) => {
   }
   const upload = async (uri) => {
     try {
-      console.log('trying')
       const response = await FileSystem.uploadAsync(
-        `http://194.5.157.234:4000/api/v1/auth/uploadImage`,
+        `http://localhost:4000/api/v1/auth/uploadImage/`,
         uri,
         {
           fieldName: 'files',
           httpMethod: 'post',
           uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
         },
-        { body: {name: uri }}
+       
       )
-      console.log('response', response)
-      console.log('response body', JSON.parse(response.body).imageUrl)
       const img = JSON.parse(response.body).imageUrl
       handleChange({
         name: 'profileImage',

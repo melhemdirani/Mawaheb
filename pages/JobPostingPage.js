@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { createJob } from '../reduxToolkit/jobSlice';
 
+import { RoleList, listofCities } from '../assets/data/RolesList';
 import Header from '../components/Header';
 import post from '../assets/images/postJob.png';
 import Inputs from '../components/Inputs';
@@ -31,9 +32,12 @@ const JobPostingPage = ({navigation}) => {
     yearsOfExperience: '',
     description: '',
     budget: '',
-    duration: 2
+    duration: 2,
+    category: '',
+    shift: ''
   }
 
+  const [index, setIndex] = useState(0)
   const { user } = useSelector((state) => state.user)
   const [isEnabled, setIsEnabled] = useState(false)
   const dispatch = useDispatch()
@@ -52,14 +56,16 @@ const JobPostingPage = ({navigation}) => {
       values.yearsOfExperience  === '' ||
       values.budget  === '' ||
       values.description === '' ||
-      values.privacy === ''
+      values.privacy === ''||
+      values.shift === ''
     ){
       console.log("values", values)
       return alert("Please fill in all required Information")
     } else{
       dispatch(
         createJob({
-          title: values.title,
+          category: values.category,
+          title: values.category + "-" + values.title,
           startDate: values.startDate,
           endDate: values.endDate,
           location: values.location,
@@ -71,11 +77,21 @@ const JobPostingPage = ({navigation}) => {
           duration: new Date()
         })
       )
-      navigation.navigate("recruiter_dashboard")
+      .unwrap()
+      .then(() => {
+        navigation.navigate("recruiter_dashboard")
+      })
+      .catch((error) => {
+        console.log("error updating", error.message)
+        alert("Error creating a job, please try again later")
+
+      })
     }
 
   
   }
+  const list = RoleList.map(role => role.category)
+
 
   return (
     <ScrollView style={styles.wrapper}>
@@ -92,30 +108,41 @@ const JobPostingPage = ({navigation}) => {
       <View style={styles.container}>
         <Text style={styles.text}>Let us know what are you looking for, and fill in some details find better qualified matches. </Text>
         <View style={styles.form}>
-         
-            <Inputs
-              placeholder='Job Title*'
-              style={styles.input}
-              onChange={(value) => handleChange('title', value)}
-              value={values.title}
+            <SelectInput 
+                title="Role Category*" 
+                list={list}
+                onSelect={(value) => handleChange("category", value)}
+                setIndex={setIndex}
+                role={true}
+            /> 
+            <SelectInput 
+                title="Job Title*" 
+                list={RoleList[index].subCategories}
+                onSelect={(value) => handleChange("title", value)}
             />
             <DateInputs onChange={(value) => handleChange('startDate', value)} placeholder="Start Date" dateType/>
             <DateInputs onChange={(value) => handleChange('endDate', value)} placeholder="End Date" dateType/>
-            <Inputs
-              placeholder='Location*'
-              style={styles.input}
-              onChange={(value) => handleChange('location', value)}
-              value={values.location}
-            />
+            <SelectInput 
+                title="Location*" 
+                onSelect={(value) => handleChange('location', value)}
+                list={listofCities}
+            /> 
+            <SelectInput 
+                title="Shift*" 
+                onSelect={(value) => handleChange('shift', value)}
+                list={['Day shift', 'Night shift']}
+            /> 
             <Inputs
               placeholder='Years of experience*'
               style={styles.input}
               onChange={(value) => handleChange('yearsOfExperience', value)}
               value={values.yearsOfExperience}
+              numeric
             />
             <DailyRate
               title='Budget'
               placeholder='Budget*'
+              numeric
               onChange={(value) => handleChange('budget', value)}
             />
             <TextArea
@@ -162,7 +189,8 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontFamily: 'PoppinsR',
     color: "rgba(0,0,0,.6)",
-    width: "60%"
+    width: "70%",
+    textAlign: "center"
   },
   form: {
     width: '100%',

@@ -5,7 +5,7 @@ import searchIcon from '../assets/images/search.png'
 import heartIcon from '../assets/images/heart.png'
 import filterIcon from '../assets/images/filterIcon.png'
 
-const SecondaryHeader = ({ title, heart }) => {
+const SecondaryHeader = ({ title, heart, noFilter }) => {
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -17,11 +17,11 @@ const SecondaryHeader = ({ title, heart }) => {
           <Text style={styles.text}>{title}</Text>
           <View style={!heart ? styles.miniContainer : styles.miniContainer2}>
             {!heart && <Image source={searchIcon} style={styles.searchIcon}></Image>}
-            <Image
+            {!noFilter && <Image
               source={ heart ? heartIcon : filterIcon}
               style={styles.filterIcon}
               resizeMode='cover'
-            />
+            />}
           </View>
        
         </View>

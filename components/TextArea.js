@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, Text, View, TouchableOpacity, TextInput} from 'r
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 
-const TextArea = ({placeholder, onChange}) => {
+const TextArea = ({placeholder, onChange, value}) => {
 
     const [text, setText] = useState("")
     const [changed, setChanged] = useState(false)
@@ -27,15 +27,18 @@ const TextArea = ({placeholder, onChange}) => {
             <View style={styles.view2}>
             {
                 changed && 
-                <MaskedView maskElement={ <Text style={[styles.label, {backgroundColor: "transparent"}]}>{placeholder}</Text>}>
-                    <LinearGradient
-                        start={{x:0, y: 0}}
-                        end={{x:1, y: 1}}
-                        colors={['#23CDB0', '#9C88FD','#9C88FD', '#9C88FD', ]}
-                    >
-                       <Text style={[styles.label, {opacity: 0}]}>{placeholder}</Text>
-                    </LinearGradient>
-                </MaskedView>
+                <View style={{height: 14}}>
+                  <MaskedView maskElement={ <Text style={[styles.label, {backgroundColor: "transparent"}]}>{placeholder}</Text>}>
+                      <LinearGradient
+                          start={{x:0, y: 0}}
+                          end={{x:1, y: 1}}
+                          colors={['#23CDB0', '#9C88FD','#9C88FD', '#9C88FD', ]}
+                      >
+                        <Text style={[styles.label, {opacity: 0}]}>{value !== "" ? value : placeholder}</Text>
+                      </LinearGradient>
+                  </MaskedView>
+                </View>
+                
 
             }
             <TextInput
@@ -66,7 +69,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "85%",
     backgroundColor: "rgba(202, 218, 221, .2)",
-    height: 150,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },
@@ -89,6 +91,8 @@ const styles = StyleSheet.create({
     padding: 6,
     width: "100%",
     paddingLeft: 20,
+    height: 150,
+
   },
   label:{
     paddingLeft: 20,

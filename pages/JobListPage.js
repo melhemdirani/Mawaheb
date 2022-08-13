@@ -36,6 +36,9 @@ const JobListPage = ({ navigation }) => {
     setLoaded(true)
   },[])
 
+  const [showApplicantsTitle, setShowApplicantsTitle] = useState("all")
+  const [showFreelancers, setShowFreelancers] = useState(true)
+  const [showJobs, setShowJobs] = useState(true)
 
 
   const navigate = (id,price ,location,jobId) => {
@@ -46,15 +49,27 @@ const JobListPage = ({ navigation }) => {
       <SecondaryHeader title='Find the right talent.' />
       <View style={styles.container}>
         {
-          myJobs && myJobs.map((item, i) => 
-            <RenderMyjobs data={item} navigate={navigate} key={i}/>
+          showJobs && myJobs && myJobs.map((item, i) => 
+            <RenderMyjobs 
+              data={item} 
+              navigate={navigate} 
+              key={i}
+              setShowFreelancers={setShowFreelancers}
+              showApplicantsTitle={showApplicantsTitle}
+              setShowApplicantsTitle={setShowApplicantsTitle}
+            />
           )
         }
-      <RenderFreelancers 
+      { showFreelancers &&
+        <RenderFreelancers 
         freelancers={freelancers} 
         navigate={navigate} 
         loaded={loaded} 
+        showFreelancers={showFreelancers}
+        setShowFreelancers={setShowFreelancers}
+        setShowJobs={setShowJobs}
       />
+      }
       </View>
       <Navbar active='Jobs' client navigation={navigation} />  
 

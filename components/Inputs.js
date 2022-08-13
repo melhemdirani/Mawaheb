@@ -41,9 +41,7 @@ const Inputs = ({placeholder, onChange, numeric, value}) => {
            
              <TextInput
               secureTextEntry={placeholder === "Password" || placeholder === "Password*" ? true : false}
-              style={
-              styles.wrapperCustom
-              }
+              style={ [styles.wrapperCustom, !changed && { height:"100%"}] }
               placeholder={placeholder}
               keyboardType={numeric ? "numeric" : "default"}
               placeholderTextColor="rgba(0,0,0,.5)"
@@ -87,9 +85,8 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     alignItems: "center",
     padding: 6,
-    width: "100%",
     paddingLeft: 20,
-    fontFamily: 'PoppinsR'
+    fontFamily: 'PoppinsR',
   },
   label:{
     paddingLeft: 20,

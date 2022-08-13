@@ -34,7 +34,7 @@ const SelectInput = ({title, list, onSelect, value, valued, setIndex, role}) => 
     return (
         <View style={styles.container}>
             <View style={styles.subContainer}>
-                <Text style={selected ? styles.text2 : styles.text}> {selected === ""  ? title : selected}</Text>
+                <Text style={selected ? styles.text2 : styles.text}> {selected === "" ? title : selected}</Text>
                 <Pressable onPress={() => setShowList(!showList)} style={styles.arrowButton}>
                     <Image
                         style={showList ? [styles.image, styles.rotate] : styles.image}

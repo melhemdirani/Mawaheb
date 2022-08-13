@@ -58,7 +58,7 @@ const JobList = ({
         </View>
         <View style={styles.subHeader}>
           <Image source={heartIcon} style={styles.heart}></Image>
-          <Pressable onPress={() => navigate(freelancer.id,price,job.location,job.id, {invite: false})}>
+          <Pressable onPress={() => navigate(freelancer.id,price,job.location, job.id, {invite: false})}>
             <Image source={plusIcon} style={styles.plus}></Image>
           </Pressable>
         </View>
@@ -100,8 +100,11 @@ const JobList = ({
           <View style={styles.languages}>
             <Image source={languageIcon} style={styles.languageIcon}></Image>
             {newLanguages.length > 0 && newLanguages.map((language, i) => {
-              return <Text key={i} style={styles.language}>{language.name}</Text>
-            })}
+              return (
+                <View  key={i} style={{flexDirection: "row"}}>
+                  <Text style={styles.language}>{language.name}</Text>
+                </View>
+            )})}
           </View>
           <LinearGradient
             colors={[

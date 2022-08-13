@@ -17,7 +17,6 @@ function RoleForm({handleChange, title, additional, onRoleDelete, role}) {
     const [index, setIndex] = useState(0)
 
     const list = RoleList.map(role => role.category)
-    console.log("roles list", role)
 
     return (
         <View style={styles.subContainer}>
@@ -29,7 +28,7 @@ function RoleForm({handleChange, title, additional, onRoleDelete, role}) {
                 role={true}
             /> 
            { role !== undefined && role.length > 0 &&
-            <SelectInput 
+                <SelectInput 
                     title="Role Subcategory*" 
                     list={RoleList[index].subCategories}
                     onSelect={(value) => console.log("value", value)}
@@ -48,6 +47,7 @@ function RoleForm({handleChange, title, additional, onRoleDelete, role}) {
             <TextArea  
                 placeholder="Your key responsibilities" 
                 onChange={(value) => handleChange('keyResponsibilities', value, title)}
+                value={role.keyResponsibilities}
             /> 
             <DailyRate  
                 placeholder="Your daily wages*"

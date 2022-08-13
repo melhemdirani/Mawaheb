@@ -28,7 +28,6 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const FreelancerDetailsPage = ({ navigation, route }) => {
   const { id: freelancerId, price, location, jobId, isLoading } = route.params
-  console.log("invite", route)
   let invite = jobId === "job.id" ? true : false
   const { freelancer } = useSelector((state) => state.freelancer)
   const { client } = useSelector((state) => state.client)
@@ -37,7 +36,6 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
   const [loaded, setLoaded] = useState(false)
 
   const dispatch = useDispatch()
-
   const navigateContract = () => {
    if(invite){
       alert("Invitation sent!")
@@ -45,13 +43,13 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
     } else{
       dispatch(
         createContract({
-          freelancerId: "1334086e-78be-4640-af55-26c2840f78be",
+          freelancerId: freelancerId,
           clientId: client?.id || userState?.clientId,
           jobId,
-          freelancerFee: price,
+          freelancerFee: 500,
         })
       )
-      navigation.navigate('acceptContract')
+      // navigation.navigate('acceptContract')
     }
 
   }
@@ -65,7 +63,19 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
     return <Text>Loading</Text>
   }
   const { id, user, roles, languages } = freelancer
+  const uniqueIds = [];
 
+  const newLanguages = freelancer.languages.filter(element => {
+    const isDuplicate = uniqueIds.includes(element.name);
+
+    if (!isDuplicate) {
+      uniqueIds.push(element.name);
+
+      return true;
+    }
+
+    return false;
+  });
 
   return !loaded
     ? <View style={{marginTop: 400}}>
@@ -153,11 +163,13 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
           </View>
           <View style={styles.languages}>
             <Image source={languageIcon} style={styles.languageIcon}></Image>
-            {languages.map((item) => {
+            {newLanguages.length > 0 && newLanguages.map((item, i) => {
               return (
-                <Text key={item.id} style={styles.language}>
-                  {item.name}
-                </Text>
+                <View key={item.id}>
+                  <Text  style={styles.language}>
+                    {item.name}
+                  </Text>
+                </View>
               )
             })}
           </View>
@@ -283,6 +295,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    flexWrap: "wrap",
     width: '100%',
     marginTop: -30,
     marginBottom: 20,

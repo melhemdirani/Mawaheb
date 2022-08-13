@@ -13,30 +13,39 @@ import JobList from '../components/JobList';
 import MaskedView from '@react-native-masked-view/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import arrowUpIcon from '../assets/images/arrowUpIcon.png';
+import { ScrollView } from 'react-native-gesture-handler';
   
 
 
-export default function RenderMyjobs({data, navigate}) {
+export default function RenderMyjobs({data, navigate,showApplicantsTitle, setShowApplicantsTitle, setShowFreelancers}) {
     const [showApplicants, setShowApplicants] = useState(false)
- 
-    const renderItem = (data) => {
-        if (!data) {
-        return <Text>No Jobs</Text>
+    const handlePress = () => {
+        if(showApplicants){
+            setShowApplicantsTitle("all")
+            setShowFreelancers(true)
+        } else{
+            setShowApplicantsTitle(data.title)
+            setShowFreelancers(false)
         }
-        return (
+        setShowApplicants(!showApplicants)
+    }
+    const RenderItem = ({item}) => {
+       
+        return Object.keys(item.freelancer).length ?  (
             <JobList
-                {...data.item}
+                freelancer={item.freelancer}
                 navigate={navigate}
                 style={styles.jobs}
+                job={data}
             />
-        )
+        ): <Text>No proposals yet</Text>
     }
-    if (!data) {
+    if (!data) {    
     return <Text>Loading</Text>
     }
-    return (
-    <View style={styles.container}>
-        <Pressable style={styles.title} onPress={()=>setShowApplicants(!showApplicants)}>
+    return (showApplicantsTitle === data.title || showApplicantsTitle === "all") && (
+    <View style={showApplicants ? styles.container2 : styles.container}>
+        <Pressable style={styles.title} onPress={()=>handlePress()}>
             <MaskedView
                 maskElement={
                 <Text style={[styles.text, { backgroundColor: 'transparent' }]}>
@@ -50,27 +59,30 @@ export default function RenderMyjobs({data, navigate}) {
                 colors={['#31BEBB', '#655BDA']}
                 >
                 <Text style={[styles.text, { opacity: 0 }]}>
-                    Job Title Applicants
+                    {data.title} Applicants
                 </Text>
                 </LinearGradient>
             </MaskedView>
             <Image source={arrowUpIcon} style={showApplicants ? styles.arrowUp : styles.arrowDown}></Image>
         </Pressable>
-
-        { showApplicants &&
-            <FlatList
-                data={data.proposals}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.id}
-                style={styles.jobs}
-            />
-        }
+        <ScrollView>
+            { 
+                showApplicants &&  data.proposals.length > 0 ? data.proposals.map((item, i) => 
+                    <RenderItem item={item} key={i} />
+                )
+                : showApplicants 
+                ? <Text style={styles.text2}>No job applicants yet</Text>
+                : null
+            }
+        </ScrollView>
     </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
+    },
+    container2:{
     },
     title: {
       padding: 7,
@@ -87,6 +99,13 @@ const styles = StyleSheet.create({
       fontFamily: 'PoppinsS',
       justifyContent: 'center',
       paddingTop: 6,
+    },
+    text2: {
+        lineHeight: 22,
+        fontSize: 20,
+        left: 10,
+        marginVertical: 5,
+        color: 'rgba(0,0,0,0.6)',
     },
     arrowUp:{
         marginRight: 10

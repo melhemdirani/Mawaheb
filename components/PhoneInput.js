@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     padding: 6,
     width: "100%",
     paddingLeft: 20,
-    fontFamily: 'PoppinsR'
+    fontFamily: 'PoppinsR',
   },
   label:{
     paddingLeft: 20,

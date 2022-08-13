@@ -19,7 +19,6 @@ export const createJob = createAsyncThunk(
     console.log("job for posting", job)
     try {
       const resp = await customFetch.post(url, job)
-      console.log("create",resp.data)
       return resp.data
     } catch (error) {
       console.log("create", error.response.data.msg)

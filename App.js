@@ -36,6 +36,7 @@ import JobSeekersignup2 from './pages/JobSeekersignup2'
 import * as Sentry from '@sentry/react-native'
 import FreelancerProfile from './pages/FreelancerProfile'
 import ClientProfile from './pages/ClientProfile'
+import ContactForm from './pages/ContactForm'
 
 
 Sentry.init({
@@ -124,6 +125,13 @@ function App() {
           <Stack.Screen
             name='login'
             component={LoginJobseeker}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name='contact'
+            component={ContactForm}
             options={{
               headerShown: false,
             }}

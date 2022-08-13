@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView ,View, StyleSheet, Platform, TouchableOpacity} from 'react-native';
+import { ScrollView ,View, StyleSheet, Platform, TouchableOpacity, Pressable} from 'react-native';
 import { useDispatch ,useSelector} from 'react-redux'
 
 import { logout } from '../reduxToolkit/userSlice'
@@ -32,6 +32,10 @@ const SettingsPage = ({navigation, role}) => {
         navigation.navigate('SignIn', {reload})
     }
 
+    const navigateContact = () => {
+        navigation.navigate('contact')
+
+    }
     const navigateProfile = () => {
         if(user.role === 'freelancer'){
             navigation.navigate('freelancerProfile')
@@ -54,9 +58,9 @@ const SettingsPage = ({navigation, role}) => {
                     <Setting title="About Mawahib" icon={aboutSetting}/>
                     <Setting title="Logout" icon={logoutSetting} action={logoutUser}/>
                 </View>
-                <View style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={() => navigateContact()}>
                     <PrimaryButton title="Contact US"/> 
-                </View>
+                </TouchableOpacity>
             </ScrollView>
             <Navbar active="Settings" navigation={navigation} client={role === 'client' ? true : false}/>
         </View>
