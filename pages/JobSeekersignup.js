@@ -12,27 +12,30 @@ import {
 } from 'react-native'
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
+import { useSelector, useDispatch } from 'react-redux'
 
 import signUp from '../assets/images/signUp.png'
 import { validate } from 'react-email-validator';
+import { registerUser, updateUser } from '../reduxToolkit/userSlice'
 
 import Header from '../components/Header'
 import Inputs from '../components/Inputs'
 
+import { listofCities } from '../assets/data/RolesList';
+
 import PrimaryButton from '../components/Buttons/PrimaryButton'
-import { useSelector, useDispatch } from 'react-redux'
-import { registerUser, updateUser } from '../reduxToolkit/userSlice'
 import PhoneInputs from '../components/PhoneInput';
 import UploadCard from '../components/UploadCard';
 import ImageCard from '../components/ImageCard';
-import { ObjectIsEqual } from '../components/ObjectIsEqual';
+import SelectInput from '../components/SelectInput';
 
 const JobSeekersignup = ({ navigation, route }) => {
 
   const [uploaded, setUploaded] = useState(false)
   const [activity, setActivity] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [changedValues, setChangedValues] = useState(false)
-  const [startUpload, setStartUpload] = useState(false)
+  const [uploadedImage, setUploadedImage] = useState("")
   const [image, setImage] = useState("")
 
  
@@ -42,16 +45,17 @@ const JobSeekersignup = ({ navigation, route }) => {
     email: '',
     password: '',
     phoneNb: '',
-    profileImage: '' 
+    profileImage: '', 
+    location: '', 
   }
   const [values, setValues] = useState(initialState)
   const dispatch = useDispatch()
-  const { user, isLoading, error } = useSelector((store) => store.user)
+  const { user, error } = useSelector((store) => store.user)
   const { role } = route.params
 
   const handleChange = (name, value) => {
-    setValues({ ...values, [name]: value })
     setChangedValues(true)
+    setValues({ ...values, [name]: value })
   }
 
   const navigateNext =() => {
@@ -61,10 +65,8 @@ const JobSeekersignup = ({ navigation, route }) => {
   }
   const submit = () => {
     const { name, email, password, phoneNb } = values
-    
+    console.log("type of", typeof phoneNb)
     if (!name || !email || !password || !phoneNb) {
-        console.log("phoneNb submitted", values)
-
       return alert('Please fill all the fields')
     } 
     if( !validate(email)){
@@ -73,40 +75,46 @@ const JobSeekersignup = ({ navigation, route }) => {
     if(user !== undefined &&  user.userId !== undefined && user !== {}){
       if(changedValues){
         console.log("updating")
+        setIsLoading(true)
         dispatch(
           updateUser({
             name: values.name + " " + values.lastName,
             email: values.email,
-            phoneNb: parseFloat(values.phoneNb),
+            phoneNb: values.phoneNb,
             role: role,
-            profileImage: "image",
+            profileImage: uploadedImage,
             userId: user.userId.id
           },)
         )
         .unwrap()
         .then((response) => {
-          console.log("response updating", response)
+          console.log("new user", user)
+          setIsLoading(false)
           navigateNext()
           setChangedValues(false)
         })
         .catch((error) => {
           console.log("error updating", error.message)
+          setIsLoading(false)
   
         })
       } else {
         console.log("navigating no updates")
+        setChangedValues(false)
         navigateNext()
       }
     } else {
-      console.log("user", user)
+      console.log("user before registiring", user)
+      setIsLoading(true)
       dispatch(
         registerUser({
           name: values.name + " " + values.lastName,
           email: values.email,
           password: values.password,  
-          phoneNb: parseFloat(values.phoneNb),
+          phoneNb: values.phoneNb,
           role: role,
-          profileImage: image
+          profileImage: uploadedImage,
+          location: values.location
         })
       )
       .unwrap()
@@ -114,6 +122,8 @@ const JobSeekersignup = ({ navigation, route }) => {
         console.log("response registiring", response)
         setChangedValues(false)
         navigateNext()
+        setIsLoading(false)
+
       })
       .catch((error) => {
         if(error === "Email already in use"){
@@ -122,7 +132,7 @@ const JobSeekersignup = ({ navigation, route }) => {
           alert("Error registering")
         }
         console.log("error", error)
-
+        setIsLoading(false)
       })
     }
    
@@ -143,9 +153,10 @@ const JobSeekersignup = ({ navigation, route }) => {
     }
   }
   const upload = async (uri) => {
+    console.log("uploading")
     try {
       const response = await FileSystem.uploadAsync(
-        `http://localhost:4000/api/v1/auth/uploadImage/`,
+        `http://194.5.157.234:4000/api/v1/auth/uploadImage/`,
         uri,
         {
           fieldName: 'files',
@@ -155,10 +166,9 @@ const JobSeekersignup = ({ navigation, route }) => {
        
       )
       const img = JSON.parse(response.body).imageUrl
-      handleChange({
-        name: 'profileImage',
-        value: img,
-      })
+      console.log("uploading response", img)
+      setUploadedImage(img)
+      setChangedValues(true)
       setUploaded(true)
       setActivity(false)
 
@@ -170,10 +180,7 @@ const JobSeekersignup = ({ navigation, route }) => {
     setUploaded(false)
     setImage('')
     activity && setActivity(false)
-    handleChange({
-      name: 'profileImage',
-      value: '',
-    })
+    setUploadedImage("")
 
   }
   return isLoading ? (
@@ -209,36 +216,39 @@ const JobSeekersignup = ({ navigation, route }) => {
                 : <UploadCard title='Profile Picture' selectFile={selectFile}/>
               }
               <Inputs
-                title='Continue to Payment'
                 placeholder='First Name*'
                 onChange={(value) => handleChange('name', value)}
                 value={values.name}
               />
               <Inputs
-                title='Continue to Payment'
                 placeholder='Last Name*'
                 onChange={(value) => handleChange('lastName', value)}
                 value={values.lastName}
               />
               <Inputs
-                title='Continue to Payment'
                 placeholder='Email*'
                 onChange={(value) => handleChange('email', value)}
                 value={values.email}
               />
 
               <Inputs
-                title='Continue to Payment'
                 placeholder='Password*'
                 onChange={(value) => handleChange('password', value)}
                 value={values.password}
               />
+              <SelectInput 
+                title="Location*" 
+                onSelect={(value) => handleChange('location', value)}
+                list={listofCities}
+                value={values.location}
+                valued
+              /> 
               <PhoneInputs
-                title='Continue to Payment'
                 placeholder='Phone Number*'
                 onChange={(value) => handleChange('phoneNb', value)}
                 value={values.phoneNb}
               />
+            
               <TouchableOpacity style={styles.nextButton} onPress={() => submit()}>
                 <PrimaryButton title='Next' activity={activity}/>
               </TouchableOpacity>

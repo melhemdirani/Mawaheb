@@ -15,7 +15,6 @@ import locationIcon from '../assets/images/locationIcon.png';
 import priceRectangle from '../assets/images/priceRectangle.png';
 import heartIcon from '../assets/images/heartIcon.png';
 import plusIcon from '../assets/images/plusIcon.png';
-import MaskedView from '@react-native-masked-view/masked-view';
 import languageIcon from '../assets/images/LanguageIcon.png';
 
 const JobList2 = ({
@@ -26,7 +25,6 @@ const JobList2 = ({
   navigate
 }) => {
 
-  console.log("roles", roles)
   const uniqueIds = [];
 
   const newLanguages = languages.filter(element => {
@@ -105,7 +103,7 @@ const JobList2 = ({
             <View style={styles.footer}>
               <View style={styles.footerInfo}>
                 <Image source={calendarIcon} style={styles.icon}></Image>
-                <Text style={styles.text}> {user.createdAt.slice(0,9)}</Text>
+                <Text style={styles.text}> {user.createdAt &&  user.createdAt.slice(0,9)}</Text>
               </View>
               <View style={styles.footerInfo}>
                 <Image source={clockIcon} style={styles.icon}></Image>

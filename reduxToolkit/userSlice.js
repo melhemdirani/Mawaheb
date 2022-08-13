@@ -44,9 +44,23 @@ export const updateUser = createAsyncThunk(
   'updateUser',
   async (user, thunkApi) => {
     let url = '/users/updateUser'
-    console.log("user", user)
     try {
-      const resp = await customFetch.post(url, user.userId, user)
+      const resp = await customFetch.patch(url, user)
+      return resp.data
+    } catch (error) {
+      console.log("rrer",error)
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+
+  }
+)
+export const updateUserPassword = createAsyncThunk(
+  'updateUserPassword',
+  async (passwords, thunkApi) => {
+    let url = '/users/updateUserPassword'
+    console.log("user", passwords)
+    try {
+      const resp = await customFetch.patch(url, passwords)
       return resp.data
     } catch (error) {
       console.log("rrer",error)
@@ -103,7 +117,6 @@ const userSlice = createSlice({
     },
     [registerUser.fulfilled]: (state, { payload }) => {
       const { user } = payload
-      console.log("payload register", payload)
       state.registerIsLoading = false
       state.user = user
     },
@@ -115,9 +128,9 @@ const userSlice = createSlice({
       state.registerIsLoading = true
     },
     [updateUser.fulfilled]: (state, { payload }) => {
-      const { user } = payload
       state.registerIsLoading = false
-      state.user = user
+      console.log("payload updating", payload)
+      state.user = payload
     },
     [updateUser.rejected]: (state, { payload }) => {
       state.registerIsLoading = false

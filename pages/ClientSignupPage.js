@@ -22,21 +22,23 @@ import UploadCard from '../components/UploadCard';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
 
 import signUp from '../assets/images/signUp.png';
-import { setUserAfterRegister } from '../reduxToolkit/userSlice';
+import { setUserAfterRegister, registerUser } from '../reduxToolkit/userSlice';
 import ImageCard from '../components/ImageCard';
 import PhoneInputs from '../components/PhoneInput';
 
 
 const ClientSignupPage = ({navigation}) => {
-  const { client, isLoading, error } = useSelector((store) => store.client)
-  const { user } = useSelector((store) => store.user)
+  const { client, isLoading } = useSelector((store) => store.client)
   const [uploaded, setUploaded] = useState(false)
   const [uploaded2, setUploaded2] = useState(false)
   const [activity, setActivity] = useState(false)
+  const [changed, setChanged] = useState(false)
   const [isEnabled, setIsEnabled] = useState(false)
   const [startingToUpload, setStartingToUpload] = useState(false)
   const [image, setImage] = useState("")
   const [image2, setImage2] = useState("")
+  const [uploadedImage, setUploadedImage] = useState("")
+  const [uploadedImage2, setUploadedImage2] = useState("")
 
   const initialState = {
     companyName: '',
@@ -49,7 +51,8 @@ const ClientSignupPage = ({navigation}) => {
     email:"",
     password:"",
     profileImage: "",
-    phoneNb: ""
+    phoneNb: "",
+    tradingLicense: ""
   }
 
   const [values, setValues] = useState(initialState)
@@ -69,11 +72,11 @@ const ClientSignupPage = ({navigation}) => {
 
   const handleChange = (name, value) => {
     setValues({ ...values, [name]: value })
+    setChanged(true)
   }
 
 
   const onSubmit = () => {
-  
     const {
       companyName,
       privacy,
@@ -82,45 +85,87 @@ const ClientSignupPage = ({navigation}) => {
       sign,
       TRN,
       address,
+      email,
+      phoneNb,
+      password,
     } = values
     if (privacy === 'private' && (!TRN || !address || !companyName)) {
 
       return alert('Please fill all fields')
     } else if (
       privacy === 'public' &&
-      (!companyName || !signatoryName || !signatoryTitle || !sign)
+      (!companyName || !signatoryName || !signatoryTitle || !sign || !email || !password || !phoneNb ) 
     ) {
       alert('Please fill all fieldss')
       console.log(values)
     }
-    else { dispatch(
-        createClientProfile({
-          companyName,
-          privacy,
-          signatoryName,
-          signatoryTitle,
-          sign,
-          TRN: parseInt(TRN),
-          Address: address,
+    else { 
+      dispatch(
+        registerUser({
+          name: companyName,
+          email: values.email,
+          password: values.password,  
+          phoneNb: phoneNb,
+          role: 'client',
+          profileImage: uploadedImage2
         })
       )
+      .unwrap()
+      .then((response) => {
+        console.log("response registiring", response)
+        onRegister()
+      })
+      .catch((error) => {
+        if(error === "Email already in use"){
+          alert("This email is already in use, please register using another email address")
+        } else{
+          alert("Error registering")
+        }
+        console.log("error", error.message)
+      })
+    }
+  }
+
+  const onRegister = () => {
+    dispatch(
+      createClientProfile({
+        companyName:values.companyName,
+        privacy:values.privacy,
+        signatoryName:values.signatoryName,
+        signatoryTitle:values.signatoryTitle,
+        companyName:values.companyName,
+        TRN:parseInt(values.TRN),
+        sign: uploadedImage,
+        tradingLicense: uploadedImage,
+        Address: values.address,
+      })
+    )
+    .unwrap()
+    .then((response) => {
+      console.log("creating profile", response)
       dispatch(
         setUserAfterRegister(client.id)
       )
-    }
-  
-  }
-  useEffect(() => {
-    console.log("client", client)
-    if (client !== undefined && Object.keys(client).length > 0 && uploaded && !isLoading) {
+      setChanged(false)
       navigation.navigate('recruiter_dashboard')
-    }
-  }, [client, isLoading])
+    })
+    .catch((error) => {
+      if(error === "Email already in use"){
+        alert("This email is already in use, please register using another email address")
+      } else{
+        alert("Error registering")
+      }
+      console.log("error", error)
+    })
+   
+  }
+ 
+
   const toggleSwitch = () => {
     setUploaded(false)
     setImage("")
     setIsEnabled(!isEnabled)
-  }
+  } 
   const selectFile = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -144,9 +189,35 @@ const ClientSignupPage = ({navigation}) => {
     })
     if (!result.cancelled) {
       setStartingToUpload(true)
-      setUploaded(false)
-      upload(result.uri)
+      setUploaded2(false)
+      upload2(result.uri)
       setImage2(result.uri)
+    }
+  }
+  const upload2 = async (uri) => {
+    console.log("uploading")
+    try {
+      const response = await FileSystem.uploadAsync(
+        `http://194.5.157.234:4000/api/v1/auth/uploadImage/`,
+        uri,
+        {
+          fieldName: 'files',
+          httpMethod: 'post',
+          uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
+        },
+       
+      )
+      const img = JSON.parse(response.body).imageUrl
+      console.log("uploading response", img)
+      // setChangedValues(true)
+      // setActivity(false)
+      setUploadedImage2(img)
+      setUploaded2(true)
+      setChanged(true)
+
+
+    } catch (error) {
+      console.log(error)
     }
   }
   const upload = async (uri) => {
@@ -154,44 +225,32 @@ const ClientSignupPage = ({navigation}) => {
     try {
       console.log('trying')
       const response = await FileSystem.uploadAsync(
-        `http://194.5.157.234:4000/api/v1/freelancers/uploadImage`,
+        `http://194.5.157.234:4000/api/v1/auth/uploadImage/`,
         uri,
         {
           fieldName: 'files',
           httpMethod: 'post',
           uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
         },
-        { name: uri }
       )
-      setValues({ ...values, profileImage: JSON.parse(response.body).imageUrl })
+      const img = JSON.parse(response.body).imageUrl
+      setUploadedImage(img)
       setUploaded(true)
+      setChanged(true)
      } catch (error) {
       console.log(error)
     }
   }
-  const upload2 = async (uri) => {
-    console.log('uploading file')
-    try {
-      console.log('trying')
-      const response = await FileSystem.uploadAsync(
-        `http://194.5.157.234:4000/api/v1/freelancers/uploadImage`,
-        uri,
-        {
-          fieldName: 'files',
-          httpMethod: 'post',
-          uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
-        },
-        { body : {name: uri} }
-      )
-      setUploaded2(true)
-     } catch (error) {
-      console.log(error)
-    }
-  }
+
   const onImageDelete = () => {
     startingToUpload && setStartingToUpload(false)
     setUploaded(false);
     setImage("");
+  }
+
+  const onImageDelete2 = () => {
+    startingToUpload && setStartingToUpload(false)
+    setUploaded2(false);
   }
 
   useEffect(( ) => {

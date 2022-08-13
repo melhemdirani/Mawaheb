@@ -46,6 +46,7 @@ const JobPostingPage = ({navigation}) => {
   const handleChange = (name, value) => {
     setValues({ ...values, [name]: value })
   }
+  console.log("user", user.clientId)
   const paymentNav = () => {
     //add job with values and client id
     if(
@@ -56,29 +57,32 @@ const JobPostingPage = ({navigation}) => {
       values.yearsOfExperience  === '' ||
       values.budget  === '' ||
       values.description === '' ||
-      values.privacy === ''||
       values.shift === ''
     ){
       console.log("values", values)
       return alert("Please fill in all required Information")
     } else{
+      console.log("calu", values.shift)
       dispatch(
         createJob({
           category: values.category,
-          title: values.category + "-" + values.title,
+          title: values.title,
           startDate: values.startDate,
           endDate: values.endDate,
           location: values.location,
           yearsOfExperience: values.yearsOfExperience,
           description: values.description,
           budget: values.budget,
-          privacy: 'public',
+          privacy: isEnabled ? 'private' : 'public',
           clientId: user.clientId,
-          duration: new Date()
+          duration: new Date(),
+          shift: values.shift
         })
       )
       .unwrap()
-      .then(() => {
+      .then((response) => {
+      console.log("job for posting", response)
+
         navigation.navigate("recruiter_dashboard")
       })
       .catch((error) => {
@@ -153,12 +157,12 @@ const JobPostingPage = ({navigation}) => {
             <View style={styles.privacy}>
                 <Text style={!isEnabled ? styles.picked : styles.notPicked}>Public </Text>
                 <Switch
-                style={styles.switch}
-                ios_backgroundColor='#23CDB0'
-                trackColor={{ false: '#23CDB0', true: '#23CDB0' }}
-                thumbColor={'#f4f3f4'}
-                onValueChange={toggleSwitch}
-                value={isEnabled}
+                  style={styles.switch}
+                  ios_backgroundColor='#23CDB0'
+                  trackColor={{ false: '#23CDB0', true: '#23CDB0' }}
+                  thumbColor={'#f4f3f4'}
+                  onValueChange={toggleSwitch}
+                  value={isEnabled}
                 ></Switch>
                 <Text style={isEnabled ? styles.picked : styles.notPicked}> Private</Text>
             </View>

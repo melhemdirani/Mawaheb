@@ -96,15 +96,16 @@ const BankPage = ({  navigation }) => {
         bankDetails: !checkBankEmpty() ? bank : undefined,
       })
     )
-  }
-  const registerWithoutBank = () => {
-    createJobSeeker()
-    navigation.navigate('jobseeker_jobs')
+    .unwrap()
+    .then((response) => {
+      console.log("response registiring", response)
+      navigation.navigate('jobseeker_jobs')
+    })
+    .catch((error) => {
+      console.log("error", error.message)
+    })
   }
 
-  const registerWithBank = () =>{
-      registerWithoutBank()
-  }
 
   return (
     <ScrollView style={styles.container}>
@@ -145,10 +146,10 @@ const BankPage = ({  navigation }) => {
           placeholder='Swift Code*'
           onChange={(value) => handleChange('swiftCode', value)}
         />
-        <Pressable style={styles.nextButton} onPress={() => registerWithoutBank()}>
+        <Pressable style={styles.nextButton} onPress={() => createJobSeeker()}>
           <PrimaryButton title='Create Profile' />
         </Pressable>
-        <Pressable onPress={() =>  registerWithoutBank()}>
+        <Pressable onPress={() =>  createJobSeeker()}>
           <Text style={styles.skipText}>
               SKIP
           </Text>

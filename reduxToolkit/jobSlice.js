@@ -16,7 +16,6 @@ export const createJob = createAsyncThunk(
   'createJobPost',
   async (job, thunkApi) => {
     let url = '/jobs'
-    console.log("job for posting", job)
     try {
       const resp = await customFetch.post(url, job)
       return resp.data

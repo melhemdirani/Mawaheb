@@ -46,31 +46,33 @@ const JobListPage = ({ navigation }) => {
   }
   return (
     <View style={styles.wrapper}>
-      <SecondaryHeader title='Find the right talent.' />
-      <View style={styles.container}>
-        {
-          showJobs && myJobs && myJobs.map((item, i) => 
-            <RenderMyjobs 
-              data={item} 
-              navigate={navigate} 
-              key={i}
-              setShowFreelancers={setShowFreelancers}
-              showApplicantsTitle={showApplicantsTitle}
-              setShowApplicantsTitle={setShowApplicantsTitle}
-            />
-          )
+      <ScrollView style={styles.container}>
+        <SecondaryHeader title='Find the right talent.' />
+          {
+            showJobs && myJobs && myJobs.map((item, i) => {
+              return item.privacy !== 'private' &&(
+                  <RenderMyjobs 
+                  data={item} 
+                  navigate={navigate} 
+                  key={i}
+                  setShowFreelancers={setShowFreelancers}
+                  showApplicantsTitle={showApplicantsTitle}
+                  setShowApplicantsTitle={setShowApplicantsTitle}
+                />
+              )
+            })
+          }
+        { showFreelancers &&
+          <RenderFreelancers 
+            freelancers={freelancers} 
+            navigate={navigate} 
+            loaded={loaded} 
+            showFreelancers={showFreelancers}
+            setShowFreelancers={setShowFreelancers}
+            setShowJobs={setShowJobs}
+          />
         }
-      { showFreelancers &&
-        <RenderFreelancers 
-        freelancers={freelancers} 
-        navigate={navigate} 
-        loaded={loaded} 
-        showFreelancers={showFreelancers}
-        setShowFreelancers={setShowFreelancers}
-        setShowJobs={setShowJobs}
-      />
-      }
-      </View>
+      </ScrollView>
       <Navbar active='Jobs' client navigation={navigation} />  
 
     </View>

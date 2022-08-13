@@ -220,11 +220,13 @@ const CreateProfilePage = ({  navigation }) => {
         <TouchableOpacity onPress={() => handleSubmit()} style={styles.nextButton} >
           <PrimaryButton title='Next' activity={activity}/>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("experience")}>
-          <Text style={styles.skipText}>
-              SKIP
-          </Text>
-        </TouchableOpacity>
+        { !activity &&
+          <TouchableOpacity onPress={() => navigation.navigate("experience")}>
+            <Text style={styles.skipText}>
+                SKIP
+            </Text>
+          </TouchableOpacity>
+        }
       </View>
     </ScrollView>
   )

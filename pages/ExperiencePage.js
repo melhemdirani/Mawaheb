@@ -20,6 +20,7 @@ import {
 const ExperiencePage = ({ navigation }) => {
   const form = {
     role: '',
+    category: '',
     projectTitle: '',
     location: '',
     keyResponsibilities: '',
@@ -31,6 +32,7 @@ const ExperiencePage = ({ navigation }) => {
   }
   const form2 = {
     role: '',
+    category: '',
     projectTitle: '',
     location: '',
     keyResponsibilities: '',
@@ -42,6 +44,7 @@ const ExperiencePage = ({ navigation }) => {
   }
   const form3 = {
     role: '',
+    category: '',
     projectTitle: '',
     location: '',
     keyResponsibilities: '',
@@ -210,9 +213,9 @@ const ExperiencePage = ({ navigation }) => {
             Fill below your latest role and any projects you think would make stand out to potential recruiters.
           </Text>
           <MaskedTitle title="Latest Role "/>
-          <RoleForm handleChange={handleChange} title={"latest"}  role={latestRole.role}/>
+          <RoleForm handleChange={handleChange} title={"latest"}  role={latestRole.role} experience={latestRole}/>
           <MaskedTitle title="Projects that makes you stand out"/>
-          <RoleForm handleChange={handleChange} title="notable" role={notableRole.role}/>
+          <RoleForm handleChange={handleChange} title="notable" role={notableRole.role}  experience={notableRole}/>
           { addIndex > 0 &&
             <View>
               <MaskedTitle title="Add another project"/>
@@ -226,6 +229,7 @@ const ExperiencePage = ({ navigation }) => {
                     onRoleDelete={onRoleDelete} 
                     data={role} 
                     role={role.role}
+                    experience={role}
                   />
                 </View>
               )}

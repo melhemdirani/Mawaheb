@@ -23,7 +23,6 @@ import UploadCard from '../components/UploadCard';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
 import DateInputs from '../components/DateInputs';
 import { handleChange, completedProfile } from '../reduxToolkit/freelancerSlice';
-import DeleteButton2 from '../components/Buttons/DeleteButton2';
 import ImageCard from '../components/ImageCard';
 
 
@@ -67,6 +66,7 @@ const JobSeekersignup2 = ({  navigation, }) => {
         completedProfile(true)
       )
       navigation.navigate('JobSignUp2')
+
  
   }
   else {
@@ -96,6 +96,7 @@ const JobSeekersignup2 = ({  navigation, }) => {
     })
     if (!result.cancelled) {
       !startingToUpload && setStartingTopUpload(true)
+      
       setImage(result.uri)
       upload(result.uri)
     }
@@ -156,7 +157,6 @@ const JobSeekersignup2 = ({  navigation, }) => {
           httpMethod: 'post',
           uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
         },
-        { body: 'back' }
       )
       console.log('response', response)
       console.log('response body', JSON.parse(response.body).imageUrl)

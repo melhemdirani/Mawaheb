@@ -18,11 +18,12 @@ const SelectInput = ({title, list, onSelect, value, valued, setIndex, role}) => 
             setIndex(index)
         }
         onSelect(item)
-       
-
     }
 
-  
+    console.log({
+        valued: valued,
+        value: value
+    })
     const RenderItem = ({ data, index }) => (
         <Pressable style={styles.listItems} onPress={() => onItemClick(data, index)}>
             <Text style={styles.listText}>
@@ -34,7 +35,7 @@ const SelectInput = ({title, list, onSelect, value, valued, setIndex, role}) => 
     return (
         <View style={styles.container}>
             <View style={styles.subContainer}>
-                <Text style={selected ? styles.text2 : styles.text}> {selected === "" ? title : selected}</Text>
+                <Text style={selected ? styles.text2 : styles.text}> {(valued ? value === "" : selected === "") ? title : valued ? value : selected}</Text>
                 <Pressable onPress={() => setShowList(!showList)} style={styles.arrowButton}>
                     <Image
                         style={showList ? [styles.image, styles.rotate] : styles.image}
