@@ -62,7 +62,7 @@ function App() {
   <ActivityIndicator size={'large'} />
   : (
 
-    <Provider store={toolkitStore}>
+    <Provider store={toolkitStore} screenOptions={{headerShown: false}}>
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen

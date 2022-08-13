@@ -24,6 +24,7 @@ import PrimaryButton from '../components/Buttons/PrimaryButton';
 import signUp from '../assets/images/signUp.png';
 import { setUserAfterRegister } from '../reduxToolkit/userSlice';
 import ImageCard from '../components/ImageCard';
+import PhoneInputs from '../components/PhoneInput';
 
 
 const ClientSignupPage = ({navigation}) => {
@@ -47,7 +48,8 @@ const ClientSignupPage = ({navigation}) => {
     TRN: "",
     email:"",
     password:"",
-    profileImage: ""
+    profileImage: "",
+    phoneNb: ""
   }
 
   const [values, setValues] = useState(initialState)
@@ -71,9 +73,7 @@ const ClientSignupPage = ({navigation}) => {
 
 
   const onSubmit = () => {
-    if(!uploaded){
-      return alert("Uploading please wait")
-    }
+  
     const {
       companyName,
       privacy,
@@ -84,8 +84,8 @@ const ClientSignupPage = ({navigation}) => {
       address,
     } = values
     if (privacy === 'private' && (!TRN || !address || !companyName)) {
-      alert('Please fill all fields')
-      return
+
+      return alert('Please fill all fields')
     } else if (
       privacy === 'public' &&
       (!companyName || !signatoryName || !signatoryTitle || !sign)
@@ -130,10 +130,9 @@ const ClientSignupPage = ({navigation}) => {
     })
     if (!result.cancelled) {
       setStartingToUpload(true)
+      setUploaded(false)
       upload(result.uri)
       setImage(result.uri)
-      console.log("uploaded")
-
     }
   }
   const selectFile2 = async () => {
@@ -145,10 +144,9 @@ const ClientSignupPage = ({navigation}) => {
     })
     if (!result.cancelled) {
       setStartingToUpload(true)
+      setUploaded(false)
       upload(result.uri)
       setImage2(result.uri)
-      console.log("uploaded")
-
     }
   }
   const upload = async (uri) => {
@@ -163,7 +161,7 @@ const ClientSignupPage = ({navigation}) => {
           httpMethod: 'post',
           uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
         },
-        { "name": uri }
+        { name: uri }
       )
       setValues({ ...values, profileImage: JSON.parse(response.body).imageUrl })
       setUploaded(true)
@@ -183,7 +181,7 @@ const ClientSignupPage = ({navigation}) => {
           httpMethod: 'post',
           uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
         },
-        { "name": uri }
+        { body : {name: uri} }
       )
       setUploaded2(true)
      } catch (error) {
@@ -210,7 +208,6 @@ const ClientSignupPage = ({navigation}) => {
       <Header title='Client Sign Up' icon={signUp} hidden={false} goBack={navigation.goBack}/>
       <View style={styles.container}>
         <Text style={styles.text}>All you need is to fill your information below and upload a document to create your profile. </Text>
-        <Text style={styles.text}>find the best job for you</Text>
         <View style={styles.form}>
           <Inputs
             placeholder='Company Name*'
@@ -219,14 +216,16 @@ const ClientSignupPage = ({navigation}) => {
             value={values.companyName}
           />
           <Inputs
-            title='Continue to Payment'
             placeholder='Email*'
             onChange={(value) => handleChange('email', value)}
             value={values.email}
           />
-
+          <PhoneInputs
+            placeholder='Phone number*'
+            onChange={(value) => handleChange('phoneNb', value)}
+            value={values.phoneNb}
+          />
           <Inputs
-            title='Continue to Payment'
             placeholder='Password*'
             onChange={(value) => handleChange('password', value)}
             value={values.password}
@@ -339,7 +338,10 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 13,
     fontFamily: 'PoppinsR',
-    color: "rgba(0,0,0,.6)"
+    color: "rgba(0,0,0,.6)",
+    alignSelf: "center",
+    textAlign: "center",
+    width: "80%"
   },
   form: {
     width: '100%',

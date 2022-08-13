@@ -136,14 +136,14 @@ const JobSeekersignup = ({ navigation, route }) => {
     try {
       console.log('trying')
       const response = await FileSystem.uploadAsync(
-        `http://194.5.157.234:4000/api/v1/freelancers/uploadImage`,
+        `http://194.5.157.234:4000/api/v1/auth/uploadImage`,
         uri,
         {
           fieldName: 'files',
           httpMethod: 'post',
           uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
         },
-        { "name": uri }
+        { body: {name: uri }}
       )
       console.log('response', response)
       console.log('response body', JSON.parse(response.body).imageUrl)
