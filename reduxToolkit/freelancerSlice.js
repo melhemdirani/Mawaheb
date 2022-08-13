@@ -38,8 +38,6 @@ export const getFreelancer=createAsyncThunk(
     let url = `/freelancers/${id}`
     try {
       const resp = await customFetch.get(url)
-     
-
       return resp.data
     } catch (error) {
       alert(error.response.data.msg)

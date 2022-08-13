@@ -21,17 +21,18 @@ import Inputs from '../components/Inputs'
 
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import { useSelector, useDispatch } from 'react-redux'
-import { registerUser } from '../reduxToolkit/userSlice'
+import { registerUser, updateUser } from '../reduxToolkit/userSlice'
 import PhoneInputs from '../components/PhoneInput';
 import UploadCard from '../components/UploadCard';
 import ImageCard from '../components/ImageCard';
+import { ObjectIsEqual } from '../components/ObjectIsEqual';
 
 const JobSeekersignup = ({ navigation, route }) => {
 
   const [uploaded, setUploaded] = useState(false)
   const [activity, setActivity] = useState(false)
   const [startUpload, setStartUpload] = useState(false)
-  const [image, setImage] = useState({})
+  const [image, setImage] = useState("")
 
  
   const initialState = {
@@ -51,7 +52,11 @@ const JobSeekersignup = ({ navigation, route }) => {
     setValues({ ...values, [name]: value })
   }
 
+  const navigateNext =() => {
+    console.log("hi")
+    navigation.navigate('JobSignUpb')
 
+  }
   const submit = () => {
     const { name, email, password, phoneNb } = values
     
@@ -63,26 +68,56 @@ const JobSeekersignup = ({ navigation, route }) => {
     if( !validate(email)){
       return alert("Please enter a valid email address")
     }
-    dispatch(
-      registerUser({
-        name: values.name + " " + values.lastName,
-        email: values.email,
-        password: values.password,
-        phoneNb: parseInt(values.phoneNb),
-        role: role,
-        profileImage: image
+    if(user !== undefined && user.length && user.userId.id !== undefined && user !== {}){
+        dispatch(
+          updateUser({
+            name: values.name + " " + values.lastName,
+            email: values.email,
+            password: values.password,  
+            phoneNb: parseInt(values.phoneNb),
+            role: role,
+            profileImage: image
+          }, {userId: user.userId.id})
+        )
+        .unwrap()
+        .then((response) => {
+          console.log("response updating", response)
+          navigateNext()
+        })
+        .catch((error) => {
+          console.log("error updating", values)
+  
+        })
+    } else {
+      console.log("values", values)
+      dispatch(
+        registerUser({
+          name: values.name + " " + values.lastName,
+          email: values.email,
+          password: values.password,  
+          phoneNb: parseInt(values.phoneNb),
+          role: role,
+          profileImage: image
+        })
+      )
+      .unwrap()
+      .then((response) => {
+        console.log("response registiring", response)
+        navigateNext()
       })
-    )
-  }
-  useEffect(() => {
-    console.log("navigating users", Object.keys(user).length !== 0)
-    console.log("navigating users2", user)
-    if (Object.keys(user).length > 0) {
-      user.role === 'freelancer'
-        ? navigation.navigate('JobSignUpb')
-        : navigation.navigate('recruiter_signup')
+      .catch((error) => {
+        if(error === "Email already in use"){
+          alert("This email is already in use, please register using another email address")
+        } else{
+          alert("Error registering")
+        }
+        console.log("error", error)
+
+      })
     }
-  }, [user])
+   
+  }
+
 
   const selectFile = async () => {
     // No permissions request is necessary for launching the image library

@@ -89,7 +89,7 @@ const BankPage = ({  navigation }) => {
           emiratesIdBackSide,
           copyOfPassport,
           copyOfResidencyVisa,
-          isCompleted: true
+          isCompleted: !checkBankEmpty() && isCompleted ? true : false,
         },
         roles: roles,
         languages: languages,

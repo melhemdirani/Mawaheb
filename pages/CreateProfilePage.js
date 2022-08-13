@@ -191,7 +191,7 @@ const CreateProfilePage = ({  navigation }) => {
       />
       <View style={styles.subContainer}>
         <Text style={styles.text}>
-          All you need now is to fill your information below and upload a document to create your profile.
+        Create and verify your profile in less than 2 minutes. Fill in your name and upload a picture of your passport, ID, and Visa
         </Text>
           { 
             passCopy.length && !uploaded

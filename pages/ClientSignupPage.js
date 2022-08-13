@@ -209,7 +209,7 @@ const ClientSignupPage = ({navigation}) => {
     <ScrollView style={styles.wrapper}>
       <Header title='Client Sign Up' icon={signUp} hidden={false} goBack={navigation.goBack}/>
       <View style={styles.container}>
-        <Text style={styles.text}>Answer the questions below in order to </Text>
+        <Text style={styles.text}>All you need is to fill your information below and upload a document to create your profile. </Text>
         <Text style={styles.text}>find the best job for you</Text>
         <View style={styles.form}>
           <Inputs
@@ -401,11 +401,6 @@ const styles = StyleSheet.create({
     marginVertical: 10
   }
 })
-
-const mapDispatchToProps = (dispatch) => ({
-  signIn: (object) => dispatch(signIn(object))
-});
-
 
 
 export default ClientSignupPage

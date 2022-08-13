@@ -20,6 +20,7 @@ import PrimaryButton from '../components/Buttons/PrimaryButton';
 import SelectInput from '../components/SelectInput';
 import DateInputs from '../components/DateInputs';
 import TextArea from '../components/TextArea';
+import DailyRate from '../components/DailyRate';
 
 const JobPostingPage = ({navigation}) => {
   const initialState = {
@@ -112,11 +113,10 @@ const JobPostingPage = ({navigation}) => {
               onChange={(value) => handleChange('yearsOfExperience', value)}
               value={values.yearsOfExperience}
             />
-            <SelectInput
+            <DailyRate
               title='Budget'
-              list={['option1', 'option2', 'option3']}
-              onSelect={(value) => handleChange('budget', value)}
-              value={values.budget}
+              placeholder='Budget*'
+              onChange={(value) => handleChange('budget', value)}
             />
             <TextArea
               placeholder='Job Description*'

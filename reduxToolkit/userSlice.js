@@ -30,18 +30,25 @@ export const registerUser = createAsyncThunk(
   'registerUser',
   async (user, thunkApi) => {
     let url = '/auth/register'
-    console.log("user response", user)
     try {
       const resp = await customFetch.post(url, user)
       return resp.data
     } catch (error) {
       console.log("rrer",error.response.data.msg)
-      if(error.response.data.msg === "Email already in use"){
-        alert("This email is already in use, please register using another email address")
-      } else{
-        alert("Error registering")
-      }
-      console.log("dones")
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+
+  }
+)
+export const updateUser = createAsyncThunk(
+  'updateUser',
+  async (user, userId, thunkApi) => {
+    let url = '/users/updateUser'
+    try {
+      const resp = await customFetch.post(url, userId, user)
+      return resp.data
+    } catch (error) {
+      console.log("rrer",error)
       return thunkApi.rejectWithValue(error.response.data.msg)
     }
 
@@ -99,6 +106,18 @@ const userSlice = createSlice({
       state.user = user
     },
     [registerUser.rejected]: (state, { payload }) => {
+      state.registerIsLoading = false
+      state.registerError = payload
+    },
+    [updateUser.pending]: (state) => {
+      state.registerIsLoading = true
+    },
+    [updateUser.fulfilled]: (state, { payload }) => {
+      const { user } = payload
+      state.registerIsLoading = false
+      state.user = user
+    },
+    [updateUser.rejected]: (state, { payload }) => {
       state.registerIsLoading = false
       state.registerError = payload
     },
