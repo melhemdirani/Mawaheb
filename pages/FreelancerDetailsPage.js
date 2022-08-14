@@ -114,7 +114,7 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
                 <Text
                   style={[styles.title, { backgroundColor: 'transparent' }]}
                 >
-                  Blurred Name
+                  Blurred Names
                 </Text>
               }
             >
@@ -123,7 +123,7 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
                 end={{ x: 1, y: 1 }}
                 colors={['rgba(49, 190, 187, 1)', 'rgba(101, 91, 218, 1)']}
               >
-                <Text style={[styles.title, { opacity: 0 }]}>Blurred Name</Text>
+                <Text style={[styles.title, { opacity: 0 }]}>Blurred Names</Text>
               </LinearGradient>
             </MaskedView>
             <View style={styles.roles}>

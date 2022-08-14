@@ -12,6 +12,7 @@ import {
 import Checkbox from 'expo-checkbox';
 import { useDispatch, useSelector } from 'react-redux'
 import { getFreelancer } from '../reduxToolkit/freelancerSlice';
+import { acceptAndSign } from '../reduxToolkit/clientSlice';
 
 import Header from '../components/Header'
 import jobContractIcon from '../assets/images/jobContractIcon.png'
@@ -50,6 +51,11 @@ const JobContractPage = ({navigation, route}) => {
       .catch((error) => {
         console.log("error", error.message)
       })
+    } else {
+      dispatch(getJob(route.params.action))
+      .unwrap()
+      .then(res => console.log("res, res", res))
+      .catch(err => console.log("err", err))
     }
   }, [])
   const navigateAccept = () => {
@@ -66,16 +72,24 @@ const JobContractPage = ({navigation, route}) => {
         })
       ) .unwrap()
       .then((response) => {
-        console.log("response registiring", response)
-        navigation.navigate('acceptedClient', {role: "client"})
+        console.log("response registiring", response.contract.id)
+        dispatch(acceptAndSign(response.contract.id))
+        .unwrap()
+        .then(() => { 
+          alert("Contract sent to the freelancer, we will let you know when the freelancer signs it")
+          return navigation.navigate('recruiter_dashboard')
+        }). catch(error => {
+          console.log("error", error.message)
+          alert("Job seeker has already accepted a job at this date")
+          return navigation.navigate('recruiter_dashboard')
+        })
       })
       .catch((error) => {
         console.log("error", error.message)
+        alert("Job seeker has already accepted a job at this date")
+        return navigation.navigate('recruiter_dashboard')
       })
     }
-    navigation.navigate('acceptedClient', {role: "client"})
-
-    
     if(route.params !== undefined && route.params.action !== undefined )
       dispatch(acceptContractFreelancer(route.params.action) )
       .unwrap()
@@ -84,7 +98,11 @@ const JobContractPage = ({navigation, route}) => {
         navigation.navigate('acceptedClient', {role: "freelancer"})
       })
       .catch((error) => {
-        console.log("error", error.message)
+        console.log("error", error)
+        if(error.message.includes("time conflict"))
+        alert("Cannot sign")
+        navigation.navigate('seeker_dash')
+
       })
   }
 
@@ -163,7 +181,7 @@ const JobContractPage = ({navigation, route}) => {
               <View style={styles.footer}>
                 <View style={styles.footerInfo}>
                   <Image source={calendarIcon} style={styles.icon}></Image>
-                  <Text style={styles.text}> {job.startDate.slice(0,10)}</Text>
+                  <Text style={styles.text}> {job.startDate && job.startDate.slice(0,10)}</Text>
                 </View>
                 <View style={styles.footerInfo}>
                   <Image source={clockIcon} style={styles.icon}></Image>
@@ -171,7 +189,7 @@ const JobContractPage = ({navigation, route}) => {
                 </View>
                 <View style={styles.footerInfo}>
                   <Image source={locationIcon} style={styles.icon}></Image>
-                  <Text style={styles.text}>{job.location}</Text>
+                  <Text style={styles.text}>{job.location && job.location}</Text>
                 </View>
               </View>
             </LinearGradient>
@@ -214,7 +232,7 @@ const JobContractPage = ({navigation, route}) => {
                 <Text style={[styles.party, { opacity: 0 }]}>First Party</Text>
               </LinearGradient>
             </MaskedView>
-            <Text style={styles.companyName}>{role ==="Company Name"}</Text>
+            <Text style={styles.companyName}>Company Name Blurred</Text>
           </View>
           <View style={styles.partyAndName}>
             <MaskedView

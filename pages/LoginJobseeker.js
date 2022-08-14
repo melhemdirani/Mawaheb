@@ -1,5 +1,5 @@
 
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import React, {useEffect, useState} from 'react';
 
 
@@ -22,12 +22,29 @@ const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
 
     const [password, setPassword] = useState('')
     const [email, setEmail] = useState('')
+    const [loading, setLoading] = useState(false)
 
     const login = async () => {
+        setLoading(true)
         if (email === '' || password === '') {
            return alert("Please fill in email and password")
         } else {
-          dispatch(loginUser({ email, password }))
+            dispatch(loginUser({ email, password }))
+            .unwrap()
+            .then(() =>{
+                setLoading(false)
+
+                if(user.role === 'freelancer'){
+                    navigation.navigate('seeker_dash')
+                } else{
+                    navigation.navigate('recruiter_dashboard')
+                }
+          
+                
+            }).catch(error => {
+                console.log("error", error);
+                setLoading(false);
+            })
         }
     }
     useEffect(()=> {
@@ -40,15 +57,20 @@ const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
         console.log("user", user)
         console.log("userrr", Object.keys(user).length > 0)
         if(Object.keys(user).length > 0){
-            if(user.role === 'freelancer'){
-                navigation.navigate('seeker_dash')
-            } else{
-                navigation.navigate('recruiter_dashboard')
+            if(Object.keys(user).length > 0){
+                if(user.role === 'freelancer'){
+                    navigation.navigate('seeker_dash')
+                } else{
+                    navigation.navigate('recruiter_dashboard')
+                }
             }
         }
     }, [user])
 
-    return (
+    return loading ? <View style={{alignItems: "center", justifyContent: "center", flex: 1}}>
+        <ActivityIndicator size={"large"} />
+    </View>
+    :(
         <View style={styles.container}>
             <Header icon={settingsIcon}  title="Log in" goBack={navigation.goBack}/>
             <View style={styles.container4}>

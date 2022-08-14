@@ -24,6 +24,23 @@ export const createClientProfile = createAsyncThunk(
     }
   }
 )
+
+export const acceptAndSign = createAsyncThunk(
+  'acceptAndSign',
+  async (contractId, thunkAPI) => {// contracts/contractid/sign
+    let url = `/contracts/${contractId}/sign`
+    try {
+      const resp = await customFetch.put(url)
+      console.log("response signed", resp.data)
+      return resp.data
+    } catch (error) {
+      console.log(error)
+      console.log(error.response.data.msg)
+      alert(error.response.data.msg)
+      return thunkAPI.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
 export const getClientDashboard = createAsyncThunk(
   'getClientDashboard',
   async (id, thunkAPI) => {
@@ -41,6 +58,7 @@ export const getClientDashboard = createAsyncThunk(
   }
 )
 
+
 const clientSlice = createSlice({
   name: 'client',
   initialState,
@@ -53,6 +71,9 @@ const clientSlice = createSlice({
       const { client } = payload
       state.isLoading = false
       state.client = client
+    },
+    [acceptAndSign.fulfilled]: (state, { payload }) => {
+      console.log("payloaddd", payload)
     },
     [createClientProfile.rejected]: (state, { payload }) => {
       state.isLoading = false
