@@ -2,7 +2,8 @@ import React, {useState} from 'react';
 import { View, StyleSheet, TouchableOpacity} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { RoleList, listofCities } from '../assets/data/RolesList';
+import SearchableDropdown from 'react-native-searchable-dropdown';
+import { RoleList, countryList } from '../assets/data/RolesList';
 
 import Inputs from './Inputs';
 import SelectInput from './SelectInput';
@@ -12,90 +13,44 @@ import DailyRate from './DailyRate';
 import DateInputs from './DateInputs';
 import DeleteButton from './Buttons/DeleteButton';
 
-function RoleForm({handleChange, title, additional, onRoleDelete, role, experience}) {
-    const [index, setIndex] = useState(0)
-    const [showSub, setShowSub] = useState(false)
-    const onRoleSelect = (value) => {
-       handleChange('category', value, title)
-       setShowSub(true)
-    }
-    const list = RoleList.map(role => role.category)
-    console.log("experience", experience)
+function RoleForm({handleChange, title, index, experience}) {
     return (
         <View style={styles.subContainer}>
-            <SelectInput 
-                title="Role Category*" 
-                list={list}
-                onSelect={(value) => onRoleSelect(value)}
-                setIndex={setIndex}
-                role={true}
-                value={experience.category}
-                valued
-            /> 
-           { showSub &&
-                <SelectInput 
-                    title="Role Subcategory*" 
-                    list={RoleList[index].subCategories}
-                    onSelect={(value) => handleChange('role', value, title)}
-                    value={experience.role}
-                    valued
-                 /> 
-            }
             <Inputs  
                 placeholder="Project Title*"
-                onChange={(value) => handleChange('projectTitle', value, title)}
-                value={experience.projecTitle}
+                onChange={(value) => handleChange('projectTitle', value, index, title)}
+                value={experience.projectTitle}
             /> 
             <SelectInput 
                 title="Location*" 
                 placeholder="First Name" 
-                onSelect={(value) => handleChange('location', value, title)}
-                list={listofCities}
+                onSelect={(value) => handleChange('location', value, index, title)}
+                list={countryList}
                 valued
                 value={experience.location}
             /> 
             <TextArea  
                 placeholder="Your key responsibilities" 
-                onChange={(value) => handleChange('keyResponsibilities', value, title)}
+                onChange={(value) => handleChange('keyResponsibilities', value, index, title)}
                 value={experience.keyResponsibilities}
             /> 
-            <DailyRate  
-                placeholder="Your daily wages*"
-                onChange={(value) => handleChange('dailyRate', parseInt(value), title)}
-            />
             <DateInputs 
                 placeholder="Role Start Date*"
-                onChange={(value) => handleChange('startDate', value, title)}
+                onChange={(value) => handleChange('startDate', value, index, title)}
             /> 
             <DateInputs 
                 placeholder="Role End Date*"
-                onChange={(value) => handleChange('endDate', value, title)}
-            /> 
-
-            {
-                additional && 
-                <TouchableOpacity style={styles.DeleteButton} onPress={() => onRoleDelete(title)}>
-                    <DeleteButton title={"Delete Role"}/>
-                </TouchableOpacity>
-            }
-
-            <LinearGradient
-                start={{x:0, y: 0}}
-                end={{x:1, y: 1}}
-                colors={['#31BEBB', '#655BDA' ]}
-                style={{height: 5, width: "100%", marginTop: 5}}
-            />          
+                onChange={(value) => handleChange('endDate', value, index, title)}
+            />         
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     subContainer:{
-      alignItems: "center",
       paddingTop: 30,
-    },
-    DeleteButton:{
-        marginVertical: 40
+      width: "100%",
+      alignItems: "center"
     },
     subContainer2:{
       alignItems: "center",

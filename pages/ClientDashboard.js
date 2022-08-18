@@ -24,34 +24,44 @@ import totalBg from '../assets/images/totalBg.png'
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import SimplePaginationDot from '../components/SimplePaginationDot'
 import { ActivityIndicator } from 'react-native'
+import JobClient from '../components/JobClient'
 
-const ClientDashboard = ({ navigation }) => {
+const ClientDashboard = ({ navigation, route }) => {
   const { width: windowWidth } = Dimensions.get('window')
   const { client, clientDashboard, isLoading } = useSelector(
     (store) => store.client
   )
   const { user } = useSelector((store) => store.user)
-  const { currentJobs, numOfJobs, numOfContracts, pastJobs } = clientDashboard
-  const [fetched, setFetched] = useState(false)
-
+  const { job } = useSelector((store) => store.user)
+  const { numOfJobs, numOfContracts } = clientDashboard
+  const [loading, setLoading] = useState(false)
   const dispatch = useDispatch()
-
+    
+  const [currentJobs, setCurrentJobs] = useState({})
+  const [pastJobs, setPastJobs] = useState({})
   useEffect(() => {
+    setLoading(true)
     dispatch(getClientDashboard(user?.clientId || client.id))
-    setFetched(true)
-    console.log('clientDashboard', clientDashboard)
-  }, [])
+    .unwrap()
+    .then((res) =>  { 
+        setCurrentJobs(res.currentJobs); 
+        setPastJobs(res.pastJobs); 
+        setLoading(false) 
+    })
+    .catch(err => {console.log("error getting client dashboard", err);    setLoading(false)})
+  }, [route])
 
   const [currentIndex, setCurrentIndex] = useState(0)
   const carouselRef = React.useRef()
   function handleCarouselScrollEnd(item, index) {
     setCurrentIndex(index)
   }
-  const navigate = (i) => {
-    navigation.navigate('jobDescription', { myjobs: true, data: Data[i] })
+  const navigate = (id) => {
+    navigation.navigate('jobDescriptionClient', { job: id })
   }
 
   const renderItem = ({ item, index }) => {
+
     return (
       <TouchableOpacity
         style={styles.item}
@@ -59,16 +69,13 @@ const ClientDashboard = ({ navigation }) => {
           carouselRef.current.scrollToIndex(index)
         }}
       >
-        <Job
+        <JobClient
           heart={true}
-          client
-          disabled
           current={true}
-          title={item.title}
           description={item.description}
-          price={item.price}
           navigate={navigate}
           id={item.id}
+          item={item}
         />
       </TouchableOpacity>
     )
@@ -76,18 +83,16 @@ const ClientDashboard = ({ navigation }) => {
 
   const RenderItem = (data) => {
     let lastOne = data.index === pastJobs.length - 1 ? true : false
-
     return (
       <View style={styles.renderItem}>
-        <Job
-          title={data.data.title}
+        <JobClient
           description={data.data.description}
           price={data.data.budget}
           lastOne={lastOne}
           heart={true}
           id={data.id}
+          item={data.data}
           navigate={navigate}
-          disabled
         />
       </View>
     )
@@ -151,7 +156,10 @@ const ClientDashboard = ({ navigation }) => {
   const navigatePosting = () => {
     navigation.navigate('jobPosting')
   }
-  return (
+  return loading ? <View>
+    <ActivityIndicator size={"large"} />
+  </View>
+  :(
     <View style={styles.container}>
       <ScrollView style={styles.container4}>
         <SecondaryHeader title={'Welcome'} heart={true} />

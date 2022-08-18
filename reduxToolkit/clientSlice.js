@@ -47,7 +47,22 @@ export const getClientDashboard = createAsyncThunk(
     let url = `/clients/${id}/dashboard`
     try {
       const resp = await customFetch.get(url)
-      console.log('get client', resp.data)
+      return resp.data
+    } catch (error) {
+      console.log(error)
+      console.log(error.response.data.msg)
+      alert(error.response.data.msg)
+      return thunkAPI.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
+
+export const getClientbyId = createAsyncThunk(
+  'getClientbyId',
+  async (id, thunkAPI) => {
+    let url = `/clients/${id}/`
+    try {
+      const resp = await customFetch.get(url)
       return resp.data
     } catch (error) {
       console.log(error)

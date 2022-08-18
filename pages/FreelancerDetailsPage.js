@@ -22,37 +22,29 @@ import languageIcon from '../assets/images/LanguageIcon.png'
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import minusIcon from '../assets/images/minusIcon.png'
 import { useSelector, useDispatch } from 'react-redux'
-import { getFreelancer } from '../reduxToolkit/freelancerSlice'
-import { createContract } from '../reduxToolkit/jobSlice'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const FreelancerDetailsPage = ({ navigation, route }) => {
-  const { id: freelancerId, price, location, jobId, isLoading } = route.params
-  let invite = jobId === "job.id" ? true : false
-  const { freelancer } = useSelector((state) => state.freelancer)
+  const { freelancer,  jobId} = route.params
+  // let invite = jobId === "job.id" ? true : false
+  let invite = false
   const { client } = useSelector((state) => state.client)
   const { user: userState } = useSelector((state) => state.user)
   const [loaded, setLoaded] = useState(false)
 
+
+  console.log("freelancer details passgsses",freelancer)
   const dispatch = useDispatch()
   const navigateContract = () => {
    if(invite){
       alert("Invitation sent!")
       navigation.navigate('recruiter_dashboard')
     } else{
-       navigation.navigate('acceptContract', {role : 'client', freelancerId, client, userState, jobId})
+       navigation.navigate('acceptContract', {role : 'client', freelancerId: freelancer.id, userState, jobId})
     }
   }
-  useLayoutEffect(() => {
-    if(!loaded){
-      dispatch(getFreelancer(freelancerId))   
-      setLoaded(true)
-    }
-  }, [freelancerId])
-  if (Object.keys(freelancer).length === 0) {
-    return <Text>Loading</Text>
-  }
-  const { id, user, roles, languages } = freelancer
+
+
   const uniqueIds = [];
 
   const newLanguages = freelancer.languages.filter(element => {
@@ -67,22 +59,24 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
     return false;
   });
 
-  return !loaded
-    ? <View style={{marginTop: 400}}>
-        <ActivityIndicator size={"large"}/>
-      </View>
-    :(
+  return (
     <ScrollView style={styles.wrapper}>
       <View style={styles.header}>
         <View style={styles.subHeader}>
-          <View style={styles.circle} />
+        { freelancer.user.profileImage.length &&
+          <Image      
+              source={{uri: `http://194.5.157.234:4000${freelancer.user.profileImage}`}} 
+              style={styles.profileImage}
+              blurRadius={7}
+            />
+          }
           <ImageBackground
             source={priceRectangle}
             style={styles.priceBg}
             resizeMode='contain'
           >
             <View style={styles.priceAndCurrency}>
-              <Text style={styles.price}>{price} </Text>
+              <Text style={styles.price}>{freelancer.roles[0].dailyRate} </Text>
               <Text style={styles.currency}>AED</Text>
             </View>
           </ImageBackground>
@@ -109,12 +103,12 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
       >
         <View style={[styles.container, styles.shadow]}>
           <View style={styles.info}>
-            <MaskedView
+            {/* <MaskedView
               maskElement={
                 <Text
-                  style={[styles.title, { backgroundColor: 'transparent' }]}
+                  style={[styles.title, { backgroundColor: 'transparent',  }]}
                 >
-                  Blurred Names
+                  {freelancer.user.name}
                 </Text>
               }
             >
@@ -123,11 +117,15 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
                 end={{ x: 1, y: 1 }}
                 colors={['rgba(49, 190, 187, 1)', 'rgba(101, 91, 218, 1)']}
               >
-                <Text style={[styles.title, { opacity: 0 }]}>Blurred Names</Text>
+                <Text style={[styles.title, { opacity: 0 }]}> {freelancer.user.name}</Text>
               </LinearGradient>
-            </MaskedView>
+            </MaskedView> */}
+            <View>
+              <Text style={[styles.title, {color: "rgba(202, 218, 221, 0.2)"}]}> {freelancer.user.name}</Text>
+
+            </View>
             <View style={styles.roles}>
-              {roles.map((role) => {
+              {freelancer.roles.map((role) => {
                 return (
                   <View key={role.id} style={styles.role}>
                     <View style={{ paddingHorizontal: 20 }}>
@@ -143,7 +141,7 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
                           source={calendarIcon}
                           style={styles.calendarIcon}
                         />
-                        <Text style={styles.roleDateText}>{role.endDate}</Text>
+                        <Text style={styles.roleDateText}>{role.startDate} - {role.endDate}</Text>
                       </View>
                     </View>
                   </View>
@@ -155,7 +153,7 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
             <Image source={languageIcon} style={styles.languageIcon}></Image>
             {newLanguages.length > 0 && newLanguages.map((item, i) => {
               return (
-                <View key={item.id}>
+                <View key={item.id} key={i}>
                   <Text  style={styles.language}>
                     {item.name}
                   </Text>
@@ -179,7 +177,7 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
             </View>
             <View style={styles.footerInfo}>
               <Image source={locationIcon} style={styles.icon}></Image>
-              <Text style={styles.text}>{location}</Text>
+              <Text style={styles.text}>{freelancer.roles[0].location}</Text>
             </View>
           </LinearGradient>
         </View>
@@ -230,6 +228,23 @@ const styles = StyleSheet.create({
     marginEnd: 80,
     left: 20,
     width: '100%',
+    shadowColor: "rgba(101, 91, 218, 1)",
+    shadowOffset: {
+      width: 5,
+      height: -4,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 4,
+    textTransform: "capitalize",
+    fontWeight: "bold",
+    elevation: 10,
+    textShadowColor: "rgba(101, 91, 218, 9)",
+    textShadowOffset: {
+      width: -4,
+      height: 4,
+    },
+    textShadowRadius: 7,
+    textTransform: "capitalize",
   },
   footerInfo: {
     flexDirection: 'row',
@@ -237,14 +252,13 @@ const styles = StyleSheet.create({
     paddingTop: 7,
     marginRight: 30
   },
-  circle: {
+  profileImage: {
     width: 80,
     height: 80,
     borderRadius: 50,
-    borderColor: ' rgba(16, 125, 197, 1)',
+    borderColor: 'white',
     borderWidth: 1,
-    zIndex: 999,
-    backgroundColor: 'white',
+    backgroundColor: "white"
   },
   priceBg: {
     width: 130,

@@ -40,6 +40,9 @@ const BankPage = ({  navigation }) => {
     languages,
   } = useSelector((store) => store.freelancer)
 
+  const {user} = useSelector(store => store.user)
+  console.log("userr", user)
+
   const [isCompleted, setIsCompleted] = useState(true)
 
   const checkComplete = () => {
@@ -80,6 +83,7 @@ const BankPage = ({  navigation }) => {
 
  
   const createJobSeeker = () => {
+    console.log("roles", roles)
     dispatch(
       createFreelancerProfile({
         profile: {

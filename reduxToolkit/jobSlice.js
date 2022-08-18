@@ -13,7 +13,7 @@ const initialState = {
   isLoadingFreelancers: true
 }
 export const createJob = createAsyncThunk(
-  'createJobPost',
+  'createJob',
   async (job, thunkApi) => {
     let url = '/jobs'
     try {
@@ -25,14 +25,13 @@ export const createJob = createAsyncThunk(
     }
   }
 )
-export const getAllJobs = createAsyncThunk(
+export const  getAllJobs = createAsyncThunk(
   'getAllJobs',
-  async (id, thunkApi) => {
-    let url = `jobs/${id}/freelancerJobs`
-    console.log("url", url)
+  async (filters, thunkApi) => {
+    let url = `jobs/${filters.id}/filteredjobs?${filters.filters}`
+
     try {
       const resp = await customFetch.get(url)
-
       return ("all jobs",resp.data)
     } catch (error) {
 
@@ -57,10 +56,8 @@ export const applyJob = createAsyncThunk(
     let url = '/proposals'
     try {
       const resp = await customFetch.post(url, proposal)
-      console.log("resp.data applied", resp.data)
       return resp.data
     } catch (error) {
-      console.log("error applying", error)
       return thunkApi.rejectWithValue(error.response.data.msg)
     }
   }
@@ -112,7 +109,7 @@ export const getMyJobs = createAsyncThunk('getMyJobs', async (id, thunkApi) => {
     const resp = await customFetch.get(url)
     return resp.data
   } catch (error) {
-    console.log(error.response.data.msg)
+    console.log("error getting my jobs",error.response.data.msg)
     return thunkApi.rejectWithValue(error.response.data.msg)
   }
 })

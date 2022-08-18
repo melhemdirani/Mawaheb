@@ -29,9 +29,9 @@ import btnBackground from '../assets/images/btnBackground.png'
 import { acceptContractFreelancer } from '../reduxToolkit/freelancerSlice';
 import { createContract, getJob } from '../reduxToolkit/jobSlice';
 
-const JobContractPage = ({navigation, route}) => {
+const JobContractPageClient = ({navigation, route}) => {
   const [isChecked, setChecked] = useState(false);
-  const { id, title, price, roles, languages, location, shift } = freelancerDetails
+  const {  roles } = freelancerDetails
   const { id: roleId, description, name, date } = roles[0]
   const {role, freelancerId, client, userState, jobId} = route.params
   const dispatch = useDispatch()
@@ -108,7 +108,7 @@ const JobContractPage = ({navigation, route}) => {
         alert("Cannot sign")
         return navigation.navigate('seeker_dash')
 
-      })
+      })    
     }
   }
 
@@ -583,4 +583,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default JobContractPage
+export default JobContractPageClient

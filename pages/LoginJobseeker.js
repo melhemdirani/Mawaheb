@@ -29,12 +29,11 @@ const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
         if (email === '' || password === '') {
            return alert("Please fill in email and password")
         } else {
-            dispatch(loginUser({ email, password }))
+            dispatch(loginUser({ email: email.toLocaleLowerCase(), password }))
             .unwrap()
-            .then(() =>{
+            .then((res) =>{
                 setLoading(false)
-
-                if(user.role === 'freelancer'){
+                if(res.user.role === 'freelancer'){
                     navigation.navigate('seeker_dash')
                 } else{
                     navigation.navigate('recruiter_dashboard')
@@ -47,25 +46,9 @@ const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
             })
         }
     }
-    useEffect(()=> {
-        console.log("email", email)
-        console.log("password", password)
 
-    }, [email, password])
   
-    useEffect(() => {
-        console.log("user", user)
-        console.log("userrr", Object.keys(user).length > 0)
-        if(Object.keys(user).length > 0){
-            if(Object.keys(user).length > 0){
-                if(user.role === 'freelancer'){
-                    navigation.navigate('seeker_dash')
-                } else{
-                    navigation.navigate('recruiter_dashboard')
-                }
-            }
-        }
-    }, [user])
+
 
     return loading ? <View style={{alignItems: "center", justifyContent: "center", flex: 1}}>
         <ActivityIndicator size={"large"} />

@@ -21,6 +21,7 @@ import PrimaryButton from '../components/Buttons/PrimaryButton'
 import minusIcon from '../assets/images/minusIcon.png'
 import { useSelector, useDispatch } from 'react-redux'
 import { getFreelancer } from '../reduxToolkit/freelancerSlice'
+import { getClientbyId } from '../reduxToolkit/clientSlice'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const ClientProfile = ({ navigation, route }) => {
@@ -28,14 +29,26 @@ const ClientProfile = ({ navigation, route }) => {
   const { user } = useSelector((state) => state.user)
   const { client } = useSelector((state) => state.client)
 
-  const [loaded, setLoaded] = useState(false)
+  const [clientProfile, setClientProfile] = useState({})
+
+  const [loaded, setLoaded] = useState(true)
 
   const dispatch = useDispatch()
 
   useEffect(() => {
-    console.log("user", user)
-    console.log("client", client)
-  }, [user])
+    setLoaded(true)
+    dispatch(getClientbyId(user.clientId))
+    .unwrap()
+    .then(res => {
+      setClientProfile(res.client)
+      setLoaded(false)
+    })
+    .catch(err =>{
+       console.log("error", err)
+       setLoaded(false)
+      })
+
+  }, [user, client])
 
 //   useLayoutEffect(() => {
 //     if(!loaded){
@@ -45,15 +58,20 @@ const ClientProfile = ({ navigation, route }) => {
 
 
 
-  return !loaded 
-    ? <View style={{marginTop: 400}}>
+  return  loaded ? <View style={{marginTop: 400}}>
         <ActivityIndicator size={"large"}/>
       </View>
     :(
     <ScrollView style={styles.wrapper}>
       <View style={styles.header}>
         <View style={styles.subHeader}>
-          <View style={styles.circle} />
+          {
+            clientProfile.user.profileImage !== undefined
+            ? <Image source={{uri: `http://194.5.157.234:4000${clientProfile.user.profileImage}`}} style={styles.profileImage}/>
+            : <View style={styles.circle} />
+
+          }
+
         </View>
         <View style={styles.subHeader}>
           <Pressable onPress={() => navigation.goBack()}>
@@ -81,7 +99,7 @@ const ClientProfile = ({ navigation, route }) => {
                 <Text
                   style={[styles.title, { backgroundColor: 'transparent' }]}
                 >
-                  {users.name}
+                  {clientProfile.companyName}
                 </Text>
               }
             >
@@ -90,43 +108,27 @@ const ClientProfile = ({ navigation, route }) => {
                 end={{ x: 1, y: 1 }}
                 colors={['rgba(49, 190, 187, 1)', 'rgba(101, 91, 218, 1)']}
               >
-                <Text style={[styles.title, { opacity: 0 }]}>Blurred Name</Text>
+                <Text style={[styles.title, { opacity: 0 }]}> {clientProfile.companyName}</Text>
               </LinearGradient>
             </MaskedView>
-            <View style={styles.roles}>
-              {roles.map((role) => {
-                return (
-                  <View key={role.id} style={styles.role}>
-                    <View style={{ paddingHorizontal: 20 }}>
-                      <Text style={styles.roleName}>{role.role}</Text>
-                      <Text style={styles.roleDescription}>
-                        {role.projectTitle}
-                      </Text>
-                      <Text style={styles.roleDescription}>
-                       Key responsibilities: {role.keyResponsibilities}
-                      </Text>
-                      <View style={styles.roleDate}>
-                        <Image
-                          source={calendarIcon}
-                          style={styles.calendarIcon}
-                        />
-                        <Text style={styles.roleDateText}>{role.endDate}</Text>
-                      </View>
-                    </View>
-                  </View>
-                )
-              })}
+            <View>
+              <Text style={styles.text}>Company type: {clientProfile.privacy}</Text>
+             
+              {
+                clientProfile.privacy === "public"
+                ?<View style={styles.descriptionContainer}>
+                  <Text style={styles.text}>Signatory name: {clientProfile.signatoryName}</Text>
+                  <Text style={styles.text}>Signatory title: {clientProfile.signatoryTitle}</Text>
+                  <Image source={{uri: `http://194.5.157.234:4000${clientProfile.sign}`}} style={styles.Imagecontainer}/>
+                </View>
+                :<View style={styles.descriptionContainer}>
+                  <Text style={styles.text}>TRN: {clientProfile.TRN}</Text>
+                  <Text style={styles.text}>Address: {clientProfile.Address}</Text>
+                  <Image source={{uri: `http://194.5.157.234:4000${clientProfile.tradingLicense}`}} style={styles.Imagecontainer}/>
+                </View>
+              }
+
             </View>
-          </View>
-          <View style={styles.languages}>
-            <Image source={languageIcon} style={styles.languageIcon}></Image>
-            {languages.map((item) => {
-              return (
-                <Text key={item.id} style={styles.language}>
-                  {item.name}
-                </Text>
-              )
-            })}
           </View>
           <LinearGradient
             colors={[
@@ -140,11 +142,11 @@ const ClientProfile = ({ navigation, route }) => {
           >
             <View style={styles.footerInfo}>
               <Image source={clockIcon} style={styles.icon}></Image>
-              <Text style={styles.text}>Day shift</Text>
+              <Text style={styles.text}>{clientProfile.user.phoneNb}</Text>
             </View>
             <View style={styles.footerInfo}>
               <Image source={locationIcon} style={styles.icon}></Image>
-              <Text style={styles.text}>location</Text>
+              <Text style={styles.text}>{clientProfile.user.email}</Text>
             </View>
           </LinearGradient>
         </View>
@@ -325,5 +327,20 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingLeft: 20,
   },
+  profileImage:{
+    width: 100,
+    height: 100,
+    borderRadius: 50
+  },
+  Imagecontainer: {
+    justifyContent: 'center',
+    height: 230,
+    width: '85%',
+    borderRadius: 20,
+    marginVertical: 10,
+  },
+  descriptionContainer:{
+    width: "100%"
+  }
 })
 export default ClientProfile

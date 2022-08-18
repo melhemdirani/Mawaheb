@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -17,15 +17,13 @@ import { ScrollView } from 'react-native-gesture-handler';
   
 
 
-export default function RenderMyjobs({data, navigate,showApplicantsTitle, setShowApplicantsTitle, setShowFreelancers}) {
+export default function RenderMyjobs({data, navigate,showApplicantsTitle, setShowApplicantsTitle}) {
     const [showApplicants, setShowApplicants] = useState(false)
     const handlePress = () => {
         if(showApplicants){
             setShowApplicantsTitle("all")
-            setShowFreelancers(true)
         } else{
-            setShowApplicantsTitle(data.title)
-            setShowFreelancers(false)
+            setShowApplicantsTitle(data.id)
         }
         setShowApplicants(!showApplicants)
     }
@@ -37,13 +35,19 @@ export default function RenderMyjobs({data, navigate,showApplicantsTitle, setSho
                 navigate={navigate}
                 style={styles.jobs}
                 job={data}
+                item={item}
             />
         ): <Text>No proposals yet</Text>
     }
+    useEffect(() => {
+        if(showApplicantsTitle === data.id && !showApplicants ){
+            setShowApplicants(true)
+        }
+    }, [showApplicantsTitle])
     if (!data) {    
     return <Text>Loading</Text>
     }
-    return (showApplicantsTitle === data.title || showApplicantsTitle === "all") && (
+    return (showApplicantsTitle === data.id || showApplicantsTitle === "all") && (
     <View style={showApplicants ? styles.container2 : styles.container}>
         <Pressable style={styles.title} onPress={()=>handlePress()}>
             <MaskedView

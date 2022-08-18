@@ -10,99 +10,109 @@ import {
 
 import { useDispatch } from 'react-redux';
 
+import { languagesList } from '../assets/data/RolesList';
 import Header from '../components/Header';
 import icon from '../assets/images/language.png';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
 import SelectInput from '../components/SelectInput';
 import AddRoleButton from '../components/Buttons/AddRoleButton';
 import { addLanguage } from '../reduxToolkit/freelancerSlice';
+import DeleteButton from '../components/Buttons/DeleteButton';
 const LanguagePage = ({ navigation }) => {
   
-  const [addedLanguages, setAddedLanguages] = useState([])
+  // const [alreadyExists, setAlreadyExists] = useState(-1)
 
   const dispatch = useDispatch()
   const mainLanguageState = {
     name: '',
     profeciency: '',
+    already: false
   }
-  const secondaryLanguageState = {
-    name: '',
-    profeciency: '',
-  }
-  const [mainLanguage, setMainLanguage] = React.useState(mainLanguageState)
-  const [secondaryLanguage, setSecondaryLanguage] = React.useState(
-    secondaryLanguageState
-  )
+  const [languages, setLanguages] = useState([mainLanguageState, mainLanguageState])
+  const [chosenSame, setChosenSame] = useState(false) 
 
+
+  const handleLanguageChange = (name, value, index) => {
+    let alreadyExists = false
+    languages.map( (language, i) =>{
+      if(language.name === value){
+        alreadyExists= true
+      }
+    })
+
+    if(alreadyExists && name === 'name'){
+      setChosenSame(true)
+      setLanguages(data =>{
+        return [ 
+          ...data.slice(0, index), 
+          { 
+            ...data[index], 
+            [name] :value,
+            already: true
+          },
+            ...data.slice(index+1)
+        ]
+      });
+    } else{
+      setChosenSame(false)
+      setLanguages(data => {
+        return [ 
+          ...data.slice(0, index), 
+          { 
+            ...data[index], 
+            [name] :value,
+            already: false
+          },
+            ...data.slice(index+1)
+        ]
+      });
+    }
+ 
+  }
   const navigateBank = () => {
-    const { name, profeciency } = mainLanguage
-    const { name: name2, profeciency: profeciency2 } = secondaryLanguage
-    if (!name || !profeciency || !name2 || !profeciency2) {
-      alert('Please fill all the fields')
-      return
-    } else {
-      dispatch(addLanguage(mainLanguage))
-      dispatch(addLanguage(secondaryLanguage))
-      addedLanguages.map(language => 
-        dispatch(addLanguage(language))
-      )
+
+    if(chosenSame){
+      return alert("Please choose different languages")
+    } 
+    notFilled = false
+    const alllanguages =   languages.map(language => {
+      if(language.name === '' || language.profeciency === ''){
+        notFilled = true
+      }
+      let object = {name: language.name, profeciency: language.profeciency}
+       return(
+        object
+       )
+    })
+    console.log("all", alllanguages)
+
+    if(notFilled){
+      return(alert("Please fill all required fields*"))
+    } else{
+      dispatch(addLanguage(alllanguages))
       navigation.navigate('bank')
     }
-  }
-  const handleMainLanguageChange = (name, value) => {
-    console.log(name, value)
-    setMainLanguage({ ...mainLanguage, [name]: value })
-  }
-  const handleSecondaryLanguageChange = (name, value) => {
-    console.log(name, value)
-    setSecondaryLanguage({ ...secondaryLanguage, [name]: value })
-  }
-  const handleAdditionalLanguages = (name, value, i) => {
-    setAddedLanguages(data => {
-      return [ ...data.slice(0, i), 
-        {...data[i], [name]: value },
-          ...data.slice(i + 1)]
-    });
-
-
+    
+    // languages.map(language => 
+    //   dispatch(addLanguage(language.name))
+    // )
+    // navigation.navigate('bank')
   }
 
-
-  const RenderAddedIndex = () => {
-    return  (
-      <View style={{width: "100%"}}>
-        {
-          addedLanguages.map((e, i) =>
-          <View key={i} style={{width: "100%", alignItems: "center"}}>
-            <SelectInput
-              title='Language*'
-              list={['English', 'Arabic', 'French']}
-              onSelect={(value) => handleAdditionalLanguages('name', value, i)}
-              valued
-              value={e.name}
-            />
-            <SelectInput
-              title='Profeciency*'
-              list={['beginner', 'intermediate', 'advanced']}
-              onSelect={(value) => handleAdditionalLanguages('profeciency', value, i)}
-              valued
-              value={e.profeciency}
-            />
-          </View>
-        )}
-      </View>
-
-    )
-  }
+  const [languagesArray, setLanguagesArray] = useState(languagesList)
 
   const handleAddButton = () => {
-
-    setAddedLanguages(
-      data => ([
+    setLanguages(data => {
+      return [ 
         ...data,
         mainLanguageState
-      ])
-    )
+      ]
+    });
+  }
+  const onDeleteLanguage = (index) => {
+    setLanguages(data => {
+      return [ ...data.slice(0, index),  ...data.slice(index+1)]
+    });
   }
   return (
     <ScrollView style={styles.container}>
@@ -118,28 +128,34 @@ const LanguagePage = ({ navigation }) => {
         <Text style={styles.text}>
           Add below the languages you can speak and your level of influency for more accurate results.
         </Text>
-        <SelectInput
-          title='Main Language*'
-          list={['English', 'Arabic', 'French']}
-          onSelect={(value) => handleMainLanguageChange('name', value)}
-        />
-        <SelectInput
-          title='Profeciency*'
-          list={['beginner', 'intermediate', 'advanced']}
-          onSelect={(value) => handleMainLanguageChange('profeciency', value)}
-        />
-        <SelectInput
-          title='Secondary Language*'
-          list={['English', 'Arabic', 'French']}
-          onSelect={(value) => handleSecondaryLanguageChange('name', value)}
-
-        />
-        <SelectInput
-          title='Profeciency*'
-          list={['beginner', 'intermediate', 'advanced']}
-          onSelect={(value) => handleSecondaryLanguageChange('profeciency', value)}
-        />
-        {addedLanguages.length > 0 && <RenderAddedIndex />}
+        {
+          languages.map((language, i) => 
+            <View style={{width: "100%", alignItems: "center", marginVertical: 10}} key={i}>
+            
+               <SelectInput
+                title={i == 0 ? 'Main Language*' : i == 1 ? 'Secondary Language*' : 'Additional Language'}
+                list={languagesArray}
+                languages
+                valued
+                value={language.name}
+                onSelect={(value) => handleLanguageChange('name', value, i)}
+                already={language.already}
+              />
+              <SelectInput
+                title='Profeciency*'
+                list={['Beginner', 'Intermediate', 'Advanced', 'Native']}
+                onSelect={(value) => handleLanguageChange('profeciency', value.toLowerCase(), i)}
+                valued
+                value={language.profeciency}
+              />
+              {
+                i > 1 && <Pressable style={{marginBottom: 20}} onPress={() => onDeleteLanguage(i)}>
+                  <DeleteButton title="Delete" />
+                </Pressable>
+              }
+            </View>
+          )
+        }
         <Pressable style={styles.addButton} onPress={() => handleAddButton()}>
           <AddRoleButton title='Add another language' />
         </Pressable>

@@ -142,6 +142,8 @@ const JobSeekersignup2 = ({  navigation, }) => {
 
       } catch (error) {
         console.log(error)
+        setUploaded(false)
+        alert("Error uploading")
       }
 
   }
@@ -171,6 +173,8 @@ const JobSeekersignup2 = ({  navigation, }) => {
 
     } catch (error) {
       console.log(error)
+      setUploaded2(false)
+      alert("Error uploading")
     }
   }
 
@@ -222,7 +226,15 @@ const JobSeekersignup2 = ({  navigation, }) => {
           <Text style={styles.text}>
             Create and verify your profile in less than 2 minutes. Fill in your name and upload a picture of your passport, ID, and Visa.
           </Text> 
-          <DateInputs 
+          <Inputs 
+            title='Post Job' 
+            placeholder='Emirates ID Number*'  
+            numeric
+            onChange={(value) =>
+              dispatch(handleChange({ name: 'emiratesId', value }))
+            }
+          />
+              <DateInputs 
             placeholder='Expiration Date*'
             onChange={(value) =>
               dispatch(
@@ -233,14 +245,6 @@ const JobSeekersignup2 = ({  navigation, }) => {
               )
             }
             value={values.expirationDate}
-          />
-          <Inputs 
-            title='Post Job' 
-            placeholder='Emirates ID Number*'  
-            numeric
-            onChange={(value) =>
-              dispatch(handleChange({ name: 'emiratesId', value }))
-            }
           />
           { 
             image.length && !uploaded

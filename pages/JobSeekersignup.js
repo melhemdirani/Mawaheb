@@ -69,6 +69,9 @@ const JobSeekersignup = ({ navigation, route }) => {
     if (!name || !email || !password || !phoneNb) {
       return alert('Please fill all the fields')
     } 
+    if(activity){
+      alert("Please white while we upload your profile photo")
+    }
     if( !validate(email)){
       return alert("Please enter a valid email address")
     }
@@ -79,7 +82,7 @@ const JobSeekersignup = ({ navigation, route }) => {
         dispatch(
           updateUser({
             name: values.name + " " + values.lastName,
-            email: values.email,
+            email: values.email.toLocaleLowerCase(),
             phoneNb: values.phoneNb,
             role: role,
             profileImage: uploadedImage,
@@ -174,6 +177,8 @@ const JobSeekersignup = ({ navigation, route }) => {
 
     } catch (error) {
       console.log(error)
+      setUploaded(false)
+      alert("Error uploading")
     }
   }
   const onImageDelete = () => {
@@ -227,7 +232,7 @@ const JobSeekersignup = ({ navigation, route }) => {
               />
               <Inputs
                 placeholder='Email*'
-                onChange={(value) => handleChange('email', value)}
+                onChange={(value) => handleChange('email', value.toLocaleLowerCase())}
                 value={values.email}
               />
 

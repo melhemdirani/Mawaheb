@@ -21,7 +21,7 @@ import Navbar from '../components/Navbar'
 import backgroundImage from '../assets/images/currentBg.png'
 import totalBg from '../assets/images/totalBg.png'
 
-const JobseekerDashboard = ({ navigation }) => {
+const JobseekerDashboard = ({ navigation, route }) => {
   const { user } = useSelector((store) => store.user)
   const { dashboard, isLoading } = useSelector((store) => store.freelancer)
   const { currentJobs, pastJobs, totalWorkingTime, totalCashEarned } = dashboard
@@ -34,66 +34,17 @@ const JobseekerDashboard = ({ navigation }) => {
     totalWorkingTime > 30 ? Math.floor(totalWorkingTime % 30) : totalWorkingTime
 
   const dispatch = useDispatch()
+  
   useEffect(() => {
     dispatch(getFreelancerDashboard(user.freelancerId))
-  }, [])
+  }, [route])
 
-  const Data = [
-    {
-      id: 0,
-      title: 'Job Title Lorem Ipsum1',
-      description:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium',
-      roleDescription:
-        'Job description lorom ipsum dolor sit ameno Job description lorom  sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno it ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description',
-      price: 15000,
-      date: '30 May-2020',
-      shift: 'day shift',
-      location: 'Sharjah',
-    },
-    {
-      id: 1,
-      title: 'Job Title Lorem Ipsum2',
-      description:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium1',
-      roleDescription:
-        'Job description lorom ipsum dolor sit ameno Job description lorom  sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno it ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description',
-      price: 10000,
-      date: '30 May-2020',
-      shift: 'day shift',
-      location: 'Sharjah',
-    },
-    {
-      id: 2,
-      title: 'Job Title Lorem Ipsum3',
-      description:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium2',
-      price: 20000,
-      roleDescription:
-        'Job description lorom ipsum dolor sit ameno Job description lorom  sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno it ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description',
-      date: '30 May-2020',
-      shift: 'day shift',
-      location: 'Sharjah',
-    },
-  ]
 
-  const currentJob = {
-    id: 0,
-    title: 'Job Title Lorem Ipsum1',
-    description:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate blanditiis doloremque itaque praesentium',
-    roleDescription:
-      'Job description lorom ipsum dolor sit ameno Job description lorom  sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno it ameno Job description lorom ipsum dolor sit ameno Job description lorom ipsum dolor sit ameno Job description',
-    price: 15000,
-    date: '30 May-2020',
-    shift: 'day shift',
-    location: 'Sharjah',
-  }
   const navigatePrevious = (i) => {
-    navigation.navigate('jobDescription', { myjobs: true, data: currentJob })
+    navigation.navigate('jobDescription')
   }
   const navigate = (i) => {
-    navigation.navigate('jobDescription', { myjobs: true, data: Data[i] })
+    navigation.navigate('jobDescription')
   }
   const RenderItem = (data, index) => {
     let lastOne = data.index === pastJobs?.length - 1 ? true : false
@@ -150,7 +101,7 @@ const JobseekerDashboard = ({ navigation }) => {
         </View>
         <View style={styles.borderL} />
         <View style={[styles.sub]}>
-          <Text style={styles.totalText}>{Math.ceil(day) !== NaN ? Math.ceil(day) : 0}</Text>
+          <Text style={styles.totalText}>{ !isNaN(Math.ceil(day)) ? Math.ceil(day) : 0}</Text>
           <Text style={styles.totalText2}>{Math.ceil(day) === 1 ? 'day' : 'days'}</Text>
         </View>
       </ImageBackground>

@@ -25,7 +25,6 @@ export const createFreelancerProfile = createAsyncThunk(
     let url = '/freelancers'
     try {
       const resp = await customFetch.post(url, freelancer)
-      console.log(resp.data)
       return resp.data
     } catch (error) {
       console.log(error.response.data.msg)
@@ -38,6 +37,7 @@ export const getFreelancer = createAsyncThunk(
   async (id, thunkApi) => {
     let url = `/freelancers/${id}`
     try {
+      console.log("getting")
       const resp = await customFetch.get(url)
       console.log("got freelancer", resp.data)
       return resp.data
@@ -88,7 +88,7 @@ const freelancerSlice = createSlice({
     },
     addRoles: (state, action) => {
       state.roles = action.payload
-      console.log(state.roles)
+      console.log("new roles",action.payload)
     },
     updateLatestRole: (state, action) => {
       state.latestRole = action.payload
@@ -100,7 +100,7 @@ const freelancerSlice = createSlice({
       state.additionalRole = action.payload
     },
     addLanguage: (state, action) => {
-      state.languages.push(action.payload)
+      state.languages = action.payload
       console.log(state.languages)
     },
     completedProfile: (state, action) => {

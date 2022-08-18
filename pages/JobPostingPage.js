@@ -39,6 +39,7 @@ const JobPostingPage = ({navigation}) => {
 
   const [index, setIndex] = useState(0)
   const { user } = useSelector((state) => state.user)
+  const { client } = useSelector((state) => state.client)
   const [isEnabled, setIsEnabled] = useState(false)
   const dispatch = useDispatch()
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState)
@@ -47,8 +48,17 @@ const JobPostingPage = ({navigation}) => {
     setValues({ ...values, [name]: value })
   }
   console.log("user", user.clientId)
+  const compareDates = (d1, d2) => {
+    let date1 = new Date(d1);
+    let date2 = new Date(d2);
+  
+    if (date1 < date2) {
+      return console.log(true, date1);
+    } else return console.log(false, date2)
+  };
   const paymentNav = () => {
     //add job with values and client id
+      // return(compareDates(values.startDate, values.endDate))
     if(
       values.title === '' ||
       values.startDate  === '' ||
@@ -74,20 +84,21 @@ const JobPostingPage = ({navigation}) => {
           description: values.description,
           budget: values.budget,
           privacy: isEnabled ? 'private' : 'public',
-          clientId: user.clientId,
+          clientId: user.clientId? user.clientId : client.id,
           duration: new Date(),
           shift: values.shift
         })
       )
       .unwrap()
       .then((response) => {
-      console.log("job for posting", response)
-
-        navigation.navigate("recruiter_dashboard")
+        console.log("job for posting", response)
+        navigation.navigate("payment")
       })
       .catch((error) => {
         console.log("error updating", error.message)
         alert("Error creating a job, please try again later")
+        navigation.navigate("recruiter_dashboard")
+
 
       })
     }

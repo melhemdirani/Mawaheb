@@ -59,7 +59,6 @@ const ClientSignupPage = ({navigation}) => {
   const dispatch = useDispatch()
 
   const navigateLogin = () => {
-   
     navigation.navigate('login')
   }
   useEffect(() => {
@@ -96,14 +95,16 @@ const ClientSignupPage = ({navigation}) => {
       privacy === 'public' &&
       (!companyName || !signatoryName || !signatoryTitle || !sign || !email || !password || !phoneNb ) 
     ) {
-      alert('Please fill all fieldss')
+       return alert('Please fill all fieldss')
       console.log(values)
+    } else if (activity){
+      return alert("Uploading please wait")
     }
     else { 
       dispatch(
         registerUser({
           name: companyName,
-          email: values.email,
+          email: values.email.toLowerCase(),
           password: values.password,  
           phoneNb: phoneNb,
           role: 'client',
@@ -210,7 +211,7 @@ const ClientSignupPage = ({navigation}) => {
       const img = JSON.parse(response.body).imageUrl
       console.log("uploading response", img)
       // setChangedValues(true)
-      // setActivity(false)
+      setActivity(false)
       setUploadedImage2(img)
       setUploaded2(true)
       setChanged(true)
@@ -218,6 +219,8 @@ const ClientSignupPage = ({navigation}) => {
 
     } catch (error) {
       console.log(error)
+      setUploaded2(false)
+      alert("Error uploading")
     }
   }
   const upload = async (uri) => {
@@ -239,6 +242,9 @@ const ClientSignupPage = ({navigation}) => {
       setChanged(true)
      } catch (error) {
       console.log(error)
+      setUploaded(false)
+      alert("Error uploading")
+
     }
   }
 

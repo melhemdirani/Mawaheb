@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { View, Text, StyleSheet, Image, Pressable, Platform } from 'react-native';
 
 import { useDispatch , useSelector} from 'react-redux';
+import { getNotifications, setNotificationsSeen } from '../reduxToolkit/userSlice'
 
 import jobsA from '../assets/images/jobsA.png'
 import jobsN from '../assets/images/jobsN.png'
@@ -15,8 +16,12 @@ import dashboardN from '../assets/images/dashboardN.png'
 
 function Navbar({active, navigation}) {
     const {
-        user
+        user,
+        notifications,
+        notificationsSeen
     } = useSelector((store) => store.user)
+    const { client} = useSelector((store) => store.client)
+    const { freelancer} = useSelector((store) => store.freelancer)
     const onJobsPress = () => {
         if(user.role === 'client'){
             navigation.navigate('recruiter_Jobs')
@@ -31,7 +36,29 @@ function Navbar({active, navigation}) {
             navigation.navigate('seeker_dash')
         }
     }
-    
+    const dispatch = useDispatch()
+
+
+    useEffect(() => {
+        console.log("client", user)
+        if (user?.role === 'client' && (user.clientId || client.id)) {
+          dispatch(getNotifications({ id: user.clientId ? user.clientId : client.id, role: user.role }))
+          .unwrap()
+          .then((res) => console.log("notifcations", res))
+          .catch((err) => console.log("error notifications", err))
+        } else if (user.role === 'freelancer' && (user.freelancerId || freelancer.id)) {
+          dispatch(getNotifications({ 
+            id: user.freelancerId ? user.freelancerId : freelancer.id, 
+            role: user.role 
+          }))
+          .unwrap()
+          .then((res) => console.log("notifcations"))
+          .catch((err) => console.log("error notifications"))
+        }
+      }, [])
+      useEffect(() => {
+        setNotificationsSeen(false)
+      }, [notifications])
     return (
         <View style={[styles.container, styles.shadowProp]}>
             <Pressable style={styles.Pressable}  onPress={() => onJobsPress()}>
@@ -50,11 +77,16 @@ function Navbar({active, navigation}) {
                 <Text style={active === 'Dashboard' ? styles.text2 : styles.text}>Dashboard</Text>
             </Pressable>
             <Pressable style={styles.Pressable}  onPress={() => navigation.navigate('notifications')}>
-
+                { !notificationsSeen &&
+                    <View>
+                        <View style={styles.newNotification} />
+                    </View>
+                }
                 <Image
                     style={styles.rate}
                     source={active === 'Notifications' ? notifcationA : notifcationN}
                 />
+
                 <Text style={active === 'Notifications' ? styles.text2 : styles.text}>Notifications</Text>
             </Pressable>
             <Pressable style={styles.Pressable}  onPress={() => navigation.navigate('settings')}>
@@ -143,6 +175,14 @@ const styles =  Platform.OS === 'android'
             shadowOpacity: 1,  
             shadowRadius: 10,  
         }, 
+        newNotification:{
+            backgroundColor: "red",
+            width: 5,
+            height: 5,
+            borderRadius: 50,
+            position: "absolute",
+            left: 2
+        }
     })
 
 

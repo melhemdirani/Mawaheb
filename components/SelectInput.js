@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, Text, View, ScrollView, Image} from 'react-nativ
 
 import {Picker} from '@react-native-picker/picker';
 
-const SelectInput = ({title, list, onSelect, value, valued, setIndex, role}) => {
+const SelectInput = ({title, list, onSelect, value, valued, setIndex, role, languages, already}) => {
 
     const [selected, setSelected] = useState(valued ? value : "")
     const [showList, setShowList] = useState(false)
@@ -30,7 +30,7 @@ const SelectInput = ({title, list, onSelect, value, valued, setIndex, role}) => 
     return (
         <View style={styles.container}>
             <View style={styles.subContainer}>
-                <Text style={selected ? styles.text2 : styles.text}> {(valued ? value === "" : selected === "") ? title : valued ? value : selected}</Text>
+                <Text style={selected || value ? styles.text2 : styles.text}> {(valued ? value === "" : selected === "") ? title : valued ? value : selected}</Text>
                 <Pressable onPress={() => setShowList(!showList)} style={styles.arrowButton}>
                     <Image
                         style={showList ? [styles.image, styles.rotate] : styles.image}
@@ -39,8 +39,20 @@ const SelectInput = ({title, list, onSelect, value, valued, setIndex, role}) => 
                 </Pressable>
                
             </View>
-            {   showList && list && list.length &&
-                <ScrollView style={styles.ScrollView}>
+            {   showList && list && list.length && languages 
+                ? <ScrollView style={styles.ScrollView}>
+                    {    list.map((item, i) => 
+                            <RenderItem 
+                                data={item.name} 
+                                style={styles.flatlist}
+                                key={i}
+                                index={i}
+                            />
+                        )
+                    }
+                </ScrollView>
+                : showList && list && list.length && !languages 
+                ?<ScrollView style={styles.ScrollView}>
                     {    list.map((item, i) => 
                             <RenderItem 
                                 data={item} 
@@ -51,7 +63,9 @@ const SelectInput = ({title, list, onSelect, value, valued, setIndex, role}) => 
                         )
                     }
                 </ScrollView>
+                : null
             }
+            {already && <Text style={{color: "#BE3142"}}>already chosen {value}</Text>}
            
         </View>
     );

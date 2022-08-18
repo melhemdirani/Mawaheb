@@ -18,15 +18,10 @@ import {
   completedProfile
 } from '../reduxToolkit/freelancerSlice'
 import SelectInput from '../components/SelectInput';
-import DeleteButton from '../components/Buttons/DeleteButton';
-import DailyRate from '../components/DailyRate';
-import Inputs from '../components/Inputs';
 
 
 const ExperiencePage = ({ navigation }) => {
   const form = {
-    category:'',
-    title:'',
     projectTitle: '',
     location: '',
     keyResponsibilities: '',
@@ -35,12 +30,8 @@ const ExperiencePage = ({ navigation }) => {
     endDate: '',
     isLatest: true,
     isMostNotable: false,
-    dailyRate: '',
-    yearsOfExperience: ""
   }
   const form2 = {
-    category:'',
-    title:'',
     projectTitle: '',
     location: '',
     keyResponsibilities: '',
@@ -48,15 +39,28 @@ const ExperiencePage = ({ navigation }) => {
     startDate: '',
     endDate: '',
     isLatest: false,
-    dailyRate:'',
     isMostNotable: true,
-    yearsOfExperience: ""
   }
-
-  const [experiences, setExperiences] = useState([{category: "", title:"" , dailyRate: "", yearsOfExperience: "", latest:form, notable:form2}])
+  const form3 = {
+    projectTitle: '',
+    location: '',
+    keyResponsibilities: '',
+    dailyRate: '',
+    startDate: '',
+    endDate: '',
+    isLatest: false,
+    isMostNotable: false,
+  }
+  const [latestRole, setLatestRole] = useState(form)
+  const [notableRole, setNotableRole] = useState(form2)
+  const [additionalRoles, setAdditionalRoles] = useState([])
+  const [addIndex, setAddIndex] = useState(1)
+  const [experiences, setExperiences] = useState([{category: "", title:"" , latest:form, notable:form2}])
   let AllRoles = []
 
+
   const goBack = () => {
+    console.log("go back")
     navigation.goBack()
   }
  
@@ -69,8 +73,7 @@ const ExperiencePage = ({ navigation }) => {
   }
   const checkRoleEmpty = (object) => {
     let {
-      title, 
-      category, 
+      role, 
       projectTitle, 
       location, 
       keyResponsibilities, 
@@ -81,13 +84,11 @@ const ExperiencePage = ({ navigation }) => {
       isMostNotable
     } = object
     if(
-      checkIfEmpty(title) 
+      checkIfEmpty(role) 
       || checkIfEmpty(projectTitle) 
-      || checkIfEmpty(category) 
       || checkIfEmpty(location) 
       || checkIfEmpty(keyResponsibilities) 
-      || checkIfEmpty(dailyRate)
-      || dailyRate === NaN
+      || checkIfEmpty(dailyRate) 
       || checkIfEmpty(startDate) 
       || checkIfEmpty(endDate) 
       || checkIfEmpty(isLatest) 
@@ -116,56 +117,68 @@ const ExperiencePage = ({ navigation }) => {
 
   }
   const handleCategoryChange = (name, value, index) => {
+    console.log({
+      name:name,
+      value:value,
+      index: index
+    })
     setExperiences(data => {
       return [ 
         ...data.slice(0, index), 
         { 
           ...data[index], 
-          latest :{
-            ...data[index].latest,
-            [name]: value 
-          },
-          notable :{
-            ...data[index].notable,
-            [name]: value 
-          },
-          [name] :value,
+          [name] :value
+        
         },
           ...data.slice(index+1)
       ]
     });
 
   }
+
   
+  useEffect(() => {
+    console.log("experiences", experiences)
+  }, [experiences])
+
   const onRoleDelete = (index) => {
-    setExperiences(data => {
-      return [ ...data.slice(0, index),  ...data.slice(index+1)]
+    console.log("hi")
+    setAdditionalRoles(additionalRoles => {
+      return [ ...additionalRoles.slice(0, index),  ...additionalRoles.slice(index+1)]
     });
+    setAddIndex(addIndex - 1)
   }
-  
 
   const handleSubmit = () => {
-    let submit = true
-    experiences.map( exp => {
-      if(checkRoleEmpty(exp.latest) || checkRoleEmpty(exp.notable)  ){
-        submit = false
-        return alert("Please enter all values before proceeding")
+    if(
+      checkRoleEmpty(latestRole) || checkRoleEmpty(notableRole)
+    ){
+      console.log("latesst", latestRole)
+      console.log("notable", notableRole)
+      return(
+         alert("Please fill in the above roles first")
+      )
+    } else{
+      AllRoles.push(latestRole)
+      AllRoles.push(notableRole)
+      if(additionalRoles.length > 0){
+        additionalRoles.map( roles => {
+          if( checkRoleEmpty(roles) ){
+            return(
+              alert("Please fill in the above roles first")
+            )
+          } else{
+            AllRoles.push(roles)
+          }
+        })
       }
-      if(isNaN(exp.dailyRate)){
-        submit = false
-        return alert("Improper value for your preferred daily wage")
-      }
-      AllRoles.push(exp.latest)
-      AllRoles.push(exp.notable)
-    })
-    if(submit){
-      console.log("all roles", AllRoles)
-      dispatch( addRoles(AllRoles) )
-      dispatch(completedProfile(true))
-      navigation.navigate('language')
+      dispatch(addRoles(AllRoles));
+      dispatch(completedProfile(true));
+      navigation.navigate('language');
     }
-  }
 
+    console.log("ALl Roles", AllRoles)
+  }
   const languageNavigate = () => {
     navigation.navigate('language');
 
@@ -173,36 +186,38 @@ const ExperiencePage = ({ navigation }) => {
 
 
   const MaskedTitle = ({title}) => {
-    return(
-        <MaskedView 
-            style={styles.titleContainer}
-            maskElement={ 
-                <Text 
-                    style={[
-                        styles.title, 
-                        {backgroundColor: "transparent"}
-                    ]}
-                >
-                    {title}
-                </Text>
-            }
-        >
-            <LinearGradient
-                start={{x:0, y: 0}}
-                end={{x:1, y: 1}}
-                colors={['#31BEBB', '#655BDA' ]}
-            >
-                <Text style={[styles.title, {opacity: 0}]}>{title}</Text>
-            </LinearGradient>
-        </MaskedView>
-    )
+      return(
+          <MaskedView 
+              style={styles.titleContainer}
+              maskElement={ 
+                  <Text 
+                      style={[
+                          styles.title, 
+                          {backgroundColor: "transparent"}
+                      ]}
+                  >
+                      {title}
+                  </Text>
+              }
+          >
+              <LinearGradient
+                  start={{x:0, y: 0}}
+                  end={{x:1, y: 1}}
+                  colors={['#31BEBB', '#655BDA' ]}
+              >
+                  <Text style={[styles.title, {opacity: 0}]}>{title}</Text>
+              </LinearGradient>
+          </MaskedView>
+      )
   }
 
+
   const onAddClick = () => {
+    setAddIndex(addIndex + 1);
     setExperiences(
       data => ([
         ...data,
-        {category: "", title:"" ,dailyRate: "", yearsOfExperience:" ", latest:form, notable:form2}
+        {category: "", title:"" , latest:form, notable:form2}
       ])
     )
   }
@@ -222,10 +237,9 @@ const ExperiencePage = ({ navigation }) => {
           <Text style={styles.text}>
             Fill below your latest role and any projects you think would make stand out to potential recruiters.
           </Text>
-          { 
+          {
             experiences && experiences.map((role, i) =>
-            <View style={{width: "100%", alignItems: "center"}} key={i}>
-              <View style={{width: "100%", alignItems: "center", marginTop: 50}}>
+            <View style={{width: "100%"}} key={i}>
               <SelectInput 
                   title="Role Category*" 
                   list={list}
@@ -236,24 +250,14 @@ const ExperiencePage = ({ navigation }) => {
                   valued
               /> 
               { role.category !== "" &&
-                <SelectInput 
-                    title="Role Subcategory*" 
-                    list={RoleList[index].subCategories}
-                    onSelect={(value) => handleCategoryChange('title', value, i)}
-                    value={role.title}
-                    valued
-                /> 
+                  <SelectInput 
+                      title="Role Subcategory*" 
+                      list={RoleList[index].subCategories}
+                      onSelect={(value) => handleCategoryChange('title', value, i)}
+                      value={role.title}
+                      valued
+                  /> 
               }
-              <DailyRate  
-                placeholder="Your preferred daily wage*"
-                onChange={(value) => handleCategoryChange('dailyRate', parseInt(value), i)}
-              />
-              <Inputs  
-                placeholder="Years of experience for this category*"
-                onChange={(value) => handleCategoryChange('yearsOfExperience', value, i)}
-                value={role.yearsOfExperience}
-              />
-              </View>
               <MaskedTitle title={ "Latest Role"}/>
               <RoleForm 
                 handleChange={handleChange} 
@@ -268,18 +272,7 @@ const ExperiencePage = ({ navigation }) => {
                 experience={role.notable} 
                 index={i}
               />
-              {
-                i !== 0 && 
-                <TouchableOpacity style={styles.DeleteButton} onPress={() => onRoleDelete(i)}>
-                  <DeleteButton title={"Delete Role"}/>
-                </TouchableOpacity>
-              }
-              <LinearGradient
-                start={{x:0, y: 0}}
-                end={{x:1, y: 1}}
-                colors={['#31BEBB', '#655BDA' ]}
-                style={{height: 5, width: "100%", marginTop: 5}}
-              />  
+
             </View>
           )}
           <Pressable  style={styles.buttons1} onPress={() => onAddClick()}>
@@ -340,7 +333,7 @@ const styles = StyleSheet.create({
     marginTop: 40
   },
   title:{
-    fontSize: 18,
+    fontSize: 20,
     fontFamily: 'PoppinsS'
   },
   skipText:{
@@ -350,10 +343,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
     marginBottom: 80,
     letterSpacing: 2
-  },
-  DeleteButton:{
-    marginVertical: 40
-},
+  }
 })
 
 

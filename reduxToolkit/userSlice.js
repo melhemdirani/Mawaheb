@@ -9,6 +9,7 @@ const initialState = {
   error: undefined,
   registerError: undefined,
   notifications: [],
+  notificationsSeen: true
 }
 export const getNotifications = createAsyncThunk(
   'getNotifications',
@@ -67,6 +68,7 @@ export const updateUserPassword = createAsyncThunk(
     }
   }
 )
+
 export const loginUser = createAsyncThunk(
   'loginUser',
   async (user, thunkApi) => {
@@ -109,6 +111,10 @@ const userSlice = createSlice({
     setUserAfterRegister: (state, action) => {
       state.user.clientId = action.payload
     },
+    setNotificationsSeen: (state, action) => {
+      console.log("action.payload", action.payload)
+      state.notificationsSeen = action.payload
+    }
   },
   extraReducers: {
     [registerUser.pending]: (state) => {
@@ -166,6 +172,6 @@ const userSlice = createSlice({
   },
 })
 export const { setFreelancerId } = userSlice.actions
-export const { setUserAfterRegister } = userSlice.actions
+export const { setUserAfterRegister, setNotificationsSeen } = userSlice.actions
 
 export default userSlice.reducer

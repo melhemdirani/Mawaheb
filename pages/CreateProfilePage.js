@@ -78,6 +78,8 @@ const CreateProfilePage = ({  navigation }) => {
 
     } catch (error) {
       console.log(error)
+      setUploaded2(false)
+      alert("Error uploading")
     }
   }
   const upload = async (uri) => {
@@ -105,6 +107,8 @@ const CreateProfilePage = ({  navigation }) => {
       setUploaded(true)
     } catch (error) {
       console.log(error)
+      setUploaded(false)
+      alert("Error uploading")
     }
   }
   const selectFile = async () => {

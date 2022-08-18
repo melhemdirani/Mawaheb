@@ -21,29 +21,57 @@ import RenderMyjobs from '../components/RenderMyjobs'
 import JobList2 from '../components/JobList2'
 import RenderFreelancers from '../components/RenderFreelancers'
 
-const JobListPage = ({ navigation }) => {
+//client side
+
+const JobListPage = ({ navigation, route }) => {
+  let filterInitial = {
+    location: "",
+    duration: "",
+    budget: "",
+    category: "",
+    title: "",
+    yearsOfExperience: "",
+    minBudget: "",
+    maxBudget: "",
+    search: "",
+  }
+  const [filters, setFilters] = useState(filterInitial)
   const dispatch = useDispatch()
   const [loaded, setLoaded] = useState(false)
-
-  const { proposals, myJobs, freelancers, isLoadingFreelancers } = useSelector(
+  const { myJobs } = useSelector(
     (state) => state.job
   )
   const { user } = useSelector((state) => state.user)
   const { client } = useSelector((state) => state.client)
   useEffect(() => {
     dispatch(getMyJobs(client?.id || user?.clientId))
-  }, [user])
-  useEffect(() => {
-    dispatch(getAllFreelancers())
-    setLoaded(true)
+    .unwrap()
+    .then(
+      res => console.log("res get my jobs", res)
+    )
+    .catch(err => console.log("error getting my job", error))
   }, [])
 
+  useEffect(() => {
+    if(route.params !== undefined && route.params.id !== undefined){
+      console.log("route id", route.params.id)
+      setShowApplicantsTitle(route.params.id)
+    } else{ 
+      console.log("no id", route.params)
+    }
+  }, [route])
+
   const [showApplicantsTitle, setShowApplicantsTitle] = useState('all')
-  const [showFreelancers, setShowFreelancers] = useState(true)
   const [showJobs, setShowJobs] = useState(true)
 
-  const navigate = (id, price, location, jobId) => {
-    navigation.navigate('freelancerDetails', { id, price, location, jobId })
+  const navigate = (freelancer, jobId) => {
+    navigation.navigate('freelancerDetails', {freelancer, jobId })
+  }
+  const handleFilterChange = (name, value) => {
+    setFilters( data => ({
+      ...data,
+      [name]: value
+    }))
   }
   return (
     <View style={styles.wrapper}>
@@ -54,12 +82,11 @@ const JobListPage = ({ navigation }) => {
               data={item}
               navigate={navigate}
               key={i}
-              setShowFreelancers={setShowFreelancers}
               showApplicantsTitle={showApplicantsTitle}
               setShowApplicantsTitle={setShowApplicantsTitle}
             />
           ))}
-        {showFreelancers && 
+        {/* {showFreelancers && 
           <RenderFreelancers
             freelancers={freelancers}
             navigate={navigate}
@@ -68,7 +95,8 @@ const JobListPage = ({ navigation }) => {
             setShowFreelancers={setShowFreelancers}
             setShowJobs={setShowJobs}
           />
-        }
+        } */}
+        
       </ScrollView>
       <Navbar active='Jobs' client navigation={navigation} />
     </View>

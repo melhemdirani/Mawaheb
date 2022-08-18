@@ -1,11 +1,13 @@
-import { View, Text, StyleSheet, ImageBackground, Image } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, Image, Pressable} from 'react-native'
 import React from 'react'
 import secondaryHeader from '../assets/images/test2.png'
 import searchIcon from '../assets/images/search.png'
 import heartIcon from '../assets/images/heart.png'
 import filterIcon from '../assets/images/filterIcon.png'
+import Inputs from './Inputs'
+import SearchInput from './SearchInput'
 
-const SecondaryHeader = ({ title, heart, noFilter }) => {
+const SecondaryHeader = ({ title, heart, search, filter, onFilter,handleChange, setShowSearch, showSearch }) => {
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -14,15 +16,51 @@ const SecondaryHeader = ({ title, heart, noFilter }) => {
         resizeMode='cover'
       >
         <View style={styles.subContainer}>
-          <Text style={styles.text}>{title}</Text>
-          <View style={!heart ? styles.miniContainer : styles.miniContainer2}>
-            {!heart && <Image source={searchIcon} style={styles.searchIcon}></Image>}
-            {!noFilter && <Image
-              source={ heart ? heartIcon : filterIcon}
+          {
+            showSearch && search?
+            <View style={styles.searchContainer}>
+              <SearchInput 
+                onChange={(e) => handleChange("search", e)}
+                placeholder="Search"
+              />
+              <Pressable onPress={() => setShowSearch(false)}       style={styles.searchIcon}>
+                <Image
+                  source={ searchIcon}
+                  />
+              </Pressable>
+            </View>
+            : search 
+            ? <View style={styles.searchContainer2}>
+                <Text style={styles.text}>{title}</Text>
+                <Pressable onPress={() => setShowSearch(true)}>
+                  <Image
+                    source={ searchIcon}
+                  />
+                </Pressable>
+              </View>
+            : <View style={styles.searchContainer2}>
+                <Text style={styles.text}>{title}</Text>
+                <Image
+                  source={ searchIcon}
+                />
+              </View>
+          }
+   
+          { 
+            filter?
+            <Pressable onPress={() => onFilter()}  style={styles.filterIcon}>
+              <Image
+                source={filterIcon}
+                resizeMode='cover'
+              />
+            </Pressable>
+            : <Image
+              source={ heartIcon}
               style={styles.filterIcon}
               resizeMode='cover'
-            />}
-          </View>
+            />
+          
+          }
        
         </View>
       </ImageBackground>
@@ -32,6 +70,20 @@ const SecondaryHeader = ({ title, heart, noFilter }) => {
 const styles = StyleSheet.create({
   container: {
     zIndex: -99
+  },
+  searchContainer:{
+    width: "80%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    height: 30,
+
+  },
+  searchContainer2:{
+    width: "80%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    height: 30,
+    alignItems: "center"
   },
   miniContainer:{
     flexDirection: "row",
@@ -56,17 +108,19 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   searchIcon: {
+    alignSelf: "center"
   },
+
   filterIcon: {
-    right: 10
+    right: 10,
   },
   subContainer:{
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-end",
+    alignItems: "center",
     top: 60,
     paddingLeft: 10,
-    paddingRight: 10
+    paddingRight: 10,
   },
 })
 

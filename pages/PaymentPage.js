@@ -27,7 +27,8 @@ import {
 
     const onPostClick = () => {
       alert("Thank you! Your job was posted")
-      navigation.navigate('recruiter_dashboard')
+      let date = new Date()
+      navigation.navigate('recruiter_dashboard', {id: date.toDateString()})
     }
 
     const Prepaid = () => {

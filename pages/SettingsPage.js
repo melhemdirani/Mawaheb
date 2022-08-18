@@ -40,7 +40,7 @@ const SettingsPage = ({navigation, role}) => {
         if(user.role === 'freelancer'){
             navigation.navigate('freelancerProfile')
         } else{
-            // navigation.navigate('clientProfile', )
+            navigation.navigate('clientProfile' )
             
         }
 

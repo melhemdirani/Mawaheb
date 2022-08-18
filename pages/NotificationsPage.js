@@ -9,7 +9,7 @@ import {
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { getNotifications } from '../reduxToolkit/userSlice'
+import { setNotificationsSeen } from '../reduxToolkit/userSlice'
 
 import Navbar from '../components/Navbar'
 import Header from '../components/Header'
@@ -20,9 +20,17 @@ import { acceptContractFreelancer } from '../reduxToolkit/freelancerSlice'
 import { getClientDashboard } from '../reduxToolkit/clientSlice'
 
 const NotificationsPage = ({ navigation, role, route }) => {
-  const { user, notifications, isLoading } = useSelector((store) => store.user)
+  const { user, notifications, notificationsSeen, isLoading } = useSelector((store) => store.user)
+  const { freelancer} = useSelector((store) => store.freelancer)
+  const { client} = useSelector((store) => store.client)
   const testing = []
 
+  useEffect(() => {
+    console.log("notificationsSeens", notificationsSeen)
+    if(!notificationsSeen){
+      dispatch(setNotificationsSeen(true))
+    }
+  }, [route])
   const dispatch = useDispatch()
   const acceptContract = (action) => {
     navigation.navigate('acceptContract', {action, role: "freelancer"})
@@ -34,17 +42,7 @@ const NotificationsPage = ({ navigation, role, route }) => {
     navigation.navigate('recruiter_Jobs')
 
   }
-  useEffect(() => {
-    if (user?.role === 'client' && user.clientId) {
-      dispatch(getNotifications({ id: user.clientId, role: user.role }))
-    } else if (user.role === 'freelancer' && user.freelancerId) {
-      dispatch(getNotifications({ id: user.freelancerId, role: user.role }))
-    } else {
-      //   navigation.navigate('Login')
-      alert('You are not logged in')
-    }
-  }, [])
-  console.log('after use effect', notifications)
+
 
   return (
     <View style={styles.container}>

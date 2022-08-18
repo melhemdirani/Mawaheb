@@ -7,6 +7,7 @@ import {
   ImageBackground,
   Pressable,
 } from 'react-native';
+import moment from 'moment';
 
 import { LinearGradient } from 'expo-linear-gradient';
 import calendarIcon from '../assets/images/calendarIcon.png';
@@ -24,7 +25,7 @@ const JobList = ({
   job,
   freelancer,
   id,
-
+  item
 }) => {
   const uniqueIds = [];
 
@@ -39,26 +40,31 @@ const JobList = ({
 
     return false;
   });
-  console.log("freelancer", freelancer)
   return (
     <View style={styles.wrapper}>
       <View style={styles.header}>
         <View style={styles.subHeader}>
-          <View style={styles.circle}></View>
+         { freelancer.user.profileImage.length &&
+          <Image      
+              source={{uri: `http://194.5.157.234:4000${freelancer.user.profileImage}`}} 
+              style={styles.profileImage}
+              blurRadius={7}
+            />
+          }
           <ImageBackground
             source={priceRectangle}
             style={styles.priceBg}
             resizeMode='contain'
           >
             <View style={styles.priceAndCurrency}>
-              <Text style={styles.price}>{price} </Text>
+              <Text style={styles.price}>{job.budget} </Text>
               <Text style={styles.currency}>AED</Text>
             </View>
           </ImageBackground>
         </View>
         <View style={styles.subHeader}>
           <Image source={heartIcon} style={styles.heart}></Image>
-          <Pressable onPress={() => navigate(freelancer.id,price,job.location, job.id, {invite: false})}>
+          <Pressable onPress={() => navigate(freelancer, job.id)}>
             <Image source={plusIcon} style={styles.plus}></Image>
           </Pressable>
         </View>
@@ -96,7 +102,8 @@ const JobList = ({
               </LinearGradient>
             </MaskedView>
             
-            <Text style={styles.description}>{job.description}</Text>
+            <Text style={styles.description}>{freelancer.roles[0].category} - {freelancer.roles[0].title}</Text>
+            <Text style={styles.description}>{freelancer.roles[0].keyResponsibilities.slice(0,40)}</Text>
           </View>
           <View style={styles.languages}>
             <Image source={languageIcon} style={styles.languageIcon}></Image>
@@ -119,15 +126,12 @@ const JobList = ({
             <View style={styles.footer}>
               <View style={styles.footerInfo}>
                 <Image source={calendarIcon} style={styles.icon}></Image>
-                <Text style={styles.text}> {job.duration.slice(0,9)}</Text>
-              </View>
-              <View style={styles.footerInfo}>
-                <Image source={clockIcon} style={styles.icon}></Image>
-                <Text style={styles.text}>Day shift</Text>
+                <Text style={styles.text}> {freelancer.roles[0].endDate && moment(freelancer.roles[0].endDate).format('ll')}</Text>
+
               </View>
               <View style={styles.footerInfo}>
                 <Image source={locationIcon} style={styles.icon}></Image>
-                <Text style={styles.text}>{job.location}</Text>
+                <Text style={styles.text}>{freelancer.roles[0].location}</Text>
               </View>
             </View>
           </LinearGradient>
@@ -179,7 +183,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopColor: 'rgba(16, 125, 197, 1)',
     borderTopWidth: 0.4,
-    paddingVertical: 20,
+    paddingVertical: 10,
     paddingHorizontal: 10,
   },
 
@@ -274,6 +278,11 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: "white",
     backgroundColor: "rgba(255, 255, 255, .8)"
+  },
+  profileImage:{
+    width: 80,
+    height: 80,
+    borderRadius: 50  
   }
 })
 export default JobList

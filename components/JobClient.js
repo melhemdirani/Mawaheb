@@ -1,7 +1,5 @@
 import { View, Text, StyleSheet, Image, ImageBackground, Platform, Pressable } from 'react-native'
 import React from 'react'
-import moment from 'moment';
-
 import { LinearGradient } from 'expo-linear-gradient'
 import calendarIcon from '../assets/images/calendarIcon.png'
 import clockIcon from '../assets/images/clockIcon.png'
@@ -11,123 +9,116 @@ import heartIcon from '../assets/images/heartIcon.png'
 import plusIcon from '../assets/images/plusIcon.png'
 import MaskedView from '@react-native-masked-view/masked-view'
 
-const Job = ({ title, description, location, current, heart, navigate, id, startDate, disabled, data, shift, budget }) => {
-  return (
-    <View
-      // style={lastOne ? [styles.wrapper, { marginBottom: 40 }] : styles.wrapper}
-      style={styles.wrapper}
-    >
-      <View style={styles.header}>
-        <View style={styles.subHeader}>
-          <View style={styles.circle}></View>
-          <ImageBackground
-            source={priceRectangle}
-            style={styles.priceBg}
-            resizeMode='contain'
-          >
-            <View style={styles.priceAndCurrency}>
-              <Text style={styles.price}>{budget && budget} </Text>
-              <Text style={styles.currency}>AED</Text>
-            </View>
-          </ImageBackground>
-        </View>
-        <View style={styles.subHeader}>
-          {!heart && <Image source={heartIcon} style={styles.heart}></Image>}
-          { !disabled && id 
-            ? <Pressable onPress={() => navigate(id, data)} style={styles.plusContainer}>
-              <Image source={plusIcon} style={styles.plus}></Image>
-            </Pressable>
-            : !disabled 
-            ? <Pressable onPress={() => navigate()} style={styles.plusContainer}>
-              <Image source={plusIcon} style={styles.plus}></Image>
-            </Pressable>
-            :null
-          }
-        </View>
-      </View>
-      <LinearGradient
-        colors={
-          current?
-          [
-            '#E8EEF9',
-            '#E8EEF9',
-            '#E8EEF9',
-            '#E8EEF9',
-          ]
-          :[
-          'rgba(202, 218, 221, 0.1)',
-          'rgba(202, 218, 221, 0)',
-          'rgba(202, 218, 221, 0.2)',
-          'rgba(202, 218, 221, 0.2)',
-          'rgba(202, 218, 221, 0.2)',
-          'rgba(202, 218, 221, 0.1)',
-          ]
-        }
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.linear}
-      >
-        <View style={[styles.container]}>
-          <View style={styles.info}>
-            <MaskedView
-              maskElement={
-                <Text
-                  style={[
-                    styles.title, 
-                    { backgroundColor: 'transparent' }
-                  ]}
-                >
-                  {title && title}
-                </Text>
-              }
+const JobClient = ({ title, current, navigate, item }) => {
+
+    return (
+        <View
+        // style={lastOne ? [styles.wrapper, { marginBottom: 40 }] : styles.wrapper}
+        style={styles.wrapper}
+        >
+        <View style={styles.header}>
+            <View style={styles.subHeader}>
+            <ImageBackground
+                source={priceRectangle}
+                style={styles.priceBg}
+                resizeMode='contain'
             >
-              <LinearGradient
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                colors={['#31BEBB','#655BDA']}
-              >
-                <Text style={[styles.title, { opacity: 0 }]}>{title && title}</Text>
-              </LinearGradient>
-            </MaskedView>
-            <Text style={styles.description}>{description && description.slice(0,70)}</Text>
-          </View>
-          <LinearGradient
-            colors={
-              current?
-              [
-                '#E3E8F2',
-                '#E3E8F2',
-                '#E3E8F2',
-              ]
-              :[
-                'rgba(202, 218, 221, 0.4)',
-                'rgba(202, 218, 221, 0)',
-                'rgba(202, 218, 221, 0.4)',
-              ]
-            }
-            start={{ x: 1, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.linear2}
-          >
-            <View style={styles.footer}>
-              <View style={styles.footerInfo}>
-                <Image source={calendarIcon} style={styles.icon}></Image>
-                <Text style={styles.text}> {startDate && moment(startDate).format('ll')}</Text>
-              </View>
-              <View style={styles.footerInfo}>
-                <Image source={clockIcon} style={styles.icon}></Image>
-                <Text style={styles.text}>{shift && (shift.charAt(0).toUpperCase() + shift.slice(1))} shift</Text>
-              </View>
-              <View style={styles.footerInfo}>
-                <Image source={locationIcon} style={styles.icon}></Image>
-                <Text style={styles.text}>{location}</Text>
-              </View>
+                <View style={styles.priceAndCurrency}>
+                <Text style={styles.price}>{item.budget} </Text>
+                <Text style={styles.currency}>AED</Text>
+                </View>
+            </ImageBackground>
             </View>
-          </LinearGradient>
+            <View style={styles.subHeader}>
+                {/* <Image source={heartIcon} style={styles.heart}></Image> */}
+                <Pressable onPress={() => navigate(item)} style={styles.plusContainer}>
+                <Image source={plusIcon} style={styles.plus}></Image>
+                </Pressable>
+            </View>
         </View>
-      </LinearGradient>
-    </View>
-  )
+        <LinearGradient
+            colors={
+            current?
+            [
+                '#E8EEF9',
+                '#E8EEF9',
+                '#E8EEF9',
+                '#E8EEF9',
+            ]
+            :[
+            'rgba(202, 218, 221, 0.1)',
+            'rgba(202, 218, 221, 0)',
+            'rgba(202, 218, 221, 0.2)',
+            'rgba(202, 218, 221, 0.2)',
+            'rgba(202, 218, 221, 0.2)',
+            'rgba(202, 218, 221, 0.1)',
+            ]
+            }
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.linear}
+        >
+            <View style={[styles.container]}>
+            <View style={styles.info}>
+                <MaskedView
+                maskElement={
+                    <Text
+                    style={[
+                        styles.title, 
+                        { backgroundColor: 'transparent' }
+                    ]}
+                    >
+                    {item.title}
+                    </Text>
+                }
+                >
+                <LinearGradient
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    colors={['#31BEBB','#655BDA']}
+                >
+                    <Text style={[styles.title, { opacity: 0 }]}>{item.title}</Text>
+                </LinearGradient>
+                </MaskedView>
+                <Text style={styles.description}>{item.description && item.description.slice(0,70)}</Text>
+            </View>
+            <LinearGradient
+                colors={
+                current?
+                [
+                    '#E3E8F2',
+                    '#E3E8F2',
+                    '#E3E8F2',
+                ]
+                :[
+                    'rgba(202, 218, 221, 0.4)',
+                    'rgba(202, 218, 221, 0)',
+                    'rgba(202, 218, 221, 0.4)',
+                ]
+                }
+                start={{ x: 1, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.linear2}
+            >
+                <View style={styles.footer}>
+                <View style={styles.footerInfo}>
+                    <Image source={calendarIcon} style={styles.icon}></Image>
+                    <Text style={styles.text}> {item.startDate && item.startDate.slice(0,10)}</Text>
+                </View>
+                <View style={styles.footerInfo}>
+                    <Image source={clockIcon} style={styles.icon}></Image>
+                    <Text style={styles.text}>{item.shift === 'night' ? "Night Shift " : "Day Shift"}</Text>
+                </View>
+                <View style={styles.footerInfo}>
+                    <Image source={locationIcon} style={styles.icon}></Image>
+                    <Text style={styles.text}> {item.location}</Text>
+                </View>
+                </View>
+            </LinearGradient>
+            </View>
+        </LinearGradient>
+        </View>
+    )
 }
 const styles = Platform.OS === 'android'  
   ? StyleSheet.create({
@@ -182,7 +173,7 @@ const styles = Platform.OS === 'android'
       alignItems: 'center',
       borderTopColor: 'rgba(16, 125, 197, 1)',
       borderTopWidth: 0.4,
-      paddingVertical: 10,
+      paddingVertical: 15,
       paddingHorizontal: 25,
     },
 
@@ -303,8 +294,8 @@ const styles = Platform.OS === 'android'
       alignItems: 'center',
       borderTopColor: 'rgba(16, 125, 197, 1)',
       borderTopWidth: 0.4,
-      paddingVertical: 10,
-      paddingHorizontal: 25,
+      paddingVertical: 15,
+      paddingHorizontal: 15,
       width: "100%"
     },
 
@@ -378,4 +369,4 @@ const styles = Platform.OS === 'android'
     },
   })
 
-export default Job
+export default JobClient

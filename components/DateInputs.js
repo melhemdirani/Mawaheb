@@ -34,9 +34,9 @@ const DateInputs = ({title, placeholder, onChange, dateType}) => {
       setDate(currentDate);
       setChanged(true);
       if(!dateType){
-        onChange(date.toDateString())
+        onChange(currentDate.toDateString())
       } else{
-        onChange(date)
+        onChange(currentDate)
 
       }
     };
