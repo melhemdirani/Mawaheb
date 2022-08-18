@@ -40,6 +40,8 @@ const JobsPage = ({ navigation, route }) => {
   useEffect(() => {
 
     if(freelancer === {} || freelancer === undefined || freelancer.id === undefined ){
+      console.log("starting fetch 1")
+      setPage(1)
       dispatch(getFreelancer(user.freelancerId))
       .unwrap()
       .then((response) => {
@@ -52,11 +54,12 @@ const JobsPage = ({ navigation, route }) => {
             newFilters= newFilters + `${keyName}=${value}&`
           })
           dispatch(getAllJobs({
-            filters:newFilters + `page=${page}`, 
+            filters:newFilters + `page=${1}`, 
             id: response.freelancer.id
           }))
           .unwrap()
           .then((response) => {
+            console.log("response 1 length", response.jobs.length)
             setNumberOfPages(response.numOfPages)
             setJobs(response.jobs)
             setLoading(false)
@@ -73,6 +76,7 @@ const JobsPage = ({ navigation, route }) => {
   } 
   else {
     if(!showFilter){ 
+      setPage(1)
       setLoading(true)
       let newFilters = ""
       Object.keys(filters).map((keyName, i) =>{
@@ -80,11 +84,12 @@ const JobsPage = ({ navigation, route }) => {
         newFilters= newFilters + `${keyName}=${value}&`
       })
       dispatch(getAllJobs({
-        filters:newFilters + `page=${page}`, 
+        filters:newFilters + `page=${1}`, 
         id: freelancer.id
       }))
       .unwrap()
       .then((response) => {
+        console.log("response freelancer length", response.jobs.length)
         setNumberOfPages(response.numOfPages)
         setJobs(response.jobs)
         setLoading(false)
@@ -96,24 +101,33 @@ const JobsPage = ({ navigation, route }) => {
     }
 
   }
-  }, [route, filters])
+  }, [route, filters, showFilter])
   useEffect(() => {
-    if(!showFilter && jobs.length &&  numberOfPages !== -1 && scrolled ){
+    if(!showFilter && jobs.length &&  numberOfPages !== -1 && scrolled && page !== 1){
+      console.log("starting update")
       let newFilters = ""
       Object.keys(filters).map((keyName, i) =>{
         let value = filters[keyName]  === "All Cities" || filters[keyName] === "All Categories" ? "" : filters[keyName]
         newFilters= newFilters + `${keyName}=${value}&`
       })
-      dispatch(getAllJobs(
-       newFilters + `page=${page}`
-      ))
-      .unwrap()
+      dispatch(getAllJobs({
+        filters:newFilters + `page=${page}`, 
+        id: freelancer.id
+      }))
+      .unwrap() 
       .then((response) => {
-        setJobs(response.jobs)
+        console.log("response2 length", response)
+        console.log("page", page)
+        alert("updating")
+        setJobs(data => ([
+          ...data,
+          ...response.jobs
+        ]))
         setLoading(false)
       })
       .catch((error) => {
         console.log("error", error.message)
+        setLoading(false)
       })
     }
   }, [page, scrolled])

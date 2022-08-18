@@ -29,7 +29,6 @@ export const  getAllJobs = createAsyncThunk(
   'getAllJobs',
   async (filters, thunkApi) => {
     let url = `jobs/${filters.id}/filteredjobs?${filters.filters}`
-
     try {
       const resp = await customFetch.get(url)
       return ("all jobs",resp.data)
