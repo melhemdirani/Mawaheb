@@ -20,37 +20,44 @@ import { getApplicants, getMyJobs } from '../reduxToolkit/jobSlice'
 import RenderMyjobs from '../components/RenderMyjobs'
 import JobList2 from '../components/JobList2'
 import RenderFreelancers from '../components/RenderFreelancers'
+import ProposalFiltiring from '../components/ProposalFiltiring'
 
 //client side
 
 const JobListPage = ({ navigation, route }) => {
   let filterInitial = {
-    location: "",
-    duration: "",
-    budget: "",
     category: "",
     title: "",
-    yearsOfExperience: "",
-    minBudget: "",
-    maxBudget: "",
     search: "",
+    sort:"",
   }
   const [filters, setFilters] = useState(filterInitial)
   const dispatch = useDispatch()
   const [loaded, setLoaded] = useState(false)
-  const { myJobs } = useSelector(
-    (state) => state.job
-  )
+  const [showFilters, setShowFilters] = useState(false)
+  const [showSearch, setShowSearch] = useState(false)
+  const [myJobs, setMyjobs] = useState([])
   const { user } = useSelector((state) => state.user)
   const { client } = useSelector((state) => state.client)
+  const [shownApplicants, setShownApplicants] = useState(false)
+
   useEffect(() => {
-    dispatch(getMyJobs(client?.id || user?.clientId))
+    let newFilters = ""
+    Object.keys(filters).map((keyName, i) =>{
+      let value = filters[keyName]  === "All Cities" || filters[keyName] === "All Categories" ? "" : filters[keyName]
+      newFilters= newFilters + `${keyName}=${value}&`
+    })
+    dispatch(getMyJobs({
+      filters:newFilters, 
+      id: user.clientId !== undefined ? user.clientId : client.id
+    }))
     .unwrap()
-    .then(
-      res => console.log("res get my jobs", res)
-    )
-    .catch(err => console.log("error getting my job", error))
-  }, [])
+    .then(res => {
+      setMyjobs(res.myJobs)
+      setLoaded(true)
+    })
+    .catch(err => console.log("error getting my job", err))
+  }, [filters, showFilters])
 
   useEffect(() => {
     if(route.params !== undefined && route.params.id !== undefined){
@@ -64,8 +71,8 @@ const JobListPage = ({ navigation, route }) => {
   const [showApplicantsTitle, setShowApplicantsTitle] = useState('all')
   const [showJobs, setShowJobs] = useState(true)
 
-  const navigate = (freelancer, jobId) => {
-    navigation.navigate('freelancerDetails', {freelancer, jobId })
+  const navigate = (freelancer, job) => {
+    navigation.navigate('freelancerDetails', {freelancer, job, invite: false })
   }
   const handleFilterChange = (name, value) => {
     setFilters( data => ({
@@ -73,31 +80,67 @@ const JobListPage = ({ navigation, route }) => {
       [name]: value
     }))
   }
-  return (
+  return loaded && (
     <View style={styles.wrapper}>
-      <ScrollView style={styles.container} >
-        <SecondaryHeader title='Find the right talent.' />
-        {showJobs && myJobs.map((item, i) => (
-            <RenderMyjobs
-              data={item}
-              navigate={navigate}
-              key={i}
-              showApplicantsTitle={showApplicantsTitle}
-              setShowApplicantsTitle={setShowApplicantsTitle}
-            />
-          ))}
-        {/* {showFreelancers && 
-          <RenderFreelancers
-            freelancers={freelancers}
-            navigate={navigate}
-            loaded={loaded}
-            showFreelancers={showFreelancers}
-            setShowFreelancers={setShowFreelancers}
-            setShowJobs={setShowJobs}
-          />
-        } */}
+      <View style={styles.container} >
+        <SecondaryHeader 
+          title='Find the right talent.'
+          onFilter={() => setShowFilters(!showFilters)}
+          handleChange={handleFilterChange}
+          search={false}
+          filter 
+         />
+
+         { shownApplicants 
+          ?<View>
+            { showJobs && !showFilters?
+              myJobs.map((item, i) => (
+                  <RenderMyjobs
+                    job={item}
+                    navigate={navigate}
+                    key={i}
+                    setShownApplicants={setShownApplicants}
+                    shownApplicants={shownApplicants}
+                    showApplicantsTitle={showApplicantsTitle}
+                    setShowApplicantsTitle={setShowApplicantsTitle}
+                  />
+                ))
+                : showFilters 
+                ? <ProposalFiltiring 
+                    handleChange={handleFilterChange}
+                    filters={filters}
+                    onClick={() => setShowFilters(false)}
+                  />
+                : null
+            }
+          </View>
+          :<ScrollView>
+            { showJobs && !showFilters?
+              myJobs.map((item, i) => (
+                  <RenderMyjobs
+                    job={item}
+                    navigate={navigate}
+                    key={i}
+                    showApplicantsTitle={showApplicantsTitle}
+                    shownApplicants={shownApplicants}
+                    setShownApplicants={setShownApplicants}
+                    setShowApplicantsTitle={setShowApplicantsTitle}
+                  />
+                ))
+                : showFilters 
+                ? <ProposalFiltiring 
+                    handleChange={handleFilterChange}
+                    filters={filters}
+                    onClick={() => setShowFilters(false)}
+                  />
+                : null
+            }
+          </ScrollView>
+         }
+
+      
         
-      </ScrollView>
+      </View>
       <Navbar active='Jobs' client navigation={navigation} />
     </View>
   )

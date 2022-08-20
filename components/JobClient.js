@@ -68,7 +68,7 @@ const JobClient = ({ title, current, navigate, item }) => {
                         { backgroundColor: 'transparent' }
                     ]}
                     >
-                    {item.title}
+                    {item.title} {item.privacy === "private" && " - private job"}
                     </Text>
                 }
                 >

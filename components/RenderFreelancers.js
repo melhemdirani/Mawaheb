@@ -16,27 +16,22 @@ import arrowUpIcon from '../assets/images/arrowUpIcon.png';
   
 
 
-export default function RenderFreelancers({navigate, loaded, freelancers, setShowJobs}) {
+export default function RenderFreelancers({navigate, freelancers, job}) {
 
     const [showApplicants, setShowApplicants] = useState(false)
  
     const handlePress = () => {
-        if(showApplicants){
-            setShowJobs(true)
-        } else{
-            setShowJobs(false)
-
-        }
         setShowApplicants(!showApplicants)
 
     }
+    console.log("freelancerss here", freelancers)
     return (
         <View style={styles.container}>
             <Pressable style={styles.title} onPress={()=>handlePress()}>
                 <MaskedView
                     maskElement={
                     <Text style={[styles.text, { backgroundColor: 'transparent' }]}>
-                        View All Freelancers
+                        Invite Freelancers To Apply
                     </Text>
                     }
                 >
@@ -46,16 +41,16 @@ export default function RenderFreelancers({navigate, loaded, freelancers, setSho
                     colors={['#31BEBB', '#655BDA']}
                     >
                     <Text style={[styles.text, { opacity: 0 }]}>
-                        Job Title Applicants
+                        Invite Freelancers To Apply
                     </Text>
                     </LinearGradient>
                 </MaskedView>
                 <Image source={arrowUpIcon} style={showApplicants ? styles.arrowUp : styles.arrowDown}></Image>
             </Pressable>
 
-            <ScrollView>
+            <View>
                 {
-                    showApplicants && loaded && Object.keys(freelancers) !== 0 && freelancers.map((freelancer, i) => {
+                    showApplicants  && Object.keys(freelancers) !== 0 && freelancers.map((freelancer, i) => {
                     return freelancer.isCompleted && (
                         <JobList2 
                             languages={freelancer.languages} 
@@ -63,23 +58,23 @@ export default function RenderFreelancers({navigate, loaded, freelancers, setSho
                             roles={freelancer.roles} 
                             key={i} 
                             navigate={navigate}
+                            job={job}
                             id={freelancer.id}
+                            freelancer={freelancer}
                         />
                     )
                     
                     })
                 }
-            </ScrollView>
+            </View  >
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {
-    },
+  
     title: {
       padding: 7,
-      backgroundColor: '#E7F2F9',
       height: 50,
       flexDirection: 'row',
       alignItems: 'center',

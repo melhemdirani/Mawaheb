@@ -33,14 +33,19 @@ function RoleForm({handleChange, title, index, experience}) {
                 placeholder="Your key responsibilities" 
                 onChange={(value) => handleChange('keyResponsibilities', value, index, title)}
                 value={experience.keyResponsibilities}
+                valued
             /> 
             <DateInputs 
                 placeholder="Role Start Date*"
                 onChange={(value) => handleChange('startDate', value, index, title)}
+                valued
+                value={experience.startDate}
             /> 
             <DateInputs 
                 placeholder="Role End Date*"
                 onChange={(value) => handleChange('endDate', value, index, title)}
+                valued
+                value={experience.endDate}
             />         
         </View>
     )

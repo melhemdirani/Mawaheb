@@ -19,27 +19,48 @@ import { handleChange, completedProfile } from '../reduxToolkit/freelancerSlice'
 import signUp from '../assets/images/signUp.png';
 
 import Header from '../components/Header';
-import Inputs from '../components/Inputs';
 import UploadCard from '../components/UploadCard';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
 import ImageCard from '../components/ImageCard';
 
 
 
-const CreateProfilePage = ({  navigation }) => {
-  
+const CreateProfilePage = ({  navigation, route }) => {
+  const {update} = route.params
+  const {
+    freelancer,
+  } = useSelector((store) => store.freelancer)
+  const [dispatched, setDipatched] = useState(false)
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    if(update && !dispatched){
+      dispatch(
+        handleChange({
+          name: 'copyOfPassport',
+          value: `http://194.5.157.234:4000${freelancer.copyOfPassport}`,
+        })
+      )
+      dispatch(
+        handleChange({
+          name: 'copyOfResidencyVisa',
+          value: `http://194.5.157.234:4000${freelancer.copyOfResidencyVisa}`,
+        })
+      )
+      setDipatched(true)
+    }
+  }, [])
 
   const {
     copyOfPassport,
     copyOfResidencyVisa
   } = useSelector((store) => store.freelancer)
 
-  const [uploaded, setUploaded] = useState(false)
-  const [uploaded2, setUploaded2] = useState(false)
+  const [uploaded, setUploaded] = useState( freelancer.copyOfPassport !== undefined ? true : false)
+  const [uploaded2, setUploaded2] = useState(freelancer.copyOfPassport !== undefined? true : false)
 
-  const [passCopy, setPassCopy] = useState("")
-  const [visaCopy, setVisaCopy] = useState("")
+  const [passCopy, setPassCopy] = useState(update && freelancer.copyOfPassport !== undefined ?  `http://194.5.157.234:4000${freelancer.copyOfPassport}` : "")
+  const [visaCopy, setVisaCopy] = useState(update && freelancer.copyOfResidencyVisa !== undefined?  `http://194.5.157.234:4000${freelancer.copyOfResidencyVisa}` : "")
 
   const [startingToUpload, setStartingToUpload] = useState(false)
   const [activity, setActivity] = useState(false)
@@ -47,7 +68,7 @@ const CreateProfilePage = ({  navigation }) => {
 
   const navigateExperience = () => {
     // setUser({copyOfPassport: "", copyOfResidencyVisa: ""})
-    navigation.navigate("experience")
+    navigation.navigate("experience", {update})
   } 
 
 
@@ -121,8 +142,8 @@ const CreateProfilePage = ({  navigation }) => {
     if (!result.cancelled) {
       !startingToUpload && setStartingToUpload(true)
       setPassCopy(result.uri)
+      setUploaded(false)
       upload(result.uri)
-
     }
   };
   const selectFile2 = async () => {
@@ -135,7 +156,9 @@ const CreateProfilePage = ({  navigation }) => {
     if (!result.cancelled) {
       !startingToUpload && setStartingToUpload(true)
       setVisaCopy(result.uri)
+      setUploaded2(false)
       upload2(result.uri)
+
     }
   };
   const handleSubmit = () => {
@@ -148,7 +171,7 @@ const CreateProfilePage = ({  navigation }) => {
       dispatch(
         completedProfile(true)
       )
-      navigation.navigate("experience")
+      navigateExperience()
 
     }
   }
@@ -225,7 +248,7 @@ const CreateProfilePage = ({  navigation }) => {
           <PrimaryButton title='Next' activity={activity}/>
         </TouchableOpacity>
         { !activity &&
-          <TouchableOpacity onPress={() => navigation.navigate("experience")}>
+          <TouchableOpacity onPress={() => navigateExperience()}>
             <Text style={styles.skipText}>
                 SKIP
             </Text>

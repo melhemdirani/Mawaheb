@@ -24,7 +24,7 @@ const PhoneInputs = ({placeholder, onChange, numeric, value}) => {
       setText(e)
       onChange(e)
     }
- 
+    console.log("value", value)
     return (
          <View  style={!changed ? [styles.container, styles.borderBottom] : styles.container}>
             {
@@ -50,7 +50,7 @@ const PhoneInputs = ({placeholder, onChange, numeric, value}) => {
               placeholderTextColor="rgba(0,0,0,.5)"
               onChangePhoneNumber={(e) => onChangePhonenumber(e)}
               initialCountry={'ae'}
-              value={value}
+              initialValue={value}
               autoFormat={true}
             />
 

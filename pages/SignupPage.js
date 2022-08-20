@@ -29,7 +29,7 @@ export default function SignupPage({ navigation }) {
       setCurrentIndex(index);
   }
   const navigateJob = () => {
-    navigation.navigate('JobSignUp', { role: 'freelancer' })
+    navigation.navigate('JobSignUp', { role: 'freelancer', update: false })
   }
   const navigateLogin = () => {
     navigation.navigate('login')

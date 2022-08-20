@@ -18,12 +18,15 @@ import trash from '../assets/images/trash.png'
 import Notification from '../components/Notification'
 import { acceptContractFreelancer } from '../reduxToolkit/freelancerSlice'
 import { getClientDashboard } from '../reduxToolkit/clientSlice'
+import { getFreelancer } from '../reduxToolkit/freelancerSlice';
+import { getJob } from '../reduxToolkit/jobSlice'
 
 const NotificationsPage = ({ navigation, role, route }) => {
   const { user, notifications, notificationsSeen, isLoading } = useSelector((store) => store.user)
   const { freelancer} = useSelector((store) => store.freelancer)
+  const { job} = useSelector((store) => store.job)
   const { client} = useSelector((store) => store.client)
-  const testing = []
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     console.log("notificationsSeens", notificationsSeen)
@@ -36,15 +39,68 @@ const NotificationsPage = ({ navigation, role, route }) => {
     navigation.navigate('acceptContract', {action, role: "freelancer"})
   }
   const navCongrats = (action) => {
-    navigation.navigate('acceptedClient')
+    navigation.navigate('acceptedClient', {action, role: user.role})
   }
-  const navJobs = (action) => {
-    navigation.navigate('recruiter_Jobs')
+  const navJobs = (freelancerId, jobId, action) => {
+    setLoading(true)
+    console.log("action", action)
+    if(freelancerId === "propsal" || jobId === "propsal" || action === "proposal"){
+      return setLoading(false)
+    } else{
 
+    dispatch(getJob(jobId))
+    .unwrap()
+    .then((response) =>{
+      dispatch(
+        getFreelancer(freelancerId)
+      ) .then( res => {
+        console.log("res", res.payload.freelancer)
+        setTimeout(() => {
+          if(
+            job ===null || 
+            job ===undefined || 
+            job ==={} || 
+            freelancer ===null || 
+            freelancer ==={} || 
+            freelancer ===undefined 
+          ){
+             setLoading(false)
+            return (
+              alert("Notification expired")
+            )
+          } else {
+            setLoading(false)
+            navigation.navigate('freelancerDetails', {job: response.job, freelancer: res.payload.freelancer})
+          }
+        }, (400));
+      
+      }
+      )
+      .catch(err=> {
+        console.log("eror", err)
+        setLoading(false)
+        return alert("Notification has expired")
+
+      })
+    })
+    .catch(err=> {
+      console.log("eror", err)
+      setLoading(false)
+      return alert("Notification has expired")
+    })
+  }
+
+    
+  }
+  const navJobDetails = (id) => {
+    navigation.navigate('jobDescription', {id})
   }
 
 
-  return (
+  return loading ? <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
+    <ActivityIndicator size={"large"} />
+  </View>
+  :(
     <View style={styles.container}>
       <ScrollView>
         <Header
@@ -68,7 +124,9 @@ const NotificationsPage = ({ navigation, role, route }) => {
                 key={i}
                 acceptContract={acceptContract}
                 navJobs={navJobs}
+                navJobDetails={navJobDetails}
                 navCongrats={navCongrats}
+                n={n}
               />
             ))}
           </View>

@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, Text, View, TouchableOpacity, TextInput} from 'r
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 
-const DailyRate = ({title, placeholder, onChange}) => {
+const DailyRate = ({value, valued, placeholder, onChange}) => {
 
     const [text, setText] = useState("")
     const [changed, setChanged] = useState(false)
@@ -37,7 +37,7 @@ const DailyRate = ({title, placeholder, onChange}) => {
                 </MaskedView>
 
             }
-            <View style={styles.subContainer}>
+            <View style={[styles.subContainer, !changed && {height: "100%"}]}>
                 <TextInput
                     keyboardType="numeric"
                     style={
@@ -46,6 +46,7 @@ const DailyRate = ({title, placeholder, onChange}) => {
                     onChangeText={(e) => onChangeText(e)}
                     placeholder={placeholder}
                     placeholderTextColor="rgba(0,0,0,.5)"
+                    value={valued ? value.toString() : text}
                 />
                 <Text style={styles.rate}>AED</Text>
             </View>
@@ -97,12 +98,13 @@ const styles = StyleSheet.create({
     color: "#9C88FD",
     fontWeight: "600",
     marginRight: 10,
-    fontSize: 12
+    fontSize: 12,
   },
   subContainer:{
     flexDirection: "row",
     justifyContent: 'space-between',
-    marginTop: 5
+    alignItems: "center",
+    marginTop: 5,
   }
 });
 

@@ -40,11 +40,10 @@ function Navbar({active, navigation}) {
 
 
     useEffect(() => {
-        console.log("client", user)
         if (user?.role === 'client' && (user.clientId || client.id)) {
           dispatch(getNotifications({ id: user.clientId ? user.clientId : client.id, role: user.role }))
           .unwrap()
-          .then((res) => console.log("notifcations", res))
+          .then((res) => console.log("notifcations", res.notifications.slice(-5)))
           .catch((err) => console.log("error notifications", err))
         } else if (user.role === 'freelancer' && (user.freelancerId || freelancer.id)) {
           dispatch(getNotifications({ 
@@ -52,7 +51,7 @@ function Navbar({active, navigation}) {
             role: user.role 
           }))
           .unwrap()
-          .then((res) => console.log("notifcations"))
+          .then((res) => console.log("notifcations", res))
           .catch((err) => console.log("error notifications"))
         }
       }, [])

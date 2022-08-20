@@ -8,7 +8,8 @@ import {
   ScrollView,
 } from 'react-native';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
 
 import { languagesList } from '../assets/data/RolesList';
 import Header from '../components/Header';
@@ -16,10 +17,16 @@ import icon from '../assets/images/language.png';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
 import SelectInput from '../components/SelectInput';
 import AddRoleButton from '../components/Buttons/AddRoleButton';
-import { addLanguage } from '../reduxToolkit/freelancerSlice';
+import { addLanguage, deleteFreelenacerLanguage } from '../reduxToolkit/freelancerSlice';
 import DeleteButton from '../components/Buttons/DeleteButton';
-const LanguagePage = ({ navigation }) => {
-  
+
+const LanguagePage = ({ navigation, route }) => {
+  const {update} = route.params
+  const {
+    freelancer,
+  } = useSelector((store) => store.freelancer)
+
+
   // const [alreadyExists, setAlreadyExists] = useState(-1)
 
   const dispatch = useDispatch()
@@ -28,33 +35,24 @@ const LanguagePage = ({ navigation }) => {
     profeciency: '',
     already: false
   }
-  const [languages, setLanguages] = useState([mainLanguageState, mainLanguageState])
-  const [chosenSame, setChosenSame] = useState(false) 
+
+  let newLanguages =freelancer.languages !== undefined ? freelancer.languages.map(language =>{
+    return {
+      name: language.name,
+      profeciency: language.profeciency,
+      id: language.id
+    }
+  }) :  [mainLanguageState, mainLanguageState]
+
+  console.log("new lagnuagess", newLanguages)
+  const [languages, setLanguages] = useState(
+    update && freelancer.languages !== undefined && freelancer.languages.length
+    ? newLanguages
+    : [mainLanguageState, mainLanguageState]
+  )
 
 
   const handleLanguageChange = (name, value, index) => {
-    let alreadyExists = false
-    languages.map( (language, i) =>{
-      if(language.name === value){
-        alreadyExists= true
-      }
-    })
-
-    if(alreadyExists && name === 'name'){
-      setChosenSame(true)
-      setLanguages(data =>{
-        return [ 
-          ...data.slice(0, index), 
-          { 
-            ...data[index], 
-            [name] :value,
-            already: true
-          },
-            ...data.slice(index+1)
-        ]
-      });
-    } else{
-      setChosenSame(false)
       setLanguages(data => {
         return [ 
           ...data.slice(0, index), 
@@ -66,20 +64,32 @@ const LanguagePage = ({ navigation }) => {
             ...data.slice(index+1)
         ]
       });
-    }
  
   }
-  const navigateBank = () => {
+  const bankNavigation = () => {
+    navigation.navigate('bank', {update: update})
 
-    if(chosenSame){
+  }
+  const navigateBank = () => {
+    let valueArr = languages.map(function(item){ return item.name });
+    let isDuplicate = valueArr.some(function(item, idx){ 
+        return valueArr.indexOf(item) != idx 
+    });
+    if(isDuplicate){
       return alert("Please choose different languages")
     } 
-    notFilled = false
-    const alllanguages =   languages.map(language => {
-      if(language.name === '' || language.profeciency === ''){
+    let notFilled = false
+    const alllanguages =  languages.map(language => {
+      if(language.name !== '' && language.profeciency !== ''){
+        notFilled = false
+      }  else{
         notFilled = true
       }
-      let object = {name: language.name, profeciency: language.profeciency}
+      let object = {
+        name: language.name, 
+        profeciency: language.profeciency, 
+        id: language.id
+      }
        return(
         object
        )
@@ -90,7 +100,7 @@ const LanguagePage = ({ navigation }) => {
       return(alert("Please fill all required fields*"))
     } else{
       dispatch(addLanguage(alllanguages))
-      navigation.navigate('bank')
+      bankNavigation()
     }
     
     // languages.map(language => 
@@ -110,6 +120,13 @@ const LanguagePage = ({ navigation }) => {
     });
   }
   const onDeleteLanguage = (index) => {
+    if(update && languages[index].id !== undefined){
+      dispatch(
+        deleteFreelenacerLanguage(languages[index].id)
+      ).then(res => console.log("response deleteing lanugage", res))
+      .catch(err => console.log(err))
+    }
+    
     setLanguages(data => {
       return [ ...data.slice(0, index),  ...data.slice(index+1)]
     });
@@ -162,7 +179,7 @@ const LanguagePage = ({ navigation }) => {
         <Pressable style={styles.nextButton} onPress={() => navigateBank()}>
           <PrimaryButton title='Continue' />
         </Pressable>
-        <Pressable onPress={() =>  navigation.navigate('bank')}>
+        <Pressable onPress={() =>  bankNavigation()}>
           <Text style={styles.skipText}>
               SKIP
           </Text>

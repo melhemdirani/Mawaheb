@@ -29,7 +29,7 @@ const JobPostingPage = ({navigation}) => {
     startDate: new Date(),
     endDate: new Date(),
     location: '',
-    yearsOfExperience: '',
+    yearsOfExperience: '2',
     description: '',
     budget: '',
     duration: 2,
@@ -47,15 +47,8 @@ const JobPostingPage = ({navigation}) => {
   const handleChange = (name, value) => {
     setValues({ ...values, [name]: value })
   }
-  console.log("user", user.clientId)
-  const compareDates = (d1, d2) => {
-    let date1 = new Date(d1);
-    let date2 = new Date(d2);
-  
-    if (date1 < date2) {
-      return console.log(true, date1);
-    } else return console.log(false, date2)
-  };
+
+
   const paymentNav = () => {
     //add job with values and client id
       // return(compareDates(values.startDate, values.endDate))
@@ -64,7 +57,6 @@ const JobPostingPage = ({navigation}) => {
       values.startDate  === '' ||
       values.endDate  === '' ||
       values.location === '' ||
-      values.yearsOfExperience  === '' ||
       values.budget  === '' ||
       values.description === '' ||
       values.shift === ''
@@ -73,34 +65,34 @@ const JobPostingPage = ({navigation}) => {
       return alert("Please fill in all required Information")
     } else{
       console.log("calu", values.shift)
-      dispatch(
-        createJob({
-          category: values.category,
-          title: values.title,
-          startDate: values.startDate,
-          endDate: values.endDate,
-          location: values.location,
-          yearsOfExperience: values.yearsOfExperience,
-          description: values.description,
-          budget: values.budget,
-          privacy: isEnabled ? 'private' : 'public',
-          clientId: user.clientId? user.clientId : client.id,
-          duration: new Date(),
-          shift: values.shift
-        })
-      )
-      .unwrap()
-      .then((response) => {
-        console.log("job for posting", response)
-        navigation.navigate("payment")
-      })
-      .catch((error) => {
-        console.log("error updating", error.message)
-        alert("Error creating a job, please try again later")
-        navigation.navigate("recruiter_dashboard")
-
-
-      })
+   
+      navigation.navigate("payment", {values})
+      // dispatch(
+      //   createJob({
+      //     category: values.category,
+      //     title: values.title,
+      //     startDate: values.startDate,
+      //     endDate: values.endDate,
+      //     location: values.location,
+      //     yearsOfExperience: values.yearsOfExperience,
+      //     description: values.description,
+      //     budget: parseInt(values.budget),
+      //     privacy: isEnabled ? 'private' : 'public',
+      //     clientId: user.clientId? user.clientId : client.id,
+      //     duration: new Date(),
+      //     shift: values.shift
+      //   })
+      // )
+      // .unwrap()
+      // .then((response) => {
+      //   console.log("job for posting", response)
+      //   navigation.navigate("payment")
+      // })
+      // .catch((error) => {
+      //   console.log("error updating", error)
+      //   alert("Error creating a job, please try again later")
+      //   navigation.navigate("recruiter_dashboard")
+      // })
     }
 
   
@@ -121,7 +113,9 @@ const JobPostingPage = ({navigation}) => {
         />
 
       <View style={styles.container}>
-        <Text style={styles.text}>Let us know what are you looking for, and fill in some details find better qualified matches. </Text>
+        <Text style={styles.text}>
+          Let us know what are you looking for, and fill in some details find better qualified matches. 
+        </Text>
         <View style={styles.form}>
             <SelectInput 
                 title="Role Category*" 
@@ -147,16 +141,9 @@ const JobPostingPage = ({navigation}) => {
                 onSelect={(value) => handleChange('shift', value)}
                 list={['day', 'night']}
             /> 
-            <Inputs
-              placeholder='Years of experience*'
-              style={styles.input}
-              onChange={(value) => handleChange('yearsOfExperience', value)}
-              value={values.yearsOfExperience}
-              numeric
-            />
             <DailyRate
               title='Budget'
-              placeholder='Budget*'
+              placeholder='Daily Rate*'
               numeric
               onChange={(value) => handleChange('budget', value)}
             />

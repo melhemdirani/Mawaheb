@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import customFetch from '../utils/axios'
 
-import { setUserAfterRegister } from './userSlice'
 
 const initialState = {
   client: {},
@@ -24,7 +23,20 @@ export const createClientProfile = createAsyncThunk(
     }
   }
 )
-
+export const updateClientProfile = createAsyncThunk(
+  'updateClientProfile',
+  async (client, thunkAPI) => {
+    try {
+      const resp = await customFetch.patch('/clients', client)
+      return resp.data
+    } catch (error) {
+      console.log(error)
+      console.log(error.response.data.msg)
+      alert(error.response.data.msg)
+      return thunkAPI.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
 export const acceptAndSign = createAsyncThunk(
   'acceptAndSign',
   async (contractId, thunkAPI) => {// contracts/contractid/sign
@@ -65,9 +77,21 @@ export const getClientbyId = createAsyncThunk(
       const resp = await customFetch.get(url)
       return resp.data
     } catch (error) {
-      console.log(error)
       console.log(error.response.data.msg)
-      alert(error.response.data.msg)
+      return thunkAPI.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
+export const inviteFreelancer = createAsyncThunk(
+  'inviteFreelancer',
+  async (info, thunkAPI) => {
+    let url = `/clients/invite/`
+    console.log("url", url)
+    try {
+      const resp = await customFetch.post(url, {freelancerId: info.freelancerId, jobId: info.jobId})
+      return resp.data
+    } catch (error) {
+      console.log(error)
       return thunkAPI.rejectWithValue(error.response.data.msg)
     }
   }
@@ -77,7 +101,11 @@ export const getClientbyId = createAsyncThunk(
 const clientSlice = createSlice({
   name: 'client',
   initialState,
-  reducers: {},
+  reducers: {
+    clearClient : (state) => {
+      state.client = {}
+    }
+  },
   extraReducers: {
     [createClientProfile.pending]: (state) => {
       state.isLoading = true
@@ -87,7 +115,21 @@ const clientSlice = createSlice({
       state.isLoading = false
       state.client = client
     },
+    [getClientbyId.fulfilled]: (state, { payload }) => {
+      const { client } = payload
+      console.log("clieenttt", client)
+      state.isLoading = false
+      state.client = client
+    },
+    [updateClientProfile.fulfilled]: (state, { payload }) => {
+      const { client } = payload
+      state.isLoading = false
+      state.client = client
+    },
     [acceptAndSign.fulfilled]: (state, { payload }) => {
+      console.log("payloaddd", payload)
+    },
+    [inviteFreelancer.fulfilled]: (state, { payload }) => {
       console.log("payloaddd", payload)
     },
     [createClientProfile.rejected]: (state, { payload }) => {
@@ -115,5 +157,6 @@ const clientSlice = createSlice({
     },
   },
 })
+export const { clearClient } = clientSlice.actions
 
 export default clientSlice.reducer

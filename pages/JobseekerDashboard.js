@@ -23,6 +23,7 @@ import totalBg from '../assets/images/totalBg.png'
 
 const JobseekerDashboard = ({ navigation, route }) => {
   const { user } = useSelector((store) => store.user)
+  console.log("user", user)
   const { dashboard, isLoading } = useSelector((store) => store.freelancer)
   const { currentJobs, pastJobs, totalWorkingTime, totalCashEarned } = dashboard
   console.log(currentJobs)
@@ -40,11 +41,11 @@ const JobseekerDashboard = ({ navigation, route }) => {
   }, [route])
 
 
-  const navigatePrevious = (i) => {
-    navigation.navigate('jobDescription')
+  const navigatePrevious = (id) => {
+    // navigation.navigate('jobDescription', {id})
   }
   const navigate = (i) => {
-    navigation.navigate('jobDescription')
+    // navigation.navigate('jobDescription', {id})
   }
   const RenderItem = (data, index) => {
     let lastOne = data.index === pastJobs?.length - 1 ? true : false

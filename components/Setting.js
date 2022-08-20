@@ -4,21 +4,22 @@ import { Image, StyleSheet, Text, View, Pressable} from 'react-native';
 
 function Setting({title, icon, action}) {
 
-    return (
+    return action ?(
+        <Pressable onPress={() => action()} style={styles.container}>
+            <Image
+                style={styles.image}
+                source={icon}
+            />
+            <Text style={styles.text}>{title}</Text>
+        </Pressable>
+    )
+    :(
         <View style={styles.container}>
             <Image
                 style={styles.image}
                 source={icon}
             />
-           { action ?  <Pressable onPress={() => action()}>
-                <Text style={styles.text}>{title}</Text>
-            </Pressable>
-            :<Pressable >
             <Text style={styles.text}>{title}</Text>
-        </Pressable>
-        
-        }
-
         </View>
     )
 }
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
     },
     image:{
         marginLeft: 5,
-        marginRight: 20
+        marginRight: 20,
     },
     text:{
         fontFamily: "PoppinsR",

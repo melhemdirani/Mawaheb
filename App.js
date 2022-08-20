@@ -38,6 +38,9 @@ import FreelancerProfile from './pages/FreelancerProfile'
 import ClientProfile from './pages/ClientProfile'
 import ContactForm from './pages/ContactForm'
 import JobDetailsPage_Client from './pages/JobDetailsPage_Client'
+import ContactFreelancerPage from './pages/ContactFreelancerPage'
+import EditClientProfile from './pages/EditClientProfile'
+import UpdatePasswordPage from './pages/UpdatePasswordPage'
 
 
 Sentry.init({
@@ -45,7 +48,6 @@ Sentry.init({
   // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
   // We recommend adjusting this value in production.
   tracesSampleRate: 1.0,
-  enableNative: false
 });
 
 const Stack = createNativeStackNavigator()
@@ -249,6 +251,28 @@ function App() {
               headerShown: false,
             }}
           />
+          <Stack.Screen
+            name='contactFreelancer'
+            component={ContactFreelancerPage}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name='editProfileClient'
+            component={EditClientProfile}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name='updatePass'
+            component={UpdatePasswordPage}
+            options={{
+              headerShown: false,
+            }}
+          />
+
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

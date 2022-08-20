@@ -26,7 +26,7 @@ const Inputs = ({placeholder, onChange, numeric, value}) => {
     return (
         <View style={!changed ? [styles.container, styles.borderBottom] : styles.container}>
             {
-                changed && 
+                (changed || text !== "") && 
                 <MaskedView maskElement={ <Text style={[styles.label, {backgroundColor: "transparent"}]}>{placeholder}</Text>}>
                     <LinearGradient
                         start={{x:0, y: 0}}
@@ -40,7 +40,7 @@ const Inputs = ({placeholder, onChange, numeric, value}) => {
             }
            
              <TextInput
-              secureTextEntry={placeholder === "Password" || placeholder === "Password*" ? true : false}
+              secureTextEntry={placeholder.includes("assword") || placeholder === "Password*" ? true : false}
               style={ [styles.wrapperCustom, !changed && { height:"100%"}] }
               placeholder={placeholder}
               keyboardType={numeric ? "numeric" : "default"}
@@ -49,7 +49,7 @@ const Inputs = ({placeholder, onChange, numeric, value}) => {
               value={value}
             />
 
-            { changed && 
+            { (changed || text !== "") && 
                 <LinearGradient
                     start={{x:0, y: 0}}
                     end={{x:1, y: 1}}

@@ -15,6 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 
+import { getClientbyId } from '../reduxToolkit/clientSlice';
 import calendarIcon from '../assets/images/calendarIcon.png';
 import clockIcon from '../assets/images/clockIcon.png';
 import locationIcon from '../assets/images/locationIcon.png';
@@ -32,30 +33,70 @@ const JobDetailsPage = ({route, navigation}) => {
     location:'',
     createdAt:'',
   }
-  const [jobs, setJobs] = useState(initialState)
+  const [job, setJob] = useState(initialState)
   const { id } = route.params
-  const { job } = useSelector((state) => state.job)
   const { freelancer } = useSelector((state) => state.freelancer)
   const { user } = useSelector((state) => state.user)
   const dispatch = useDispatch()
-
   const [applied, setApplied] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [client, setClient] = useState({})
+
+  useEffect(() => {
+    setLoading(true)
+    dispatch(
+      getJob(id)
+    )
+    .unwrap()
+    .then(res => {
+      setJob(res.job)
+      dispatch(getClientbyId(res.job.clientId))
+      .unwrap()
+      .then( res => {
+        console.log("res", res.client.user.profileImage)
+        setClient(res.client)
+        setLoading(false)
+      })
+      .catch(err => {
+        console.log("erorr", err)
+        setLoading(false)
+      })
+    })
+    .catch(err => {
+      console.log("err", err)
+      setLoading(false)
+    })
+    console.log("freelancer", freelancer)
+  }, [route])
+
   const navigateApply = () => {
-    console.log("Freelancer ID", freelancer.id)
-    console.log("user ID", user.freelancerId)
-    if(freelancer !== undefined && freelancer !== {} && !freelancer.isCompleted){
-      return alert("Please complete your profile before applying")
+    const newRoles = freelancer.roles.filter(element => {
+      return element.category === job.category
+    });
+    if(!freelancer.isCompleted){
+      alert("Please complete your profile before applying")
+      return navigation.navigate("freelancerProfile")
+    } else if(newRoles === null || newRoles === undefined || newRoles.length === 0){
+      return alert("You can only apply to jobs with same categories as your filled work experience")
     } else{
       dispatch(
         applyJob({
           jobId: id,
           freelancerId: freelancer.id ? freelancer.id : user.freelancerId,
-          price: 2000,
+          price: newRoles.length ? newRoles[0].dailyRate : 0,
         })
-      ).then(res => console.log("res", res)) 
+      ).then(res => {
+        console.log("res", res)
+        if(res.payload !== undefined && res.payload === "You are not qualified for this job"){
+          alert("You can only apply to jobs with same categories as your work experience")
+        } else if(res.payload !== undefined && res.payload === "You have already applied for this job"){
+          alert("You have already applied for this job")
+        } 
+        setApplied(!applied)
+        navigation.goBack({applied: applied})
+
+      }) 
       .catch(err => console.log("error applying", err))
-      setApplied(!applied)
-      navigation.navigate('jobseeker_jobs', {applied: applied})
     }
    
   }
@@ -64,30 +105,23 @@ const JobDetailsPage = ({route, navigation}) => {
     dispatch(getJob(id))  
   }, [id])
 
-  useEffect(() => {
-    if( job !== {} && job !== undefined){
-      console.log("job", freelancer.isCompleted)
-      setJobs({
-        title:job.title,
-        description: job.description,
-        budget: job.budget,
-        location: job.location,
-        createdAt: job.createdAt,
-        shift: job.shift
-      })
-    }
-  }, [job])
-  const { title, description, budget, location, createdAt } = jobs
 
-  return  Object.keys(jobs).length === 0 
-    ?<View style={styles.loadingStyle}>
+  const { title, description, budget, location, createdAt } = job
+  
+  return loading ?  <View style={styles.loadingStyle}>
       <ActivityIndicator size={'large'} />
     </View>
     :(
     <ScrollView style={styles.wrapper}>
       <View style={styles.header}>
         <View style={styles.subHeader}>
-          <View style={styles.circle} />
+          { client.user && client.user.profileImage !== undefined &&
+            <Image      
+              source={{uri: `http://194.5.157.234:4000${client.user.profileImage}`}} 
+              style={styles.profileImage}
+              blurRadius={7}
+            />
+          }
           <ImageBackground
             source={priceRectangle}
             style={styles.priceBg}
@@ -138,16 +172,22 @@ const JobDetailsPage = ({route, navigation}) => {
                   <Text style={[styles.title, { opacity: 0 }]}>{title}</Text>
                 </LinearGradient>
               </MaskedView>
-              <View >
-                    <View >
-                      <View style={{paddingHorizontal: 20}}>
-                        <Text style={styles.roleDescription}>
-                          {description}
-                        </Text>
-                      </View>
-                    </View>
+              <View style={{paddingHorizontal: 20}}>
+                <Text style={styles.roleDescription}>
+                  {description}
+                </Text>
+                <View style={{flexDirection: "row"}}>
+                  <Text style={styles.roleDateText}>{moment(job.startDate).format('ll')}</Text> 
+                  <Text style={styles.roleDateText}> - {moment(job.endDate).format('ll')}</Text>
+                </View>
+            
               </View>
+              <View>
+
+              </View>
+
           </View>
+
           <LinearGradient
             colors={[
               'rgba(202, 218, 221, 0.4)',
@@ -163,11 +203,11 @@ const JobDetailsPage = ({route, navigation}) => {
                     source={calendarIcon}
                     style={styles.calendarIcon}
                 ></Image>
-                <Text style={styles.roleDateText}>{moment(createdAt).format('ll')}</Text>
+                <Text style={styles.roleDateText}>{moment(job.startDate).format('ll')}</Text>
             </View>
             <View style={styles.footerInfo}>
                 <Image source={clockIcon} style={styles.icon}></Image>
-                <Text style={styles.text}> {job.shift.charAt(0).toUpperCase() + job.shift.slice(1)} shift</Text>
+                <Text style={styles.text}> {job.shift !== undefined && (job.shift.charAt(0).toUpperCase() + job.shift.slice(1))} shift</Text>
             </View>
             <View style={styles.footerInfo}>
                 <Image source={locationIcon} style={styles.icon}></Image>
@@ -368,6 +408,15 @@ const JobDetailsPage = ({route, navigation}) => {
       justifyContent: 'center',
       alignItems: 'center',
       height: '100%',
+    },
+    profileImage: {
+      width: 60,
+      height: 60,
+      borderRadius: 50,
+      borderColor: ' rgba(16, 125, 197, 1)',
+      borderWidth: 1,
+      zIndex: 999,
+      backgroundColor: 'white',
     },
   })
 

@@ -8,66 +8,79 @@ import {
     Switch,
     Pressable,
     TouchableOpacity
-  } from 'react-native';
+} from 'react-native';
 
-  import Inputs from '../components/Inputs';
-  import UploadCard from '../components/UploadCard';
-  import PrimaryButton from '../components/Buttons/PrimaryButton';
+import Inputs from '../components/Inputs';
+import UploadCard from '../components/UploadCard';
+import { useDispatch, useSelector } from 'react-redux';
+import PrimaryButton from '../components/Buttons/PrimaryButton';
 
-  import Header from '../components/Header';
-  import payment from '../assets/images/paymentIcon.png';
-  import checked from '../assets/images/checked.png';
-  import unChecked from '../assets/images/unChecked.png';
+import Header from '../components/Header';
+import payment from '../assets/images/paymentIcon.png';
+import checked from '../assets/images/checked.png';
+import unChecked from '../assets/images/unChecked.png';
+import { createJob } from '../reduxToolkit/jobSlice';
 
   
-  const PaymentPage = ({navigation}) => {
+  const PaymentPage = ({navigation, route}) => {
+
+    const {values} = route.params
+    console.log("params", route)
+    const { user } = useSelector((state) => state.user)
+    const { client } = useSelector((state) => state.client)
+
+    const dispatch = useDispatch()
+
+    const intitialState = {
+      cardNumber:"",
+      cardHolder: "",
+      ccv: "",
+      bankName: "",
+      swift: "",
+      iban: "",
+      address: "",
+      po: "",
+      billingAddress: "",
+      billingEmail:""
+    }
+    const [paymentDetails, setPaymentDetails] = useState(intitialState)
+    const handleChange = (name, value) => {
+      setPaymentDetails({...paymentDetails, [name]: value})
+    }
     const [isEnabled, setIsEnabled] = useState(false)
     const [card, setCard] = useState(true)
     const toggleSwitch = () => setIsEnabled((previousState) => !previousState)
 
     const onPostClick = () => {
-      alert("Thank you! Your job was posted")
-      let date = new Date()
-      navigation.navigate('recruiter_dashboard', {id: date.toDateString()})
+       dispatch(
+        createJob({
+          category: values.category,
+          title: values.title,
+          startDate: values.startDate,
+          endDate: values.endDate,
+          location: values.location,
+          yearsOfExperience: values.yearsOfExperience,
+          description: values.description,
+          budget: parseInt(values.budget),
+          privacy: isEnabled ? 'private' : 'public',
+          clientId: user.clientId? user.clientId : client.id,
+          duration: new Date(),
+          shift: values.shift
+        })
+      )
+      .unwrap()
+      .then((response) => {
+        alert("Thank you! Your job was posted")
+        let date = new Date()
+        navigation.navigate('recruiter_dashboard', {id: date.toDateString()})
+      })
+      .catch((error) => {
+        console.log("error updating", error)
+        alert("Error creating a job, please try again later")
+        navigation.navigate("recruiter_dashboard")
+      })
     }
 
-    const Prepaid = () => {
-        return(
-            <View style={styles.PrepaidView}>
-                <View style={[styles.checkContainer, styles.checkContainer2]}>
-                    <Pressable style={styles.checkContainer} onPress={() => setCard(true)}>
-                        <Image
-                            style={styles.check}
-                            source={card ? checked : unChecked}
-                        />
-                        <Text style={styles.checkText}>Pay With Card</Text>
-                    </Pressable>
-                    <Pressable style={styles.checkContainer} onPress={() => setCard(false)}>
-                        <Image
-                            style={styles.check}
-                            source={!card ? checked : unChecked}
-                        />
-                        <Text style={styles.checkText}>Bank Transfer</Text>
-                    </Pressable>
-                </View>
-                {   
-                    card 
-                    ? <View style={styles.PrepaidView}>
-                        <Inputs placeholder='Card Number*' style={styles.input} />
-                        <Inputs placeholder='Card Holder Name*' style={styles.input} />
-                        <Inputs placeholder='CCV*' style={styles.input} />
-                    </View>
-                    : <View style={styles.PrepaidView}>
-                        <Inputs placeholder='Bank Name*' style={styles.input} />
-                        <Inputs placeholder='Swift Code*' style={styles.input} />
-                        <Inputs placeholder='IBAN*' style={styles.input} />
-                        <Inputs placeholder='Address*' style={styles.input} />
-                    </View>
-                }
-
-            </View>
-        )
-    }
     return (
       <ScrollView style={styles.wrapper}>
         <Header 
@@ -87,23 +100,88 @@ import {
                     ios_backgroundColor='#23CDB0'
                     trackColor={{ false: '#23CDB0', true: '#23CDB0' }}
                     thumbColor={'#f4f3f4'}
-                    onValueChange={toggleSwitch}
+                    onValueChange={() => toggleSwitch() }
                     value={isEnabled}
                     ></Switch>
                     <Text style={isEnabled ? styles.picked : styles.notPicked}> Post-paid</Text>
                 </View>
             </View>
             {
-                !isEnabled ?
-                <Prepaid />
-                :
-                <View style={[styles.PrepaidView, {paddingTop: 30}]} >
-                    <UploadCard title="Upload PO Document*"/> 
-                    <Inputs placeholder='Billing Address*' style={styles.input} />
-                    <Inputs placeholder='Billing E-mail*' style={styles.input} />
-
+              !isEnabled ?
+              <View style={styles.PrepaidView}>
+                <View style={[styles.checkContainer, styles.checkContainer2]}>
+                    <Pressable style={styles.checkContainer} onPress={() => setCard(true)}>
+                        <Image
+                            style={styles.check}
+                            source={card ? checked : unChecked}
+                        />
+                        <Text style={styles.checkText}>Pay With Card</Text>
+                    </Pressable>
+                    <Pressable style={styles.checkContainer} onPress={() => setCard(false)}>
+                        <Image
+                            style={styles.check}
+                            source={!card ? checked : unChecked}
+                        />
+                        <Text style={styles.checkText}>Bank Transfer</Text>
+                    </Pressable>
                 </View>
+              
+                {   
+                    card 
+                    ? <View style={styles.PrepaidView}>
+                        <Inputs 
+                          placeholder='Card Number*' 
+                          value={paymentDetails.cardNumber}
+                          onChange={(value) =>handleChange("cardNumber", value)}
+                        />
+                        <Inputs 
+                          placeholder='Card Holder Name*' 
+                          value={paymentDetails.cardHolder}
+                          onChange={(value) => handleChange("cardHolder", value)}
+                        />
+                        <Inputs 
+                          placeholder='CCV*' 
+                          value={paymentDetails.ccv}
+                          onChange={(value) =>handleChange("ccv", value)}
+                        />
+                    </View>
+                    : <View style={styles.PrepaidView}>
+                        <Inputs 
+                          placeholder='Bank Name*' 
+                          value={paymentDetails.bankName}
+                          onChange={(value) =>handleChange("bankName", value)}/>
+                        <Inputs 
+                          placeholder='Swift Code*' 
+                          value={paymentDetails.swift}
+                          onChange={(value) =>handleChange("swift", value)}/>
+                        <Inputs 
+                          placeholder='IBAN*' 
+                          value={paymentDetails.iban}
+                          onChange={(value) => handleChange('iban', value)}
+                          />
+                        <Inputs 
+                          placeholder='Address*' 
+                          value={paymentDetails.address}
+                          onChange={(value) =>handleChange("address", value)}
+                        />
+                    </View>
+                }
 
+              </View>
+              :
+              <View style={[styles.PrepaidView, {paddingTop: 30}]} >
+                <UploadCard title="Upload PO Document*"/> 
+                <Inputs 
+                  placeholder='Billing Address*' 
+                  value={paymentDetails.billingAddress}
+                  onChange={(value) =>handleChange("billingAddress", value)}
+                />
+                <Inputs 
+                  placeholder='Billing E-mail*' 
+                  value={paymentDetails.billingEmail}
+                  onChange={(value) =>handleChange("billingEmail", value)}
+                />
+              </View>
             }
             <TouchableOpacity style={styles.btnContainer} onPress={() => onPostClick()}>
                 <PrimaryButton title='Pay and Post Job' />

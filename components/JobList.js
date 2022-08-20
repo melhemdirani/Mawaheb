@@ -27,6 +27,7 @@ const JobList = ({
   id,
   item
 }) => {
+  console.log("freelance profile image", freelancer.roles[0].dailyRate)
   const uniqueIds = [];
 
   const newLanguages = freelancer.languages.filter(element => {
@@ -45,7 +46,7 @@ const JobList = ({
       <View style={styles.header}>
         <View style={styles.subHeader}>
          { freelancer.user.profileImage.length &&
-          <Image      
+            <Image      
               source={{uri: `http://194.5.157.234:4000${freelancer.user.profileImage}`}} 
               style={styles.profileImage}
               blurRadius={7}
@@ -57,14 +58,14 @@ const JobList = ({
             resizeMode='contain'
           >
             <View style={styles.priceAndCurrency}>
-              <Text style={styles.price}>{job.budget} </Text>
+              <Text style={styles.price}>{price} </Text>
               <Text style={styles.currency}>AED</Text>
             </View>
           </ImageBackground>
         </View>
         <View style={styles.subHeader}>
           <Image source={heartIcon} style={styles.heart}></Image>
-          <Pressable onPress={() => navigate(freelancer, job.id)}>
+          <Pressable onPress={() => navigate(freelancer, job)}>
             <Image source={plusIcon} style={styles.plus}></Image>
           </Pressable>
         </View>
@@ -143,8 +144,8 @@ const JobList = ({
 const styles = StyleSheet.create({
   wrapper: {
     height: 300,
-    marginTop: -5,
-    paddingHorizontal: 15
+    marginTop: 20,
+    paddingHorizontal: 15,
   },
   linear: {
     borderRadius: 30,

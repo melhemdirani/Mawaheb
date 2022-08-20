@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Pressable, StyleSheet, Text, View, Image, DatePickerIOS, Platform} from 'react-native';
+import { Pressable, StyleSheet, Text, View, Image, Platform} from 'react-native';
 import DateTimePicker, {DateTimePickerAndroid} from '@react-native-community/datetimepicker';
 
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 
-const DateInputs = ({title, placeholder, onChange, dateType}) => {
+const DateInputs = ({title, placeholder, onChange, dateType, valued, value}) => {
     // const [text, setText] = useState("")
 
     let shown = Platform.OS === 'ios' ? false : true
-    const [changed, setChanged] = useState(false)
+    const [changed, setChanged] = useState(true)
     const [chosenDate, setChosenDate] = useState(new Date());
 
 
@@ -21,18 +21,18 @@ const DateInputs = ({title, placeholder, onChange, dateType}) => {
     //         setChanged(false)
     //     }
     // }, [text])
-    const [date, setDate] = useState(new Date());
-    const [show, setShow] = useState(shown);
+    const [date, setDate] = useState(valued && value !== ""? new Date(value) :new Date());
+    const [show, setShow] = useState(false);
     
     const onChangeDate = (event, selectedDate) => {
       const currentDate = selectedDate;
-      if(Platform.OS === 'ios'){
-        setShow(true);
-      } else{
-        setShow(false);
-      }
+      // if(Platform.OS === 'ios'){
+      //   setShow(true);
+      // } else{
+      //   setShow(false);
+      // }
       setDate(currentDate);
-      setChanged(true);
+      setChanged(false);
       if(!dateType){
         onChange(currentDate.toDateString())
       } else{
@@ -51,7 +51,7 @@ const DateInputs = ({title, placeholder, onChange, dateType}) => {
       if (Platform.OS === 'android') {
         setShow(false);
         // for iOS, add a button that closes the picker
-      } 
+      } else setShow(true)
     };
   
     const showDatepicker = () => {
@@ -62,12 +62,12 @@ const DateInputs = ({title, placeholder, onChange, dateType}) => {
       <Pressable 
           style={
               !changed 
-              ? [styles.container, styles.borderBottom] 
-              : styles.container
+              ? styles.container
+              : [styles.container, styles.borderBottom] 
           }
           onPress={() => showDatepicker()}
       >
-        {changed && <MaskedView maskElement={ <Text style={[styles.label, {backgroundColor: "transparent"}]}>{placeholder}</Text>}>
+        {!changed && <MaskedView maskElement={ <Text style={[styles.label, {backgroundColor: "transparent"}]}>{placeholder}</Text>}>
               <LinearGradient
                 start={{x:0, y: 0}}
                 end={{x:1, y: 1}}
@@ -77,7 +77,7 @@ const DateInputs = ({title, placeholder, onChange, dateType}) => {
               </LinearGradient>
           </MaskedView>   
           }
-          <DateTimePicker
+         {show && <DateTimePicker
             testID="dateTimePicker"
             value={date}
             mode={'date'}
@@ -85,10 +85,11 @@ const DateInputs = ({title, placeholder, onChange, dateType}) => {
             onChange={onChangeDate}
             style={{left: 20, opacity: 0.011, width: "100%", position: "absolute", zIndex: 999, padding: 20}}
           />
-          
+          }
+        
           <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
               { 
-                changed 
+                !changed || (valued && value !== "")
                 ? <Text style={[
                   styles.wrapperCustom,
                   ]}
@@ -103,7 +104,7 @@ const DateInputs = ({title, placeholder, onChange, dateType}) => {
               />
           </View>
         
-        { changed && 
+        { !changed && 
           <LinearGradient
             start={{x:0, y: 0}}
             end={{x:1, y: 1}}

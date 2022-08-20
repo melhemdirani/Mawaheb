@@ -14,7 +14,7 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { useDispatch, useSelector } from 'react-redux';
-import { createClientProfile } from '../reduxToolkit/clientSlice';
+import {updateClientProfile } from '../reduxToolkit/clientSlice';
 
 import Header from '../components/Header';
 import Inputs from '../components/Inputs';
@@ -22,44 +22,60 @@ import UploadCard from '../components/UploadCard';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
 
 import signUp from '../assets/images/signUp.png';
-import { setUserAfterRegister, registerUser } from '../reduxToolkit/userSlice';
+import { updateUser } from '../reduxToolkit/userSlice';
 import ImageCard from '../components/ImageCard';
 import PhoneInputs from '../components/PhoneInput';
 
 
-const ClientSignupPage = ({navigation}) => {
-  const { client, isLoading } = useSelector((store) => store.client)
-  const [uploaded, setUploaded] = useState(false)
-  const [uploaded2, setUploaded2] = useState(false)
+const EditClientProfile = ({navigation, route}) => {
+    const {user} = useSelector( store => store.user)
+
+    const client = route.params.clientProfile
+    const {
+        companyName,
+        privacy, 
+        signatoryName,
+        signatoryTitle, 
+        sign, 
+        Address,
+        TRN,
+        email,
+        phoneNb,
+        tradingLicense
+    } = client
+  const initialState = {
+    companyName, 
+    privacy,
+    signatoryName,
+    signatoryTitle,
+    sign,
+    address: Address,
+    TRN,
+    email: user.email,
+    profileImage: user.profileImage,
+    phoneNb: client.user.phoneNb,
+    tradingLicense
+  }
+  console.log("email", client)
+  const [values, setValues] = useState(initialState)
+
+  const [uploaded, setUploaded] = useState(sign !== "" || tradingLicense !== "" ? true : false)
+  const [uploaded2, setUploaded2] = useState(user.profileImage !== "" ? true : false)
   const [activity, setActivity] = useState(false)
   const [changed, setChanged] = useState(false)
   const [isEnabled, setIsEnabled] = useState(false)
   const [startingToUpload, setStartingToUpload] = useState(false)
-  const [image, setImage] = useState("")
-  const [image2, setImage2] = useState("")
+  const [image, setImage] = useState(sign !== ""  
+    ?`http://194.5.157.234:4000${sign}`
+    : tradingLicense !== ""
+    ?`http://194.5.157.234:4000${tradingLicense}` 
+    : ""
+    )
+  const [image2, setImage2] = useState(`http://194.5.157.234:4000${user.profileImage}`)
   const [uploadedImage, setUploadedImage] = useState("")
   const [uploadedImage2, setUploadedImage2] = useState("")
-  const initialState = {
-    companyName: '',
-    privacy: '',
-    signatoryName: '',
-    signatoryTitle: '',
-    sign: 'ffff',
-    address: '',
-    TRN: "",
-    email:"",
-    password:"",
-    profileImage: "",
-    phoneNb: "",
-    tradingLicense: ""
-  }
 
-  const [values, setValues] = useState(initialState)
   const dispatch = useDispatch()
-
-  const navigateLogin = () => {
-    navigation.navigate('login')
-  }
   useEffect(() => {
 
     isEnabled
@@ -85,28 +101,30 @@ const ClientSignupPage = ({navigation}) => {
       address,
       email,
       phoneNb,
-      password,
     } = values
-    if (privacy === 'private' && (!TRN || !address || !companyName)) {
-
+    if (privacy === 'private' && (!TRN || !address || !companyName || !sign.length)) {
+        console.log("values", values)
       return alert('Please fill all fields')
     } else if (
       privacy === 'public' &&
-      (!companyName || !signatoryName || !signatoryTitle || !sign || !email || !password || !phoneNb ) 
+      (!companyName || !signatoryName || !signatoryTitle || !sign.length || !email || !phoneNb ) 
     ) {
+        console.log("values", values)
        return alert('Please fill all fieldss')
     } else if (activity){
       return alert("Uploading please wait")
     }
     else { 
       dispatch(
-        registerUser({
-          name: companyName,
-          email: values.email.toLowerCase(),
-          password: values.password,  
-          phoneNb: phoneNb,
-          role: 'client',
-          profileImage: uploadedImage2
+        updateUser({
+            companyName: values.companyName,
+            Address: "address",
+            name: values.companyName,
+            email: values.email.toLowerCase(),
+            phoneNb: values.phoneNb,
+            role: 'client',
+            profileImage: values.profileImage,
+            userId: user.clientId
         })
       )
       .unwrap()
@@ -120,22 +138,22 @@ const ClientSignupPage = ({navigation}) => {
         } else{
           alert("Error registering")
         }
-        console.log("error", error.message)
+        console.log("error", error)
       })
     }
   }
 
   const onRegister = () => {
     dispatch(
-      createClientProfile({
+      updateClientProfile({
         companyName:values.companyName,
         privacy:values.privacy,
         signatoryName:values.signatoryName,
         signatoryTitle:values.signatoryTitle,
         companyName:values.companyName,
         TRN:parseInt(values.TRN),
-        sign: uploadedImage,
-        tradingLicense: uploadedImage,
+        sign: values.sign,
+        tradingLicense: values.sign,
         Address: values.address,
       })
     )
@@ -143,7 +161,7 @@ const ClientSignupPage = ({navigation}) => {
     .then((response) => {
       console.log("creating profile", response)
       setChanged(false)
-      navigation.navigate('recruiter_dashboard')
+      navigation.navigate('clientProfile')
     })
     .catch((error) => {
       if(error === "Email already in use"){
@@ -208,6 +226,8 @@ const ClientSignupPage = ({navigation}) => {
       // setChangedValues(true)
       setActivity(false)
       setUploadedImage2(img)
+      handleChange('profileImage', img)
+
       setUploaded2(true)
       setChanged(true)
 
@@ -233,6 +253,7 @@ const ClientSignupPage = ({navigation}) => {
       )
       const img = JSON.parse(response.body).imageUrl
       setUploadedImage(img)
+      handleChange('sign', img)
       setUploaded(true)
       setChanged(true)
      } catch (error) {
@@ -252,6 +273,7 @@ const ClientSignupPage = ({navigation}) => {
   const onImageDelete2 = () => {
     startingToUpload && setStartingToUpload(false)
     setUploaded2(false);
+    setImage2("")
   }
 
   useEffect(( ) => {
@@ -265,119 +287,114 @@ const ClientSignupPage = ({navigation}) => {
 
   return (
     <ScrollView style={styles.wrapper}>
-      <Header title='Client Sign Up' icon={signUp} hidden={false} goBack={navigation.goBack}/>
+      <Header title='Edit profile' icon={signUp} hidden={false} goBack={navigation.goBack}/>
       <View style={styles.container}>
-        <Text style={styles.text}>All you need is to fill your information below and upload a document to create your profile. </Text>
         <View style={styles.form}>
-          <Inputs
-            placeholder='Company Name*'
-            style={styles.input}
-            onChange={(value) => handleChange('companyName', value)}
-            value={values.companyName}
-          />
-          <Inputs
-            placeholder='Email*'
-            onChange={(value) => handleChange('email', value)}
-            value={values.email}
-          />
-          <PhoneInputs
-            placeholder='Phone number*'
-            onChange={(value) => handleChange('phoneNb', value)}
-            value={values.phoneNb}
-          />
-          <View style={{marginTop: 20}}/>
-          <Inputs
-            placeholder='Password*'
-            onChange={(value) => handleChange('password', value)}
-            value={values.password}
-          />
-          { 
-            image2.length && !uploaded2
-            ? <View style={{width: "100%", alignItems: "center"}}>
-                <View style={styles.ActivityIndicator}>
-                  <ActivityIndicator size={"large"} />
+            <Inputs
+                placeholder='Company Name*'
+                style={styles.input}
+                onChange={(value) => handleChange('companyName', value)}
+                value={values.companyName}
+                valued
+            />
+            <Inputs
+                placeholder='Email*'
+                onChange={(value) => handleChange('email', value)}
+                value={values.email}
+                valued
+            />
+            <PhoneInputs
+                placeholder='Phone number*'
+                onChange={(value) => handleChange('phoneNb', value)}
+                value={values.phoneNb}
+            />
+            { 
+                image2 !== "" && !uploaded2
+                ? <View style={{width: "100%", alignItems: "center"}}>
+                    <View style={styles.ActivityIndicator}>
+                    <ActivityIndicator size={"large"} />
+                    </View>
+                    <ImageCard uri={image2} onImageDelete={onImageDelete2} />
                 </View>
-                <Image source={{uri:image2}} style={styles.Imagecontainer} />
-              </View>
-            : image2.length && uploaded2
-            ? <ImageCard uri={image2} onImageDelete={onImageDelete2} />
-            : <UploadCard title='Profile Picture' selectFile={selectFile2}/>
-          }
-          <View style={styles.privacy}>
-            <Text style={!isEnabled ? styles.picked : styles.notPicked}>Public </Text>
-            <Switch
-              style={styles.switch}
-              ios_backgroundColor='#23CDB0'
-              trackColor={{ false: '#23CDB0', true: '#23CDB0' }}
-              thumbColor={'#f4f3f4'}
-              onValueChange={toggleSwitch}
-              value={isEnabled}
-            ></Switch>
-            <Text style={isEnabled ? styles.picked : styles.notPicked}> Private</Text>
-          </View>
-          { isEnabled 
-            ? <View style={{width: "100%", alignItems: "center"}}>
-              <Inputs
-                placeholder={'Address*'}
-                style={styles.input}
-                value={values.address}
-                onChange={ (value) => handleChange('address', value) }
-              />
-              <Inputs
-                placeholder={'TRN(Tax Number)*'}
-                style={styles.input}
-                value={ values.TRN}
-                numeric
-                onChange={ (value) => handleChange('TRN', parseInt(value)) }
-              />
-              { 
-                image.length && !uploaded
-                ? <View style={{width: "100%", alignItems: "center"}}>
-                    <View style={styles.ActivityIndicator}>
-                      <ActivityIndicator size={"large"} />
-                    </View>
-                    <Image source={{uri:image}} style={styles.Imagecontainer} />
-                  </View>
-                : image.length && uploaded
-                ? <ImageCard uri={image} style={styles.Imagecontainer} onImageDelete={onImageDelete}/>
-                : <UploadCard title='Trading Liscence*' selectFile={selectFile}/>
-              }
+                : image2 !== "" && uploaded2
+                ? <ImageCard uri={image2} onImageDelete={onImageDelete2} />
+                : <UploadCard title='Profile Picture' selectFile={selectFile2}/>
+            }
+            <View style={styles.privacy}>
+                <Text style={!isEnabled ? styles.picked : styles.notPicked}>Public </Text>
+                <Switch
+                style={styles.switch}
+                ios_backgroundColor='#23CDB0'
+                trackColor={{ false: '#23CDB0', true: '#23CDB0' }}
+                thumbColor={'#f4f3f4'}
+                onValueChange={toggleSwitch}
+                value={isEnabled}
+                ></Switch>
+                <Text style={isEnabled ? styles.picked : styles.notPicked}> Private</Text>
             </View>
-            : <View style={{width: "100%", alignItems: "center"}}>
-              <Inputs
-                placeholder={ 'Signatory Name*'}
-                style={styles.input}
-                value={values.signatoryName}
-                onChange={ (value) => handleChange('signatoryName', value) }
-              />
-              <Inputs
-                placeholder={ 'Signatory Title'}
-                style={styles.input}
-                value={values.signatoryTitle}
-                onChange={  (value) => handleChange('signatoryTitle', value) }
-              />
-              { 
-                image.length && !uploaded
+            { isEnabled 
                 ? <View style={{width: "100%", alignItems: "center"}}>
-                    <View style={styles.ActivityIndicator}>
-                      <ActivityIndicator size={"large"} />
+                <Inputs
+                    placeholder={'Address*'}
+                    style={styles.input}
+                    value={values.address}
+                    onChange={ (value) => handleChange('address', value) }
+                />
+                <Inputs
+                    placeholder={'TRN(Tax Number)*'}
+                    style={styles.input}
+                    value={ values.TRN}
+                    numeric
+                    onChange={ (value) => handleChange('TRN', parseInt(value)) }
+                />
+                { 
+                    image.length && !uploaded
+                    ? <View style={{width: "100%", alignItems: "center"}}>
+                        <View style={styles.ActivityIndicator}>
+                        <ActivityIndicator size={"large"} />
+                        </View>
+                        <ImageCard uri={image} style={styles.Imagecontainer} onImageDelete={onImageDelete}/>
                     </View>
-                    <Image source={{uri:image}} style={styles.Imagecontainer} />
-                  </View>
-                : image.length && uploaded
-                ? <ImageCard uri={image} style={styles.Imagecontainer} onImageDelete={onImageDelete}/>
-                : <UploadCard title='Add Authorized Signatory*' selectFile={selectFile}/>
-              }
+                    : image.length && uploaded
+                    ? <ImageCard uri={image} style={styles.Imagecontainer} onImageDelete={onImageDelete}/>
+                    : <UploadCard title='Trading Liscence*' selectFile={selectFile2}/>
+                }
+                </View>
+                : <View style={{width: "100%", alignItems: "center"}}>
+                <Inputs
+                    placeholder={ 'Signatory Name*'}
+                    style={styles.input}
+                    value={values.signatoryName}
+                    onChange={ (value) => handleChange('signatoryName', value) }
+                />
+                <Inputs
+                    placeholder={ 'Signatory Title'}
+                    style={styles.input}
+                    value={values.signatoryTitle}
+                    onChange={  (value) => handleChange('signatoryTitle', value) }
+                />
+                { 
+                    image !== "" && !uploaded
+                    ? <View style={{width: "100%", alignItems: "center"}} >
+                        <View style={styles.ActivityIndicator}>
+                        <ActivityIndicator size={"large"} />
+                        </View>
+                        <ImageCard uri={image} style={styles.Imagecontainer} onImageDelete={onImageDelete}/>
+                    </View>
+                    : image !== "" && uploaded
+                    ? <ImageCard uri={image} style={styles.Imagecontainer} onImageDelete={onImageDelete}/>
+                    : <UploadCard title='Add Authorized Signatory*' selectFile={selectFile}/>
+                }
             </View>
           }
         </View>
         <View style={styles.btnContainer}>
           <TouchableOpacity onPress={() => onSubmit()}>
-           <PrimaryButton  title='Sign up' activity={activity}/>
+           <PrimaryButton  title='Save' activity={activity}/>
           </TouchableOpacity>
           <SafeAreaView style={styles.btn}>
-            <Pressable onPress={() => navigateLogin()}>
-             <Text style={styles.btnText}>Login</Text>
+            <Pressable onPress={() => navigation.goBack()}>
+             <Text style={styles.btnText}>Cancel</Text>
             </Pressable>
           </SafeAreaView>
         </View>
@@ -451,7 +468,8 @@ const styles = StyleSheet.create({
     height: 230,
     width: "85%",
     borderRadius: 20,
-    marginVertical: 10
+    marginVertical: 10,
+    zIndex: 9999
   },
   ActivityIndicator:{
     position: "absolute",
@@ -466,4 +484,4 @@ const styles = StyleSheet.create({
 })
 
 
-export default ClientSignupPage
+export default EditClientProfile

@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity } from 'react-native';
-import React from 'react';
+import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -11,12 +11,33 @@ import handShakeIcon from '../assets/images/handShakeIcon.png';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
 import TertiaryButton from '../components/Buttons/TertiaryButton';
 import { LinearGradient } from 'expo-linear-gradient';
+import { getFreelancer } from '../reduxToolkit/freelancerSlice';
 
 
 const FreelanceAcceptedPage = ({navigation, route}) => {
   const { user } = useSelector((store) => store.user)
-  const {role} = route.params
-  console.log("user", user)
+  const [acceptedFreelancer, setAcceptedFreelancer] = useState({})
+  const [loading, setLoading] = useState(true)
+  const dispatch = useDispatch()
+  const {role, action} = route.params
+  useEffect(() => {
+    console.log("hi", role)
+    if(role === "client"){
+      dispatch(getFreelancer(action))
+      .unwrap()
+      .then( res => {
+        console.log("ress", res);
+        setAcceptedFreelancer(res.freelancer);
+        setLoading(false)
+      })
+      .catch(err => {
+        console.log("error", err)
+        setLoading(false)
+      })
+    } else{
+      setLoading(false)
+    }
+  }, [])
   const navigateDone = () => {
     if(role === 'client'){
       navigation.navigate('recruiter_dashboard')
@@ -24,7 +45,15 @@ const FreelanceAcceptedPage = ({navigation, route}) => {
        navigation.navigate('seeker_dash')
     }
   }
-  return (
+  const navigateContact = () => {
+   
+    navigation.navigate('contactFreelancer')
+  
+  }
+  return loading? <View style={{alignItems: "center", justifyContent: "center", flex: 1}}>
+    <ActivityIndicator size={"large"} color="#4E84D5"/>
+  </View>
+  :(
     <View style={styles.wrapper}>
       <Header title='Something big is going to happen. We can feel it!' hidden={true} center/>
       <View style={styles.container}>
@@ -36,28 +65,29 @@ const FreelanceAcceptedPage = ({navigation, route}) => {
         >
           <View style={styles.imageContainer}>
             <Image source={party} style={styles.party}/>
+             
             <LinearGradient
               start={{x:0, y: 0}}
               end={{x:1, y: 1}}
               colors={['#107DC5', '#23CDB0','#23CDB0','#23CDB0', '#0482AA', ]}
               style={styles.proifleContainer}
             >
-              <Image
-                source={profile}
-                style={styles.profile}
-              />
+            <Image      
+              source={{uri: `http://194.5.157.234:4000${acceptedFreelancer.user.profileImage}`}} 
+              style={styles.profileImage}
+            />
             </LinearGradient>
             <Image source={handShakeIcon} style={styles.handShakeIcon}/>
           </View>
-          <Text style={styles.name}>Ahmad Mohamad</Text>
+          <Text style={styles.name}>{acceptedFreelancer.user.name}</Text>
         </ImageBackground>
         <View style={styles.btnContainer}>
-            <PrimaryButton title='Contact Ahmad'  />
+            <TouchableOpacity style={styles.primary} onPress={() => navigateContact()}>
+              <PrimaryButton title={`Contact ${acceptedFreelancer.user.name}`} />
+            </TouchableOpacity>
             <TouchableOpacity style={styles.primary} onPress={() => navigateDone()}>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.primary} onPress={() => navigateDone()}>
-           <TertiaryButton title='Contact later' style={styles.contactLater} />
-          </TouchableOpacity>
+              <TertiaryButton title='Contact later' style={styles.contactLater} />
+            </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -120,7 +150,16 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -70,
     zIndex: -1
-  }
+  },
+  profileImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 100,
+    borderColor: ' rgba(16, 125, 197, 1)',
+    borderWidth: 1,
+    zIndex: 999,
+    backgroundColor: 'white',
+  },
 })
 
 

@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Pressable, StyleSheet, Text, View, ScrollView, Image} from 'react-native';
 
 
-import {Picker} from '@react-native-picker/picker';
 
 const SelectInput = ({title, list, onSelect, value, valued, setIndex, role, languages, already}) => {
 
@@ -30,7 +29,10 @@ const SelectInput = ({title, list, onSelect, value, valued, setIndex, role, lang
     return (
         <View style={styles.container}>
             <View style={styles.subContainer}>
-                <Text style={selected || value ? styles.text2 : styles.text}> {(valued ? value === "" : selected === "") ? title : valued ? value : selected}</Text>
+                <Text 
+                    style={selected || value ? styles.text2 : styles.text}> 
+                    {(valued && value !== "" ) ? value : selected !== "" ? selected : title}
+                </Text>
                 <Pressable onPress={() => setShowList(!showList)} style={styles.arrowButton}>
                     <Image
                         style={showList ? [styles.image, styles.rotate] : styles.image}
@@ -51,7 +53,7 @@ const SelectInput = ({title, list, onSelect, value, valued, setIndex, role, lang
                         )
                     }
                 </ScrollView>
-                : showList && list && list.length && !languages 
+                : showList && list && list.length
                 ?<ScrollView style={styles.ScrollView}>
                     {    list.map((item, i) => 
                             <RenderItem 
@@ -65,8 +67,6 @@ const SelectInput = ({title, list, onSelect, value, valued, setIndex, role, lang
                 </ScrollView>
                 : null
             }
-            {already && <Text style={{color: "#BE3142"}}>already chosen {value}</Text>}
-           
         </View>
     );
 };

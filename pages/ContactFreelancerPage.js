@@ -1,4 +1,4 @@
-import React, {  useEffect, useLayoutEffect, useState } from 'react'
+import React, {  useState } from 'react'
 import {
   View,
   Text,
@@ -7,64 +7,43 @@ import {
   Pressable,
   ScrollView,
   ActivityIndicator
-} from 'react-native'
+} from 'react-native';
+import * as Linking from "expo-linking";
 
 import { LinearGradient } from 'expo-linear-gradient'
 import calendarIcon from '../assets/images/calendarIcon.png'
-import clockIcon from '../assets/images/clockIcon.png'
-import locationIcon from '../assets/images/locationIcon.png'
 import MaskedView from '@react-native-masked-view/masked-view'
 import languageIcon from '../assets/images/LanguageIcon.png'
-import { useIsFocused } from "@react-navigation/native"
 
-import PrimaryButton from '../components/Buttons/PrimaryButton'
 import minusIcon from '../assets/images/minusIcon.png'
-import { useSelector, useDispatch } from 'react-redux'
-import { getFreelancer } from '../reduxToolkit/freelancerSlice'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { useSelector } from 'react-redux'
 
-const FreelancerProfile = ({ navigation, route }) => {
+const ContactFreelancerPage = ({ navigation, route }) => {
 
   const { freelancer } = useSelector((state) => state.freelancer)
-  const { user } = useSelector((state) => state.user)
 
-  const [loading, setLoading] = useState(true)
+  const {user} = freelancer
+  const [loaded, setLoaded] = useState(false)
 
-  const dispatch = useDispatch()
-  const isFocused = useIsFocused();
 
- 
-  useEffect(() => {
- 
-    if(freelancer === undefined || freelancer === {} && user.freelancerId !== undefined  && isFocused){
-      setLoading(true)
-      dispatch(getFreelancer(user.freelancerId ?  user.freelancerId : freelancer.id))
-      .unwrap()
-      .then(setLoading(false))
-      .catch(err =>{ 
-        console.log("errors", err)
-        setLoading(false)
-    })
-    } else{
-      setLoading(false)
-    }
-  }, [route, isFocused])
-
+  console.log("freelancer", user.profileImage)
   const { id, roles, languages } = freelancer
-  let users = freelancer.user !== undefined ? freelancer.user : user
-  console.log("userss", users)
-  const navigateEdit = () => {
-    navigation.navigate('JobSignUp', { role: 'freelancer', update: true })
+  const users = freelancer.user
+
+  const callContact = () => {
+    console.log("freelancer.user.phoneNumber",freelancer.user.phoneNumber)
+    Linking.openURL(`tel:${freelancer.user.phoneNb.replace(/\s/g, "")}`)
   }
-  const navigateComplete = () => {
-    navigation.navigate('JobSignUpb', { role: 'freelancer', update: false })
+  const emailContract = () => {
+   
+    Linking.openURL(`mailto:${freelancer.user.email}`)
   }
-  return loading || freelancer === undefined || freelancer === {} && user !== undefined 
-    ?<View style={{marginTop: 400}}>
+
+  return loaded || Object.keys(freelancer).length === 0
+    ? <View style={{marginTop: 400}}>
         <ActivityIndicator size={"large"}/>
       </View>
-    :  freelancer.isCompleted &&  users.name !== undefined
-    ?(
+    :(
     <ScrollView style={styles.wrapper}>
       <View style={styles.header}>
         <View style={styles.subHeader}>
@@ -77,7 +56,7 @@ const FreelancerProfile = ({ navigation, route }) => {
 
         </View>
         <View style={styles.subHeader}>
-          <Pressable onPress={() => navigation.navigate("settings")}>
+          <Pressable onPress={() => navigation.navigate("seeker_dash")}>
             <Image source={minusIcon} style={styles.plus}></Image>
           </Pressable>
         </View>
@@ -114,7 +93,12 @@ const FreelancerProfile = ({ navigation, route }) => {
                 <Text style={[styles.title, { opacity: 0 }]}>{users.name}</Text>
               </LinearGradient>
             </MaskedView>
-            <Text style={[styles.email]}>{user.email}</Text>
+            <Pressable onPress={() => emailContract()}>
+                <Text style={[styles.email]}>{freelancer.user.email}</Text>
+            </Pressable>
+            <Pressable onPress={() => callContact()}>
+                <Text style={[styles.email]}>{freelancer.user.phoneNb}</Text>
+            </Pressable>
 
             <View style={styles.roles}>
               {roles.map((role) => {
@@ -154,89 +138,8 @@ const FreelancerProfile = ({ navigation, route }) => {
               )
             })}
           </View>
-          <LinearGradient
-            colors={[
-              'rgba(202, 218, 221, 0.4)',
-              'rgba(202, 218, 221, 0)',
-              'rgba(202, 218, 221, 0.4)',
-            ]}
-            start={{ x: 1, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.footerContainer}
-          >
-            <View style={styles.footerInfo}>
-              <Image source={clockIcon} style={styles.icon}></Image>
-              <Text style={styles.text}>Day shift</Text>
-            </View>
-            <View style={styles.footerInfo}>
-              <Image source={locationIcon} style={styles.icon}></Image>
-              <Text style={styles.text}>{users.location}</Text>
-            </View>
-          </LinearGradient>
         </View>
       </LinearGradient>
-      <TouchableOpacity style={styles.button}  onPress={() => navigateEdit()}> 
-        <PrimaryButton title={freelancer.isCompleted? "Edit profile" : "Complete profile"}  />
-      </TouchableOpacity>
-    </ScrollView>
-  )
-  :(
-    <ScrollView style={styles.wrapper}>
-      <View style={styles.header}>
-        <View style={styles.subHeader}>
-          {
-            user.profileImage 
-            ? <Image source={{uri: `http://194.5.157.234:4000${user.profileImage}`}} style={styles.profileImage}/>
-            : <View style={styles.circle} />
-
-          }
-
-        </View>
-        <View style={styles.subHeader}>
-          <Pressable onPress={() => navigation.goBack()}>
-            <Image source={minusIcon} style={styles.plus}></Image>
-          </Pressable>
-        </View>
-      </View>
-      <LinearGradient
-        colors={[
-          'rgba(202, 218, 221, 0.1)',
-          'rgba(202, 218, 221, 0)',
-          'rgba(202, 218, 221, 0.2)',
-          'rgba(202, 218, 221, 0.2)',
-          'rgba(202, 218, 221, 0.2)',
-          'rgba(202, 218, 221, 0.1)',
-        ]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.linear}
-      >
-        <View style={[styles.container, styles.shadow]}>
-          <View style={styles.info}>
-            <MaskedView
-              maskElement={
-                <Text
-                  style={[styles.title, { backgroundColor: 'transparent' }]}
-                >
-                  {user.name}
-                </Text>
-              }
-            >
-              <LinearGradient
-                start={{ x: 1, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                colors={['rgba(49, 190, 187, 1)', 'rgba(101, 91, 218, 1)']}
-              >
-                <Text style={[styles.title, { opacity: 0 }]}>{user.name}</Text>
-              </LinearGradient>
-            </MaskedView>
-            <Text style={[styles.email]}>{user.email}</Text>
-          </View>
-        </View>
-      </LinearGradient>
-      <TouchableOpacity style={styles.button}  onPress={() => navigateComplete()}> 
-        <PrimaryButton title={"Complete profile"}  />
-      </TouchableOpacity>
     </ScrollView>
   )
 }
@@ -425,4 +328,4 @@ const styles = StyleSheet.create({
     color: "rgba(0,0,0, .4)"
   }
 })
-export default FreelancerProfile
+export default ContactFreelancerPage

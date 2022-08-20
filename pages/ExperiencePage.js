@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { RoleList } from '../assets/data/RolesList';
 
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import MaskedView from '@react-native-masked-view/masked-view';
 import Header from '../components/Header';
 import signUp from '../assets/images/experienceIcon.png';
@@ -15,7 +15,8 @@ import RoleForm from '../components/RoleForm';
 
 import {
   addRoles,
-  completedProfile
+  completedProfile,
+  deleteFreelancerRole
 } from '../reduxToolkit/freelancerSlice'
 import SelectInput from '../components/SelectInput';
 import DeleteButton from '../components/Buttons/DeleteButton';
@@ -23,7 +24,11 @@ import DailyRate from '../components/DailyRate';
 import Inputs from '../components/Inputs';
 
 
-const ExperiencePage = ({ navigation }) => {
+const ExperiencePage = ({ navigation, route }) => {
+  const {update} = route.params
+  const {
+    freelancer,
+  } = useSelector((store) => store.freelancer)
   const form = {
     category:'',
     title:'',
@@ -31,8 +36,8 @@ const ExperiencePage = ({ navigation }) => {
     location: '',
     keyResponsibilities: '',
     dailyRate: '',
-    startDate: '',
-    endDate: '',
+    startDate: "",
+    endDate: "",
     isLatest: true,
     isMostNotable: false,
     dailyRate: '',
@@ -45,15 +50,38 @@ const ExperiencePage = ({ navigation }) => {
     location: '',
     keyResponsibilities: '',
     dailyRate: '',
-    startDate: '',
-    endDate: '',
+    startDate: "",
+    endDate: "",
     isLatest: false,
     dailyRate:'',
     isMostNotable: true,
     yearsOfExperience: ""
   }
 
-  const [experiences, setExperiences] = useState([{category: "", title:"" , dailyRate: "", yearsOfExperience: "", latest:form, notable:form2}])
+  let newExperience = freelancer.roles !== undefined ?  freelancer.roles.map((n, i, arr) => (
+    { category: n.category,  
+      title: n.title,
+      dailyRate: n.dailyRate,
+      latest: n, 
+      yearsOfExperience: n.yearsOfExperience,
+      notable: arr[i + 1] 
+    }))
+    .filter((n, i) => i % 2 === 0)
+    : null
+
+  const [experiences, setExperiences] = useState(
+    update && freelancer.roles !== undefined && freelancer.roles.length > 0
+    ? newExperience
+    : [{
+      category: "", 
+      title:"" , 
+      dailyRate: "", 
+      yearsOfExperience: "", 
+      latest:form, 
+      notable:form2
+    }]
+  )
+
   let AllRoles = []
 
   const goBack = () => {
@@ -61,7 +89,6 @@ const ExperiencePage = ({ navigation }) => {
   }
  
   const dispatch = useDispatch()
- 
   const checkIfEmpty = (val) => {
     if(val === ''){
       return true
@@ -138,12 +165,25 @@ const ExperiencePage = ({ navigation }) => {
   }
   
   const onRoleDelete = (index) => {
+    if(update && experiences[index].latest.id !== undefined){
+   
+      dispatch(
+        deleteFreelancerRole(experiences[index].notable.id)
+      ).then(res => console.log("response deleteing lanugage", res))
+      .catch(err => console.log(err))
+      dispatch(
+        deleteFreelancerRole(experiences[index].latest.id)
+      ).then(res => console.log("response deleteing lanugage", res))
+      .catch(err => console.log(err))
+    }
     setExperiences(data => {
       return [ ...data.slice(0, index),  ...data.slice(index+1)]
     });
   }
-  
+  const languageNavigate = () => {
+    navigation.navigate('language', {update: update});
 
+  }
   const handleSubmit = () => {
     let submit = true
     experiences.map( exp => {
@@ -155,21 +195,43 @@ const ExperiencePage = ({ navigation }) => {
         submit = false
         return alert("Improper value for your preferred daily wage")
       }
-      AllRoles.push(exp.latest)
-      AllRoles.push(exp.notable)
+      const allowed = [
+        'id', 
+        'category', 
+        'title', 
+        'projectTitle', 
+        'location', 
+        'keyResponsibilities',
+        'dailyRate',
+        'startDate',
+        'endDate',
+        'isLatest',
+        'dailyRate',
+        'isMostNotable',
+        'yearsOfExperience',
+      ];
+
+      const filtered = (raw) => Object.keys(raw)
+      .filter(key => allowed.includes(key))
+      .reduce((obj, key) => {
+        obj[key] = raw[key];
+        return obj;
+      }, {})
+      ;
+        AllRoles.push(filtered(exp.latest))
+        AllRoles.push(filtered(exp.notable))
+        console.log("all roles", AllRoles)
+     
     })
     if(submit){
-      console.log("all roles", AllRoles)
+      console.log("all rolesss", AllRoles)
       dispatch( addRoles(AllRoles) )
       dispatch(completedProfile(true))
-      navigation.navigate('language')
+      languageNavigate()
     }
   }
 
-  const languageNavigate = () => {
-    navigation.navigate('language');
-
-  }
+ 
 
 
   const MaskedTitle = ({title}) => {
@@ -247,6 +309,8 @@ const ExperiencePage = ({ navigation }) => {
               <DailyRate  
                 placeholder="Your preferred daily wage*"
                 onChange={(value) => handleCategoryChange('dailyRate', parseInt(value), i)}
+                valued
+                value={role.dailyRate}
               />
               <Inputs  
                 placeholder="Years of experience for this category*"

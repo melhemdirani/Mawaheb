@@ -7,6 +7,7 @@ import {
   ImageBackground,
   Pressable,
 } from 'react-native';
+import moment from 'moment';
 
 import { LinearGradient } from 'expo-linear-gradient';
 import calendarIcon from '../assets/images/calendarIcon.png';
@@ -15,19 +16,20 @@ import locationIcon from '../assets/images/locationIcon.png';
 import priceRectangle from '../assets/images/priceRectangle.png';
 import heartIcon from '../assets/images/heartIcon.png';
 import plusIcon from '../assets/images/plusIcon.png';
+import MaskedView from '@react-native-masked-view/masked-view';
 import languageIcon from '../assets/images/LanguageIcon.png';
 
 const JobList2 = ({
-  roles,
-  languages,
-  user,
+  price,
+  navigate,
+  job,
+  freelancer,
   id,
-  navigate
+  item
 }) => {
-
   const uniqueIds = [];
 
-  const newLanguages = languages.filter(element => {
+  const newLanguages = freelancer.languages.filter(element => {
     const isDuplicate = uniqueIds.includes(element.name);
 
     if (!isDuplicate) {
@@ -36,27 +38,33 @@ const JobList2 = ({
       return true;
     }
 
-    return false
+    return false;
   });
   return (
     <View style={styles.wrapper}>
       <View style={styles.header}>
         <View style={styles.subHeader}>
-          <View style={styles.circle}></View>
+         { freelancer.user.profileImage.length &&
+            <Image      
+              source={{uri: `http://194.5.157.234:4000${freelancer.user.profileImage}`}} 
+              style={styles.profileImage}
+              blurRadius={7}
+            />
+          }
           <ImageBackground
             source={priceRectangle}
             style={styles.priceBg}
             resizeMode='contain'
           >
             <View style={styles.priceAndCurrency}>
-              <Text style={styles.price}>{roles.length > 0 && roles[0].dailyRate}</Text>
+              <Text style={styles.price}>{price} </Text>
               <Text style={styles.currency}>AED</Text>
             </View>
           </ImageBackground>
         </View>
         <View style={styles.subHeader}>
           <Image source={heartIcon} style={styles.heart}></Image>
-          <Pressable onPress={() => navigate(id,2000,"job.location","job.id")}>
+          <Pressable onPress={() => navigate(freelancer, job)}>
             <Image source={plusIcon} style={styles.plus}></Image>
           </Pressable>
         </View>
@@ -76,20 +84,35 @@ const JobList2 = ({
       >
         <View style={[styles.container, styles.shadow]}>
           <View style={styles.info}>
-           
-            <Text
-              style={[styles.blurredStyle]}
+            <MaskedView
+              maskElement={
+                <Text
+                  style={[styles.title, { backgroundColor: 'transparent' }]}
+                >
+                 {freelancer.user.name}
+                </Text>
+              }
             >
-              Blurred Name
-            </Text>
-         
+              <LinearGradient
+                start={{ x: 1, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                colors={['rgba(49, 190, 187, 1)', 'rgba(101, 91, 218, 1)']}
+              >
+                <Text style={[styles.title, { opacity: 0 }]}> {freelancer.user.name}</Text>
+              </LinearGradient>
+            </MaskedView>
             
+            <Text style={styles.description}>{freelancer.roles[0].category} - {freelancer.roles[0].title}</Text>
+            <Text style={styles.description}>{freelancer.roles[0].keyResponsibilities.slice(0,40)}</Text>
           </View>
           <View style={styles.languages}>
             <Image source={languageIcon} style={styles.languageIcon}></Image>
             {newLanguages.length > 0 && newLanguages.map((language, i) => {
-              return <Text key={i} style={styles.language}>{language.name}</Text>
-            })}
+              return (
+                <View  key={i} style={{flexDirection: "row"}}>
+                  <Text style={styles.language}>{language.name}</Text>
+                </View>
+            )})}
           </View>
           <LinearGradient
             colors={[
@@ -103,15 +126,12 @@ const JobList2 = ({
             <View style={styles.footer}>
               <View style={styles.footerInfo}>
                 <Image source={calendarIcon} style={styles.icon}></Image>
-                <Text style={styles.text}> {user?.createdAt?.slice(0,9)}</Text>
-              </View>
-              <View style={styles.footerInfo}>
-                <Image source={clockIcon} style={styles.icon}></Image>
-                <Text style={styles.text}>Day shift</Text>
+                <Text style={styles.text}> {freelancer.roles[0].endDate && moment(freelancer.roles[0].endDate).format('ll')}</Text>
+
               </View>
               <View style={styles.footerInfo}>
                 <Image source={locationIcon} style={styles.icon}></Image>
-                <Text style={styles.text}>Location</Text>
+                <Text style={styles.text}>{freelancer.roles[0].location}</Text>
               </View>
             </View>
           </LinearGradient>
@@ -124,7 +144,7 @@ const styles = StyleSheet.create({
   wrapper: {
     height: 300,
     marginTop: -5,
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
   },
   linear: {
     borderRadius: 30,
@@ -138,8 +158,7 @@ const styles = StyleSheet.create({
     paddingTop: 30,
   },
   info: {
-    paddingVertical: 50,
-    paddingHorizontal: 20
+    padding: 20,
   },
   header: {
     zIndex: 1,
@@ -164,7 +183,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopColor: 'rgba(16, 125, 197, 1)',
     borderTopWidth: 0.4,
-    paddingVertical: 20,
+    paddingVertical: 10,
     paddingHorizontal: 10,
   },
 
@@ -230,7 +249,8 @@ const styles = StyleSheet.create({
   language: {
     fontFamily: 'PoppinsR',
     color: 'rgba(10, 8, 75, .6)',
-    marginLeft: 10
+    marginLeft: 10,
+    fontSize: 12
   },
   languageIcon: {
     marginLeft: 20,
@@ -245,7 +265,6 @@ const styles = StyleSheet.create({
     fontFamily: 'PoppinsR',
     fontSize: 10,
     marginTop: 3,
-    marginLeft: 7,
     color: '#107DC5',
     padding: 10,
   },
@@ -260,6 +279,11 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: "white",
     backgroundColor: "rgba(255, 255, 255, .8)"
+  },
+  profileImage:{
+    width: 80,
+    height: 80,
+    borderRadius: 50  
   }
 })
 export default JobList2

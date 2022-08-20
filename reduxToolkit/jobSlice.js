@@ -20,7 +20,6 @@ export const createJob = createAsyncThunk(
       const resp = await customFetch.post(url, job)
       return resp.data
     } catch (error) {
-      console.log("create", error.response.data.msg)
       return thunkApi.rejectWithValue(error.response.data.msg)
     }
   }
@@ -29,6 +28,7 @@ export const  getAllJobs = createAsyncThunk(
   'getAllJobs',
   async (filters, thunkApi) => {
     let url = `jobs/${filters.id}/filteredjobs?${filters.filters}`
+    console.log("url", url)
     try {
       const resp = await customFetch.get(url)
       return ("all jobs",resp.data)
@@ -45,7 +45,7 @@ export const getJob = createAsyncThunk('getJob', async (id, thunkApi) => {
     const resp = await customFetch.get(url)
     return resp.data
   } catch (error) {
-    console.log(error.response.data.msg)
+    console.log( "error getting job", error)
     return thunkApi.rejectWithValue(error.response.data.msg)
   }
 })
@@ -88,6 +88,20 @@ export const getAllFreelancers = createAsyncThunk(
     }
   }
 )
+export const getFilteredFreelancer = createAsyncThunk(
+  'getFilteredFreelancer',
+  async (jobId, thunkApi) => {
+    let url = `freelancers/${jobId}/getFreelancers`
+    console.log("url", url)
+    try {
+      const resp = await customFetch.get(url)
+      return resp.data
+    } catch (error) {
+      console.log(error.response.data.msg)
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
 export const createContract = createAsyncThunk(
   'createContract',
   async (contract, thunkApi) => {
@@ -102,8 +116,8 @@ export const createContract = createAsyncThunk(
     }
   }
 )
-export const getMyJobs = createAsyncThunk('getMyJobs', async (id, thunkApi) => {
-  let url = `/jobs/${id}`
+export const getMyJobs = createAsyncThunk('getMyJobs', async (filters, thunkApi) => {
+  let url = `jobs/${filters.id}?${filters.filters}`
   try {
     const resp = await customFetch.get(url)
     return resp.data
@@ -115,7 +129,11 @@ export const getMyJobs = createAsyncThunk('getMyJobs', async (id, thunkApi) => {
 const jobSlice = createSlice({
   name: 'job',
   initialState,
-  reducers: {},
+  reducers: {
+    clearJob: (state) => {
+      state.job = {}
+    },
+  },
   extraReducers: {
     [createJob.pending]: (state, action) => {
       state.isLoading = true
@@ -211,5 +229,8 @@ const jobSlice = createSlice({
     }
   },
 })
+export const {
+  clearJob
+} = jobSlice.actions
 
 export default jobSlice.reducer

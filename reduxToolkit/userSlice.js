@@ -48,19 +48,19 @@ export const updateUser = createAsyncThunk(
       const resp = await customFetch.patch(url, user)
       return resp.data
     } catch (error) {
-      console.log("rrer",error)
+      console.log("errrer",error)
       return thunkApi.rejectWithValue(error.response.data.msg)
     }
 
   }
 )
+
 export const updateUserPassword = createAsyncThunk(
   'updateUserPassword',
   async (passwords, thunkApi) => {
     let url = '/users/updateUserPassword'
-    console.log("user", passwords)
     try {
-      const resp = await customFetch.patch(url, passwords)
+      const resp = await customFetch.patch(url, {oldPassword: passwords.oldPassword, newPassword: passwords.newPassword})
       return resp.data
     } catch (error) {
       console.log('rrer', error)
@@ -114,6 +114,9 @@ const userSlice = createSlice({
     setNotificationsSeen: (state, action) => {
       console.log("action.payload", action.payload)
       state.notificationsSeen = action.payload
+    },
+    clearUser : (state) => {
+      state = initialState
     }
   },
   extraReducers: {
@@ -172,6 +175,6 @@ const userSlice = createSlice({
   },
 })
 export const { setFreelancerId } = userSlice.actions
-export const { setUserAfterRegister, setNotificationsSeen } = userSlice.actions
+export const { setUserAfterRegister, setNotificationsSeen, clearUser } = userSlice.actions
 
 export default userSlice.reducer

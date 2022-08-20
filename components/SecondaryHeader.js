@@ -40,9 +40,6 @@ const SecondaryHeader = ({ title, heart, search, filter, onFilter,handleChange, 
               </View>
             : <View style={styles.searchContainer2}>
                 <Text style={styles.text}>{title}</Text>
-                <Image
-                  source={ searchIcon}
-                />
               </View>
           }
    

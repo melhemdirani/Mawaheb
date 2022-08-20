@@ -31,15 +31,27 @@ import SelectInput from '../components/SelectInput';
 
 const JobSeekersignup = ({ navigation, route }) => {
 
-  const [uploaded, setUploaded] = useState(false)
+  const { role, update} = route.params
+  
+  const { user, error } = useSelector((store) => store.user)
+  const [uploaded, setUploaded] = useState(
+    update && user.profileImage !== ''
+    ?true
+    : false
+  )
   const [activity, setActivity] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [changedValues, setChangedValues] = useState(false)
-  const [uploadedImage, setUploadedImage] = useState("")
-  const [image, setImage] = useState("")
+  const [uploadedImage, setUploadedImage] = useState(user.profileImage)
+  const [image, setImage] = useState(
+    update
+    ?`http://194.5.157.234:4000${user.profileImage}`
+    : ""
+  )
 
  
-  const initialState = {
+  let initialState = !update 
+  ? {
     name: '',
     lastName: '',
     email: '',
@@ -48,10 +60,22 @@ const JobSeekersignup = ({ navigation, route }) => {
     profileImage: '', 
     location: '', 
   }
+  : {
+    name: user.name,
+    lastName: user.lastName,
+    email: user.email,
+    phoneNb: user.phoneNb,
+    profileImage: user.profileImage, 
+    location: user.location, 
+  }
+
   const [values, setValues] = useState(initialState)
+  useEffect(() => {
+    if(update)
+    setValues(initialState)
+  }, [route])
   const dispatch = useDispatch()
-  const { user, error } = useSelector((store) => store.user)
-  const { role } = route.params
+
 
   const handleChange = (name, value) => {
     setChangedValues(true)
@@ -59,14 +83,12 @@ const JobSeekersignup = ({ navigation, route }) => {
   }
 
   const navigateNext =() => {
-    console.log("hi")
-    navigation.navigate('JobSignUpb')
+    navigation.navigate('JobSignUpb', {update})
 
   }
   const submit = () => {
     const { name, email, password, phoneNb } = values
-    console.log("type of", typeof phoneNb)
-    if (!name || !email || !password || !phoneNb) {
+    if (!name || !email || (!update && !password )|| !phoneNb) {
       return alert('Please fill all the fields')
     } 
     if(activity){
@@ -75,43 +97,45 @@ const JobSeekersignup = ({ navigation, route }) => {
     if( !validate(email)){
       return alert("Please enter a valid email address")
     }
-    if(user !== undefined &&  user.userId !== undefined && user !== {}){
+    if((user !== undefined &&  user.userId !== undefined && user !== {}) || update){
       if(changedValues){
         console.log("updating")
         setIsLoading(true)
         dispatch(
           updateUser({
-            name: values.name + " " + values.lastName,
+            name: values.name,
+            lastName: values.lastName,
             email: values.email.toLocaleLowerCase(),
             phoneNb: values.phoneNb,
-            role: role,
+            role: "freelancer",
+            location: values.location,
             profileImage: uploadedImage,
-            userId: user.userId.id
+            userId: update ? user.userId : user.userId.id
           },)
         )
         .unwrap()
         .then((response) => {
-          console.log("new user", user)
+          console.log("new user", response)
           setIsLoading(false)
           navigateNext()
           setChangedValues(false)
         })
         .catch((error) => {
-          console.log("error updating", error.message)
+          console.log("error updating", error)
+          console.log("missing", values)
           setIsLoading(false)
-  
         })
       } else {
         console.log("navigating no updates")
         setChangedValues(false)
         navigateNext()
       }
-    } else {
-      console.log("user before registiring", user)
+    } else if(!update) {
       setIsLoading(true)
       dispatch(
         registerUser({
-          name: values.name + " " + values.lastName,
+          name: values.name,
+          lastName: values.lastName,
           email: values.email,
           password: values.password,  
           phoneNb: values.phoneNb,
@@ -176,7 +200,7 @@ const JobSeekersignup = ({ navigation, route }) => {
       setActivity(false)
 
     } catch (error) {
-      console.log(error)
+      console.log("error uploading", error)
       setUploaded(false)
       alert("Error uploading")
     }
@@ -198,16 +222,18 @@ const JobSeekersignup = ({ navigation, route }) => {
           <ScrollView>
             <Header
               icon={signUp}
-              title='Create Profile'
+              title={update ? 'Update profile' : 'Create profile'}
               // numOfPage={<Image source={trash}></Image>}
               numOfPage='1/6'
               hidden={false}
               goBack={navigation.goBack}
             />
             <View style={styles.subContainer}>
-              <Text style={styles.text}>
-                Create and verify your profile in less than 2 minutes. Fill in your name and upload a picture of your passport, ID, and Visa.
-              </Text>
+              { !update &&
+                <Text style={styles.text}>
+                  Create and verify your profile in less than 2 minutes. Fill in your name and upload a picture of your passport, ID, and Visa.
+                </Text>
+              }
               { 
                 image.length && !uploaded
                 ? <View style={{width: "100%", alignItems: "center"}}>
@@ -236,11 +262,13 @@ const JobSeekersignup = ({ navigation, route }) => {
                 value={values.email}
               />
 
-              <Inputs
-                placeholder='Password*'
-                onChange={(value) => handleChange('password', value)}
-                value={values.password}
-              />
+              { !update &&
+                <Inputs
+                  placeholder='Password*'
+                  onChange={(value) => handleChange('password', value)}
+                  value={values.password}
+                />
+              }
               <SelectInput 
                 title="Location*" 
                 onSelect={(value) => handleChange('location', value)}
@@ -255,8 +283,15 @@ const JobSeekersignup = ({ navigation, route }) => {
               />
             
               <TouchableOpacity style={styles.nextButton} onPress={() => submit()}>
-                <PrimaryButton title='Next' activity={activity}/>
+                <PrimaryButton title={'Next'} activity={activity}/>
               </TouchableOpacity>
+              { update &&
+                <TouchableOpacity onPress={() =>  navigateNext()}>
+                  <Text style={styles.skipText}>
+                      SKIP
+                  </Text>
+                </TouchableOpacity>
+              }
             </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -305,6 +340,13 @@ const styles = StyleSheet.create({
     backgroundColor:"rgba(255,255,255,.8)",
     width: "85%",
     marginVertical: 10
+  },
+  skipText:{
+    fontFamily: 'PoppinsS',
+    fontSize: 15,
+    marginTop: -25,
+    marginBottom: 80,
+    letterSpacing: 2
   }
 })
 

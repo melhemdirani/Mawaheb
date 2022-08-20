@@ -9,20 +9,23 @@ import Navbar from '../components/Navbar'
 import { getAllJobs } from '../reduxToolkit/jobSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import JobFiltering from '../components/JobFiltering'
+import { useIsFocused } from "@react-navigation/native"
 
 //freelancer job page
 
 const JobsPage = ({ navigation, route }) => {
+  const isFocused = useIsFocused();
   let filterInitial = {
     location: "",
     duration: "",
     budget: "",
-    category: "",
+    category: "unfiltered",
     title: "",
     yearsOfExperience: "",
     minBudget: "",
     maxBudget: "",
     search: "",
+    sort:""
   }
   const { freelancer } = useSelector((store) => store.freelancer)
   const [jobs, setJobs] = useState([])
@@ -34,48 +37,44 @@ const JobsPage = ({ navigation, route }) => {
   const [page, setPage] = useState(1)
   const [numberOfPages, setNumberOfPages]= useState(-1)
   const [scrolled, setScrolled]= useState(false)
-
+  const [handledCategory, setHandledCategory] = useState(false)
   const dispatch = useDispatch()
+  const handleFilterChange = (name, value) => {
+    setFilters( data => ({
+      ...data,
+      [name]: value
+    }))
+    setPage(1)
+  }
 
+ 
   useEffect(() => {
-
     if(freelancer === {} || freelancer === undefined || freelancer.id === undefined ){
-      console.log("starting fetch 1")
       setPage(1)
       dispatch(getFreelancer(user.freelancerId))
       .unwrap()
       .then((response) => {
-        setLoading(false)
-        if(!showFilter){ 
-          setLoading(true)
-          let newFilters = ""
-          Object.keys(filters).map((keyName, i) =>{
-            let value = filters[keyName]  === "All Cities" || filters[keyName] === "All Categories" ? "" : filters[keyName]
-            newFilters= newFilters + `${keyName}=${value}&`
-          })
-          dispatch(getAllJobs({
-            filters:newFilters + `page=${1}`, 
-            id: response.freelancer.id
+        if(filters.category === "" && !handledCategory){
+          setFilters( data => ({
+            ...data,
+            category: response.freelancer.roles[0].category
           }))
-          .unwrap()
-          .then((response) => {
-            console.log("response 1 length", response.jobs.length)
-            setNumberOfPages(response.numOfPages)
-            setJobs(response.jobs)
-            setLoading(false)
-          })
-          .catch((error) => {
-            console.log("error", error)
-            setLoading(false)
-          })
-        }
+          setHandledCategory(true)
+        } // needs testing
       })
       .catch((error) => {
         setLoading(false)
       })
-  } 
-  else {
-    if(!showFilter){ 
+    } else if(filters.category === "unfiltered" && !handledCategory){
+      setFilters( data => ({
+        ...data,
+        category: freelancer.roles[0].category
+      }))
+    }
+  }, [route])
+
+  useEffect(() => {
+    if(!showFilter && filters.category !== "unfiltered"){ 
       setPage(1)
       setLoading(true)
       let newFilters = ""
@@ -89,7 +88,7 @@ const JobsPage = ({ navigation, route }) => {
       }))
       .unwrap()
       .then((response) => {
-        console.log("response freelancer length", response.jobs.length)
+        console.log("response freelancer length b", response.jobs.length)
         setNumberOfPages(response.numOfPages)
         setJobs(response.jobs)
         setLoading(false)
@@ -99,11 +98,9 @@ const JobsPage = ({ navigation, route }) => {
         setLoading(false)
       })
     }
-
-  }
-  }, [route, filters, showFilter])
+  }, [isFocused, filters, showFilter, filters.category])
   useEffect(() => {
-    if(!showFilter && jobs.length &&  numberOfPages !== -1 && scrolled && page !== 1){
+    if(!showFilter && jobs.length && scrolled  && filters.category !== "unfiltered"){
       console.log("starting update")
       let newFilters = ""
       Object.keys(filters).map((keyName, i) =>{
@@ -116,9 +113,8 @@ const JobsPage = ({ navigation, route }) => {
       }))
       .unwrap() 
       .then((response) => {
-        console.log("response2 length", response)
+        console.log("response2 length", response.length )
         console.log("page", page)
-        alert("updating")
         setJobs(data => ([
           ...data,
           ...response.jobs
@@ -130,23 +126,18 @@ const JobsPage = ({ navigation, route }) => {
         setLoading(false)
       })
     }
-  }, [page, scrolled])
+  }, [page, scrolled, filters.category])
  
 
-  const navigate = (id, data) => {
-    navigation.navigate('jobDescription', { id})
+  const navigate = (id, client) => {
+    navigation.navigate('jobDescription', { id, client})
   }
 
   const renderItem = (data) => {
     return  <Job {...data.item} navigate={navigate} data={data}/>
   }
   let welcomeMessage = `Hi ${user?.name}`
-  const handleFilterChange = (name, value) => {
-    setFilters( data => ({
-      ...data,
-      [name]: value
-    }))
-  }
+
   const handlePageChange = () => {
     if(page < numberOfPages ){
       setScrolled(true)
@@ -154,7 +145,10 @@ const JobsPage = ({ navigation, route }) => {
     }
   }
 
-  return (
+  return loading ? <View style={{alignItems: "center", justifyContent: "center", flex: 1}}>
+      <ActivityIndicator size={"large"} color="#4E84D5"/>
+    </View>
+  :(
     <View style={styles.container}>
       <SecondaryHeader 
         title={welcomeMessage} 
@@ -174,6 +168,8 @@ const JobsPage = ({ navigation, route }) => {
             handleChange={handleFilterChange}
             filters={filters}
             onClick={() => setShowFilter(false)}
+            category={freelancer.roles[0].category}
+            selectedCategory={filters.category}
           />
         :<FlatList
           data={jobs.length ? jobs : { id: 0, title: 'No Jobs Found' }}

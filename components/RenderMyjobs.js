@@ -17,43 +17,57 @@ import { ScrollView } from 'react-native-gesture-handler';
   
 
 
-export default function RenderMyjobs({data, navigate,showApplicantsTitle, setShowApplicantsTitle}) {
+export default function RenderMyjobs({
+    job, 
+    navigate,
+    showApplicantsTitle, 
+    setShowApplicantsTitle, 
+    setShownApplicants,
+    shownApplicants
+}) {
+    
     const [showApplicants, setShowApplicants] = useState(false)
+    
     const handlePress = () => {
         if(showApplicants){
             setShowApplicantsTitle("all")
         } else{
-            setShowApplicantsTitle(data.id)
+            setShowApplicantsTitle(job.id)
         }
+        setShownApplicants(!shownApplicants)
         setShowApplicants(!showApplicants)
     }
-    const RenderItem = ({item}) => {
-       
+    const renderItem = (data) => {
+        const {item} = data
+        console.log("item", job)
         return Object.keys(item.freelancer).length ?  (
             <JobList
                 freelancer={item.freelancer}
                 navigate={navigate}
                 style={styles.jobs}
-                job={data}
+                job={job}
+                price={item.price}
                 item={item}
             />
         ): <Text>No proposals yet</Text>
     }
     useEffect(() => {
-        if(showApplicantsTitle === data.id && !showApplicants ){
+        if(showApplicantsTitle === job.id && !showApplicants ){
+            setShownApplicants(true)
             setShowApplicants(true)
         }
     }, [showApplicantsTitle])
-    if (!data) {    
+
+    if (!job) {    
     return <Text>Loading</Text>
     }
-    return (showApplicantsTitle === data.id || showApplicantsTitle === "all") && (
+    return (showApplicantsTitle === job.id || showApplicantsTitle === "all") && (
     <View style={showApplicants ? styles.container2 : styles.container}>
         <Pressable style={styles.title} onPress={()=>handlePress()}>
             <MaskedView
                 maskElement={
                 <Text style={[styles.text, { backgroundColor: 'transparent' }]}>
-                    {data.title} Applicants
+                    {job.title} Applicants
                 </Text>
                 }
             >
@@ -63,30 +77,36 @@ export default function RenderMyjobs({data, navigate,showApplicantsTitle, setSho
                 colors={['#31BEBB', '#655BDA']}
                 >
                 <Text style={[styles.text, { opacity: 0 }]}>
-                    {data.title} Applicants
+                    {job.title} Applicants
                 </Text>
                 </LinearGradient>
             </MaskedView>
             <Image source={arrowUpIcon} style={showApplicants ? styles.arrowUp : styles.arrowDown}></Image>
         </Pressable>
-        <ScrollView>
+        <View style={{bheight: "100%"}}>
             { 
-                showApplicants &&  data.proposals.length > 0 ? data.proposals.map((item, i) => 
-                    <RenderItem item={item} key={i} />
-                )
+                showApplicants &&  job.proposals.length > 0 
+                ? <FlatList
+                    data={job.proposals ? job.proposals : { id: 0, title: 'No Jobs Found' }}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.createdAt}
+                    contentContainerStyle={{marginTop: -20, zIndex: 9999}}
+                    style={styles.jobs}
+                    onEndReachedThreshold={.4}
+                />
                 : showApplicants 
                 ? <Text style={styles.text2}>No job applicants yet</Text>
                 : null
             }
-        </ScrollView>
+        </View>
     </View>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {
-    },
+
     container2:{
+        paddingBottom: 300,
     },
     title: {
       padding: 7,

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { ScrollView ,View, StyleSheet, Platform, TouchableOpacity, Pressable} from 'react-native';
+import { ScrollView ,View, StyleSheet, Platform, TouchableOpacity, Pressable, ActivityIndicator} from 'react-native';
 import { useDispatch ,useSelector} from 'react-redux'
+import * as Linking from "expo-linking";
 
-import { logout } from '../reduxToolkit/userSlice'
+import { clearUser, logout } from '../reduxToolkit/userSlice'
 
 import Navbar from '../components/Navbar';
 import Header from '../components/Header';
@@ -16,6 +17,9 @@ import privacySetting from '../assets/images/privacySetting.png';
 import termsSetting from '../assets/images/termsSetting.png';
 import aboutSetting from '../assets/images/aboutSetting.png';
 import logoutSetting from '../assets/images/logoutSetting.png';
+import changePass from '../assets/images/changePass.png';
+import { clearClient } from '../reduxToolkit/clientSlice';
+import { clearFreelancerState } from '../reduxToolkit/freelancerSlice';
 
 
 
@@ -24,12 +28,35 @@ const SettingsPage = ({navigation, role}) => {
     
     const [reload, setReload] = useState(true)
     const dispatch = useDispatch()
+
+    const [loading, setLoading] = useState(false)
     
     const logoutUser = () => {
+        setLoading(true)
         dispatch(
             logout()
         )
-        navigation.navigate('SignIn', {reload})
+        .unwrap()
+        .then( res => {
+            dispatch(
+                clearUser()
+            )
+            dispatch(
+                clearClient()
+            )
+            dispatch(
+                clearFreelancerState()
+            )
+            navigation.navigate('SignIn', {reload})
+            setLoading(false)
+        })
+        .catch( err => {
+            alert("You are not logged in")
+            console.log("err", err)
+            navigation.navigate('SignIn', {reload})
+            setLoading(false)
+        })
+     
     }
 
     const navigateContact = () => {
@@ -45,8 +72,19 @@ const SettingsPage = ({navigation, role}) => {
         }
 
     }
+    const navigatePass = () => {
+        navigation.navigate("updatePass", {role: user.role})
+    }
+
+    const openTerms = () => {
+   
+        Linking.openURL(`https://mawahib.reboost.live/`)
+      }
  
-    return (
+    return loading ? <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
+        <ActivityIndicator size={"large"}  color="#4E84D5" />
+    </View>
+    :(
         <View style={styles.container}>
             <ScrollView style={styles.container4}>
                 <Header icon={settingsIcon} hidden title="Settings"/>
@@ -54,8 +92,9 @@ const SettingsPage = ({navigation, role}) => {
                     <Setting title="My Profile" icon={profileSetting} action={navigateProfile}/>
                     <Setting title="Language" icon={languageSetting}/>
                     <Setting title="Privacy Policy" icon={privacySetting}/>
-                    <Setting title="Terms and Conditions" icon={termsSetting}/>
+                    <Setting title="Terms and Conditions" icon={termsSetting} action={openTerms}/>
                     <Setting title="About Mawahib" icon={aboutSetting}/>
+                    <Setting title="Update password" icon={changePass} action={navigatePass}/>
                     <Setting title="Logout" icon={logoutSetting} action={logoutUser}/>
                 </View>
                 <TouchableOpacity style={styles.button} onPress={() => navigateContact()}>

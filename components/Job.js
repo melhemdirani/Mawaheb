@@ -11,7 +11,22 @@ import heartIcon from '../assets/images/heartIcon.png'
 import plusIcon from '../assets/images/plusIcon.png'
 import MaskedView from '@react-native-masked-view/masked-view'
 
-const Job = ({ title, description, location, current, heart, navigate, id, startDate, disabled, data, shift, budget }) => {
+const Job = ({ 
+    title, 
+    description, 
+    location, 
+    current, 
+    heart, 
+    navigate, 
+    id, 
+    startDate, 
+    endDate,
+    disabled, 
+    shift, 
+    budget, 
+    client
+  }) => {
+    console.log("client", client)
   return (
     <View
       // style={lastOne ? [styles.wrapper, { marginBottom: 40 }] : styles.wrapper}
@@ -19,7 +34,13 @@ const Job = ({ title, description, location, current, heart, navigate, id, start
     >
       <View style={styles.header}>
         <View style={styles.subHeader}>
-          <View style={styles.circle}></View>
+           { client !== undefined &&
+            <Image      
+              source={{uri: `http://194.5.157.234:4000${client.user.profileImage}`}} 
+              style={styles.profileImage}
+              blurRadius={7}
+            />
+          }
           <ImageBackground
             source={priceRectangle}
             style={styles.priceBg}
@@ -34,7 +55,7 @@ const Job = ({ title, description, location, current, heart, navigate, id, start
         <View style={styles.subHeader}>
           {!heart && <Image source={heartIcon} style={styles.heart}></Image>}
           { !disabled && id 
-            ? <Pressable onPress={() => navigate(id, data)} style={styles.plusContainer}>
+            ? <Pressable onPress={() => navigate(id, client)} style={styles.plusContainer}>
               <Image source={plusIcon} style={styles.plus}></Image>
             </Pressable>
             : !disabled 
@@ -113,6 +134,7 @@ const Job = ({ title, description, location, current, heart, navigate, id, start
               <View style={styles.footerInfo}>
                 <Image source={calendarIcon} style={styles.icon}></Image>
                 <Text style={styles.text}> {startDate && moment(startDate).format('ll')}</Text>
+                <Text style={styles.text}> -  {endDate && moment(endDate).format('ll')}</Text>
               </View>
               <View style={styles.footerInfo}>
                 <Image source={clockIcon} style={styles.icon}></Image>
@@ -183,7 +205,7 @@ const styles = Platform.OS === 'android'
       borderTopColor: 'rgba(16, 125, 197, 1)',
       borderTopWidth: 0.4,
       paddingVertical: 10,
-      paddingHorizontal: 25,
+      paddingHorizontal: 5,
     },
 
     footerInfo: {
@@ -192,7 +214,7 @@ const styles = Platform.OS === 'android'
       alignItems: 'center',
       paddingTop: 7,
     },
-    circle: {
+    profileImage: {
       width: 60,
       height: 60,
       borderRadius: 50,
@@ -304,7 +326,7 @@ const styles = Platform.OS === 'android'
       borderTopColor: 'rgba(16, 125, 197, 1)',
       borderTopWidth: 0.4,
       paddingVertical: 10,
-      paddingHorizontal: 25,
+      paddingHorizontal: 5,
       width: "100%"
     },
 
@@ -314,7 +336,7 @@ const styles = Platform.OS === 'android'
       alignItems: 'center',
       paddingTop: 7,
     },
-    circle: {
+    profileImage: {
       width: 60,
       height: 60,
       borderRadius: 50,

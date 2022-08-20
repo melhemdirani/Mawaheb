@@ -1,4 +1,4 @@
-import React, {  useLayoutEffect, useState } from 'react'
+import React, {  useEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -7,7 +7,6 @@ import {
   ImageBackground,
   Pressable,
   ScrollView,
-  ActivityIndicator
 } from 'react-native'
 
 import { LinearGradient } from 'expo-linear-gradient'
@@ -16,8 +15,11 @@ import clockIcon from '../assets/images/clockIcon.png'
 import locationIcon from '../assets/images/locationIcon.png'
 import priceRectangle from '../assets/images/priceRectangle.png'
 import heartIcon from '../assets/images/heartIcon.png'
-import MaskedView from '@react-native-masked-view/masked-view'
 import languageIcon from '../assets/images/LanguageIcon.png'
+import { clearFreelancer } from '../reduxToolkit/freelancerSlice'
+import { clearJob } from '../reduxToolkit/jobSlice'
+import { inviteFreelancer } from '../reduxToolkit/clientSlice'
+
 
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import minusIcon from '../assets/images/minusIcon.png'
@@ -25,25 +27,42 @@ import { useSelector, useDispatch } from 'react-redux'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const FreelancerDetailsPage = ({ navigation, route }) => {
-  const { freelancer,  jobId} = route.params
+  
+  
+  useEffect(() => {
+    if(freelancer === undefined || job === undefined){
+      alert("Freelancer not found")
+      navigation.goBack()
+    }
+  }, [])
+  const { freelancer,  job, invite} = route.params
   // let invite = jobId === "job.id" ? true : false
-  let invite = false
-  const { client } = useSelector((state) => state.client)
   const { user: userState } = useSelector((state) => state.user)
-  const [loaded, setLoaded] = useState(false)
 
 
-  console.log("freelancer details passgsses",freelancer)
   const dispatch = useDispatch()
   const navigateContract = () => {
    if(invite){
-      alert("Invitation sent!")
-      navigation.navigate('recruiter_dashboard')
+      dispatch(inviteFreelancer({
+        freelancerId: freelancer.id,
+        jobId: job.id
+      })).then(response => {
+        console.log("response invite", response)
+        alert("Invitation sent!")
+        navigation.goBack()
+      })
+      .catch(err => {
+        navigation.goBack()
+        console.log("error ivnite", err)
+      })
     } else{
-       navigation.navigate('acceptContract', {role : 'client', freelancerId: freelancer.id, userState, jobId})
+       navigation.navigate('acceptContract', {role : 'client', freelancerId: freelancer.id, userState, jobId: job.id})
     }
   }
 
+  const newRoles = freelancer!== undefined && freelancer.roles !== undefined ?  freelancer.roles.filter(element => {
+    return [element.category === job.category]
+  }): []
 
   const uniqueIds = [];
 
@@ -59,11 +78,16 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
     return false;
   });
 
+  const navigateBack = () => {
+    clearFreelancer()
+    clearJob()
+    navigation.goBack()
+  }
   return (
     <ScrollView style={styles.wrapper}>
       <View style={styles.header}>
         <View style={styles.subHeader}>
-        { freelancer.user.profileImage.length &&
+        { freelancer.user !== undefined && freelancer.user.profileImage.length &&
           <Image      
               source={{uri: `http://194.5.157.234:4000${freelancer.user.profileImage}`}} 
               style={styles.profileImage}
@@ -83,7 +107,7 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
         </View>
         <View style={styles.subHeader}>
           <Image source={heartIcon} style={styles.heart}></Image>
-          <Pressable onPress={() => navigation.goBack()}>
+          <Pressable onPress={() => navigateBack()}>
             <Image source={minusIcon} style={styles.plus}></Image>
           </Pressable>
         </View>
@@ -125,14 +149,24 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
 
             </View>
             <View style={styles.roles}>
-              {freelancer.roles.map((role) => {
+              { 
+                newRoles.length > 0 && newRoles !== undefined
+                ? newRoles.map((role) => {
                 return (
-                  <View key={role.id} style={styles.role}>
+                  <View key={role.id} style={[styles.role, !role.isLatest && styles.role2]}>
                     <View style={{ paddingHorizontal: 20 }}>
-                      <Text style={styles.roleName}>{role.role}</Text>
+                    { role.isLatest &&
+                      <Text style={styles.roleDescription}>
+                        Role: {role.title}
+                      </Text>
+                    }
+                    <Text style={styles.roleDescription}>
+                       {role.isLatest ? "Latest role" : "Most Notable"}
+                      </Text>
                       <Text style={styles.roleDescription}>
                         {role.projectTitle}
                       </Text>
+                    
                       <Text style={styles.roleDescription}>
                        Key responsibilities: {role.keyResponsibilities}
                       </Text>
@@ -146,18 +180,18 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
                     </View>
                   </View>
                 )
-              })}
+              })
+              : <Text>No Relevant Roles</Text>
+            }
             </View>
           </View>
           <View style={styles.languages}>
             <Image source={languageIcon} style={styles.languageIcon}></Image>
             {newLanguages.length > 0 && newLanguages.map((item, i) => {
               return (
-                <View key={item.id} key={i}>
-                  <Text  style={styles.language}>
+                  <Text  style={styles.language} key={i}>
                     {item.name}
                   </Text>
-                </View>
               )
             })}
           </View>
@@ -353,10 +387,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   role: {
-    marginBottom: 20,
     borderBottomColor: 'rgba(16, 125, 197, .3)',
-    borderBottomWidth: 1,
     paddingBottom: 20,
+  },
+  role2: {
+    borderBottomWidth: 1,
+    marginBottom: 25,
+
   },
   roleDateText: {
     fontFamily: 'PoppinsR',

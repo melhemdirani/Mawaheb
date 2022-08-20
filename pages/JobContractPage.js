@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Checkbox from 'expo-checkbox';
 import { useDispatch, useSelector } from 'react-redux'
-import { getFreelancer } from '../reduxToolkit/freelancerSlice';
+import { getContractFreelancer, getFreelancer } from '../reduxToolkit/freelancerSlice';
 import { acceptAndSign } from '../reduxToolkit/clientSlice';
 
 import Header from '../components/Header'
@@ -39,7 +39,7 @@ const JobContractPage = ({navigation, route}) => {
   const [job, setJob] = useState({})
 
   useEffect(() => {
-    console.log("jobId", freelancerId)
+    console.log("jobId", route)
   }, [])
   useEffect(() => {
     if(role === 'client'){
@@ -55,7 +55,8 @@ const JobContractPage = ({navigation, route}) => {
         console.log("error", error.message)
       })
     } else {
-      dispatch(getJob(route.params.action))
+      console.log("route", route.params.action)
+      dispatch(getContractFreelancer(route.params.action))
       .unwrap()
       .then(res => console.log("res, res", res))
       .catch(err => console.log("err", err))
@@ -93,11 +94,11 @@ const JobContractPage = ({navigation, route}) => {
         return navigation.navigate('recruiter_dashboard')
       })
     } else if(route.params !== undefined && route.params.action !== undefined ){
-      dispatch(acceptContractFreelancer(route.params.action) )
+      dispatch(acceptContractFreelancer(route.params.action) ) 
       .unwrap()
       .then((response) => {
-        console.log("accepting response", response)
-        return navigation.navigate('acceptedClient', {role: "freelancer"})
+        alert("Congratulations!, the company will contact you soon") // change
+        return navigation.navigate('seeker_dash')
       })
       .catch((error) => {
         console.log("error", error)

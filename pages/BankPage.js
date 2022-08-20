@@ -7,14 +7,19 @@ import {
   Pressable
 } from 'react-native';
 
-import { createFreelancerProfile } from '../reduxToolkit/freelancerSlice'
+import { listofCities } from '../assets/data/RolesList';
+
+import { createFreelancerProfile, getFreelancer, updateFreelancerProfile } from '../reduxToolkit/freelancerSlice'
 import { useSelector, useDispatch } from 'react-redux'
 import Header from '../components/Header';
 import Icon from '../assets/images/bankIcon.png';
 import Inputs from '../components/Inputs';
 import PrimaryButton from '../components/Buttons/PrimaryButton'
+import SelectInput from '../components/SelectInput';
 
-const BankPage = ({  navigation }) => {
+const BankPage = ({  navigation, route }) => {
+
+  const {update} = route.params
   const bankState = {
     iban: '',
     accountName: '',
@@ -23,7 +28,7 @@ const BankPage = ({  navigation }) => {
     city: '',
     swiftCode: '',
   }
-  const [bank, setBank] = React.useState(bankState)
+
 
   const {
     freelancer,
@@ -40,8 +45,22 @@ const BankPage = ({  navigation }) => {
     languages,
   } = useSelector((store) => store.freelancer)
 
+  // const bankState2 = freelancer.bankDetails !== undefined
+  // ?{
+  //   iban: freelancer.bankDetails.iban.length ? freelancer.bankDetails.iban : "",
+  //   accountName: freelancer.bankDetails.accountName !== null? freelancer.bankDetails.accountName : "",
+  //   bankName: freelancer.bankDetails.bankName  !== null? freelancer.bankDetails.bankName : "",
+  //   bankAddress: freelancer.bankDetails.bankAddress !== null ? freelancer.bankDetails.bankAddress : "",
+  //   city: freelancer.bankDetails.city !== null ? freelancer.bankDetails.city : "",
+  //   swiftCode: freelancer.bankDetails.swiftCode  !== null? freelancer.bankDetails.swiftCode : "",
+  // }: bankState
+  
+
+  const [bank, setBank] = useState(
+    bankState
+  )
+ 
   const {user} = useSelector(store => store.user)
-  console.log("userr", user)
 
   const [isCompleted, setIsCompleted] = useState(true)
 
@@ -80,36 +99,106 @@ const BankPage = ({  navigation }) => {
       return false
     }
   }
+  const [profileCompleted, setProfileCompleted] = useState(true)
 
- 
-  const createJobSeeker = () => {
-    console.log("roles", roles)
-    dispatch(
-      createFreelancerProfile({
-        profile: {
-          expirationDate,
-          emiratesId,
-          emiratesIdFrontSide,
-          emiratesIdBackSide,
-          copyOfPassport,
-          copyOfResidencyVisa,
-          isCompleted: !checkBankEmpty() && isCompleted ? true : false,
-        },
-        roles: roles,
-        languages: languages,
-        bankDetails: !checkBankEmpty() ? bank : undefined,
-      })
-    )
-    .unwrap()
-    .then((response) => {
-      console.log("response registiring", response)
-      navigation.navigate('jobseeker_jobs')
-    })
-    .catch((error) => {
-      console.log("error", error.message)
-    })
+  const checkCompleteProfile = () => {
+    if (
+      expirationDate  === "" ||
+      emiratesId  === "" ||
+      emiratesIdFrontSide  ===  "" ||
+      emiratesIdBackSide  === "" ||
+      copyOfPassport === "",
+      copyOfResidencyVisa  ===  "" ||
+      roles === "" ||
+      roles === [] ||
+      languages === "" ||
+      languages === [] ||
+      bank === "" ||
+      checkBankEmpty()
+      ){
+        return false
+    } else return true
   }
 
+  const createJobSeeker = () => {
+    if(update){
+      console.log({
+        expirationDate: expirationDate  === "", 
+        emiratesId:   emiratesId  === "",
+        emiratesIdFrontSide : emiratesIdFrontSide  ===  "" ,
+        emiratesIdBackSide : emiratesIdBackSide  ===  "" ,
+        copyOfPassport : copyOfPassport  ===  "" ,
+        copyOfResidencyVisa : copyOfResidencyVisa  ===  "" ,
+        roles : roles  ===  "" ,
+        languages : languages  ===  "" ,
+        languagesArray : languages  ===  [] ,
+        roleArray : roles  ===  [] ,
+        bank: checkBankEmpty()
+      })
+      dispatch(
+        updateFreelancerProfile({ 
+          freelancer: {
+          profile: {
+            expirationDate, 
+            emiratesId,
+            emiratesIdFrontSide,
+            emiratesIdBackSide,
+            copyOfPassport,
+            copyOfResidencyVisa,
+            isCompleted: profileCompleted,
+          },
+          roles: roles,
+          languages: languages,
+          bankDetails: !checkBankEmpty() ? bank : undefined,
+        },
+        id: freelancer.id
+          
+        })
+      )
+      .unwrap()
+      .then((response) => {
+        navigation.navigate("settings")
+      })
+      .catch((error) => {
+        alert("error!")
+        console.log("error", error)
+      })
+    } else {
+      dispatch(
+        createFreelancerProfile({
+          profile: {
+            expirationDate, 
+            emiratesId,
+            emiratesIdFrontSide,
+            emiratesIdBackSide,
+            copyOfPassport,
+            copyOfResidencyVisa,
+            isCompleted:  checkCompleteProfile(),
+          },
+          roles: roles,
+          languages: languages,
+          bankDetails: !checkBankEmpty() ? bank : undefined,
+        })
+      )
+      .unwrap()
+      .then((response) => {
+        console.log("response registiring", response)
+        navigation.navigate('jobseeker_jobs')
+      })
+      .catch((error) => {
+        console.log("error", error.message)
+      })
+    }
+ 
+  }
+  const skip = () => {
+    if(update){
+      navigation.navigate('freelancerProfile')
+    } else {
+      createJobSeeker()
+    }
+
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -128,32 +217,39 @@ const BankPage = ({  navigation }) => {
         <Inputs
           placeholder='Your IBAN*'
           onChange={(value) => handleChange('iban', value)}
+          value={bank.iban}
         />
         <Inputs
           placeholder='Account holder*'
           onChange={(value) => handleChange('accountName', value)}
+          value={bank.accountName}
         />
         <Inputs
           placeholder={`Bank's name*`}
           onChange={(value) => handleChange('bankName', value)}
+          value={bank.bankName}
         />
         <Inputs
           placeholder={`Bank's address*`}
           onChange={(value) => handleChange('bankAddress', value)}
+          value={bank.bankAddress}
         />
-
-        <Inputs
-          placeholder='City*'
-          onChange={(value) => handleChange('city', value)}
-        />
+        <SelectInput 
+          title='City*'
+          onSelect={(value) => handleChange('city', value)}
+          list={listofCities}
+          value={bank.city}
+          valued
+        /> 
         <Inputs
           placeholder='Swift Code*'
+          value={bank.swiftCode}
           onChange={(value) => handleChange('swiftCode', value)}
         />
         <Pressable style={styles.nextButton} onPress={() => createJobSeeker()}>
           <PrimaryButton title='Create Profile' />
         </Pressable>
-        <Pressable onPress={() =>  createJobSeeker()}>
+        <Pressable onPress={() =>  skip()}>
           <Text style={styles.skipText}>
               SKIP
           </Text>

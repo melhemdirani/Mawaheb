@@ -26,7 +26,19 @@ import { handleChange, completedProfile } from '../reduxToolkit/freelancerSlice'
 import ImageCard from '../components/ImageCard';
 
 
-const JobSeekersignup2 = ({  navigation, route }) => {
+const JobSeekersignup2 = ({  navigation, }) => {
+  const initialState = {
+    expirationDate: new Date(),
+    emiratesId: '',
+    emiratesIdFrontSide: '',
+    emiratesIdBackSide: '',
+  }
+  const dispatch = useDispatch()
+
+  const [values, setValues] = useState(initialState)
+  const [activity, setActivity] = useState(false)
+  const [startingToUpload, setStartingTopUpload] = useState(false)
+
   const {
     freelancer,
     isLoading,
@@ -37,101 +49,28 @@ const JobSeekersignup2 = ({  navigation, route }) => {
     emiratesIdBackSide,
   } = useSelector((store) => store.freelancer)
   
-
-  const { update } = route.params
-  const initialState = update
-  ? {
-    expirationDate: freelancer.expirationDate,
-    emiratesId: freelancer.emiratesId,
-    emiratesIdFrontSide: freelancer.emiratesIdFrontSide,
-    emiratesIdBackSide: freelancer.emiratesIdBackSide,
-  }
-  : {
-    expirationDate: '',
-    emiratesId: '',
-    emiratesIdFrontSide: '',
-    emiratesIdBackSide: '',
-  }
-  const dispatch = useDispatch()
-
-  const [values, setValues] = useState(initialState)
-  const [activity, setActivity] = useState(false)
-  const [startingToUpload, setStartingTopUpload] = useState(false)
-  const [dispatched, setDipatched] = useState(false)
-  const [uploadedImage, setUploadeImage] = useState( '')
-  const [uploadedImage2, setUploadeImage2] = useState( '')
-  
-  const submitNewValues = () => {
-    dispatch(
-      handleChange({
-        name: 'emiratesIdFrontSide',
-        value: uploadedImage,
-      })
-    )
-    dispatch(
-      handleChange({
-        name: 'expirationDate',
-        value: values.expirationDate,
-      })
-    )
-    dispatch(
-      handleChange({
-        name: 'emiratesId',
-        value: values.emiratesId,
-      })
-    )
-    dispatch(
-      handleChange({
-        name: 'emiratesIdBackSide',
-        value: uploadedImage2,
-      })
-    )
-    
-  }
-  useEffect(() => {
-    if(update && !dispatched){
-      submitNewValues()
-      setDipatched(true)
-    }
-  }, [])
-
-  const handleValuesChange = ({name, value}) => {
-    console.log("name", name)
-    console.log("value", value)
-    setValues({...values, [name]: value})
-  }
-  const navigateNext = () => {
-    navigation.navigate('JobSignUp2', {update: update})
-
-  }
-  useEffect(() => {
-    console.log("values changed", values)
-  }, [values])
   const onSubmit = () => {
     if (
-      !uploadedImage.length > 0 ||
-      !uploadedImage2.length >0 ||
-      !values.expirationDate.length > 0 ||
-      !values.emiratesId.length > 0
+      !emiratesIdFrontSide.length > 0 ||
+      !emiratesIdBackSide.length >0 ||
+      !expirationDate.length > 0 ||
+      !emiratesId.length > 0
     ) {
-      if(activity && expirationDate.length > 0 && emiratesId.length > 0){
-        return alert("Uploading please wait")
-      }
-      else {
-        console.log("values", values)
-        console.log("values", uploadedImage)
-        console.log("values", uploadedImage2)
-        return alert('Please fill all the fields')
-      }
+      if(activity && expirationDate.length > 0 && emiratesId.length > 0){return alert("Uploading please wait")}
+      else return alert('Please fill all the fields')
     } 
     if(!isLoading && uploaded && uploaded2){
-    submitNewValues();
-    dispatch(
-      completedProfile(true)
-    );
-    navigateNext();
+
+
+      dispatch(
+        completedProfile(true)
+      )
+      navigation.navigate('JobSignUp2', {update: false})
+
+ 
   }
   else {
+    console.log("emiratesIdFrontSide", emiratesIdFrontSide.length)
     if(activity){
       alert("Uploading, please wait")
     }
@@ -139,11 +78,11 @@ const JobSeekersignup2 = ({  navigation, route }) => {
 
   }
 
-  const [image, setImage] = useState(update ?`http://194.5.157.234:4000${freelancer.emiratesIdFrontSide}` : {})
-  const [image2, setImage2] = useState(update ?`http://194.5.157.234:4000${freelancer.emiratesIdBackSide}` : {})
+  const [image, setImage] = useState({})
+  const [image2, setImage2] = useState({})
 
-  const [uploaded, setUploaded] = useState(freelancer.emiratesIdFrontSide !== undefined ? true :false)
-  const [uploaded2, setUploaded2] = useState(freelancer.emiratesIdBackSide !== undefined ? true :false)
+  const [uploaded, setUploaded] = useState(false)
+  const [uploaded2, setUploaded2] = useState(false)
 
   const [loading, setLoading] = useState(false)
 
@@ -157,8 +96,7 @@ const JobSeekersignup2 = ({  navigation, route }) => {
     })
     if (!result.cancelled) {
       !startingToUpload && setStartingTopUpload(true)
-      setUploaded(false)
-
+      
       setImage(result.uri)
       upload(result.uri)
     }
@@ -172,7 +110,6 @@ const JobSeekersignup2 = ({  navigation, route }) => {
     })
     if (!result.cancelled) {
       !startingToUpload && setStartingTopUpload(true)
-      setUploaded2(false)
       setImage2(result.uri)
       console.log('result', result.uri)
       upload2(result.uri)
@@ -195,8 +132,12 @@ const JobSeekersignup2 = ({  navigation, route }) => {
         console.log('response', response)
         console.log('response body', JSON.parse(response.body).imageUrl)
         const img = JSON.parse(response.body).imageUrl
-        console.log("image to be 222", img)
-        setUploadeImage(img)
+        dispatch(
+          handleChange({
+            name: 'emiratesIdFrontSide',
+            value: img,
+          })
+        )
         setUploaded(true)
 
       } catch (error) {
@@ -222,7 +163,12 @@ const JobSeekersignup2 = ({  navigation, route }) => {
       console.log('response', response)
       console.log('response body', JSON.parse(response.body).imageUrl)
       const img = JSON.parse(response.body).imageUrl
-      setUploadeImage2(image)
+      dispatch(
+        handleChange({
+          name: 'emiratesIdBackSide',
+          value: img,
+        })
+      )
       setUploaded2(true)
 
     } catch (error) {
@@ -236,15 +182,24 @@ const JobSeekersignup2 = ({  navigation, route }) => {
     setStartingTopUpload(false)
     setUploaded(false);
     setImage({});
-    setUploadeImage("")
-
+    dispatch(
+      handleChange({
+        name: 'emiratesIdFrontSide',
+        value: "",
+      })
+    )
   }
 
   const onImageDelete2 = () => {
     setStartingTopUpload(false)
     setUploaded2(false)
     setImage2({})
-    setUploadeImage2("")
+    dispatch(
+      handleChange({
+        name: 'emiratesIdBackSide',
+        value: "",
+      })
+    )
   }
   useEffect(( ) => {
     if(uploaded && uploaded2 && activity){
@@ -254,10 +209,6 @@ const JobSeekersignup2 = ({  navigation, route }) => {
       setActivity(true)
     }
   }, [uploaded, uploaded2, startingToUpload])
-
-  useEffect(() => {
-   console.log("uploadedImage", uploadedImage) 
-  }, [uploadedImage])
   return loading? <View  style={styles.loadingStyle}>
           <ActivityIndicator size={'large'}/>
       </View>
@@ -265,37 +216,35 @@ const JobSeekersignup2 = ({  navigation, route }) => {
       <ScrollView style={styles.container}>
       <Header
           icon={signUp}
-          title={update ?'Update Profile' :'Create Profile'}
+          title='Create Profile'
           // numOfPage={<Image source={trash}></Image>}
           numOfPage='2/6'
           hidden={false}
           goBack={navigation.goBack}
       />
       <View style={styles.subContainer}>
-          { !update &&
-            <Text style={styles.text}>
-              Create and verify your profile in less than 2 minutes. Fill in your name and upload a picture of your passport, ID, and Visa.
-            </Text> 
-          }
+          <Text style={styles.text}>
+            Create and verify your profile in less than 2 minutes. Fill in your name and upload a picture of your passport, ID, and Visa.
+          </Text> 
           <Inputs 
             title='Post Job' 
             placeholder='Emirates ID Number*'  
             numeric
             onChange={(value) =>
-              handleValuesChange({ name: 'emiratesId', value })
+              dispatch(handleChange({ name: 'emiratesId', value }))
             }
-            value={values.emiratesId}
           />
-          <DateInputs 
+              <DateInputs 
             placeholder='Expiration Date*'
-            valued
-            value={values.expirationDate}
             onChange={(value) =>
-                handleValuesChange({
+              dispatch(
+                handleChange({
                   name: 'expirationDate',
                   value: value,
                 })
+              )
             }
+            value={values.expirationDate}
           />
           { 
             image.length && !uploaded
@@ -306,8 +255,7 @@ const JobSeekersignup2 = ({  navigation, route }) => {
                 <Image source={{uri:image}} style={styles.Imagecontainer} />
               </View>
             : image.length && uploaded
-            ? <ImageCard uri={image} onImageDelete={() => onImageDelete()} />
-
+            ? <ImageCard uri={image} onImageDelete={onImageDelete} />
             : <UploadCard title='Front side of your Emirates ID' selectFile={selectFile}/>
           }
           { 
@@ -319,19 +267,12 @@ const JobSeekersignup2 = ({  navigation, route }) => {
                 <Image source={{uri:image2}} style={styles.Imagecontainer} />
               </View>
             : image2.length && uploaded2
-            ? <ImageCard uri={image2} onImageDelete={() => onImageDelete2()} />
+            ? <ImageCard uri={image2} onImageDelete={onImageDelete2} />
             : <UploadCard title='Back side of your Emirates ID' selectFile={selectFile2}/>
           }
           <TouchableOpacity style={styles.nextButton} onPress={() => onSubmit()}>
             <PrimaryButton title='Next' activity={activity}/>
           </TouchableOpacity>
-          { update &&
-            <TouchableOpacity onPress={() =>  navigateNext()}>
-              <Text style={styles.skipText}>
-                  SKIP
-              </Text>
-            </TouchableOpacity>
-          }
         </View>
       </ScrollView>
   )
@@ -382,13 +323,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 20,
     right: 40
-  },
-  skipText:{
-    fontFamily: 'PoppinsS',
-    fontSize: 15,
-    marginTop: -25,
-    marginBottom: 80,
-    letterSpacing: 2
   }
 })
 

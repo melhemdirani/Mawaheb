@@ -195,10 +195,10 @@ const ClientDashboard = ({ navigation, route }) => {
                 separatorWidth={0}
                 onScrollEnd={handleCarouselScrollEnd}
               />
-              <SimplePaginationDot
+             { currentJobs?.length > 1 && <SimplePaginationDot
                 currentIndex={currentIndex}
                 length={currentJobs?.length}
-              />
+              />}
             </View>
           </View>
         ) : (
@@ -335,6 +335,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
   },
+
 })
 
 export default ClientDashboard

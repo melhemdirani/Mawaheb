@@ -11,16 +11,13 @@ import {
 } from 'react-native'
 
 import { LinearGradient } from 'expo-linear-gradient'
-import calendarIcon from '../assets/images/calendarIcon.png'
 import clockIcon from '../assets/images/clockIcon.png'
 import locationIcon from '../assets/images/locationIcon.png'
 import MaskedView from '@react-native-masked-view/masked-view'
-import languageIcon from '../assets/images/LanguageIcon.png'
 
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import minusIcon from '../assets/images/minusIcon.png'
 import { useSelector, useDispatch } from 'react-redux'
-import { getFreelancer } from '../reduxToolkit/freelancerSlice'
 import { getClientbyId } from '../reduxToolkit/clientSlice'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
@@ -29,26 +26,29 @@ const ClientProfile = ({ navigation, route }) => {
   const { user } = useSelector((state) => state.user)
   const { client } = useSelector((state) => state.client)
 
-  const [clientProfile, setClientProfile] = useState({})
+  const [clientProfile, setClientProfile] = useState(client)
 
   const [loaded, setLoaded] = useState(true)
 
   const dispatch = useDispatch()
 
   useEffect(() => {
+    if(clientProfile !== {} && clientProfile!== undefined ){
     setLoaded(true)
-    dispatch(getClientbyId(user.clientId))
-    .unwrap()
-    .then(res => {
-      setClientProfile(res.client)
-      setLoaded(false)
-    })
-    .catch(err =>{
-       console.log("error", err)
-       setLoaded(false)
+    dispatch(getClientbyId(user.clientId ? user.clientId : client.id))
+      .unwrap()
+      .then(res => {
+        setClientProfile(res.client)
+        setLoaded(false)
       })
+      .catch(err =>{
+        console.log("error", err)
+        setLoaded(false)
+      })
+    }
+   
 
-  }, [user, client])
+  }, [user, route])
 
 //   useLayoutEffect(() => {
 //     if(!loaded){
@@ -56,7 +56,9 @@ const ClientProfile = ({ navigation, route }) => {
 //     }
 //   }, [])
 
-
+  const navigateEdit = () => {
+    navigation.navigate("editProfileClient", {clientProfile})
+  }
 
   return  loaded ? <View style={{marginTop: 400}}>
         <ActivityIndicator size={"large"}/>
@@ -111,19 +113,29 @@ const ClientProfile = ({ navigation, route }) => {
                 <Text style={[styles.title, { opacity: 0 }]}> {clientProfile.companyName}</Text>
               </LinearGradient>
             </MaskedView>
-            <View>
-              <Text style={styles.text}>Company type: {clientProfile.privacy}</Text>
+            <View style={{left: 20}}>
+              <Text style={styles.text}>
+                Company type: <Text style={styles.text2}>{clientProfile.privacy}</Text>
+              </Text>
              
               {
                 clientProfile.privacy === "public"
                 ?<View style={styles.descriptionContainer}>
-                  <Text style={styles.text}>Signatory name: {clientProfile.signatoryName}</Text>
-                  <Text style={styles.text}>Signatory title: {clientProfile.signatoryTitle}</Text>
+                  <Text style={styles.text}>
+                    Signatory name: <Text style={styles.text2}>{clientProfile.signatoryName}</Text>
+                  </Text>
+                  <Text style={styles.text}>
+                    Signatory title: <Text style={styles.text2}>{clientProfile.signatoryTitle}</Text>
+                  </Text>
                   <Image source={{uri: `http://194.5.157.234:4000${clientProfile.sign}`}} style={styles.Imagecontainer}/>
                 </View>
                 :<View style={styles.descriptionContainer}>
-                  <Text style={styles.text}>TRN: {clientProfile.TRN}</Text>
-                  <Text style={styles.text}>Address: {clientProfile.Address}</Text>
+                  <Text style={styles.text}>
+                    TRN: <Text style={styles.text2}>{clientProfile.TRN}</Text>
+                  </Text>
+                  <Text style={styles.text}>
+                    Address: <Text style={styles.text2}>{clientProfile.Address}</Text>
+                  </Text>
                   <Image source={{uri: `http://194.5.157.234:4000${clientProfile.tradingLicense}`}} style={styles.Imagecontainer}/>
                 </View>
               }
@@ -151,7 +163,7 @@ const ClientProfile = ({ navigation, route }) => {
           </LinearGradient>
         </View>
       </LinearGradient>
-      <TouchableOpacity style={styles.button} >
+      <TouchableOpacity style={styles.button} onPress={() => navigateEdit()} >
         <PrimaryButton title="Edit Profile"  />
       </TouchableOpacity>
     </ScrollView>
@@ -201,7 +213,6 @@ const styles = StyleSheet.create({
   footerInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 7,
     marginRight: 30
   },
   circle: {
@@ -228,10 +239,17 @@ const styles = StyleSheet.create({
   heart: {},
   plus: {
     left: 10,
+    top: 5,
   },
   text: {
     color: 'rgba(16, 125, 197, 1)',
     fontFamily: 'PoppinsR',
+    marginLeft: 5
+  },
+
+  text2: {
+    fontFamily: 'PoppinsR',
+    color: "rgba(0,0,0,.5)"
   },
   description: {
     color: '#0A084B',
@@ -340,7 +358,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   descriptionContainer:{
-    width: "100%"
+    width: "100%",
   }
 })
 export default ClientProfile

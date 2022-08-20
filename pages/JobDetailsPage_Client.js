@@ -14,16 +14,13 @@ import MaskedView from '@react-native-masked-view/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { getFilteredFreelancer } from '../reduxToolkit/jobSlice';
 import calendarIcon from '../assets/images/calendarIcon.png';
 import clockIcon from '../assets/images/clockIcon.png';
 import locationIcon from '../assets/images/locationIcon.png';
 import priceRectangle from '../assets/images/priceRectangle.png';
-import heartIcon from '../assets/images/heartIcon.png';
-import PrimaryButton from '../components/Buttons/PrimaryButton';
 import minusIcon from '../assets/images/minusIcon.png';
-import { getJob, applyJob, getMyJobs } from '../reduxToolkit/jobSlice';
-import JobList from '../components/JobList';
-import FreelancerCard from '../components/FreelancerCard';
+import RenderFreelancers from '../components/RenderFreelancers';
 
 const JobDetailsPage_Client = ({route, navigation}) => {
   const initialState = {
@@ -34,21 +31,31 @@ const JobDetailsPage_Client = ({route, navigation}) => {
     createdAt:'',
   }
   const { job } = route.params
-  const { freelancer } = useSelector((state) => state.freelancer)
-  const { user } = useSelector((state) => state.user)
+  const [freelancers, setFreelancers] = useState([])
   const dispatch = useDispatch()
+  const {showFreelancers, setShowFreelancers} = useState(false)
 
-  const [fetched, setFetched] = useState(false)
-
-  console.log("job", job)
+  useEffect(() => {
+    console.log("job", job.id)
+    dispatch(getFilteredFreelancer(job.id))
+    .then(
+      res => {
+        console.log("res getting freelancers", res)
+        setFreelancers(res.payload.freelancers)
+      }
+  
+    ).catch(error => console.log("error", error))
+  }, [])
 
   const applicants = job.proposals !== undefined ? job.proposals : []
+  
+  const navigate = (freelancer, job) => {
+    navigation.navigate('freelancerDetails', {freelancer, job, invite: true })
+  }
 
-  return  !fetched
-    ?<View style={styles.loadingStyle}>
-      <ActivityIndicator size={'large'} />
-    </View>
-    :(
+  
+
+  return  (
     <ScrollView style={styles.wrapper}>
       <View style={styles.header}>
         <View style={styles.subHeader}>
@@ -169,6 +176,12 @@ const JobDetailsPage_Client = ({route, navigation}) => {
           <PrimaryButton title='Apply'  />
         </TouchableOpacity>
       } */}
+        <RenderFreelancers
+          freelancers={freelancers}
+          job={job}
+          category={job.category}
+          navigate={navigate}
+        />
     </ScrollView>
     )
 }

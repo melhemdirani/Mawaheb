@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, Text, View, TouchableOpacity, TextInput} from 'r
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 
-const TextArea = ({placeholder, onChange, value}) => {
+const TextArea = ({placeholder, onChange, value, valued}) => {
 
     const [text, setText] = useState("")
     const [changed, setChanged] = useState(false)
@@ -34,7 +34,7 @@ const TextArea = ({placeholder, onChange, value}) => {
                           end={{x:1, y: 1}}
                           colors={['#23CDB0', '#9C88FD','#9C88FD', '#9C88FD', ]}
                       >
-                        <Text style={[styles.label, {opacity: 0}]}>{value !== "" ? value : placeholder}</Text>
+                        <Text style={[styles.label, {opacity: 0}]}>{ placeholder}</Text>
                       </LinearGradient>
                   </MaskedView>
                 </View>
@@ -49,6 +49,7 @@ const TextArea = ({placeholder, onChange, value}) => {
                 placeholder={placeholder}
                 placeholderTextColor="rgba(0,0,0,.5)"
                 onChangeText={(e) => onChangeText(e)}
+                value={valued ? value : text}
             />
             </View>
             { changed && 

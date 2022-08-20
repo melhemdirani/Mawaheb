@@ -8,14 +8,14 @@ import {
 import DeleteButton2 from './Buttons/DeleteButton2';
 
 function ImageCard({uri, onImageDelete}) {
-  return uri.length &&(
+  return uri ?(
     <View style={{width: "100%", alignItems: "center"}}>
         <Image source={{uri:uri}} style={styles.Imagecontainer} />
         <Pressable style={styles.deletebutton} onPress={() => onImageDelete()}>
             <DeleteButton2 title="X" />
         </Pressable>
   </View>
-  )
+  ) : null
 }
 const styles = StyleSheet.create({
     Imagecontainer: {

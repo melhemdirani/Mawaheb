@@ -30,8 +30,6 @@ const ContactForm = ({ navigation, route }) => {
   const goBack = () => {
     navigation.goBack()
   }
-    console.log("user contact", user)
-
   const handleSubmit = () => {
     alert("Thank you for message!")
   }

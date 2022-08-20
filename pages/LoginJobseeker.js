@@ -10,6 +10,8 @@ import PrimaryButton from '../components/Buttons/PrimaryButton';
 import Inputs from '../components/Inputs';
 import { useDispatch ,useSelector} from 'react-redux'
 import { loginUser } from '../reduxToolkit/userSlice'
+import { getFreelancer } from '../reduxToolkit/freelancerSlice';
+import { getClientbyId } from '../reduxToolkit/clientSlice';
 
 
 const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
@@ -27,6 +29,7 @@ const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
     const login = async () => {
         setLoading(true)
         if (email === '' || password === '') {
+            setLoading(false)
            return alert("Please fill in email and password")
         } else {
             dispatch(loginUser({ email: email.toLocaleLowerCase(), password }))
@@ -34,12 +37,19 @@ const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
             .then((res) =>{
                 setLoading(false)
                 if(res.user.role === 'freelancer'){
-                    navigation.navigate('seeker_dash')
+                    dispatch(
+                        getFreelancer(res.user.freelancerId)
+                    ).then((res) => {
+                        console.log("res", res)
+                        navigation.navigate('seeker_dash')
+                    }).catch(err => console.log(err))
                 } else{
-                    navigation.navigate('recruiter_dashboard')
+                    dispatch(
+                        getClientbyId(res.user.clientId)
+                    ).then(() => {
+                        navigation.navigate('recruiter_dashboard')
+                    }).catch(err => console.log(err))
                 }
-          
-                
             }).catch(error => {
                 console.log("error", error);
                 setLoading(false);
