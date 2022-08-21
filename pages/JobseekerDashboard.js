@@ -134,7 +134,7 @@ const JobseekerDashboard = ({ navigation, route }) => {
           </View>
           <View style={styles.col}>
             <Text style={styles.colText}>Total Cash Earned</Text>
-            <TotalContainer2 n='180,000' />
+            <TotalContainer2 n={totalCashEarned} />
           </View>
         </View>
         {currentJobs?.length >= 1 ? (
@@ -154,9 +154,8 @@ const JobseekerDashboard = ({ navigation, route }) => {
               />
             </View>
           </View>
-        ) : (
-          <Text style={styles.noJob}>No Current Job</Text>
-        )}
+        ) : null
+        }
         {pastJobs?.length >= 1 ? (
           <View>
             <MaskedTitle title='Previous Jobs' />
@@ -165,9 +164,7 @@ const JobseekerDashboard = ({ navigation, route }) => {
               <RenderItem data={data} index={i} key={data.id} />
             ))}
           </View>
-        ) : (
-          <Text style={styles.noJobs}>No Previous Jobs</Text>
-        )}
+        ) : null}
       </ScrollView>
 
       <Navbar active='Dashboard' navigation={navigation} />

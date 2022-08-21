@@ -54,6 +54,22 @@ export const updateUser = createAsyncThunk(
 
   }
 )
+export const deleteAccount = createAsyncThunk(
+  'deleteAccount',
+  async (userId, thunkApi) => {
+    let url = `/users/${userId.userId}`
+    console.log("url", userId)
+    try {
+      const resp = await customFetch.delete(url)
+      console.log("account delete response", resp)
+      return resp.data
+    } catch (error) {
+      console.log("errrer",error)
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+
+  }
+)
 
 export const updateUserPassword = createAsyncThunk(
   'updateUserPassword',

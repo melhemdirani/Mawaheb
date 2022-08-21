@@ -66,33 +66,33 @@ const JobPostingPage = ({navigation}) => {
     } else{
       console.log("calu", values.shift)
    
-      navigation.navigate("payment", {values})
-      // dispatch(
-      //   createJob({
-      //     category: values.category,
-      //     title: values.title,
-      //     startDate: values.startDate,
-      //     endDate: values.endDate,
-      //     location: values.location,
-      //     yearsOfExperience: values.yearsOfExperience,
-      //     description: values.description,
-      //     budget: parseInt(values.budget),
-      //     privacy: isEnabled ? 'private' : 'public',
-      //     clientId: user.clientId? user.clientId : client.id,
-      //     duration: new Date(),
-      //     shift: values.shift
-      //   })
-      // )
-      // .unwrap()
-      // .then((response) => {
-      //   console.log("job for posting", response)
-      //   navigation.navigate("payment")
-      // })
-      // .catch((error) => {
-      //   console.log("error updating", error)
-      //   alert("Error creating a job, please try again later")
-      //   navigation.navigate("recruiter_dashboard")
-      // })
+      // navigation.navigate("payment", {values})
+      dispatch(
+        createJob({
+          category: values.category,
+          title: values.title,
+          startDate: values.startDate,
+          endDate: values.endDate,
+          location: values.location,
+          yearsOfExperience: values.yearsOfExperience,
+          description: values.description,
+          budget: parseInt(values.budget),
+          privacy: isEnabled ? 'private' : 'public',
+          clientId: user.clientId? user.clientId : client.id,
+          duration: new Date(),
+          shift: values.shift
+        })
+      )
+      .unwrap()
+      .then((response) => {
+        console.log("job for posting", response)
+        navigation.navigate('recruiter_dashboard', {id: date.toDateString()})
+      })
+      .catch((error) => {
+        console.log("error updating", error)
+        alert("Error creating a job, please try again later")
+        navigation.navigate("recruiter_dashboard")
+      })
     }
 
   

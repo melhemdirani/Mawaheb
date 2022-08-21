@@ -41,6 +41,7 @@ import JobDetailsPage_Client from './pages/JobDetailsPage_Client'
 import ContactFreelancerPage from './pages/ContactFreelancerPage'
 import EditClientProfile from './pages/EditClientProfile'
 import UpdatePasswordPage from './pages/UpdatePasswordPage'
+import DeleteAccountPage from './pages/DeleteAccountPage'
 
 
 Sentry.init({
@@ -268,6 +269,13 @@ function App() {
           <Stack.Screen
             name='updatePass'
             component={UpdatePasswordPage}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name='deletePage'
+            component={DeleteAccountPage}
             options={{
               headerShown: false,
             }}

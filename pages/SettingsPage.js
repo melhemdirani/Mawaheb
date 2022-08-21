@@ -15,6 +15,7 @@ import profileSetting from '../assets/images/profileSetting.png';
 import languageSetting from '../assets/images/languageSetting.png';
 import privacySetting from '../assets/images/privacySetting.png';
 import termsSetting from '../assets/images/termsSetting.png';
+import deleteAccount from '../assets/images/deleteAccount.png';
 import aboutSetting from '../assets/images/aboutSetting.png';
 import logoutSetting from '../assets/images/logoutSetting.png';
 import changePass from '../assets/images/changePass.png';
@@ -75,6 +76,9 @@ const SettingsPage = ({navigation, role}) => {
     const navigatePass = () => {
         navigation.navigate("updatePass", {role: user.role})
     }
+    const deleteNav = () => {
+        navigation.navigate("deletePage", {role: user.role})
+    }
 
     const openTerms = () => {
    
@@ -90,12 +94,13 @@ const SettingsPage = ({navigation, role}) => {
                 <Header icon={settingsIcon} hidden title="Settings"/>
                 <View style={styles.settingsContainer}>
                     <Setting title="My Profile" icon={profileSetting} action={navigateProfile}/>
-                    <Setting title="Language" icon={languageSetting}/>
-                    <Setting title="Privacy Policy" icon={privacySetting}/>
-                    <Setting title="Terms and Conditions" icon={termsSetting} action={openTerms}/>
-                    <Setting title="About Mawahib" icon={aboutSetting}/>
+                    {/* <Setting title="Language" icon={languageSetting}/>
+                    <Setting title="Privacy Policy" icon={privacySetting}/> */}
+                    <Setting title="Privacy policy" icon={termsSetting} action={openTerms}/>
+                    <Setting title="Support" icon={aboutSetting} action={navigateContact}/>
                     <Setting title="Update password" icon={changePass} action={navigatePass}/>
                     <Setting title="Logout" icon={logoutSetting} action={logoutUser}/>
+                    <Setting title="Delete account" icon={deleteAccount} action={deleteNav}/>
                 </View>
                 <TouchableOpacity style={styles.button} onPress={() => navigateContact()}>
                     <PrimaryButton title="Contact US"/> 

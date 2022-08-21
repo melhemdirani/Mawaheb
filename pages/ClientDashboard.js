@@ -172,7 +172,7 @@ const ClientDashboard = ({ navigation, route }) => {
         <View style={styles.row2}>
           <View style={styles.col}>
             <Text style={styles.colText}>Number of Contracts</Text>
-            <TotalContainer freelancers={12} employees={25} />
+            <TotalContainer freelancers={0} employees={0} />
           </View>
           <View style={styles.col}>
             <Text style={styles.colText}>Total Jobs Posted</Text>
@@ -201,9 +201,7 @@ const ClientDashboard = ({ navigation, route }) => {
               />}
             </View>
           </View>
-        ) : (
-          <Text style={styles.noCurrent}>No current jobs</Text>
-        )}
+        ) : null}
         {pastJobs?.length >= 1 ? (
           <View>
             <MaskedTitle title='Previous Jobs' />
@@ -212,10 +210,7 @@ const ClientDashboard = ({ navigation, route }) => {
               <RenderItem data={data} index={i} key={data.id} />
             ))}
           </View>
-        ) : !currentJobs?.length >= 1 
-        ?(
-          <Text style={styles.noCurrent}>No previous jobs</Text>
-        ): null
+        ) : null
       }
       </ScrollView>
       <Navbar active='Dashboard' navigation={navigation} client />
