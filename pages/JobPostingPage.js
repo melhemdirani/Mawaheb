@@ -42,7 +42,7 @@ const JobPostingPage = ({navigation}) => {
   const { client } = useSelector((state) => state.client)
   const [isEnabled, setIsEnabled] = useState(false)
   const dispatch = useDispatch()
-  const toggleSwitch = () => setIsEnabled((previousState) => !previousState)
+  const toggleSwitch = () => setIsEnabled(!isEnabled)
   const [values, setValues] = useState(initialState)
   const handleChange = (name, value) => {
     setValues({ ...values, [name]: value })
@@ -67,6 +67,7 @@ const JobPostingPage = ({navigation}) => {
       console.log("calu", values.shift)
    
       // navigation.navigate("payment", {values})
+
       dispatch(
         createJob({
           category: values.category,
@@ -86,6 +87,7 @@ const JobPostingPage = ({navigation}) => {
       .unwrap()
       .then((response) => {
         console.log("job for posting", response)
+        let date = new Date()
         navigation.navigate('recruiter_dashboard', {id: date.toDateString()})
       })
       .catch((error) => {
@@ -168,7 +170,7 @@ const JobPostingPage = ({navigation}) => {
         </View>
 
         <TouchableOpacity style={styles.btnContainer} onPress={() => paymentNav()}>
-          <PrimaryButton title='Continue to Payment' />
+          <PrimaryButton title='Post job' />
         </TouchableOpacity>
       </View>
       </KeyboardAvoidingView>

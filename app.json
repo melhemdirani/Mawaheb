@@ -21,11 +21,11 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.melhemdirani.mawaheb",
-      "buildNumber": "2.0.12",
-      "version": "2.0.12"
+      "buildNumber": "2.0.14",
+      "version": "2.0.14"
     },
     "android": {
-      "versionCode": 27,
+      "versionCode": 29,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"

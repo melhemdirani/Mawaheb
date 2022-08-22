@@ -34,6 +34,9 @@ const JobSeekersignup = ({ navigation, route }) => {
   const { role, update} = route.params
   
   const { user, error } = useSelector((store) => store.user)
+  const {  freelancer } = useSelector((store) => store.user)
+
+
   const [uploaded, setUploaded] = useState(
     update && user.profileImage !== ''
     ?true
@@ -147,10 +150,10 @@ const JobSeekersignup = ({ navigation, route }) => {
       .unwrap()
       .then((response) => {
         console.log("response registiring", response)
+        alert(`Thank you ${values.name}! Your account was registerd!`)
         setChangedValues(false)
         navigateNext()
         setIsLoading(false)
-
       })
       .catch((error) => {
         if(error === "Email already in use"){

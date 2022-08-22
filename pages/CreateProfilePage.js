@@ -38,13 +38,14 @@ const CreateProfilePage = ({  navigation, route }) => {
       dispatch(
         handleChange({
           name: 'copyOfPassport',
-          value: `http://194.5.157.234:4000${freelancer.copyOfPassport}`,
+          value: freelancer.copyOfPassport !== null && freelancer.copyOfPassport !== "" ? freelancer.copyOfPassport : "",
         })
       )
       dispatch(
         handleChange({
           name: 'copyOfResidencyVisa',
-          value: `http://194.5.157.234:4000${freelancer.copyOfResidencyVisa}`,
+          value: freelancer.copyOfResidencyVisa !== null && freelancer.copyOfResidencyVisa !== "" ? freelancer.copyOfResidencyVisa : "",
+
         })
       )
       setDipatched(true)
@@ -59,13 +60,17 @@ const CreateProfilePage = ({  navigation, route }) => {
   const [uploaded, setUploaded] = useState( freelancer.copyOfPassport !== undefined ? true : false)
   const [uploaded2, setUploaded2] = useState(freelancer.copyOfPassport !== undefined? true : false)
 
-  const [passCopy, setPassCopy] = useState(update && freelancer.copyOfPassport !== undefined ?  `http://194.5.157.234:4000${freelancer.copyOfPassport}` : "")
-  const [visaCopy, setVisaCopy] = useState(update && freelancer.copyOfResidencyVisa !== undefined?  `http://194.5.157.234:4000${freelancer.copyOfResidencyVisa}` : "")
+  const [passCopy, setPassCopy] = useState(update && freelancer.copyOfPassport !== undefined  && freelancer.copyOfPassport !== null ?  `http://194.5.157.234:4000${freelancer.copyOfPassport}` : "")
+  const [visaCopy, setVisaCopy] = useState(update && freelancer.copyOfResidencyVisa !== undefined && freelancer.copyOfPassport !== null ?  `http://194.5.157.234:4000${freelancer.copyOfResidencyVisa}` : "")
+  console.log("freelancer.emiratesIdFrontSide", freelancer.copyOfPassport)
 
   const [startingToUpload, setStartingToUpload] = useState(false)
   const [activity, setActivity] = useState(false)
 
-
+  useEffect(() => {
+    console.log("images passCopy", passCopy)
+    console.log("images visaCopy", visaCopy)
+  }, [])
   const navigateExperience = () => {
     // setUser({copyOfPassport: "", copyOfResidencyVisa: ""})
     navigation.navigate("experience", {update})

@@ -34,9 +34,11 @@ const FreelancerProfile = ({ navigation, route }) => {
   const isFocused = useIsFocused();
 
  
+
+ 
   useEffect(() => {
  
-    if(freelancer === undefined || freelancer === {} && user.freelancerId !== undefined  && isFocused){
+    if(isFocused){
       setLoading(true)
       dispatch(getFreelancer(user.freelancerId ?  user.freelancerId : freelancer.id))
       .unwrap()
@@ -57,7 +59,7 @@ const FreelancerProfile = ({ navigation, route }) => {
     navigation.navigate('JobSignUp', { role: 'freelancer', update: true })
   }
   const navigateComplete = () => {
-    navigation.navigate('JobSignUpb', { role: 'freelancer', update: false })
+    navigation.navigate('JobSignUp', { role: 'freelancer', update: true })
   }
   return loading || freelancer === undefined || freelancer === {} && user !== undefined 
     ?<View style={{marginTop: 400}}>
@@ -234,7 +236,7 @@ const FreelancerProfile = ({ navigation, route }) => {
           </View>
         </View>
       </LinearGradient>
-      <TouchableOpacity style={styles.button}  onPress={() => navigateComplete()}> 
+      <TouchableOpacity style={styles.button}  onPress={() => navigateEdit()}> 
         <PrimaryButton title={"Complete profile"}  />
       </TouchableOpacity>
     </ScrollView>

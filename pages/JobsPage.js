@@ -54,10 +54,10 @@ const JobsPage = ({ navigation, route }) => {
       dispatch(getFreelancer(user.freelancerId))
       .unwrap()
       .then((response) => {
-        if(filters.category === "" && !handledCategory){
+        if(filters.category === "" && !handledCategory && response.freelancer){
           setFilters( data => ({
             ...data,
-            category: response.freelancer.roles[0].category
+            category:   response.roles !== undefined ?  response.roles[0].category : ""
           }))
           setHandledCategory(true)
         } // needs testing
@@ -68,7 +68,7 @@ const JobsPage = ({ navigation, route }) => {
     } else if(filters.category === "unfiltered" && !handledCategory){
       setFilters( data => ({
         ...data,
-        category: freelancer.roles[0].category
+        category: freelancer.roles !== undefined  && freelancer.roles.length ?  freelancer.roles[0].category : ""
       }))
     }
   }, [route])
@@ -168,7 +168,7 @@ const JobsPage = ({ navigation, route }) => {
             handleChange={handleFilterChange}
             filters={filters}
             onClick={() => setShowFilter(false)}
-            category={freelancer.roles[0].category}
+            category={freelancer.roles?.length ? freelancer.roles[0].category : ""}
             selectedCategory={filters.category}
           />
         :<FlatList

@@ -41,10 +41,10 @@ const JobSeekersignup2 = ({  navigation, route }) => {
   const { update } = route.params
   const initialState = update
   ? {
-    expirationDate: freelancer.expirationDate,
-    emiratesId: freelancer.emiratesId,
-    emiratesIdFrontSide: freelancer.emiratesIdFrontSide,
-    emiratesIdBackSide: freelancer.emiratesIdBackSide,
+    expirationDate: freelancer.expirationDate !== undefined ? freelancer.expirationDate : "",
+    emiratesId: freelancer.emiratesId !== undefined ? freelancer.emiratesId : "",
+    emiratesIdFrontSide: freelancer.emiratesIdFrontSide !== undefined ? freelancer.emiratesIdFrontSide : "",
+    emiratesIdBackSide: freelancer.emiratesIdBackSide!== undefined ? freelancer.emiratesIdBackSide : "",
   }
   : {
     expirationDate: '',
@@ -58,8 +58,8 @@ const JobSeekersignup2 = ({  navigation, route }) => {
   const [activity, setActivity] = useState(false)
   const [startingToUpload, setStartingTopUpload] = useState(false)
   const [dispatched, setDipatched] = useState(false)
-  const [uploadedImage, setUploadeImage] = useState( '')
-  const [uploadedImage2, setUploadeImage2] = useState( '')
+  const [uploadedImage, setUploadeImage] = useState( update &&  freelancer.emiratesIdFrontSide !== undefined ? freelancer.emiratesIdFrontSide : '')
+  const [uploadedImage2, setUploadeImage2] = useState( update && freelancer.emiratesIdBackSide !== undefined  ? freelancer.emiratesIdBackSide : '')
   
   const submitNewValues = () => {
     dispatch(
@@ -118,9 +118,6 @@ const JobSeekersignup2 = ({  navigation, route }) => {
         return alert("Uploading please wait")
       }
       else {
-        console.log("values", values)
-        console.log("values", uploadedImage)
-        console.log("values", uploadedImage2)
         return alert('Please fill all the fields')
       }
     } 
@@ -139,9 +136,9 @@ const JobSeekersignup2 = ({  navigation, route }) => {
 
   }
 
-  const [image, setImage] = useState(update ?`http://194.5.157.234:4000${freelancer.emiratesIdFrontSide}` : {})
-  const [image2, setImage2] = useState(update ?`http://194.5.157.234:4000${freelancer.emiratesIdBackSide}` : {})
-
+  const [image, setImage] = useState(update && freelancer.emiratesIdFrontSide !== undefined && freelancer.emiratesIdFrontSide !== null ?`http://194.5.157.234:4000${freelancer.emiratesIdFrontSide}` : {})
+  const [image2, setImage2] = useState(update && freelancer.emiratesIdBackSide !== undefined && freelancer.emiratesIdBackSide !== null ?`http://194.5.157.234:4000${freelancer.emiratesIdBackSide}` : {})
+  console.log("freelancer.emiratesIdFrontSide", freelancer.emiratesIdBackSide)
   const [uploaded, setUploaded] = useState(freelancer.emiratesIdFrontSide !== undefined ? true :false)
   const [uploaded2, setUploaded2] = useState(freelancer.emiratesIdBackSide !== undefined ? true :false)
 
@@ -222,7 +219,7 @@ const JobSeekersignup2 = ({  navigation, route }) => {
       console.log('response', response)
       console.log('response body', JSON.parse(response.body).imageUrl)
       const img = JSON.parse(response.body).imageUrl
-      setUploadeImage2(image)
+      setUploadeImage2(img)
       setUploaded2(true)
 
     } catch (error) {
@@ -256,8 +253,8 @@ const JobSeekersignup2 = ({  navigation, route }) => {
   }, [uploaded, uploaded2, startingToUpload])
 
   useEffect(() => {
-   console.log("uploadedImage", uploadedImage) 
-  }, [uploadedImage])
+   console.log("uploadedImage", freelancer.emiratesIdBackSide) 
+  }, [freelancer.emiratesIdBackSide])
   return loading? <View  style={styles.loadingStyle}>
           <ActivityIndicator size={'large'}/>
       </View>

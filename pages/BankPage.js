@@ -44,20 +44,20 @@ const BankPage = ({  navigation, route }) => {
     roles,
     languages,
   } = useSelector((store) => store.freelancer)
-
-  // const bankState2 = freelancer.bankDetails !== undefined
-  // ?{
-  //   iban: freelancer.bankDetails.iban.length ? freelancer.bankDetails.iban : "",
-  //   accountName: freelancer.bankDetails.accountName !== null? freelancer.bankDetails.accountName : "",
-  //   bankName: freelancer.bankDetails.bankName  !== null? freelancer.bankDetails.bankName : "",
-  //   bankAddress: freelancer.bankDetails.bankAddress !== null ? freelancer.bankDetails.bankAddress : "",
-  //   city: freelancer.bankDetails.city !== null ? freelancer.bankDetails.city : "",
-  //   swiftCode: freelancer.bankDetails.swiftCode  !== null? freelancer.bankDetails.swiftCode : "",
-  // }: bankState
+  console.log("freelancer.bankDetails", freelancer.bankDetails)
+  const bankState2 = update && freelancer.bankDetails !== undefined && freelancer.bankDetails !== null
+  ?{
+    iban: freelancer.bankDetails.iban  ? freelancer.bankDetails.iban : "",
+    accountName: freelancer.bankDetails.accountName ? freelancer.bankDetails.accountName : "",
+    bankName: freelancer.bankDetails.bankName  ? freelancer.bankDetails.bankName : "",
+    bankAddress: freelancer.bankDetails.bankAddress ? freelancer.bankDetails.bankAddress : "",
+    city: freelancer.bankDetails.city  ? freelancer.bankDetails.city : "",
+    swiftCode: freelancer.bankDetails.swiftCode   ? freelancer.bankDetails.swiftCode : "",
+  }: bankState
   
 
   const [bank, setBank] = useState(
-    bankState
+    bankState2
   )
  
   const {user} = useSelector(store => store.user)
@@ -120,84 +120,76 @@ const BankPage = ({  navigation, route }) => {
     } else return true
   }
 
-  const createJobSeeker = () => {
-    if(update){
-      console.log({
-        expirationDate: expirationDate  === "", 
-        emiratesId:   emiratesId  === "",
-        emiratesIdFrontSide : emiratesIdFrontSide  ===  "" ,
-        emiratesIdBackSide : emiratesIdBackSide  ===  "" ,
-        copyOfPassport : copyOfPassport  ===  "" ,
-        copyOfResidencyVisa : copyOfResidencyVisa  ===  "" ,
-        roles : roles  ===  "" ,
-        languages : languages  ===  "" ,
-        languagesArray : languages  ===  [] ,
-        roleArray : roles  ===  [] ,
-        bank: checkBankEmpty()
-      })
-      dispatch(
-        updateFreelancerProfile({ 
-          freelancer: {
-          profile: {
-            expirationDate, 
-            emiratesId,
-            emiratesIdFrontSide,
-            emiratesIdBackSide,
-            copyOfPassport,
-            copyOfResidencyVisa,
-            isCompleted: profileCompleted,
-          },
-          roles: roles,
-          languages: languages,
-          bankDetails: !checkBankEmpty() ? bank : undefined,
+  const updateProfile = () => {
+    console.log("complete", checkCompleteProfile()) 
+    dispatch(
+      updateFreelancerProfile({ 
+        freelancer: {
+        profile: {
+          expirationDate, 
+          emiratesId,
+          emiratesIdFrontSide,
+          emiratesIdBackSide,
+          copyOfPassport,
+          copyOfResidencyVisa,
+          isCompleted: checkCompleteProfile(),
         },
-        id: freelancer.id
-          
-        })
-      )
-      .unwrap()
-      .then((response) => {
-        navigation.navigate("settings")
+        roles: roles,
+        languages: languages,
+        bankDetails: !checkBankEmpty() ? bank : undefined,
+      },
+      id: freelancer.id
+        
       })
-      .catch((error) => {
-        alert("error!")
-        console.log("error", error)
-      })
-    } else {
-      dispatch(
-        createFreelancerProfile({
-          profile: {
-            expirationDate, 
-            emiratesId,
-            emiratesIdFrontSide,
-            emiratesIdBackSide,
-            copyOfPassport,
-            copyOfResidencyVisa,
-            isCompleted:  checkCompleteProfile(),
-          },
-          roles: roles,
-          languages: languages,
-          bankDetails: !checkBankEmpty() ? bank : undefined,
-        })
-      )
-      .unwrap()
-      .then((response) => {
-        console.log("response registiring", response)
-        navigation.navigate('jobseeker_jobs')
-      })
-      .catch((error) => {
-        console.log("error", error.message)
-      })
-    }
+    )
+    .unwrap()
+    .then(() => {
+      navigation.navigate("settings")
+    })
+    .catch((error) => {
+      alert("error!")
+      console.log("error", error)
+    })
+  }
  
+  const createJobSeeker = () => {
+    dispatch(
+      createFreelancerProfile({
+        profile: {
+          expirationDate, 
+          emiratesId,
+          emiratesIdFrontSide,
+          emiratesIdBackSide,
+          copyOfPassport,
+          copyOfResidencyVisa,
+          isCompleted:  checkCompleteProfile(),
+        },
+        roles: roles,
+        languages: languages,
+        bankDetails: !checkBankEmpty() ? bank : undefined,
+      })
+    )
+    .unwrap()
+    .then((response) => {
+      console.log("response registiring", response)
+      navigation.navigate('jobseeker_jobs')
+    })
+    .catch((error) => {
+      console.log("error", error)
+      alert("Error registiring")
+      navigation.navigate("SignIn")
+    })
   }
   const skip = () => {
     if(update){
-      navigation.navigate('freelancerProfile')
+      updateProfile()
     } else {
       createJobSeeker()
     }
 
+  }
+  const handleSubmit = () => {
+    update ? updateProfile () : createJobSeeker ()
   }
 
   return (
@@ -246,8 +238,8 @@ const BankPage = ({  navigation, route }) => {
           value={bank.swiftCode}
           onChange={(value) => handleChange('swiftCode', value)}
         />
-        <Pressable style={styles.nextButton} onPress={() => createJobSeeker()}>
-          <PrimaryButton title='Create Profile' />
+        <Pressable style={styles.nextButton} onPress={() => handleSubmit()}>
+          <PrimaryButton title={update ? 'Update profile' : 'Create Profile'} />
         </Pressable>
         <Pressable onPress={() =>  skip()}>
           <Text style={styles.skipText}>

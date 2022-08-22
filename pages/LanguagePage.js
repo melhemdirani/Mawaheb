@@ -42,13 +42,13 @@ const LanguagePage = ({ navigation, route }) => {
       profeciency: language.profeciency,
       id: language.id
     }
-  }) :  [mainLanguageState, mainLanguageState]
+  }) :  [mainLanguageState]
 
   console.log("new lagnuagess", newLanguages)
   const [languages, setLanguages] = useState(
     update && freelancer.languages !== undefined && freelancer.languages.length
     ? newLanguages
-    : [mainLanguageState, mainLanguageState]
+    : [mainLanguageState]
   )
 
 
@@ -150,7 +150,7 @@ const LanguagePage = ({ navigation, route }) => {
             <View style={{width: "100%", alignItems: "center", marginVertical: 10}} key={i}>
             
                <SelectInput
-                title={i == 0 ? 'Main Language*' : i == 1 ? 'Secondary Language*' : 'Additional Language'}
+                title={"Choose a language*"}
                 list={languagesArray}
                 languages
                 valued

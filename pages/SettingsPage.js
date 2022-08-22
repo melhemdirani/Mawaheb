@@ -118,7 +118,7 @@ const styles = Platform.OS === 'android'
             backgroundColor: 'white',
         },
         button:{
-            top: 120,
+            top: 50,
             alignSelf: "center"
         },
         settingsContainer:{
@@ -132,7 +132,7 @@ const styles = Platform.OS === 'android'
             backgroundColor: 'white',
         },
         button:{
-            top: 120,
+            top: 50,
             alignSelf: "center"
         },
         settingsContainer:{
