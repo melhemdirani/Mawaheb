@@ -12,10 +12,10 @@ import PrimaryButton from '../components/Buttons/PrimaryButton';
 import TertiaryButton from '../components/Buttons/TertiaryButton';
 import { LinearGradient } from 'expo-linear-gradient';
 import { getFreelancer } from '../reduxToolkit/freelancerSlice';
+import { getClientbyId } from '../reduxToolkit/clientSlice';
 
 
-const FreelanceAcceptedPage = ({navigation, route}) => {
-  const { user } = useSelector((store) => store.user)
+const FreelancerSigned = ({navigation, route}) => {
   const [acceptedFreelancer, setAcceptedFreelancer] = useState({})
   const [loading, setLoading] = useState(true)
   const dispatch = useDispatch()
@@ -35,7 +35,17 @@ const FreelanceAcceptedPage = ({navigation, route}) => {
         setLoading(false)
       })
     } else{
-      setLoading(false)
+      dispatch(getClientbyId(action))
+      .unwrap()
+      .then( res => {
+        console.log("ress", res);
+        setAcceptedFreelancer(res.client);
+        setLoading(false)
+      })
+      .catch(err => {
+        console.log("error", err)
+        setLoading(false)
+      })
     }
   }, [])
   const navigateDone = () => {
@@ -46,9 +56,12 @@ const FreelanceAcceptedPage = ({navigation, route}) => {
     }
   }
   const navigateContact = () => {
-   
-    navigation.navigate('contactFreelancer')
-  
+    if(role === "client"){
+      navigation.navigate('contactFreelancer')
+    } else {
+      navigation.navigate('contactClient')
+
+    }
   }
   return loading? <View style={{alignItems: "center", justifyContent: "center", flex: 1}}>
     <ActivityIndicator size={"large"} color="#4E84D5"/>
@@ -73,7 +86,7 @@ const FreelanceAcceptedPage = ({navigation, route}) => {
               style={styles.proifleContainer}
             >
             <Image      
-              source={{uri: `http://194.5.157.234:4000${acceptedFreelancer.user.profileImage}`}} 
+              source={{uri: `http://195.110.58.234:4000${acceptedFreelancer.user.profileImage}`}} 
               style={styles.profileImage}
             />
             </LinearGradient>
@@ -163,4 +176,4 @@ const styles = StyleSheet.create({
 })
 
 
-export default FreelanceAcceptedPage
+export default FreelancerSigned

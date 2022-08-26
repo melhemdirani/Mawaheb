@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -6,6 +6,7 @@ import {
     Image,
     ScrollView,
     Pressable,
+    FlatList
 } from 'react-native';
 
 import JobList2 from '../components/JobList2';
@@ -16,15 +17,29 @@ import arrowUpIcon from '../assets/images/arrowUpIcon.png';
   
 
 
-export default function RenderFreelancers({navigate, freelancers, job}) {
-
-    const [showApplicants, setShowApplicants] = useState(false)
+export default function RenderFreelancers({navigate, freelancers, job, alterApplicants, showApplicants, handlePageChange}) {
  
     const handlePress = () => {
-        setShowApplicants(!showApplicants)
+        alterApplicants(showApplicants)
 
     }
-    console.log("freelancerss here", freelancers)
+
+    const [page, setPage] = useState(1)
+    const renderItem = (data) => {
+        let freelancer = data.item
+        return (
+            <JobList2 
+                languages={freelancer.languages} 
+                user={freelancer.user} 
+                roles={freelancer.roles} 
+                navigate={navigate}
+                job={job}
+                id={freelancer.id}
+                freelancer={freelancer}
+            />
+        )
+    }
+
     return (
         <View style={styles.container}>
             <Pressable style={styles.title} onPress={()=>handlePress()}>
@@ -50,22 +65,18 @@ export default function RenderFreelancers({navigate, freelancers, job}) {
 
             <View>
                 {
-                    showApplicants  && Object.keys(freelancers) !== 0 && freelancers.map((freelancer, i) => {
-                    return freelancer.isCompleted && (
-                        <JobList2 
-                            languages={freelancer.languages} 
-                            user={freelancer.user} 
-                            roles={freelancer.roles} 
-                            key={i} 
-                            navigate={navigate}
-                            job={job}
-                            id={freelancer.id}
-                            freelancer={freelancer}
-                        />
-                    )
-                    
-                    })
+                    showApplicants  && Object.keys(freelancers) !== 0 && 
+                        <FlatList
+                        data={freelancers}
+                        renderItem={renderItem}
+                        keyExtractor={(item) => item.id}
+                        contentContainerStyle={{marginTop: -20, zIndex: 9999}}
+                        style={styles.jobs}
+                        onEndReachedThreshold={.4}
+                        onEndReached={() => handlePageChange()}
+                    />
                 }
+             
             </View  >
         </View>
     )
@@ -82,7 +93,7 @@ const styles = StyleSheet.create({
       marginVertical: 5,
     },
     text: {
-      fontSize: 20,
+      fontSize: 17,
       fontFamily: 'PoppinsS',
       justifyContent: 'center',
       paddingTop: 6,
@@ -93,5 +104,9 @@ const styles = StyleSheet.create({
     arrowDown:{
         marginRight: 10, 
         transform: [{ rotate: '180deg'}]
+    },
+    jobs:{
+        paddingTop: 50,
+        marginBottom: 130,
     }
   })

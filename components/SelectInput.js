@@ -1,7 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { Pressable, StyleSheet, Text, View, ScrollView, Image} from 'react-native';
+import MaskedView from '@react-native-masked-view/masked-view';
 
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 const SelectInput = ({title, list, onSelect, value, valued, setIndex, role, languages, already}) => {
@@ -12,6 +14,7 @@ const SelectInput = ({title, list, onSelect, value, valued, setIndex, role, lang
 
     const onItemClick = (item, index) => {
         if(!valued){setSelected(item)}
+        setSelected(item)
         setShowList(false)
         if(role){
             setIndex(index)
@@ -26,14 +29,40 @@ const SelectInput = ({title, list, onSelect, value, valued, setIndex, role, lang
         </Pressable>
       
     );
+    console.log("seleect", value)
+    console.log("seleect", selected)
     return (
-        <View style={styles.container}>
+        <View style={
+            selected === "" && !showList 
+            ? [styles.container, styles.height, styles.borderBottom] 
+            : [styles.container]}
+        >
+             
+               { (selected !== "" || value !== "")  &&
+                    <MaskedView maskElement={ <Text style={[styles.label, {backgroundColor: "transparent"}]}>{title}</Text>}>
+                        <LinearGradient
+                            start={{x:0, y: 0}}
+                            end={{x:1, y: 1}}
+                            colors={['#23CDB0', '#9C88FD','#9C88FD', '#9C88FD', ]}
+                        >
+                        <Text style={[styles.label, {opacity: 0}]}>{title}</Text>
+                        </LinearGradient>
+                    </MaskedView>
+                }
+
             <View style={styles.subContainer}>
                 <Text 
                     style={selected || value ? styles.text2 : styles.text}> 
                     {(valued && value !== "" ) ? value : selected !== "" ? selected : title}
                 </Text>
-                <Pressable onPress={() => setShowList(!showList)} style={styles.arrowButton}>
+                <Pressable 
+                    onPress={() => setShowList(!showList)} 
+                    style={
+                        selected !== "" && !showList
+                        ? styles.arrowButton
+                        : [styles.arrowButton, {marginTop: 5}]
+                    }
+                >
                     <Image
                         style={showList ? [styles.image, styles.rotate] : styles.image}
                         source={require('../assets/images/Vector.png')}
@@ -67,14 +96,29 @@ const SelectInput = ({title, list, onSelect, value, valued, setIndex, role, lang
                 </ScrollView>
                 : null
             }
+             { (selected !== "" || value !== "")  && !showList &&
+                <LinearGradient
+                    start={{x:0, y: 0}}
+                    end={{x:1, y: 1}}
+                    colors={['#23CDB0', '#9C88FD','#9C88FD', '#9C88FD', ]}
+                    style={{height: 2, }}
+                />
+            }
         </View>
     );
 };
 
 const styles = StyleSheet.create({
+    height: {
+        height: 50,
+        justifyContent: "center",
+    },
     container:{
         width: "85%",
         marginBottom: 20,
+        borderTopLeftRadius: 8,
+        borderTopRightRadius: 8,
+        backgroundColor: "rgba(202, 218, 221, .2)",
     },
     rotate:{
         transform: [{rotate: '180deg'}]
@@ -83,12 +127,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "rgba(202, 218, 221, .2)",
-    height: 50,
-    borderBottomColor: "#107DC5",
-    borderBottomWidth: 1,
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
+ 
+    marginBottom: 5
     },
     text: {
         paddingLeft: 20,
@@ -101,10 +141,7 @@ const styles = StyleSheet.create({
         color: "rgba(0,0,0, 1)",
         fontFamily: "PoppinsR"
     },
- 
-    listItems:{
-        backgroundColor: "rgba(202, 218, 221, .2)",
-    },
+
     listText:{
         marginLeft: 20,
         marginTop: 5,
@@ -117,11 +154,23 @@ const styles = StyleSheet.create({
         marginTop: 10
     },
     arrowButton:{
-        padding: 20
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        marginTop: -14,
     },
     ScrollView:{
         maxHeight: 200,
-    }
+    },
+    borderBottom:{
+        borderBottomColor: "#107DC5",
+        borderBottomWidth: 1,
+    },
+    label:{
+        paddingLeft: 20,
+        marginVertical: 5,
+        fontSize: 10,
+        textTransform: "uppercase",
+      }
 });
 
 export default SelectInput;

@@ -117,7 +117,7 @@ const JobDetailsPage = ({route, navigation}) => {
         <View style={styles.subHeader}>
           { client.user && client.user.profileImage !== undefined &&
             <Image      
-              source={{uri: `http://194.5.157.234:4000${client.user.profileImage}`}} 
+              source={{uri: `http://195.110.58.234:4000${client.user.profileImage}`}} 
               style={styles.profileImage}
               blurRadius={7}
             />
@@ -203,7 +203,7 @@ const JobDetailsPage = ({route, navigation}) => {
                     source={calendarIcon}
                     style={styles.calendarIcon}
                 ></Image>
-                <Text style={styles.roleDateText}>{moment(job.startDate).format('ll')}</Text>
+                <Text style={styles.text}>{moment(job.startDate).format('ll')}</Text>
             </View>
             <View style={styles.footerInfo}>
                 <Image source={clockIcon} style={styles.icon}></Image>
@@ -310,6 +310,7 @@ const JobDetailsPage = ({route, navigation}) => {
     text: {
       color: 'rgba(16, 125, 197, 1)',
       fontFamily: 'PoppinsR',
+      fontSize: 10
     },
     description: {
       color: '#0A084B',

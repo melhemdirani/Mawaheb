@@ -8,7 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 
 const width = Dimensions.get('window').width
 
-const Header = ({ icon, title, numOfPage, rightIcon, hidden, numberHidded, goBack, profile, rating, center}) => {
+const Header = ({ icon, title, numOfPage, rightIcon, hidden, numberHidded, goBack, profile, rating, center, onTrash, trash}) => {
   
   return (
     <View style={styles.container}>
@@ -31,8 +31,8 @@ const Header = ({ icon, title, numOfPage, rightIcon, hidden, numberHidded, goBac
 
           }
           {
-            numberHidded
-            ? <Pressable >
+            numberHidded && trash
+            ? <Pressable onPress={() => onTrash()}>
                 <Image source={rightIcon} style={styles.page2}  />
               </Pressable>
             : <Text style={styles.page}>{numOfPage}</Text>

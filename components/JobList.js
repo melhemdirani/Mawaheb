@@ -27,7 +27,6 @@ const JobList = ({
   id,
   item
 }) => {
-  console.log("freelance profile image", freelancer.roles[0].dailyRate)
   const uniqueIds = [];
 
   const newLanguages = freelancer.languages.filter(element => {
@@ -41,17 +40,27 @@ const JobList = ({
 
     return false;
   });
+
+  let rate = freelancer.roles.filter(role => {
+    return role.title ===  job.title
+  })
+  console.log("rate", rate)
   return (
     <View style={styles.wrapper}>
       <View style={styles.header}>
         <View style={styles.subHeader}>
-         { freelancer.user.profileImage.length &&
-            <Image      
-              source={{uri: `http://194.5.157.234:4000${freelancer.user.profileImage}`}} 
-              style={styles.profileImage}
-              blurRadius={7}
-            />
-          }
+            <View style={{alignContent: "center", justifyContent: "center"}}>
+              <Image      
+                source={{uri: `http://195.110.58.234:4000${freelancer.user.profileImage}`}} 
+                style={styles.profileImage}
+                blurRadius={7}
+              />
+               <View style={styles.ratingContainer}>
+                  <Text style={styles.rating}>{freelancer.averageRating}</Text>
+                </View>
+            </View>
+           
+          
           <ImageBackground
             source={priceRectangle}
             style={styles.priceBg}
@@ -64,7 +73,7 @@ const JobList = ({
           </ImageBackground>
         </View>
         <View style={styles.subHeader}>
-          <Image source={heartIcon} style={styles.heart}></Image>
+          {/* <Image source={heartIcon} style={styles.heart}></Image> */}
           <Pressable onPress={() => navigate(freelancer, job)}>
             <Image source={plusIcon} style={styles.plus}></Image>
           </Pressable>
@@ -103,8 +112,8 @@ const JobList = ({
               </LinearGradient>
             </MaskedView>
             
-            <Text style={styles.description}>{freelancer.roles[0].category} - {freelancer.roles[0].title}</Text>
-            <Text style={styles.description}>{freelancer.roles[0].keyResponsibilities.slice(0,40)}</Text>
+            <Text style={styles.description}>{job.category} - {job.title}</Text>
+            <Text style={styles.description}>{rate[0].keyResponsibilities.slice(0,40)}</Text>
           </View>
           <View style={styles.languages}>
             <Image source={languageIcon} style={styles.languageIcon}></Image>
@@ -127,12 +136,12 @@ const JobList = ({
             <View style={styles.footer}>
               <View style={styles.footerInfo}>
                 <Image source={calendarIcon} style={styles.icon}></Image>
-                <Text style={styles.text}> {freelancer.roles[0].endDate && moment(freelancer.roles[0].endDate).format('ll')}</Text>
+                <Text style={styles.text}> {rate[0].endDate && moment(rate[0].endDate).format('ll')}</Text>
 
               </View>
               <View style={styles.footerInfo}>
                 <Image source={locationIcon} style={styles.icon}></Image>
-                <Text style={styles.text}>{freelancer.roles[0].location}</Text>
+                <Text style={styles.text}>{rate[0].location}</Text>
               </View>
             </View>
           </LinearGradient>
@@ -222,6 +231,7 @@ const styles = StyleSheet.create({
   text: {
     color: 'rgba(16, 125, 197, 1)',
     fontFamily: 'PoppinsR',
+    fontSize: 12
   },
   description: {
     fontFamily: 'PoppinsR',
@@ -284,6 +294,21 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 50  
-  }
+  },
+  rating:{
+    color: "white",
+    fontSize: 14,
+    fontFamily: "PoppinsS"
+  },
+  ratingContainer:{
+    backgroundColor: "#9C88FD",
+    paddingHorizontal: 9,
+    borderRadius: 100,
+    width: 40,
+    top: -10,
+    justifyContent: "center",
+    aligntItems: "center",
+    alignSelf: "center"
+  },
 })
 export default JobList

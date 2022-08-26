@@ -58,16 +58,17 @@ const DateInputs = ({title, placeholder, onChange, dateType, valued, value}) => 
       showMode('date');
     };
   
+  
     return (
       <Pressable 
           style={
-              !changed 
+              (!changed || value !== "")
               ? styles.container
               : [styles.container, styles.borderBottom] 
           }
           onPress={() => showDatepicker()}
       >
-        {!changed && <MaskedView maskElement={ <Text style={[styles.label, {backgroundColor: "transparent"}]}>{placeholder}</Text>}>
+        {changed || value !== "" && <MaskedView maskElement={ <Text style={[styles.label, {backgroundColor: "transparent"}]}>{placeholder}</Text>}>
               <LinearGradient
                 start={{x:0, y: 0}}
                 end={{x:1, y: 1}}
@@ -104,12 +105,12 @@ const DateInputs = ({title, placeholder, onChange, dateType, valued, value}) => 
               />
           </View>
         
-        { !changed && 
+        { changed || value !== "" && 
           <LinearGradient
             start={{x:0, y: 0}}
             end={{x:1, y: 1}}
             colors={['#23CDB0', '#9C88FD','#9C88FD', '#9C88FD', ]}
-            style={{height: 2, marginBottom: -10, marginTop: 10}}
+            style={{height: 2, marginBottom: -10, marginTop: 9}}
           />
         } 
       </Pressable>

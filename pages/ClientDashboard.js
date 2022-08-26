@@ -34,6 +34,7 @@ const ClientDashboard = ({ navigation, route }) => {
   const { user } = useSelector((store) => store.user)
   const { job } = useSelector((store) => store.user)
   const { numOfJobs, numOfContracts } = clientDashboard
+  console.log("number of Cintract", numOfContracts)
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch()
     
@@ -126,13 +127,8 @@ const ClientDashboard = ({ navigation, route }) => {
         resizeMode='contain'
       >
         <View style={styles.sub}>
-          <Text style={styles.totalText}>{freelancers}</Text>
-          <Text style={styles.totalText2}>freelancers</Text>
-        </View>
-        <View style={styles.borderL} />
-        <View style={[styles.sub]}>
-          <Text style={styles.totalText}>{employees}</Text>
-          <Text style={styles.totalText2}>employees</Text>
+          <Text style={styles.totalText}>{numOfContracts}</Text>
+          <Text style={styles.totalText2}>Contracts</Text>
         </View>
       </ImageBackground>
     )

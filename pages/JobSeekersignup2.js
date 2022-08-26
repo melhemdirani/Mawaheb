@@ -136,8 +136,8 @@ const JobSeekersignup2 = ({  navigation, route }) => {
 
   }
 
-  const [image, setImage] = useState(update && freelancer.emiratesIdFrontSide !== undefined && freelancer.emiratesIdFrontSide !== null ?`http://194.5.157.234:4000${freelancer.emiratesIdFrontSide}` : {})
-  const [image2, setImage2] = useState(update && freelancer.emiratesIdBackSide !== undefined && freelancer.emiratesIdBackSide !== null ?`http://194.5.157.234:4000${freelancer.emiratesIdBackSide}` : {})
+  const [image, setImage] = useState(update && freelancer.emiratesIdFrontSide !== undefined && freelancer.emiratesIdFrontSide !== null ?`http://195.110.58.234:4000${freelancer.emiratesIdFrontSide}` : {})
+  const [image2, setImage2] = useState(update && freelancer.emiratesIdBackSide !== undefined && freelancer.emiratesIdBackSide !== null ?`http://195.110.58.234:4000${freelancer.emiratesIdBackSide}` : {})
   console.log("freelancer.emiratesIdFrontSide", freelancer.emiratesIdBackSide)
   const [uploaded, setUploaded] = useState(freelancer.emiratesIdFrontSide !== undefined ? true :false)
   const [uploaded2, setUploaded2] = useState(freelancer.emiratesIdBackSide !== undefined ? true :false)
@@ -180,7 +180,7 @@ const JobSeekersignup2 = ({  navigation, route }) => {
       try {
         console.log('trying')
         const response = await FileSystem.uploadAsync(
-          `http://194.5.157.234:4000/api/v1/freelancers/uploadImage`,
+          `http://195.110.58.234:4000/api/v1/freelancers/uploadImage`,
           uri,
           {
             fieldName: 'files',
@@ -208,7 +208,7 @@ const JobSeekersignup2 = ({  navigation, route }) => {
     try {
       console.log('trying')
       const response = await FileSystem.uploadAsync(
-        `http://194.5.157.234:4000/api/v1/freelancers/uploadImage`,
+        `http://195.110.58.234:4000/api/v1/freelancers/uploadImage`,
         uri,
         {
           fieldName: 'files',

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, FlatList, RecyclerViewBackedScrollViewComponent, ActivityIndicator } from 'react-native'
 
-import { getFreelancer } from '../reduxToolkit/freelancerSlice'
+import { addJobToFavorites, getFreelancer, removeFav } from '../reduxToolkit/freelancerSlice'
 
 import SecondaryHeader from '../components/SecondaryHeader'
 import Job from '../components/Job'
@@ -38,14 +38,36 @@ const JobsPage = ({ navigation, route }) => {
   const [numberOfPages, setNumberOfPages]= useState(-1)
   const [scrolled, setScrolled]= useState(false)
   const [handledCategory, setHandledCategory] = useState(false)
+  const [freelancerCategories, setFreelancerCategores] = useState([])
   const dispatch = useDispatch()
   const handleFilterChange = (name, value) => {
     setFilters( data => ({
       ...data,
       [name]: value
     }))
-    setPage(1)
+    // setPage(1)
   }
+
+  // const categories = (roles) => {
+  //   let array = []
+  //   roles.map(role => 
+  //     array.push(role.category)
+  //   )
+  //   let uniqueIds = []
+  //   const newLanguages = array.filter(element => {
+  //     const isDuplicate = uniqueIds.includes(element);
+  
+  //     if (!isDuplicate) {
+  //       uniqueIds.push(element);
+  
+  //       return true;
+  //     }
+  
+  //     return false;
+  //   });
+  //   setFreelancerCategores(uniqueIds)
+  //   return
+  // }
 
  
   useEffect(() => {
@@ -54,6 +76,8 @@ const JobsPage = ({ navigation, route }) => {
       dispatch(getFreelancer(user.freelancerId))
       .unwrap()
       .then((response) => {
+        alert("getting")
+        // categories(response.roles)
         if(filters.category === "" && !handledCategory && response.freelancer){
           setFilters( data => ({
             ...data,
@@ -74,6 +98,8 @@ const JobsPage = ({ navigation, route }) => {
   }, [route])
 
   useEffect(() => {
+    // categories(freelancer.roles)
+
     if(!showFilter && filters.category !== "unfiltered"){ 
       setPage(1)
       setLoading(true)
@@ -132,12 +158,36 @@ const JobsPage = ({ navigation, route }) => {
   const navigate = (id, client) => {
     navigation.navigate('jobDescription', { id, client})
   }
+  const likeJob = (id) => {
+    dispatch(
+      addJobToFavorites({
+        id: id,
+        freelancerId: freelancer.id
+      })
+    )
+    .unwrap()
+    .then(res => console.log("res like", res))
+    .catch(err => console.log("error", err))
+  }
+  const unLikeJob = (id) => {
+    dispatch(
+      removeFav({
+        id: id,
+        freelancerId: freelancer.id
+
+      })
+    )
+    .unwrap()
+    .then(res => console.log("res like", res))
+    .catch(err => console.log("error", err))
+  }
 
   const renderItem = (data) => {
-    return  <Job {...data.item} navigate={navigate} data={data}/>
+    return  <Job {...data.item} navigate={navigate} data={data} likeJob={likeJob} unLikeJob={unLikeJob} like/>
   }
   let welcomeMessage = `Hi ${user?.name}`
 
+  
   const handlePageChange = () => {
     if(page < numberOfPages ){
       setScrolled(true)
@@ -145,10 +195,7 @@ const JobsPage = ({ navigation, route }) => {
     }
   }
 
-  return loading ? <View style={{alignItems: "center", justifyContent: "center", flex: 1}}>
-      <ActivityIndicator size={"large"} color="#4E84D5"/>
-    </View>
-  :(
+  return (
     <View style={styles.container}>
       <SecondaryHeader 
         title={welcomeMessage} 
@@ -159,28 +206,38 @@ const JobsPage = ({ navigation, route }) => {
         search
         setShowSearch={setShowSearch}
       />
-      {(jobs === undefined  || loading)
-        ?<View style={{alignItems: "center", justifyContent: "center", flex: 1}}>
-          <ActivityIndicator size={"large"} color="#4E84D5"/>
-        </View>
-        : showFilter
-        ? <JobFiltering 
-            handleChange={handleFilterChange}
-            filters={filters}
-            onClick={() => setShowFilter(false)}
-            category={freelancer.roles?.length ? freelancer.roles[0].category : ""}
-            selectedCategory={filters.category}
-          />
-        :<FlatList
-          data={jobs.length ? jobs : { id: 0, title: 'No Jobs Found' }}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={{marginTop: -20, zIndex: 9999}}
-          style={styles.jobs}
-          onEndReachedThreshold={.4}
-          onEndReached={() => handlePageChange()}
-        />
-    }
+     { loading 
+      ? <View style={{alignItems: "center", justifyContent: "center", flex: 1}}>
+        <ActivityIndicator size={"large"} color="#4E84D5"/>
+      </View>
+      :<>
+
+          {(jobs === undefined  || loading)
+            ?<View style={{alignItems: "center", justifyContent: "center", flex: 1}}>
+              <ActivityIndicator size={"large"} color="#4E84D5"/>
+            </View>
+            : showFilter
+            ? <JobFiltering 
+                handleChange={handleFilterChange}
+                freelancerCategories={freelancerCategories}
+                filters={filters}
+                onClick={() => setShowFilter(false)}
+                category={freelancer.roles?.length ? freelancer.roles[0].category : ""}
+                selectedCategory={filters.category}
+              />
+            :<FlatList
+              data={jobs.length ? jobs : { id: 0, title: 'No Jobs Found' }}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={{marginTop: -20, zIndex: 9999}}
+              style={styles.jobs}
+              onEndReachedThreshold={.4}
+              onEndReached={() => handlePageChange()}
+            />
+          }
+        </>
+      }
+
       <Navbar active='Jobs' navigation={navigation} />
     </View>
   )
@@ -190,6 +247,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    justifyContent: "space-between"
   },
   jobs: {
     padding: 10,

@@ -7,28 +7,33 @@ import {
   Image,
   ImageBackground,
 } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import MaskedView from '@react-native-masked-view/masked-view'
+import { useIsFocused } from "@react-navigation/native"
 
 import { useSelector, useDispatch } from 'react-redux'
 
-import { getFreelancerDashboard } from '../reduxToolkit/freelancerSlice'
+import { addJobToFavorites, getFreelancerDashboard, removeFav } from '../reduxToolkit/freelancerSlice'
 
 import SecondaryHeader from '../components/SecondaryHeader'
 import Job from '../components/Job'
 import Navbar from '../components/Navbar'
 import backgroundImage from '../assets/images/currentBg.png'
 import totalBg from '../assets/images/totalBg.png'
+import SeekerDashJob from '../components/SeekerDashJob'
+import { getFavoriteJob } from '../reduxToolkit/jobSlice'
 
 const JobseekerDashboard = ({ navigation, route }) => {
-  const { user } = useSelector((store) => store.user)
-  console.log("user", user)
-  const { dashboard, isLoading } = useSelector((store) => store.freelancer)
-  const { currentJobs, pastJobs, totalWorkingTime, totalCashEarned } = dashboard
-  console.log(currentJobs)
-  
+  const isFocused = useIsFocused();
 
+  const [favRoute, setFavRoute] = useState(false)
+  const [favJobs, setFavJobs] = useState([])
+
+  const { user } = useSelector((store) => store.user)
+  const { freelancer } = useSelector((store) => store.freelancer)
+  const { dashboard } = useSelector((store) => store.freelancer)
+  const { currentJobs, pastJobs, totalWorkingTime, totalCashEarned } = dashboard
   const totalMonths =
     totalWorkingTime > 30 ? Math.floor(totalWorkingTime / 30) : 0
   const totalDays =
@@ -36,9 +41,17 @@ const JobseekerDashboard = ({ navigation, route }) => {
 
   const dispatch = useDispatch()
   
+
   useEffect(() => {
+    if(isFocused){
+      setFavRoute(false)
+    }
+    console.log("id",freelancer.id)
     dispatch(getFreelancerDashboard(user.freelancerId))
-  }, [route])
+    dispatch(getFavoriteJob(freelancer.id))
+    .then()
+    .catch(err => console.log(err))
+  }, [route, isFocused])
 
 
   const navigatePrevious = (id) => {
@@ -48,19 +61,16 @@ const JobseekerDashboard = ({ navigation, route }) => {
     // navigation.navigate('jobDescription', {id})
   }
   const RenderItem = (data, index) => {
-    let lastOne = data.index === pastJobs?.length - 1 ? true : false
-
     return (
       <View style={styles.renderItem}>
-        <Job
-          title={data.data.title}
-          description={data.data.description}
-          price={data.data.budget}
-          lastOne={lastOne}
+        <SeekerDashJob
           heart={true}
-          navigate={navigate}
-          id={data.data.id}
+          title={currentJobs[0]?.title}
+          description={currentJobs[0]?.description}
+          price={currentJobs[0]?.budget}
+          navigate={navigatePrevious}
           disabled
+          job={currentJobs[0]}
         />
       </View>
     )
@@ -122,50 +132,104 @@ const JobseekerDashboard = ({ navigation, route }) => {
       </ImageBackground>
     )
   }
+  const likeJob = (id) => {
+    dispatch(
+      addJobToFavorites({
+        id: id,
+        freelancerId: freelancer.id
+      })
+    )
+    .unwrap()
+    .then(res => console.log("res like", res))
+    .catch(err => console.log("error", err))
+  }
 
+  const unLikeJob = (id) => {
+    dispatch(
+      removeFav({
+        id: id,
+        freelancerId: freelancer.id
+
+      })
+    )
+    .unwrap()
+    .then(res => console.log("res like", res))
+    .catch(err => console.log("error", err))
+  }
+  const renderItem = (data) => {
+    return  <Job {...data.item} navigate={navigate} data={data} likeJob={likeJob} like dash unLikeJob={unLikeJob}/>
+  }
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.container4}>
-        <SecondaryHeader title={`Hi ${user.name}`} heart={true} />
-        <View style={styles.row2}>
-          <View style={styles.col}>
-            <Text style={styles.colText}>Total Working Time</Text>
-            <TotalContainer month={totalMonths} day={totalDays} />
-          </View>
-          <View style={styles.col}>
-            <Text style={styles.colText}>Total Cash Earned</Text>
-            <TotalContainer2 n={totalCashEarned} />
-          </View>
-        </View>
-        {currentJobs?.length >= 1 ? (
-          <View style={styles.current}>
-            <Image style={styles.background} source={backgroundImage} />
-            <View style={styles.currentSub}>
-              <Text style={[styles.title2]}>Current Job</Text>
 
-              <Job
-                heart={true}
-                current={true}
-                title={currentJobs[0]?.title}
-                description={currentJobs[0]?.description}
-                price={currentJobs[0]?.budget}
-                navigate={navigatePrevious}
-                disabled
-              />
+      { !favRoute
+        ? <ScrollView style={styles.container4}>
+          <SecondaryHeader 
+            title={`Hi ${user.name}`} 
+            heart={true} fav={true} 
+            setFavRoute={setFavRoute} 
+            favRoute={favRoute}
+          />
+          <View style={styles.row2}>
+            <View style={styles.col}>
+              <Text style={styles.colText}>Total Working Time</Text>
+              <TotalContainer month={totalMonths} day={totalDays} />
+            </View>
+            <View style={styles.col}>
+              <Text style={styles.colText}>Total Cash Earned</Text>
+              <TotalContainer2 n={totalCashEarned} />
             </View>
           </View>
-        ) : null
-        }
-        {pastJobs?.length >= 1 ? (
-          <View>
-            <MaskedTitle title='Previous Jobs' />
+          {currentJobs?.length >= 1 ? (
+            <View style={styles.current}>
+              <Image style={styles.background} source={backgroundImage} />
+              <View style={styles.currentSub}>
+                <Text style={[styles.title2]}>Current Job</Text>
 
-            {pastJobs.map((data, i) => (
-              <RenderItem data={data} index={i} key={data.id} />
-            ))}
+                <SeekerDashJob
+                  heart={true}
+                  current={true}
+                  title={currentJobs[0]?.title}
+                  description={currentJobs[0]?.description}
+                  price={currentJobs[0]?.budget}
+                  navigate={navigatePrevious}
+                  disabled
+                  job={currentJobs[0]}
+                />
+              </View>
+            </View>
+          ) : null
+          }
+          {pastJobs?.length >= 1 ? (
+            <View>
+              <MaskedTitle title='Previous Jobs' />
+
+              {pastJobs.map((data, i) => (
+                <RenderItem data={data} index={i} key={data.id} />
+              ))}
+            </View>
+          ) : null}
+        </ScrollView>
+        : <View style={styles.container}>
+            <SecondaryHeader 
+              title={`Hi ${user.name}`} 
+              heart={true} fav={true} 
+              setFavRoute={setFavRoute} 
+              favRoute={favRoute}
+            />
+            {
+              favJobs.length>0 && 
+              <FlatList
+                  data={favJobs}
+                  renderItem={renderItem}
+                  keyExtractor={(item) => item.id}
+                  contentContainerStyle={{marginTop: -20, zIndex: 9999}}
+                  style={styles.jobs}
+                />
+            }
           </View>
-        ) : null}
-      </ScrollView>
+        }
+
 
       <Navbar active='Dashboard' navigation={navigation} />
     </View>

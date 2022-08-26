@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import Carousel from 'react-native-anchor-carousel'; 
 import PaginationDot from 'react-native-animated-pagination-dot'
 import {
@@ -10,18 +10,74 @@ import {
   Platform,
   Image,
   TouchableOpacity,
-  Pressable
-} from 'react-native'
+  Pressable,
+  ActivityIndicator
+} from 'react-native';
+import { StackActions } from '@react-navigation/native';
+import { useDispatch ,useSelector} from 'react-redux'
+
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import SecondaryButton from '../components/Buttons/SecondaryButton'
 import TertiaryButton from '../components/Buttons/TertiaryButton'
-import axios from 'axios'
-import { useEffect } from 'react'
+import { loginUser } from '../reduxToolkit/userSlice';
+import { getFreelancer } from '../reduxToolkit/freelancerSlice';
+import { getClientbyId } from '../reduxToolkit/clientSlice';
 
 
-const height = Dimensions.get('window').height
+
 
 export default function SignupPage({ navigation }) {
+  const {
+    credentials,
+    user
+  } = useSelector((store) => store.user)
+  const dispatch = useDispatch()
+
+  const [loading, setLoading] = useState(false)
+  useLayoutEffect(() => {
+    console.log("credentials", credentials)
+    if(Object.keys(credentials).length !== 0){
+      if(credentials.role === 'freelancer'){
+        setLoading(true);
+        dispatch(loginUser({ email: credentials.email.toLocaleLowerCase(), password: credentials.password }))
+        .unwrap()
+        .then((res) =>{
+            if(res.user.role === 'freelancer'){
+                dispatch(
+                    getFreelancer(res.user.freelancerId)
+                )
+                .then(() => {
+                    navigation.dispatch(
+                        StackActions.replace(
+                        'seeker_dash'
+                    ))
+                })
+                .catch(err =>{
+                  console.log(err)
+                  setLoading(false)
+                })
+            } else{
+                dispatch(
+                    getClientbyId(res.user.clientId)
+                ).then(() => {
+                    navigation.dispatch(
+                        StackActions.replace(
+                        'recruiter_dashboard'
+                    ))
+                }).catch(err => {
+                    console.log(err)
+                    setLoading(false)
+                })
+            }
+        }).catch(error => {
+            console.log("error", error);
+            setLoading(false);
+        })
+      }
+    }
+  }, [])
+
+
   const {width: windowWidth} = Dimensions.get('window');
   const [currentIndex, setCurrentIndex] = useState(0);
   const carouselRef = React.useRef(null);
@@ -32,10 +88,16 @@ export default function SignupPage({ navigation }) {
     navigation.navigate('JobSignUp', { role: 'freelancer', update: false })
   }
   const navigateLogin = () => {
-    navigation.navigate('login')
+    navigation.dispatch(
+      StackActions.replace('login')
+    )
   }
   const navigateCSignup = () => {
-    navigation.navigate('recruiter_signup', { role: 'client' })
+    navigation.dispatch(
+      StackActions.replace('recruiter_signup', {
+        role: 'client'
+      })
+    )
 
   }
 
@@ -56,7 +118,10 @@ export default function SignupPage({ navigation }) {
     )
   }
   
-  return (
+  return loading ? <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
+    <ActivityIndicator size={"large"}/>
+  </View>
+   :(
     <ScrollView style={styles.container}>
         <Carousel
           ref={carouselRef}

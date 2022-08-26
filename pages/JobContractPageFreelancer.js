@@ -8,6 +8,7 @@ import {
   ScrollView,
   SafeAreaView,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import Checkbox from 'expo-checkbox';
 import { useDispatch, useSelector } from 'react-redux'
@@ -29,87 +30,66 @@ import btnBackground from '../assets/images/btnBackground.png'
 import { acceptContractFreelancer } from '../reduxToolkit/freelancerSlice';
 import { createContract, getJob } from '../reduxToolkit/jobSlice';
 
-const JobContractPage = ({navigation, route}) => {
+const JobContractPageFreelancer = ({navigation, route}) => {
   const [isChecked, setChecked] = useState(false);
   const {freelancer} = useSelector(store => store.freelancer)
   const {user} = useSelector(store => store.user)
   const { id, title, price, roles, languages, location, shift } = freelancerDetails
   const { roleId, description, name, date } = roles[0]
-  const {role, freelancerId, client, userState, jobId, contractId} = route.params
   const dispatch = useDispatch()
-  const [newFreelancer, setNewFreelancer] = useState({})
+  const [client, setClient] = useState({})
+  const [clientId, setClientId] = useState({})
+
   const [job, setJob] = useState({})
-  const [loading,setLoading] = useState(false)
- 
+  const [loading,setLoading] = useState(true)
+
   useEffect(() => {
-      dispatch(getFreelancer(freelancerId))
-      .unwrap()
-      .then((response) => {
-        setNewFreelancer(response.freelancer)
-        dispatch(getJob(jobId))
-        .unwrap()
-        .then((response) => {setJob(response.job)})
-      })
-      .catch((error) => {
-        console.log("error", error.message)
-      })
+    setLoading(true)
+    dispatch(getContractFreelancer(route.params.action))
+    .unwrap()
+    .then(res => {
+      setClientId(res.contract.clientId)
+      setJob(res.contract.job)
+      setClient(res.contract.client.companyName)
+      setLoading(false)
+    })
+    .catch(err => {
+      console.log("erorr", err)
+      setLoading(false)
+    })
   }, [])
   const navigateAccept = () => {
     if(!isChecked){
       return alert("Please read and accept the terms and conditions")
     }
-    dispatch(
-      createContract({
-        freelancerId: freelancerId,
-        clientId: client?.id || userState?.clientId,
-        jobId,
-        freelancerFee: 500,
-      })
-    ) .unwrap()
+    dispatch(acceptContractFreelancer(route.params.action) ) 
+    .unwrap()
     .then((response) => {
-      console.log("response registiring", response.contract.id)
-      dispatch(acceptAndSign(response.contract.id))
-      .unwrap()
-      .then(() => { 
-        alert("Contract sent to the freelancer, we will let you know when the freelancer signs it")
-        return navigation.navigate('recruiter_dashboard')
-      }). catch(error => {
-        console.log("error", error.message)
-        alert("Job seeker has already accepted a job at this date")
-        return navigation.navigate('recruiter_dashboard')
-      })
+      return navigation.navigate('acceptedClient', {role: "freelancer", action: clientId})
     })
     .catch((error) => {
-      console.log("error", error.message)
-      alert("Job seeker has already accepted a job at this date")
-      return navigation.navigate('recruiter_dashboard')
+      console.log("error", error)
+      if(error ===  "time conflict"){
+        alert("Cannot sign, you already have a job at this time.")
+        return navigation.navigate('seeker_dash')
+      }
+      alert("Cannot sign")
+      return navigation.navigate('seeker_dash')
+
     })
-  }
-  const tax = (budget) => {
-    return budget * 0.1
-  }
-  const fees = (budget) => {
-    return budget * 0.2
+
   }
 
-  const total = (budget) => {
-    return tax(budget) + fees(budget) + budget
-  }
-
-  console.log("type", tax(200))
-  return Object.keys(newFreelancer) !== 0 && Object.keys(job) !== 0 &&(
+  return loading? <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
+    <ActivityIndicator size={"large"} />
+  </View>
+  :(
     <ScrollView style={styles.wrapper}>
       <Header title='Job Contract' icon={jobContractIcon} goBack={navigation.goBack} />
       <SafeAreaView style={styles.container}>
         <View style={styles.titleHeader}>
           <Text style={styles.text}>
-            Please read carefully the below contract and accept
-          </Text>
-          <Text style={styles.text}>
-            the terms and conditions. Your contract will be 
-          </Text>
-          <Text style={styles.text}>
-            legally registered once the freelancer signs it.
+            Please read carefully the below contract and accept the terms and conditions. Your contract will be legally registered once the freelancer signs it.
           </Text>
         </View>
         <View style={styles.header}>
@@ -187,26 +167,10 @@ const JobContractPage = ({navigation, route}) => {
           </View>
         </LinearGradient>
         <View style={styles.contractFees}>
-          <View style={styles.feeAndPrice }>
+          <View style={styles.feeAndPrice}>
             <Text style={styles.fee}>Freelancer Fees</Text>
             <Text style={styles.price}>{job.budget}</Text>
           </View>
-            <View>
-              <View style={styles.feeAndPrice}>
-                <Text style={styles.fee}>Tax</Text>
-                <Text style={styles.price}>{tax(job.budget)} AED</Text>
-              </View>
-              <View style={styles.feeAndPrice}>
-                <Text style={styles.fee}>Service Fees(20%)</Text>
-                <Text style={styles.price}>{fees(job.budget)} AED</Text>
-
-              </View>
-              <View style={styles.feeAndPrice}>
-                <Text style={styles.fee}>Total Fees</Text>
-                <Text style={styles.price}>{total(job.budget)} AED</Text>
-
-              </View>
-            </View>
         </View>
         <View style={styles.parties}>
           <View style={styles.partyAndName}>
@@ -227,7 +191,7 @@ const JobContractPage = ({navigation, route}) => {
                 <Text style={[styles.party, { opacity: 0 }]}>First Party</Text>
               </LinearGradient>
             </MaskedView>
-            <Text style={styles.companyName}>{user.name}</Text>
+            <Text style={styles.shadowTitle}>{client}</Text>
           </View>
           <View style={styles.partyAndName}>
             <MaskedView
@@ -247,7 +211,7 @@ const JobContractPage = ({navigation, route}) => {
                 <Text style={[styles.party, { opacity: 0 }]}>Second Party</Text>
               </LinearGradient>
             </MaskedView>
-            <Text style={styles.shadowTitle}>{freelancer.user.name}</Text>
+            <Text style={styles.companyName}>{user.name} {user.lastName}</Text>
           </View>
           <Text style={styles.revealText}>
             Will be revealed after signing the contract
@@ -423,6 +387,14 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontFamily: 'PoppinsR',
     textAlign: "center",
+    width: "80%",
+    color: 'rgba(0, 0, 0, .6)',
+  },
+  text2: {
+    fontSize: 10,
+    left: 5,
+    fontFamily: 'PoppinsR',
+    textAlign: "center",
     color: 'rgba(0, 0, 0, .6)',
   },
   header: {
@@ -495,15 +467,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     width: '100%',
-    borderBottomColor: '#107DC5',
-    borderBottomWidth: 0.5,
-  },
-  feeAndPrice2: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 10,
-    width: '100%',
   },
   fee: {
     fontSize: 12,
@@ -563,13 +526,6 @@ const styles = StyleSheet.create({
     height: '100%',
     marginTop: 20,
   },
-  text2: {
-    fontSize: 10,
-    left: 5,
-    fontFamily: 'PoppinsR',
-    textAlign: "center",
-    color: 'rgba(0, 0, 0, .6)',
-  },
   btn: {
     alignItems: 'center',
 
@@ -609,4 +565,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default JobContractPage
+export default JobContractPageFreelancer

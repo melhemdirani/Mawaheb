@@ -6,7 +6,7 @@ import MaskedView from '@react-native-masked-view/masked-view';
 
 const DailyRate = ({value, valued, placeholder, onChange}) => {
 
-    const [text, setText] = useState("")
+    const [text, setText] = useState(valued ? value : "")
     const [changed, setChanged] = useState(false)
 
     useEffect(() => {
@@ -23,9 +23,9 @@ const DailyRate = ({value, valued, placeholder, onChange}) => {
       setText(e)
     }
     return (
-        <View style={!changed ? [styles.container, styles.borderBottom] : styles.container}>
+        <View style={(!changed || text === "")? [styles.container, styles.borderBottom] : styles.container}>
             {
-                changed && 
+                (changed || text !== "") && 
                 <MaskedView maskElement={ <Text style={[styles.label, {backgroundColor: "transparent"}]}>{placeholder}</Text>}>
                     <LinearGradient
                         start={{x:0, y: 0}}
@@ -37,12 +37,17 @@ const DailyRate = ({value, valued, placeholder, onChange}) => {
                 </MaskedView>
 
             }
-            <View style={[styles.subContainer, !changed && {height: "100%"}]}>
+            <View style={
+              [styles.subContainer, !changed && text === ""
+              ? {height: "100%"} 
+              : {height:"50%", marginTop: 0, marginBottom: -5}]
+              }>
                 <TextInput
                     keyboardType="numeric"
-                    style={
-                    styles.wrapperCustom
-                    }
+                    style={[
+                    styles.wrapperCustom, 
+                    
+                    ]}
                     onChangeText={(e) => onChangeText(e)}
                     placeholder={placeholder}
                     placeholderTextColor="rgba(0,0,0,.5)"
@@ -50,7 +55,7 @@ const DailyRate = ({value, valued, placeholder, onChange}) => {
                 />
                 <Text style={styles.rate}>AED</Text>
             </View>
-            { changed && 
+            { (changed || value !== "") && 
                 <LinearGradient
                     start={{x:0, y: 0}}
                     end={{x:1, y: 1}}
@@ -85,7 +90,9 @@ const styles = StyleSheet.create({
   wrapperCustom: {
     borderRadius: 3,
     alignItems: "center",
-    paddingLeft: 20
+    paddingLeft: 20,
+    width: "70%",
+    height: "100%"
 
   },
   label:{
@@ -104,7 +111,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: 'space-between',
     alignItems: "center",
-    marginTop: 5,
   }
 });
 

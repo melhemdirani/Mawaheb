@@ -7,12 +7,12 @@ import notificationImage2 from '../assets/images/notificationR.png';
 function Notification({title, color, action, acceptContract, navCongrats, navJobs, navJobDetails, n}) {
     const onPress = () => {
         if(title === 'You have a new contract to accept or reject'){
-            acceptContract(action)
+            acceptContract(n.text, n.textOne, action)
         } else{
             if (title.includes('has accepted')){
                navCongrats(action) 
             } else if (title.includes('has applied')){
-                navJobs(n.text, n.textOne, action)
+                navJobs(n.text, n.textOne, action, n.id)
             } else if (title.includes('invited')){
                 navJobDetails(action)
             }

@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { ScrollView ,View, StyleSheet, Platform, TouchableOpacity, Pressable, ActivityIndicator} from 'react-native';
 import { useDispatch ,useSelector} from 'react-redux'
 import * as Linking from "expo-linking";
-
-import { clearUser, logout } from '../reduxToolkit/userSlice'
+import { StackActions } from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
+import { clearUser, logout, setCredentials } from '../reduxToolkit/userSlice'
 
 import Navbar from '../components/Navbar';
 import Header from '../components/Header';
@@ -12,8 +13,6 @@ import PrimaryButton from '../components/Buttons/PrimaryButton';
 
 import settingsIcon from '../assets/images/settingsIcon.png';
 import profileSetting from '../assets/images/profileSetting.png';
-import languageSetting from '../assets/images/languageSetting.png';
-import privacySetting from '../assets/images/privacySetting.png';
 import termsSetting from '../assets/images/termsSetting.png';
 import deleteAccount from '../assets/images/deleteAccount.png';
 import aboutSetting from '../assets/images/aboutSetting.png';
@@ -48,13 +47,27 @@ const SettingsPage = ({navigation, role}) => {
             dispatch(
                 clearFreelancerState()
             )
-            navigation.navigate('SignIn', {reload})
+            dispatch(
+                setCredentials({})
+            )
+                navigation.dispatch(
+                CommonActions.reset({
+                    routes:[{ 
+                        name: 'SignIn', 
+                        params: {reload}
+                    }]
+                })
+        )
             setLoading(false)
         })
         .catch( err => {
             alert("You are not logged in")
             console.log("err", err)
-            navigation.navigate('SignIn', {reload})
+            // navigation.dispatch(
+            //     StackActions.replace('SignIn', {reload})
+            //   )
+            CommonActions.reset('SignIn', {reload})
+
             setLoading(false)
         })
      
@@ -91,7 +104,7 @@ const SettingsPage = ({navigation, role}) => {
     :(
         <View style={styles.container}>
             <ScrollView style={styles.container4}>
-                <Header icon={settingsIcon} hidden title="Settings"/>
+                <Header icon={settingsIcon} hidden title="Settings" />
                 <View style={styles.settingsContainer}>
                     <Setting title="My Profile" icon={profileSetting} action={navigateProfile}/>
                     {/* <Setting title="Language" icon={languageSetting}/>

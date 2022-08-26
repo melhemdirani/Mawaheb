@@ -9,7 +9,7 @@ import TextArea from './TextArea';
 import DateInputs from './DateInputs';
 import PrimaryButton from './Buttons/PrimaryButton';
 
-function JobFiltering({handleChange, filters, onClick, category, selectedCategory}) {
+function JobFiltering({handleChange, filters, onClick, category, selectedCategory, freelancerCategories}) {
  
     const sortList = [
       {
@@ -63,6 +63,16 @@ function JobFiltering({handleChange, filters, onClick, category, selectedCategor
     const list = RoleList2.map(role => role.category)
     const newSortList = sortList.map(item => item.display)
     let newListofCites = listofCities2
+
+    const checkCategory = () => {
+      let available = false
+      freelancerCategories.map(cat => {
+        if (cat === selectedCategory){
+          available = true
+        }
+      })
+      return available
+    }
     return (
         <ScrollView contentContainerStyle={styles.subContainer}>
             <View style={{width: "100%", alignItems: "center"}}>
@@ -83,13 +93,14 @@ function JobFiltering({handleChange, filters, onClick, category, selectedCategor
                       value={filters.category}
                       valued
                   /> 
-                  {
-                    selectedCategory !== category && 
+                  {/* {
+                    !checkCategory() && 
                     <Text style={styles.warning}>
                       You can only apply to categories related to your experience
                     </Text>
-                  }
+                  } */}
                 { filters.category !== "" && filters.category !== "All Categories" &&
+                  <View style={{width: "100%", alignItems: "center"}}>
                     <SelectInput 
                         title="Filter by subcategory" 
                         list={RoleList2[index].subCategories}
@@ -97,6 +108,7 @@ function JobFiltering({handleChange, filters, onClick, category, selectedCategor
                         value={filters.title}
                         valued
                     /> 
+                  </View>
                 }
                 <Inputs
                   placeholder='Minimum budget'

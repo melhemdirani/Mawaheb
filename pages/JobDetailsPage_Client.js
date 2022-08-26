@@ -14,7 +14,7 @@ import MaskedView from '@react-native-masked-view/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { getFilteredFreelancer } from '../reduxToolkit/jobSlice';
+import { getFilteredFreelancer, getJob } from '../reduxToolkit/jobSlice';
 import calendarIcon from '../assets/images/calendarIcon.png';
 import clockIcon from '../assets/images/clockIcon.png';
 import locationIcon from '../assets/images/locationIcon.png';
@@ -23,154 +23,205 @@ import minusIcon from '../assets/images/minusIcon.png';
 import RenderFreelancers from '../components/RenderFreelancers';
 
 const JobDetailsPage_Client = ({route, navigation}) => {
-  const initialState = {
-    title:'',
-    description: '',
-    budget:'',
-    location:'',
-    createdAt:'',
-  }
+  const [page, setPage] = useState(1)
   const { job } = route.params
   const [freelancers, setFreelancers] = useState([])
   const dispatch = useDispatch()
-  const {showFreelancers, setShowFreelancers} = useState(false)
+  const [reachedEnd, setReachedEnd] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [showApplicants, setShowApplicants] = useState(false)
+  const [call, setCall] = useState(false)
+  const [applicants, setApplicants] = useState([])
+  useEffect(() => {
+    // foucs
+    dispatch(
+      getJob(job.id)
+    ).unwrap()
+    .then(res => {
+      setApplicants(res.job.proposals)
+    })
+    .catch(err => console.log("error", err))
+
+  }, [])
+const getFreelancerFiltered = () => {
+  dispatch(getFilteredFreelancer({
+    jobId: job.id,
+    page: 1 // adapt here for pagignation
+  }))
+  .then(
+    res => {
+      console.log("response", res)
+      if(res.payload.freelancers.length > 0){
+        setFreelancers([...freelancers, ...res.payload.freelancers])
+      } else{
+        setReachedEnd(true)
+      }
+    }
+
+  ).catch(error => console.log("error", error))
+}
+const getFirstFreelancers = () => {
+  dispatch(getFilteredFreelancer({
+    jobId: job.id,
+    page: 1
+  }))
+  .then(
+    res => {
+      if(res.payload.freelancers.length > 0){
+        setFreelancers(freelancers)
+      } else{
+        setReachedEnd(true)
+      }
+    }
+
+  ).catch(error => console.log("error", error))
+}
 
   useEffect(() => {
-    console.log("job", job.id)
-    dispatch(getFilteredFreelancer(job.id))
-    .then(
-      res => {
-        console.log("res getting freelancers", res)
-        setFreelancers(res.payload.freelancers)
-      }
-  
-    ).catch(error => console.log("error", error))
+    getFreelancerFiltered()
   }, [])
 
-  const applicants = job.proposals !== undefined ? job.proposals : []
   
   const navigate = (freelancer, job) => {
     navigation.navigate('freelancerDetails', {freelancer, job, invite: true })
   }
 
   
+  const handlePageChange = () => {
 
+  }
+  const alterApplicants = (show) => {
+    if(!show){
+      setShowApplicants(true)
+    } else {
+      setFreelancers([])
+      setShowApplicants(false)
+      setReachedEnd(false)
+      setPage(1)
+      getFirstFreelancers()
+    }
+  } 
   return  (
-    <ScrollView style={styles.wrapper}>
-      <View style={styles.header}>
-        <View style={styles.subHeader}>
-          <ImageBackground
-            source={priceRectangle}
-            style={styles.priceBg}
-            resizeMode='contain'
-          >
-            <View style={styles.priceAndCurrency}>
-              <Text style={styles.price}>{job.budget} </Text>
-              <Text style={styles.currency}>AED</Text>
-            </View>
-          </ImageBackground>
-        </View>
-        <View style={styles.subHeader}>
-          <Pressable onPress={() => navigation.goBack()} style={styles.minusContainer}>
-            <Image source={minusIcon} style={styles.plus} />
-          </Pressable>
-        </View>
-      </View>
-      <LinearGradient
-        colors={[
-          'rgba(202, 218, 221, 0.1)',
-          'rgba(202, 218, 221, 0)',
-          'rgba(202, 218, 221, 0.2)',
-          'rgba(202, 218, 221, 0.2)',
-          'rgba(202, 218, 221, 0.2)',
-          'rgba(202, 218, 221, 0.1)',
-        ]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.linear}
-      >
-        <View style={[styles.container, styles.shadow]}>
-          <View style={styles.info}>
-              <MaskedView
-                maskElement={
-                  <Text
-                    style={[styles.title, { backgroundColor: 'transparent' }]}
-                  >
-                    {job.title} - {job.category}
-                  </Text>
-                }
-              >
-                <LinearGradient
-                  start={{ x: 1, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  colors={['rgba(49, 190, 187, 1)', 'rgba(101, 91, 218, 1)']}
-                >
-                  <Text style={[styles.title, { opacity: 0 }]}>{job.title} - {job.category}</Text>
-                </LinearGradient>
-              </MaskedView>
-              <View >
-                    <View >
-                      <View style={{paddingHorizontal: 20}}>
-                        <Text style={styles.roleDescription}>
-                          {job.description}
-                        </Text>
-                      </View>
-                    </View>
+    <View style={styles.wrapper}>
+      { !showApplicants &&
+        <View>
+         <View style={styles.header}>
+          <View style={styles.subHeader}>
+            <ImageBackground
+              source={priceRectangle}
+              style={styles.priceBg}
+              resizeMode='contain'
+            >
+              <View style={styles.priceAndCurrency}>
+                <Text style={styles.price}>{job.budget} </Text>
+                <Text style={styles.currency}>AED</Text>
               </View>
+            </ImageBackground>
           </View>
-          { applicants && applicants.length > 0 &&
-            <View style={{width: "100%"}}>
-                <View style={styles.applicantsContainer}>
-
-                    {
-                        applicants && applicants.slice(0,8).map((app, i) =>
-                            <Image 
-                                source={{uri: `http://194.5.157.234:4000${app.freelancer.user.profileImage}`}} 
-                                style={[styles.profileImage, i !== 0 && styles.marginLeft, {zIndex: 99 - i}]}
-                                key={i}
-                                blurRadius={10}
-                            />
-                        )
-                    }
-
-                </View> 
-                <View style={styles.applicantsSecondRow}>
-                    <Text style={styles.applicantsNumber}>+ {applicants.length} Applicants</Text>
-                    <Pressable onPress={() => navigation.navigate("recruiter_Jobs", { id: id})}>
-                        <Text style={styles.viewButton}>View All</Text>
-                    </Pressable>
-                </View>
-                {/* <RenderItem item={job.proposals} /> */}
-            </View>
-          }
-          <LinearGradient
-            colors={[
-              'rgba(202, 218, 221, 0.4)',
-              'rgba(202, 218, 221, 0)',
-              'rgba(202, 218, 221, 0.4)',
-            ]}
-            start={{ x: 1, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.footerContainer}
-          >
-                <View style={styles.footerInfo}>
-                    <Image
-                        source={calendarIcon}
-                        style={styles.calendarIcon}
-                    ></Image>
-                    <Text style={styles.roleDateText}>{job.createdAt.slice(0,10)}</Text>
-                </View>
-                <View style={styles.footerInfo}>
-                    <Image source={locationIcon} style={styles.icon}></Image>
-                    <Text style={styles.text}>{job.location}</Text>
-                </View>
-                <View style={styles.footerInfo}>
-                    <Image source={clockIcon} style={styles.icon}></Image>
-                    <Text style={styles.text}> {job.shift === "day" ? "Day Shift" : "Night Shift"}</Text>
-                </View>
-          </LinearGradient>
+          <View style={styles.subHeader}>
+            <Pressable onPress={() => navigation.goBack()} style={styles.minusContainer}>
+              <Image source={minusIcon} style={styles.plus} />
+            </Pressable>
+          </View>
         </View>
-      </LinearGradient>
+        <LinearGradient
+          colors={[
+            'rgba(202, 218, 221, 0.1)',
+            'rgba(202, 218, 221, 0)',
+            'rgba(202, 218, 221, 0.2)',
+            'rgba(202, 218, 221, 0.2)',
+            'rgba(202, 218, 221, 0.2)',
+            'rgba(202, 218, 221, 0.1)',
+          ]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.linear}
+        >
+          <View style={[styles.container, styles.shadow]}>
+            <View style={styles.info}>
+                <MaskedView
+                  maskElement={
+                    <Text
+                      style={[styles.title, { backgroundColor: 'transparent' }]}
+                    >
+                      {job.title} - {job.category}
+                    </Text>
+                  }
+                >
+                  <LinearGradient
+                    start={{ x: 1, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    colors={['rgba(49, 190, 187, 1)', 'rgba(101, 91, 218, 1)']}
+                  >
+                    <Text style={[styles.title, { opacity: 0 }]}>{job.title} - {job.category}</Text>
+                  </LinearGradient>
+                </MaskedView>
+                <View >
+                      <View >
+                        <View style={{paddingHorizontal: 20}}>
+                          <Text style={styles.roleDescription}>
+                            {job.description}
+                          </Text>
+                        </View>
+                      </View>
+                </View>
+            </View>
+            { applicants && applicants.length > 0 &&
+              <View style={{width: "100%"}}>
+                  <View style={styles.applicantsContainer}>
+
+                      {
+                          applicants && applicants.slice(0,8).map((app, i) =>
+                              <Image 
+                                  source={{uri: `http://195.110.58.234:4000${app.freelancer.user.profileImage}`}} 
+                                  style={[styles.profileImage, i !== 0 && styles.marginLeft, {zIndex: 99 - i}]}
+                                  key={i}
+                                  blurRadius={10}
+                              />
+                          )
+                      }
+
+                  </View> 
+                  <View style={styles.applicantsSecondRow}>
+                      <Text style={styles.applicantsNumber}>+ {applicants.length} Applicants</Text>
+                      <Pressable onPress={() => navigation.navigate("recruiter_Jobs", { id: job.id})}>
+                          <Text style={styles.viewButton}>View All</Text>
+                      </Pressable>
+                  </View>
+                  {/* <RenderItem item={job.proposals} /> */}
+              </View>
+            }
+            <LinearGradient
+              colors={[
+                'rgba(202, 218, 221, 0.4)',
+                'rgba(202, 218, 221, 0)',
+                'rgba(202, 218, 221, 0.4)',
+              ]}
+              start={{ x: 1, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.footerContainer}
+            >
+                  <View style={styles.footerInfo}>
+                      <Image
+                          source={calendarIcon}
+                          style={styles.calendarIcon}
+                      ></Image>
+                      <Text style={styles.text}>{job.createdAt.slice(0,10)}</Text>
+                  </View>
+                  <View style={styles.footerInfo}>
+                      <Image source={locationIcon} style={styles.icon}></Image>
+                      <Text style={styles.text}>{job.location}</Text>
+                  </View>
+                  <View style={styles.footerInfo}>
+                      <Image source={clockIcon} style={styles.icon}></Image>
+                      <Text style={styles.text}> {job.shift === "day" ? "Day Shift" : "Night Shift"}</Text>
+                  </View>
+            </LinearGradient>
+          </View>
+        </LinearGradient>
+       </View>
+
+      }
       {/* { !route.params.myjobs &&
         <TouchableOpacity style={styles.button} onPress={() => navigateApply()}>
           <PrimaryButton title='Apply'  />
@@ -181,8 +232,12 @@ const JobDetailsPage_Client = ({route, navigation}) => {
           job={job}
           category={job.category}
           navigate={navigate}
+          handlePageChange={handlePageChange}
+          alterApplicants={alterApplicants}
+          showApplicants={showApplicants}
+          setShowApplicants={setShowApplicants}
         />
-    </ScrollView>
+    </View>
     )
 }
 
@@ -232,7 +287,7 @@ const JobDetailsPage_Client = ({route, navigation}) => {
       marginBottom: -45,
     },
     title: {
-      fontSize: 20,
+      fontSize: 17,
       marginBottom: 10,
       fontFamily: 'PoppinsS',
       marginEnd: 80,
@@ -270,6 +325,7 @@ const JobDetailsPage_Client = ({route, navigation}) => {
     text: {
       color: 'rgba(16, 125, 197, 1)',
       fontFamily: 'PoppinsR',
+      fontSize: 10
     },
     description: {
       color: '#0A084B',

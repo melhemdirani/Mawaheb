@@ -7,7 +7,7 @@ import MaskedView from '@react-native-masked-view/masked-view';
 
 const PhoneInputs = ({placeholder, onChange, numeric, value}) => {
 
-    const [text, setText] = useState(false)
+    const [text, setText] = useState(value)
     const [changed, setChanged] = useState(false)
     const phoneRef = useRef(undefined);
 

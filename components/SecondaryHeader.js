@@ -7,7 +7,7 @@ import filterIcon from '../assets/images/filterIcon.png'
 import Inputs from './Inputs'
 import SearchInput from './SearchInput'
 
-const SecondaryHeader = ({ title, heart, search, filter, onFilter,handleChange, setShowSearch, showSearch }) => {
+const SecondaryHeader = ({ title, heart, search, filter, onFilter,handleChange, setShowSearch, showSearch, fav, setFavRoute, favRoute }) => {
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -17,7 +17,7 @@ const SecondaryHeader = ({ title, heart, search, filter, onFilter,handleChange, 
       >
         <View style={styles.subContainer}>
           {
-            showSearch && search?
+            showSearch && search ?
             <View style={styles.searchContainer}>
               <SearchInput 
                 onChange={(e) => handleChange("search", e)}
@@ -51,11 +51,16 @@ const SecondaryHeader = ({ title, heart, search, filter, onFilter,handleChange, 
                 resizeMode='cover'
               />
             </Pressable>
-            : <Image
-              source={ heartIcon}
-              style={styles.filterIcon}
-              resizeMode='cover'
-            />
+            : fav ?
+            <Pressable onPress={() => setFavRoute(!favRoute)}>
+                <Image
+                  source={ heartIcon}
+                  style={styles.filterIcon}
+                  resizeMode='cover'
+                />
+            </Pressable>
+            : null
+              
           
           }
        

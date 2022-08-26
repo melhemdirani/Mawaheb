@@ -40,30 +40,39 @@ const JobList2 = ({
 
     return false;
   });
+
+  let rate = freelancer.roles.filter(role => {
+    return role.title ===  job.title
+  })
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.header}>
         <View style={styles.subHeader}>
-         { freelancer.user.profileImage.length &&
-            <Image      
-              source={{uri: `http://194.5.157.234:4000${freelancer.user.profileImage}`}} 
-              style={styles.profileImage}
-              blurRadius={7}
-            />
-          }
+           <View style={{alignContent: "center", justifyContent: "center"}}>
+              <Image      
+                source={{uri: `http://195.110.58.234:4000${freelancer.user.profileImage}`}} 
+                style={styles.profileImage}
+                blurRadius={7}
+              />
+               <View style={styles.ratingContainer}>
+                  <Text style={styles.rating}>{freelancer.averageRating}</Text>
+                </View>
+            </View>
+           
           <ImageBackground
             source={priceRectangle}
             style={styles.priceBg}
             resizeMode='contain'
           >
             <View style={styles.priceAndCurrency}>
-              <Text style={styles.price}>{price} </Text>
+              <Text style={styles.price}>{rate[0].dailyRate} </Text>
               <Text style={styles.currency}>AED</Text>
             </View>
           </ImageBackground>
         </View>
         <View style={styles.subHeader}>
-          <Image source={heartIcon} style={styles.heart}></Image>
+          {/* <Image source={heartIcon} style={styles.heart}></Image> */}
           <Pressable onPress={() => navigate(freelancer, job)}>
             <Image source={plusIcon} style={styles.plus}></Image>
           </Pressable>
@@ -102,8 +111,8 @@ const JobList2 = ({
               </LinearGradient>
             </MaskedView>
             
-            <Text style={styles.description}>{freelancer.roles[0].category} - {freelancer.roles[0].title}</Text>
-            <Text style={styles.description}>{freelancer.roles[0].keyResponsibilities.slice(0,40)}</Text>
+            <Text style={styles.description}>{job.category} - {job.title}</Text>
+            <Text style={styles.description}>{rate[0].keyResponsibilities.slice(0,40)}</Text>
           </View>
           <View style={styles.languages}>
             <Image source={languageIcon} style={styles.languageIcon}></Image>
@@ -126,12 +135,12 @@ const JobList2 = ({
             <View style={styles.footer}>
               <View style={styles.footerInfo}>
                 <Image source={calendarIcon} style={styles.icon}></Image>
-                <Text style={styles.text}> {freelancer.roles[0].endDate && moment(freelancer.roles[0].endDate).format('ll')}</Text>
+                <Text style={styles.text}> {rate[0].endDate && moment(rate[0].endDate).format('ll')}</Text>
 
               </View>
               <View style={styles.footerInfo}>
                 <Image source={locationIcon} style={styles.icon}></Image>
-                <Text style={styles.text}>{freelancer.roles[0].location}</Text>
+                <Text style={styles.text}>{rate[0].location}</Text>
               </View>
             </View>
           </LinearGradient>
@@ -171,7 +180,7 @@ const styles = StyleSheet.create({
     marginBottom: -45,
   },
   title: {
-    fontSize: 20,
+    fontSize: 17,
     marginBottom: 10,
     fontFamily: 'PoppinsS',
     marginEnd: 80,
@@ -221,10 +230,12 @@ const styles = StyleSheet.create({
   text: {
     color: 'rgba(16, 125, 197, 1)',
     fontFamily: 'PoppinsR',
+    fontSize: 10
   },
   description: {
     fontFamily: 'PoppinsR',
     color: 'rgba(10, 8, 75, .6)',
+    fontSize: 14
   },
   subHeader: {
     flexDirection: 'row',
@@ -281,9 +292,24 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, .8)"
   },
   profileImage:{
-    width: 80,
-    height: 80,
+    width: 70,
+    height: 70,
     borderRadius: 50  
-  }
+  },
+  rating:{
+    color: "white",
+    fontSize: 14,
+    fontFamily: "PoppinsS"
+  },
+  ratingContainer:{
+    backgroundColor: "#9C88FD",
+    paddingHorizontal: 9,
+    borderRadius: 100,
+    width: 40,
+    top: -10,
+    justifyContent: "center",
+    aligntItems: "center",
+    alignSelf: "center"
+  },
 })
 export default JobList2

@@ -22,7 +22,6 @@ const DurationInputs = ({title, placeholder}) => {
     return (
         <View style={!changed ? [styles.container, styles.borderBottom] : styles.container}>
             {
-                changed && 
                 <MaskedView maskElement={ <Text style={[styles.label, {backgroundColor: "transparent"}]}>{placeholder}</Text>}>
                     <LinearGradient
                       start={{x:0, y: 0}}

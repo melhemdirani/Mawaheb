@@ -13,7 +13,6 @@ import JobList from '../components/JobList';
 import MaskedView from '@react-native-masked-view/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import arrowUpIcon from '../assets/images/arrowUpIcon.png';
-import { ScrollView } from 'react-native-gesture-handler';
   
 
 
@@ -39,7 +38,6 @@ export default function RenderMyjobs({
     }
     const renderItem = (data) => {
         const {item} = data
-        console.log("item", job)
         return Object.keys(item.freelancer).length ?  (
             <JobList
                 freelancer={item.freelancer}
@@ -48,6 +46,7 @@ export default function RenderMyjobs({
                 job={job}
                 price={item.price}
                 item={item}
+            
             />
         ): <Text>No proposals yet</Text>
     }

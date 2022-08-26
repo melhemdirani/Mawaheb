@@ -60,17 +60,14 @@ const CreateProfilePage = ({  navigation, route }) => {
   const [uploaded, setUploaded] = useState( freelancer.copyOfPassport !== undefined ? true : false)
   const [uploaded2, setUploaded2] = useState(freelancer.copyOfPassport !== undefined? true : false)
 
-  const [passCopy, setPassCopy] = useState(update && freelancer.copyOfPassport !== undefined  && freelancer.copyOfPassport !== null ?  `http://194.5.157.234:4000${freelancer.copyOfPassport}` : "")
-  const [visaCopy, setVisaCopy] = useState(update && freelancer.copyOfResidencyVisa !== undefined && freelancer.copyOfPassport !== null ?  `http://194.5.157.234:4000${freelancer.copyOfResidencyVisa}` : "")
-  console.log("freelancer.emiratesIdFrontSide", freelancer.copyOfPassport)
+  const [passCopy, setPassCopy] = useState(update && freelancer.copyOfPassport !== undefined  && freelancer.copyOfPassport !== null ?  `http://195.110.58.234:4000${freelancer.copyOfPassport}` : "")
+  const [visaCopy, setVisaCopy] = useState(update && freelancer.copyOfResidencyVisa !== undefined && freelancer.copyOfPassport !== null ?  `http://195.110.58.234:4000${freelancer.copyOfResidencyVisa}` : "")
+
 
   const [startingToUpload, setStartingToUpload] = useState(false)
   const [activity, setActivity] = useState(false)
 
-  useEffect(() => {
-    console.log("images passCopy", passCopy)
-    console.log("images visaCopy", visaCopy)
-  }, [])
+
   const navigateExperience = () => {
     // setUser({copyOfPassport: "", copyOfResidencyVisa: ""})
     navigation.navigate("experience", {update})
@@ -83,7 +80,7 @@ const CreateProfilePage = ({  navigation, route }) => {
     try {
       console.log('trying')
       const response = await FileSystem.uploadAsync(
-        `http://194.5.157.234:4000/api/v1/freelancers/uploadImage`,
+        `http://195.110.58.234:4000/api/v1/freelancers/uploadImage`,
         uri,
         {
           fieldName: 'files',
@@ -113,7 +110,7 @@ const CreateProfilePage = ({  navigation, route }) => {
     try {
       console.log('trying')
       const response = await FileSystem.uploadAsync(
-        `http://194.5.157.234:4000/api/v1/freelancers/uploadImage`,
+        `http://195.110.58.234:4000/api/v1/freelancers/uploadImage`,
         uri,
         {
           fieldName: 'files',

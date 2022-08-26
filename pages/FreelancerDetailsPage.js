@@ -7,6 +7,7 @@ import {
   ImageBackground,
   Pressable,
   ScrollView,
+  TouchableOpacity
 } from 'react-native'
 
 import { LinearGradient } from 'expo-linear-gradient'
@@ -24,7 +25,6 @@ import { inviteFreelancer } from '../reduxToolkit/clientSlice'
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import minusIcon from '../assets/images/minusIcon.png'
 import { useSelector, useDispatch } from 'react-redux'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const FreelancerDetailsPage = ({ navigation, route }) => {
   
@@ -39,7 +39,7 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
   // let invite = jobId === "job.id" ? true : false
   const { user: userState } = useSelector((state) => state.user)
 
-
+  console.log("job", job)
   const dispatch = useDispatch()
   const navigateContract = () => {
    if(invite){
@@ -87,15 +87,18 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
     <ScrollView style={styles.wrapper}>
       <View style={styles.header}>
         <View style={styles.subHeader}>
-        { freelancer.user !== undefined && freelancer.user.profileImage.length &&
-          <Image      
-              source={{uri: `http://194.5.157.234:4000${freelancer.user.profileImage}`}} 
-              style={styles.profileImage}
-              blurRadius={7}
-            />
-          }
+          <View style={{alignContent: "center", justifyContent: "center"}}>
+              <Image      
+                source={{uri: `http://195.110.58.234:4000${freelancer.user.profileImage}`}} 
+                style={styles.profileImage}
+                blurRadius={7}
+              />
+               <View style={styles.ratingContainer}>
+                  <Text style={styles.rating}>{freelancer.averageRating}</Text>
+                </View>
+            </View>
           <ImageBackground
-            source={priceRectangle}
+            source={priceRectangle} 
             style={styles.priceBg}
             resizeMode='contain'
           >
@@ -106,7 +109,7 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
           </ImageBackground>
         </View>
         <View style={styles.subHeader}>
-          <Image source={heartIcon} style={styles.heart}></Image>
+          {/* <Image source={heartIcon} style={styles.heart}/> */}
           <Pressable onPress={() => navigateBack()}>
             <Image source={minusIcon} style={styles.plus}></Image>
           </Pressable>
@@ -186,12 +189,17 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
             </View>
           </View>
           <View style={styles.languages}>
-            <Image source={languageIcon} style={styles.languageIcon}></Image>
             {newLanguages.length > 0 && newLanguages.map((item, i) => {
               return (
-                  <Text  style={styles.language} key={i}>
+                <View style={{flexDirection: "row"}} key={i}>
+                  <Image source={languageIcon} style={styles.languageIcon} />
+                  <Text  style={styles.language} >
                     {item.name}
                   </Text>
+                  <Text  style={styles.language} >
+                    {item.profeciency}
+                  </Text>
+                </View>
               )
             })}
           </View>
@@ -206,12 +214,7 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
             style={styles.footerContainer}
           >
             <View style={styles.footerInfo}>
-              <Image source={clockIcon} style={styles.icon}></Image>
-              <Text style={styles.text}>Day shift</Text>
-            </View>
-            <View style={styles.footerInfo}>
-              <Image source={locationIcon} style={styles.icon}></Image>
-              <Text style={styles.text}>{freelancer.roles[0].location}</Text>
+              <Text style={styles.text}>{job.category} - {job.title}</Text>
             </View>
           </LinearGradient>
         </View>
@@ -342,8 +345,8 @@ const styles = StyleSheet.create({
   language: {
     fontFamily: 'PoppinsR',
     color: 'rgba(10, 8, 75, .6)',
-    marginRight:10,
-    marginLeft: 3
+    marginHorizontal:15,
+    fontSize: 12
   },
   description: {
     fontFamily: 'PoppinsR',
@@ -411,6 +414,21 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingVertical: 20,
     paddingLeft: 20,
+  },
+  rating:{
+    color: "white",
+    fontSize: 14,
+    fontFamily: "PoppinsS"
+  },
+  ratingContainer:{
+    backgroundColor: "#9C88FD",
+    paddingHorizontal: 9,
+    borderRadius: 100,
+    width: 40,
+    top: -10,
+    justifyContent: "center",
+    aligntItems: "center",
+    alignSelf: "center"
   },
 })
 export default FreelancerDetailsPage

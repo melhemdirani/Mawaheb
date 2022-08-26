@@ -76,9 +76,11 @@ function Navbar({active, navigation}) {
                 <Text style={active === 'Dashboard' ? styles.text2 : styles.text}>Dashboard</Text>
             </Pressable>
             <Pressable style={styles.Pressable}  onPress={() => navigation.navigate('notifications')}>
-                { !notificationsSeen &&
+               {  notifications && notifications.length > 0 &&
                     <View>
-                        <View style={styles.newNotification} />
+                        <View style={styles.newNotification} >
+                                <Text style={styles.notificationsCount}>{notifications.length}</Text>
+                            </View>
                     </View>
                 }
                 <Image
@@ -141,6 +143,21 @@ const styles =  Platform.OS === 'android'
             },
             shadowRadius: 24,
         }, 
+        newNotification:{
+            backgroundColor: "red",
+            width: 15,
+            height: 15,
+            borderRadius: 50,
+            position: "absolute",
+            marginTop: -10,
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "row"
+        },
+        notificationsCount:{
+            fontSize: 10,
+            color: "white",
+        }
     })
     : StyleSheet.create({
         container: {
@@ -176,11 +193,18 @@ const styles =  Platform.OS === 'android'
         }, 
         newNotification:{
             backgroundColor: "red",
-            width: 5,
-            height: 5,
+            width: 15,
+            height: 15,
             borderRadius: 50,
             position: "absolute",
-            left: 2
+            marginTop: -10,
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "row"
+        },
+        notificationsCount:{
+            fontSize: 10,
+            color: "white",
         }
     })
 

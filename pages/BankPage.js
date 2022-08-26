@@ -6,6 +6,7 @@ import {
   ScrollView,
   Pressable
 } from 'react-native';
+import { StackActions } from '@react-navigation/native';
 
 import { listofCities } from '../assets/data/RolesList';
 
@@ -144,7 +145,9 @@ const BankPage = ({  navigation, route }) => {
     )
     .unwrap()
     .then(() => {
-      navigation.navigate("settings")
+      navigation.dispatch(
+        StackActions.replace('settings')
+      )
     })
     .catch((error) => {
       alert("error!")
@@ -172,12 +175,18 @@ const BankPage = ({  navigation, route }) => {
     .unwrap()
     .then((response) => {
       console.log("response registiring", response)
-      navigation.navigate('jobseeker_jobs')
+      navigation.dispatch(
+        StackActions.replace('jobseeker_jobs', 
+          {register: true}
+        )
+      )
     })
     .catch((error) => {
       console.log("error", error)
       alert("Error registiring")
-      navigation.navigate("SignIn")
+      navigation.dispatch(
+        StackActions.replace('SignIn')
+      )
     })
   }
   const skip = () => {
@@ -189,7 +198,7 @@ const BankPage = ({  navigation, route }) => {
 
   }
   const handleSubmit = () => {
-    update ? updateProfile () : createJobSeeker ()
+    freelancer.id === undefined ? createJobSeeker () : updateProfile () 
   }
 
   return (

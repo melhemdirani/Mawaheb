@@ -6,7 +6,7 @@ import MaskedView from '@react-native-masked-view/masked-view';
 
 const Inputs = ({placeholder, onChange, numeric, value}) => {
 
-    const [text, setText] = useState("")
+    const [text, setText] = useState(value)
     const [changed, setChanged] = useState(false)
 
     useEffect(() => {
@@ -24,7 +24,7 @@ const Inputs = ({placeholder, onChange, numeric, value}) => {
     }
 
     return (
-        <View style={!changed ? [styles.container, styles.borderBottom] : styles.container}>
+        <View style={(changed || text !== "" || value !== "") ? [styles.container] : [styles.container, styles.borderBottom]}>
             {
                 (changed || text !== "") && 
                 <MaskedView maskElement={ <Text style={[styles.label, {backgroundColor: "transparent"}]}>{placeholder}</Text>}>
@@ -49,7 +49,7 @@ const Inputs = ({placeholder, onChange, numeric, value}) => {
               value={value}
             />
 
-            { (changed || text !== "") && 
+            { (changed || text !== "" || value !== "") && 
                 <LinearGradient
                     start={{x:0, y: 0}}
                     end={{x:1, y: 1}}

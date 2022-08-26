@@ -66,12 +66,12 @@ const EditClientProfile = ({navigation, route}) => {
   const [isEnabled, setIsEnabled] = useState(false)
   const [startingToUpload, setStartingToUpload] = useState(false)
   const [image, setImage] = useState(sign !== ""  
-    ?`http://194.5.157.234:4000${sign}`
+    ?`http://195.110.58.234:4000${sign}`
     : tradingLicense !== ""
-    ?`http://194.5.157.234:4000${tradingLicense}` 
+    ?`http://195.110.58.234:4000${tradingLicense}` 
     : ""
     )
-  const [image2, setImage2] = useState(`http://194.5.157.234:4000${user.profileImage}`)
+  const [image2, setImage2] = useState(`http://195.110.58.234:4000${user.profileImage}`)
   const [uploadedImage, setUploadedImage] = useState("")
   const [uploadedImage2, setUploadedImage2] = useState("")
 
@@ -212,7 +212,7 @@ const EditClientProfile = ({navigation, route}) => {
     console.log("uploading")
     try {
       const response = await FileSystem.uploadAsync(
-        `http://194.5.157.234:4000/api/v1/auth/uploadImage/`,
+        `http://195.110.58.234:4000/api/v1/auth/uploadImage/`,
         uri,
         {
           fieldName: 'files',
@@ -243,7 +243,7 @@ const EditClientProfile = ({navigation, route}) => {
     try {
       console.log('trying')
       const response = await FileSystem.uploadAsync(
-        `http://194.5.157.234:4000/api/v1/auth/uploadImage/`,
+        `http://195.110.58.234:4000/api/v1/auth/uploadImage/`,
         uri,
         {
           fieldName: 'files',

@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, ImageBackground, Platform, Pressable } from 'react-native'
-import React from 'react'
+import React, {useState} from 'react'
 import moment from 'moment';
 
 import { LinearGradient } from 'expo-linear-gradient'
@@ -8,6 +8,7 @@ import clockIcon from '../assets/images/clockIcon.png'
 import locationIcon from '../assets/images/locationIcon.png'
 import priceRectangle from '../assets/images/priceRectangle.png'
 import heartIcon from '../assets/images/heartIcon.png'
+import addFav from '../assets/images/addFav.png'
 import plusIcon from '../assets/images/plusIcon.png'
 import MaskedView from '@react-native-masked-view/masked-view'
 
@@ -16,18 +17,33 @@ const Job = ({
     description, 
     location, 
     current, 
-    heart, 
+    dash, 
     navigate, 
     id, 
     startDate, 
-    endDate,
+    data,
     disabled, 
     shift, 
     budget, 
-    client
+    client,
+    likeJob,
+    like,
+    unLikeJob
   }) => {
-    console.log("client", client)
-  return (
+    console.log("datas", data.item.fav)
+    const [favorite,setFavorite] = useState(dash || data.item.fav ? true : false)
+    const handleLikePress = (id) => {
+      if(favorite){
+        setFavorite(false)
+        unLikeJob(data.item.id)
+      } else {
+        setFavorite(true)
+        likeJob(data.item.id)
+      }
+    }
+  return dash && !favorite ? null
+  
+  :(
     <View
       // style={lastOne ? [styles.wrapper, { marginBottom: 40 }] : styles.wrapper}
       style={styles.wrapper}
@@ -36,7 +52,7 @@ const Job = ({
         <View style={styles.subHeader}>
            { client !== undefined &&
             <Image      
-              source={{uri: `http://194.5.157.234:4000${client.user.profileImage}`}} 
+              source={{uri: `http://195.110.58.234:4000${client.user.profileImage}`}} 
               style={styles.profileImage}
               blurRadius={7}
             />
@@ -53,7 +69,12 @@ const Job = ({
           </ImageBackground>
         </View>
         <View style={styles.subHeader}>
-          {!heart && <Image source={heartIcon} style={styles.heart}></Image>}
+          {
+            like &&
+            <Pressable onPress={() => handleLikePress(data.item.id)}>
+              <Image source={favorite? addFav : heartIcon} style={styles.heart}></Image>
+            </Pressable>
+          }
           { !disabled && id 
             ? <Pressable onPress={() => navigate(id, client)} style={styles.plusContainer}>
               <Image source={plusIcon} style={styles.plus}></Image>
@@ -134,7 +155,6 @@ const Job = ({
               <View style={styles.footerInfo}>
                 <Image source={calendarIcon} style={styles.icon}></Image>
                 <Text style={styles.text}> {startDate && moment(startDate).format('ll')}</Text>
-                <Text style={styles.text}> -  {endDate && moment(endDate).format('ll')}</Text>
               </View>
               <View style={styles.footerInfo}>
                 <Image source={clockIcon} style={styles.icon}></Image>

@@ -26,8 +26,8 @@ import DailyRate from '../components/DailyRate';
 const JobPostingPage = ({navigation}) => {
   const initialState = {
     title: '',
-    startDate: new Date(),
-    endDate: new Date(),
+    startDate: '',
+    endDate: '',
     location: '',
     yearsOfExperience: '2',
     description: '',
@@ -66,35 +66,35 @@ const JobPostingPage = ({navigation}) => {
     } else{
       console.log("calu", values.shift)
    
-      // navigation.navigate("payment", {values})
+      navigation.navigate("payment", {values})
 
-      dispatch(
-        createJob({
-          category: values.category,
-          title: values.title,
-          startDate: values.startDate,
-          endDate: values.endDate,
-          location: values.location,
-          yearsOfExperience: values.yearsOfExperience,
-          description: values.description,
-          budget: parseInt(values.budget),
-          privacy: isEnabled ? 'private' : 'public',
-          clientId: user.clientId? user.clientId : client.id,
-          duration: new Date(),
-          shift: values.shift
-        })
-      )
-      .unwrap()
-      .then((response) => {
-        console.log("job for posting", response)
-        let date = new Date()
-        navigation.navigate('recruiter_dashboard', {id: date.toDateString()})
-      })
-      .catch((error) => {
-        console.log("error updating", error)
-        alert("Error creating a job, please try again later")
-        navigation.navigate("recruiter_dashboard")
-      })
+      // dispatch(
+      //   createJob({
+      //     category: values.category,
+      //     title: values.title,
+      //     startDate: values.startDate,
+      //     endDate: values.endDate,
+      //     location: values.location,
+      //     yearsOfExperience: values.yearsOfExperience,
+      //     description: values.description,
+      //     budget: parseInt(values.budget),
+      //     privacy: isEnabled ? 'private' : 'public',
+      //     clientId: user.clientId? user.clientId : client.id,
+      //     duration: new Date(),
+      //     shift: values.shift
+      //   })
+      // )
+      // .unwrap()
+      // .then((response) => {
+      //   console.log("job for posting", response)
+      //   let date = new Date()
+      //   navigation.navigate('recruiter_dashboard', {id: date.toDateString()})
+      // })
+      // .catch((error) => {
+      //   console.log("error updating", error)
+      //   alert("Error creating a job, please try again later")
+      //   navigation.navigate("recruiter_dashboard")
+      // })
     }
 
   
@@ -125,29 +125,47 @@ const JobPostingPage = ({navigation}) => {
                 onSelect={(value) => handleChange("category", value)}
                 setIndex={setIndex}
                 role={true}
+                value={values.category}
+
             /> 
             <SelectInput 
                 title="Job Title*" 
                 list={RoleList[index].subCategories}
                 onSelect={(value) => handleChange("title", value)}
+                value={values.title}
             />
-            <DateInputs onChange={(value) => handleChange('startDate', value)} placeholder="Start Date" dateType/>
-            <DateInputs onChange={(value) => handleChange('endDate', value)} placeholder="End Date" dateType/>
+            <DateInputs 
+              onChange={(value) => handleChange('startDate', value)} 
+              placeholder="Start Date" 
+              dateType
+              value={values.startDate}
+
+            />
+            <DateInputs 
+              onChange={(value) => handleChange('endDate', value)} 
+              placeholder="End Date" 
+              dateType
+              value={values.endDate}
+            />
             <SelectInput 
                 title="Location*" 
                 onSelect={(value) => handleChange('location', value)}
                 list={listofCities}
+                value={values.location}
             /> 
             <SelectInput 
                 title="Shift*" 
                 onSelect={(value) => handleChange('shift', value)}
                 list={['day', 'night']}
+                value={values.shift}
+
             /> 
             <DailyRate
               title='Budget'
-              placeholder='Daily Rate*'
+              placeholder='Estimated Budget*'
               numeric
               onChange={(value) => handleChange('budget', value)}
+              value={values.budget}
             />
             <TextArea
               placeholder='Job Description*'

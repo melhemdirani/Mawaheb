@@ -49,14 +49,14 @@ const ContactFreelancerPage = ({ navigation, route }) => {
         <View style={styles.subHeader}>
           {
             user.profileImage 
-            ? <Image source={{uri: `http://194.5.157.234:4000${user.profileImage}`}} style={styles.profileImage}/>
+            ? <Image source={{uri: `http://195.110.58.234:4000${user.profileImage}`}} style={styles.profileImage}/>
             : <View style={styles.circle} />
 
           }
 
         </View>
         <View style={styles.subHeader}>
-          <Pressable onPress={() => navigation.navigate("seeker_dash")}>
+          <Pressable onPress={() => navigation.navigate("recruiter_dashboard")}>
             <Image source={minusIcon} style={styles.plus}></Image>
           </Pressable>
         </View>

@@ -9,7 +9,8 @@ const initialState = {
   error: undefined,
   registerError: undefined,
   notifications: [],
-  notificationsSeen: true
+  notificationsSeen: true,
+  credentials: {}
 }
 export const getNotifications = createAsyncThunk(
   'getNotifications',
@@ -26,11 +27,56 @@ export const getNotifications = createAsyncThunk(
     }
   }
 )
+export const createOTP = createAsyncThunk(
+  'createOTP',
+  async ({ email }, thunkApi) => {
+    let url = `/auth/sendOTP`
+    console.log("email", email)
+    try {
+      const resp = await customFetch.post(url, email)
+
+      return resp.data
+    } catch (error) {
+      console.log(error)
+      console.log('error')
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
+export const verifyUser = createAsyncThunk(
+  'verifyUser',
+  async ( verification , thunkApi) => {
+    let url = `/auth/verifyUser`
+    console.log("email", verification)
+    try {
+      const resp = await customFetch.post(url, verification)
+
+      return resp.data
+    } catch (error) {
+      console.log(error)
+      console.log('error')
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
 
 export const registerUser = createAsyncThunk(
   'registerUser',
   async (user, thunkApi) => {
     let url = '/auth/register'
+    try {
+      const resp = await customFetch.post(url, user)
+      return resp.data
+    } catch (error) {
+      console.log('rrer', error.response.data.msg)
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
+export const testRegister = createAsyncThunk(
+  'testRegister',
+  async (user, thunkApi) => {
+    let url = '/auth/testRegister'
     try {
       const resp = await customFetch.post(url, user)
       return resp.data
@@ -77,6 +123,35 @@ export const updateUserPassword = createAsyncThunk(
     let url = '/users/updateUserPassword'
     try {
       const resp = await customFetch.patch(url, {oldPassword: passwords.oldPassword, newPassword: passwords.newPassword})
+      return resp.data
+    } catch (error) {
+      console.log('rrer', error)
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
+export const deleteNotifcation = createAsyncThunk(
+  'deleteNotifcation',
+  async (id, thunkApi) => {
+    let url =`/notifications/${id}`
+    console.log("url", url)
+    try {
+      const resp = await customFetch.delete(url)
+      return resp.data
+    } catch (error) {
+      console.log('rrer', error)
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
+export const deleteNotifcations = createAsyncThunk(
+  'deleteNotifcations',
+  async (ids, thunkApi) => {
+    let url =`/notifications`
+    console.log("url", ids.ids)
+    const notificationIds = ids.ids
+    try {
+      const resp = await customFetch.patch(url, {notificationIds: notificationIds})
       return resp.data
     } catch (error) {
       console.log('rrer', error)
@@ -132,7 +207,10 @@ const userSlice = createSlice({
       state.notificationsSeen = action.payload
     },
     clearUser : (state) => {
-      state = initialState
+      state.user = {}
+    },
+    setCredentials : (state, action) => {
+      state.credentials = action.payload
     }
   },
   extraReducers: {
@@ -140,6 +218,11 @@ const userSlice = createSlice({
       state.registerIsLoading = true
     },
     [registerUser.fulfilled]: (state, { payload }) => {
+      const { user } = payload
+      state.registerIsLoading = false
+      state.user = user
+    },
+    [testRegister.fulfilled]: (state, { payload }) => {
       const { user } = payload
       state.registerIsLoading = false
       state.user = user
@@ -155,6 +238,9 @@ const userSlice = createSlice({
       state.registerIsLoading = false
       console.log("payload updating", payload)
       state.user = payload
+    },
+    [deleteNotifcations.fulfilled]: (state, { payload }) => {
+      state.notifications = []
     },
     [updateUser.rejected]: (state, { payload }) => {
       state.registerIsLoading = false
@@ -191,6 +277,6 @@ const userSlice = createSlice({
   },
 })
 export const { setFreelancerId } = userSlice.actions
-export const { setUserAfterRegister, setNotificationsSeen, clearUser } = userSlice.actions
+export const { setUserAfterRegister, setNotificationsSeen, clearUser, setCredentials } = userSlice.actions
 
 export default userSlice.reducer

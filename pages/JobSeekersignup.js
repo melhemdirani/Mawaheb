@@ -13,10 +13,11 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { useSelector, useDispatch } from 'react-redux'
+import { StackActions } from '@react-navigation/native';
 
 import signUp from '../assets/images/signUp.png'
 import { validate } from 'react-email-validator';
-import { registerUser, updateUser } from '../reduxToolkit/userSlice'
+import { registerUser, testRegister, updateUser } from '../reduxToolkit/userSlice'
 
 import Header from '../components/Header'
 import Inputs from '../components/Inputs'
@@ -28,6 +29,7 @@ import PhoneInputs from '../components/PhoneInput';
 import UploadCard from '../components/UploadCard';
 import ImageCard from '../components/ImageCard';
 import SelectInput from '../components/SelectInput';
+import DailyRate from '../components/DailyRate';
 
 const JobSeekersignup = ({ navigation, route }) => {
 
@@ -43,14 +45,16 @@ const JobSeekersignup = ({ navigation, route }) => {
     : false
   )
   const [activity, setActivity] = useState(false)
+  const [password2, setPassword2] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [changedValues, setChangedValues] = useState(false)
   const [uploadedImage, setUploadedImage] = useState(user.profileImage)
   const [image, setImage] = useState(
     update
-    ?`http://194.5.157.234:4000${user.profileImage}`
+    ?`http://195.110.58.234:4000${user.profileImage}`
     : ""
   )
+
 
  
   let initialState = !update 
@@ -86,11 +90,22 @@ const JobSeekersignup = ({ navigation, route }) => {
   }
 
   const navigateNext =() => {
-    navigation.navigate('JobSignUpb', {update})
+    navigation.dispatch(
+      StackActions.replace('JobSignUpb', {update})
+    )
 
+  }
+
+  const navigateOtp = () => {
+    navigation.dispatch(
+      StackActions.replace('otp', {update})
+    )
   }
   const submit = () => {
     const { name, email, password, phoneNb } = values
+    if(password !== password2 && !update){
+      return alert("Error, passwords don't match!")
+    }
     if (!name || !email || (!update && !password )|| !phoneNb) {
       return alert('Please fill all the fields')
     } 
@@ -101,69 +116,71 @@ const JobSeekersignup = ({ navigation, route }) => {
       return alert("Please enter a valid email address")
     }
     if((user !== undefined &&  user.userId !== undefined && user !== {}) || update){
-      if(changedValues){
-        console.log("updating")
+ 
+      if(!update) {
+        console.log("registering")
         setIsLoading(true)
         dispatch(
-          updateUser({
+          testRegister({
             name: values.name,
             lastName: values.lastName,
-            email: values.email.toLocaleLowerCase(),
+            email: values.email,
+            password: values.password,  
             phoneNb: values.phoneNb,
-            role: "freelancer",
-            location: values.location,
+            role: role,
             profileImage: uploadedImage,
-            userId: update ? user.userId : user.userId.id
-          },)
+            location: values.location
+          })
         )
         .unwrap()
         .then((response) => {
-          console.log("new user", response)
-          setIsLoading(false)
-          navigateNext()
+          console.log("response registiring", response)
+          // alert(`Thank you ${values.name}! Your account was registerd!`)
           setChangedValues(false)
+          setIsLoading(false)
+          navigateOtp()
         })
         .catch((error) => {
-          console.log("error updating", error)
-          console.log("missing", values)
+          if(error === "Email already in use"){
+            alert("This email is already in use, please register using another email address")
+          } else{
+            alert("Error registering")
+          }
+          console.log("error", error)
           setIsLoading(false)
         })
-      } else {
-        console.log("navigating no updates")
-        setChangedValues(false)
-        navigateNext()
       }
-    } else if(!update) {
+    } else  if(update){
+      console.log("updating")
       setIsLoading(true)
       dispatch(
-        registerUser({
+        updateUser({
           name: values.name,
           lastName: values.lastName,
-          email: values.email,
-          password: values.password,  
+          email: values.email.toLocaleLowerCase(),
           phoneNb: values.phoneNb,
-          role: role,
+          role: "freelancer",
+          location: values.location,
           profileImage: uploadedImage,
-          location: values.location
-        })
+          userId: update ? user.userId : user.userId.id
+        },)
       )
       .unwrap()
       .then((response) => {
-        console.log("response registiring", response)
-        alert(`Thank you ${values.name}! Your account was registerd!`)
-        setChangedValues(false)
-        navigateNext()
+        console.log("new user", response)
         setIsLoading(false)
+        navigateNext()
+        setChangedValues(false)
       })
       .catch((error) => {
-        if(error === "Email already in use"){
-          alert("This email is already in use, please register using another email address")
-        } else{
-          alert("Error registering")
-        }
-        console.log("error", error)
+        console.log("error updating", error)
+        console.log("missing", values)
         setIsLoading(false)
       })
+    } else {
+      console.log("navigating no updates")
+      setChangedValues(false)
+      navigateNext()
     }
    
   }
@@ -186,7 +203,7 @@ const JobSeekersignup = ({ navigation, route }) => {
     console.log("uploading")
     try {
       const response = await FileSystem.uploadAsync(
-        `http://194.5.157.234:4000/api/v1/auth/uploadImage/`,
+        `http://195.110.58.234:4000/api/v1/auth/uploadImage/`,
         uri,
         {
           fieldName: 'files',
@@ -215,6 +232,11 @@ const JobSeekersignup = ({ navigation, route }) => {
     setUploadedImage("")
 
   }
+  const goBack = () => {
+    navigation.dispatch(
+      StackActions.replace('SignIn')
+    )
+  }
   return isLoading ? (
     <View style={styles.loadingStyle}>
       <ActivityIndicator size={'large'} />
@@ -229,7 +251,7 @@ const JobSeekersignup = ({ navigation, route }) => {
               // numOfPage={<Image source={trash}></Image>}
               numOfPage='1/6'
               hidden={false}
-              goBack={navigation.goBack}
+              goBack={goBack}
             />
             <View style={styles.subContainer}>
               { !update &&
@@ -271,6 +293,19 @@ const JobSeekersignup = ({ navigation, route }) => {
                   onChange={(value) => handleChange('password', value)}
                   value={values.password}
                 />
+              }
+              { !update &&
+                <Inputs
+                  placeholder='Confirm Password*'
+                  onChange={(e) => setPassword2(e)}
+                  value={password2}
+                />
+              }
+              { 
+                values.password !== password2 && password2 !== "" &&
+                <Text style={styles.warning}>
+                  passwords don't match
+                </Text>
               }
               <SelectInput 
                 title="Location*" 
@@ -350,6 +385,14 @@ const styles = StyleSheet.create({
     marginTop: -25,
     marginBottom: 80,
     letterSpacing: 2
+  },
+  warning:{
+    alignSelf: "flex-end",
+    marginTop: -10,
+    marginBottom: 10,
+    right: 30,
+    color: "#BE3142",
+    fontSize: 10
   }
 })
 

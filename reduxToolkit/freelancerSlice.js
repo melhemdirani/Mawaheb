@@ -62,7 +62,6 @@ export const getFreelancer = createAsyncThunk(
 export const acceptContractFreelancer = createAsyncThunk(
   'acceptContractFreelancer',
   async (id, thunkApi) => {
-    console.log("id", id)
     let url = `/contracts/${id}/accept`
     try {
       const resp = await customFetch.put(url)
@@ -77,10 +76,38 @@ export const acceptContractFreelancer = createAsyncThunk(
 export const getContractFreelancer = createAsyncThunk(
   'getContractFreelancer',
   async (id, thunkApi) => {
-    console.log("id", id)
-    let url = `/contracts/${id}/freelancer`
+    let url = `/contracts/${id}/contract`
+    console.log("url", url)
     try {
       const resp = await customFetch.get(url)
+      return resp.data
+    } catch (error) {
+      console.log('contract freelancer error', error)
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
+export const addJobToFavorites = createAsyncThunk(
+  'addJobToFavorites',
+  async (body, thunkApi) => {
+    let url = `/freelancers/${body.id}/like`
+    console.log("url", url)
+    try {
+      const resp = await customFetch.patch(url, {freelancerId : body.freelancerId})
+      return resp.data
+    } catch (error) {
+      console.log('contract freelancer error', error)
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
+export const removeFav = createAsyncThunk(
+  'removeFav',
+  async (body, thunkApi) => {
+    let url = `/freelancers/${body.id}/unLike`
+    console.log("url", url)
+    try {
+      const resp = await customFetch.patch(url, {freelancerId : body.freelancerId})
       return resp.data
     } catch (error) {
       console.log('contract freelancer error', error)
@@ -170,7 +197,6 @@ const freelancerSlice = createSlice({
       state.freelancer = {}
     },
     clearFreelancerState : (state) => {
-      state = initialState,
       state.freelancer = {}
     }
   },

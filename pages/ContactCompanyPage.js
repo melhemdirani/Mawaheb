@@ -1,82 +1,55 @@
-import React, {  useEffect, useLayoutEffect, useState } from 'react'
+import React, {  useState } from 'react'
 import {
   View,
   Text,
   StyleSheet,
   Image,
-  ImageBackground,
   Pressable,
-  TouchableOpacity,
   ScrollView,
   ActivityIndicator
-} from 'react-native'
+} from 'react-native';
+import * as Linking from "expo-linking";
 
 import { LinearGradient } from 'expo-linear-gradient'
-import clockIcon from '../assets/images/clockIcon.png'
-import locationIcon from '../assets/images/locationIcon.png'
+import calendarIcon from '../assets/images/calendarIcon.png'
 import MaskedView from '@react-native-masked-view/masked-view'
+import languageIcon from '../assets/images/LanguageIcon.png'
 
-import PrimaryButton from '../components/Buttons/PrimaryButton'
 import minusIcon from '../assets/images/minusIcon.png'
-import { useSelector, useDispatch } from 'react-redux'
-import { getClientbyId } from '../reduxToolkit/clientSlice'
+import { useSelector } from 'react-redux'
 
-const ClientProfile = ({ navigation, route }) => {
+const ContactCompanyPage = ({ navigation, route }) => {
 
-  const { user } = useSelector((state) => state.user)
   const { client } = useSelector((state) => state.client)
 
-  const [clientProfile, setClientProfile] = useState(client)
+  const {user} = client
 
-  const [loaded, setLoaded] = useState(true)
 
-  const dispatch = useDispatch()
 
-  useEffect(() => {
-    if(clientProfile !== {} && clientProfile!== undefined ){
-    setLoaded(true)
-    dispatch(getClientbyId(user.clientId ? user.clientId : client.id))
-      .unwrap()
-      .then(res => {
-        setClientProfile(res.client)
-        setLoaded(false)
-      })
-      .catch(err =>{
-        console.log("error", err)
-        setLoaded(false)
-      })
-    }
+  console.log("freelancer", user.profileImage)
+
+  const callContact = () => {
+    Linking.openURL(`tel:${user.phoneNb.replace(/\s/g, "")}`)
+  }
+  const emailContract = () => {
    
-
-  }, [user, route])
-
-//   useLayoutEffect(() => {
-//     if(!loaded){
-//       dispatch(getFreelancer(user.freelancerId))
-//     }
-//   }, [])
-
-  const navigateEdit = () => {
-    navigation.navigate("editProfileClient", {clientProfile})
+    Linking.openURL(`mailto:${user.email}`)
   }
 
-  return  loaded ? <View style={{marginTop: 400}}>
-        <ActivityIndicator size={"large"}/>
-      </View>
-    :(
+  return (
     <ScrollView style={styles.wrapper}>
       <View style={styles.header}>
         <View style={styles.subHeader}>
           {
-            clientProfile.user.profileImage !== undefined
-            ? <Image source={{uri: `http://195.110.58.234:4000${clientProfile.user.profileImage}`}} style={styles.profileImage}/>
+            user.profileImage 
+            ? <Image source={{uri: `http://195.110.58.234:4000${user.profileImage}`}} style={styles.profileImage}/>
             : <View style={styles.circle} />
 
           }
 
         </View>
         <View style={styles.subHeader}>
-          <Pressable onPress={() => navigation.goBack()}>
+          <Pressable onPress={() => navigation.navigate("seeker_dash")}>
             <Image source={minusIcon} style={styles.plus}></Image>
           </Pressable>
         </View>
@@ -101,7 +74,7 @@ const ClientProfile = ({ navigation, route }) => {
                 <Text
                   style={[styles.title, { backgroundColor: 'transparent' }]}
                 >
-                  {clientProfile.companyName}
+                  {user.name}
                 </Text>
               }
             >
@@ -110,62 +83,19 @@ const ClientProfile = ({ navigation, route }) => {
                 end={{ x: 1, y: 1 }}
                 colors={['rgba(49, 190, 187, 1)', 'rgba(101, 91, 218, 1)']}
               >
-                <Text style={[styles.title, { opacity: 0 }]}> {clientProfile.companyName}</Text>
+                <Text style={[styles.title, { opacity: 0 }]}>{client.user.name}</Text>
               </LinearGradient>
             </MaskedView>
-            <View style={{left: 20}}>
-              <Text style={styles.text}>
-                Company type: <Text style={styles.text2}>{clientProfile.privacy}</Text>
-              </Text>
-             
-              {
-                clientProfile.privacy === "public"
-                ?<View style={styles.descriptionContainer}>
-                  <Text style={styles.text}>
-                    Signatory name: <Text style={styles.text2}>{clientProfile.signatoryName}</Text>
-                  </Text>
-                  <Text style={styles.text}>
-                    Signatory title: <Text style={styles.text2}>{clientProfile.signatoryTitle}</Text>
-                  </Text>
-                  <Image source={{uri: `http://195.110.58.234:4000${clientProfile.sign}`}} style={styles.Imagecontainer}/>
-                </View>
-                :<View style={styles.descriptionContainer}>
-                  <Text style={styles.text}>
-                    TRN: <Text style={styles.text2}>{clientProfile.TRN}</Text>
-                  </Text>
-                  <Text style={styles.text}>
-                    Address: <Text style={styles.text2}>{clientProfile.Address}</Text>
-                  </Text>
-                  <Image source={{uri: `http://195.110.58.234:4000${clientProfile.tradingLicense}`}} style={styles.Imagecontainer}/>
-                </View>
-              }
-
-            </View>
+            <Pressable onPress={() => emailContract()}>
+                <Text style={[styles.email]}>{client.user.email}</Text>
+            </Pressable>
+            <Pressable onPress={() => callContact()}>
+                <Text style={[styles.email]}>{client.user.phoneNb}</Text>
+            </Pressable>
+       
           </View>
-          <LinearGradient
-            colors={[
-              'rgba(202, 218, 221, 0.4)',
-              'rgba(202, 218, 221, 0)',
-              'rgba(202, 218, 221, 0.4)',
-            ]}
-            start={{ x: 1, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.footerContainer}
-          >
-            <View style={styles.footerInfo}>
-              <Image source={clockIcon} style={styles.icon}></Image>
-              <Text style={styles.text}>{clientProfile.user.phoneNb}</Text>
-            </View>
-            <View style={styles.footerInfo}>
-              <Image source={locationIcon} style={styles.icon}></Image>
-              <Text style={styles.text}>{clientProfile.user.email}</Text>
-            </View>
-          </LinearGradient>
         </View>
       </LinearGradient>
-      <TouchableOpacity style={styles.button} onPress={() => navigateEdit()} >
-        <PrimaryButton title="Edit Profile"  />
-      </TouchableOpacity>
     </ScrollView>
   )
 }
@@ -213,6 +143,7 @@ const styles = StyleSheet.create({
   footerInfo: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingTop: 7,
     marginRight: 30
   },
   circle: {
@@ -239,17 +170,10 @@ const styles = StyleSheet.create({
   heart: {},
   plus: {
     left: 10,
-    top: 5,
   },
   text: {
     color: 'rgba(16, 125, 197, 1)',
     fontFamily: 'PoppinsR',
-    marginLeft: 5
-  },
-
-  text2: {
-    fontFamily: 'PoppinsR',
-    color: "rgba(0,0,0,.5)"
   },
   description: {
     color: '#0A084B',
@@ -350,15 +274,14 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50
   },
-  Imagecontainer: {
-    justifyContent: 'center',
-    height: 230,
-    width: '85%',
-    borderRadius: 20,
-    marginVertical: 10,
-  },
-  descriptionContainer:{
-    width: "100%",
+  email:{
+    fontSize: 14,
+    marginBottom: 10,
+    fontFamily: 'PoppinsS',
+    marginEnd: 80,
+    left: 20,
+    width: '100%',
+    color: "rgba(0,0,0, .4)"
   }
 })
-export default ClientProfile
+export default ContactCompanyPage

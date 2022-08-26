@@ -49,6 +49,19 @@ export const getJob = createAsyncThunk('getJob', async (id, thunkApi) => {
     return thunkApi.rejectWithValue(error.response.data.msg)
   }
 })
+export const getFavoriteJob = createAsyncThunk(
+  'getFavoriteJob', async (id, thunkApi) => {
+    let url = `/jobs/${id}/favoriteJobs`
+    console.log("url", url)
+    try {
+      const resp = await customFetch.get(url)
+      return resp.data
+    } catch (error) {
+      console.log( "error getting job", error)
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
 export const applyJob = createAsyncThunk(
   'applyJob',
   async (proposal, thunkApi) => {
@@ -90,8 +103,8 @@ export const getAllFreelancers = createAsyncThunk(
 )
 export const getFilteredFreelancer = createAsyncThunk(
   'getFilteredFreelancer',
-  async (jobId, thunkApi) => {
-    let url = `freelancers/${jobId}/getFreelancers`
+  async (data, thunkApi) => {
+    let url = `freelancers/${data.jobId}/getFreelancers?page=${data.page}`
     console.log("url", url)
     try {
       const resp = await customFetch.get(url)

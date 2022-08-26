@@ -9,7 +9,7 @@ import {
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { setNotificationsSeen } from '../reduxToolkit/userSlice'
+import { deleteNotifcation, deleteNotifcations, setNotificationsSeen } from '../reduxToolkit/userSlice'
 
 import Navbar from '../components/Navbar'
 import Header from '../components/Header'
@@ -35,15 +35,15 @@ const NotificationsPage = ({ navigation, role, route }) => {
     }
   }, [route])
   const dispatch = useDispatch()
-  const acceptContract = (action) => {
-    navigation.navigate('acceptContract', {action, role: "freelancer"})
+  const acceptContract = (contractId, jobId) => {
+    navigation.navigate('acceptContractFreelancer', {role: "freelancer", action: contractId})
   }
   const navCongrats = (action) => {
     navigation.navigate('acceptedClient', {action, role: user.role})
   }
-  const navJobs = (freelancerId, jobId, action) => {
+  const navJobs = (freelancerId, jobId, action, notificationId) => {
     setLoading(true)
-    console.log("action", action)
+
     if(freelancerId === "propsal" || jobId === "propsal" || action === "proposal"){
       return setLoading(false)
     } else{
@@ -57,36 +57,30 @@ const NotificationsPage = ({ navigation, role, route }) => {
         console.log("res", res.payload.freelancer)
         setTimeout(() => {
           if(
-            job ===null || 
-            job ===undefined || 
-            job ==={} || 
-            freelancer ===null || 
-            freelancer ==={} || 
-            freelancer ===undefined 
+            response.job ===null || 
+            response.job ===undefined || 
+            response.job ==={} || 
+            res.payload.freelancer ===null || 
+            res.payload.freelancer ==={} || 
+            res.payload.freelancer ===undefined 
           ){
              setLoading(false)
-            return (
-              alert("Notification expired")
-            )
+            return alert("Notification expired")
           } else {
             setLoading(false)
+            dispatch( 
+              deleteNotifcation(notificationId)
+            )
             navigation.navigate('freelancerDetails', {job: response.job, freelancer: res.payload.freelancer})
           }
         }, (400));
       
-      }
-      )
-      .catch(err=> {
-        console.log("eror", err)
-        setLoading(false)
-        return alert("Notification has expired")
-
       })
     })
     .catch(err=> {
       console.log("eror", err)
       setLoading(false)
-      return alert("Notification has expired")
+      // return alert("Notification has expired")
     })
   }
 
@@ -96,6 +90,12 @@ const NotificationsPage = ({ navigation, role, route }) => {
     navigation.navigate('jobDescription', {id})
   }
 
+  const onDeleteNotifications = () => {
+     let notificationIds= notifications.map(item => item.id)
+    dispatch(
+      deleteNotifcations({ids: notificationIds})
+    )
+  }
 
   return loading ? <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
     <ActivityIndicator size={"large"} />
@@ -107,6 +107,8 @@ const NotificationsPage = ({ navigation, role, route }) => {
           icon={notificationIcon}
           hidden
           rightIcon={trash}
+          trash
+          onTrash={() => onDeleteNotifications()}
           numberHidded
           title={'Notifications'}
         />

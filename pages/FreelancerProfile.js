@@ -6,6 +6,7 @@ import {
   Image,
   Pressable,
   ScrollView,
+  TouchableOpacity,
   ActivityIndicator
 } from 'react-native'
 
@@ -21,7 +22,6 @@ import PrimaryButton from '../components/Buttons/PrimaryButton'
 import minusIcon from '../assets/images/minusIcon.png'
 import { useSelector, useDispatch } from 'react-redux'
 import { getFreelancer } from '../reduxToolkit/freelancerSlice'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const FreelancerProfile = ({ navigation, route }) => {
 
@@ -42,7 +42,10 @@ const FreelancerProfile = ({ navigation, route }) => {
       setLoading(true)
       dispatch(getFreelancer(user.freelancerId ?  user.freelancerId : freelancer.id))
       .unwrap()
-      .then(setLoading(false))
+      .then((res) => {
+        console.log("res", res.freelancer.averageRating)
+        setLoading(false)
+      })
       .catch(err =>{ 
         console.log("errors", err)
         setLoading(false)
@@ -54,7 +57,6 @@ const FreelancerProfile = ({ navigation, route }) => {
 
   const { id, roles, languages } = freelancer
   let users = freelancer.user !== undefined ? freelancer.user : user
-  console.log("userss", users)
   const navigateEdit = () => {
     navigation.navigate('JobSignUp', { role: 'freelancer', update: true })
   }
@@ -72,7 +74,7 @@ const FreelancerProfile = ({ navigation, route }) => {
         <View style={styles.subHeader}>
           {
             user.profileImage 
-            ? <Image source={{uri: `http://194.5.157.234:4000${user.profileImage}`}} style={styles.profileImage}/>
+            ? <Image source={{uri: `http://195.110.58.234:4000${user.profileImage}`}} style={styles.profileImage}/>
             : <View style={styles.circle} />
 
           }
@@ -188,7 +190,7 @@ const FreelancerProfile = ({ navigation, route }) => {
         <View style={styles.subHeader}>
           {
             user.profileImage 
-            ? <Image source={{uri: `http://194.5.157.234:4000${user.profileImage}`}} style={styles.profileImage}/>
+            ? <Image source={{uri: `http://195.110.58.234:4000${user.profileImage}`}} style={styles.profileImage}/>
             : <View style={styles.circle} />
 
           }

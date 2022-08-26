@@ -15,6 +15,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { useDispatch, useSelector } from 'react-redux';
 import { createClientProfile } from '../reduxToolkit/clientSlice';
+import { StackActions } from '@react-navigation/native';
 
 import Header from '../components/Header';
 import Inputs from '../components/Inputs';
@@ -56,9 +57,12 @@ const ClientSignupPage = ({navigation}) => {
 
   const [values, setValues] = useState(initialState)
   const dispatch = useDispatch()
+  const [password2, setPassword2] = useState("")
 
   const navigateLogin = () => {
-    navigation.navigate('login')
+    navigation.dispatch(
+      StackActions.replace('login')
+    )
   }
   useEffect(() => {
 
@@ -143,7 +147,9 @@ const ClientSignupPage = ({navigation}) => {
     .then((response) => {
       console.log("creating profile", response)
       setChanged(false)
-      navigation.navigate('recruiter_dashboard')
+      navigation.dispatch(
+        StackActions.replace('recruiter_dashboard')
+      )
     })
     .catch((error) => {
       if(error === "Email already in use"){
@@ -194,7 +200,7 @@ const ClientSignupPage = ({navigation}) => {
     console.log("uploading")
     try {
       const response = await FileSystem.uploadAsync(
-        `http://194.5.157.234:4000/api/v1/auth/uploadImage/`,
+        `http://195.110.58.234:4000/api/v1/auth/uploadImage/`,
         uri,
         {
           fieldName: 'files',
@@ -223,7 +229,7 @@ const ClientSignupPage = ({navigation}) => {
     try {
       console.log('trying')
       const response = await FileSystem.uploadAsync(
-        `http://194.5.157.234:4000/api/v1/auth/uploadImage/`,
+        `http://195.110.58.234:4000/api/v1/auth/uploadImage/`,
         uri,
         {
           fieldName: 'files',
@@ -263,9 +269,15 @@ const ClientSignupPage = ({navigation}) => {
     }
   }, [uploaded, startingToUpload])
 
+  const goBack = () => {
+    navigation.dispatch(
+      StackActions.replace('SignIn')
+    )
+  }
+
   return (
     <ScrollView style={styles.wrapper}>
-      <Header title='Client Sign Up' icon={signUp} hidden={false} goBack={navigation.goBack}/>
+      <Header title='Client Sign Up' icon={signUp} hidden={false} goBack={goBack}/>
       <View style={styles.container}>
         <Text style={styles.text}>All you need is to fill your information below and upload a document to create your profile. </Text>
         <View style={styles.form}>
@@ -291,6 +303,17 @@ const ClientSignupPage = ({navigation}) => {
             onChange={(value) => handleChange('password', value)}
             value={values.password}
           />
+          <Inputs
+            placeholder='Confirm Password*'
+            onChange={(e) => setPassword2(e)}
+            value={password2}
+          />
+          { 
+            values.password !== password2 && password2 !== "" &&
+            <Text style={styles.warning}>
+              passwords don't match
+            </Text>
+          }
           { 
             image2.length && !uploaded2
             ? <View style={{width: "100%", alignItems: "center"}}>
@@ -462,6 +485,14 @@ const styles = StyleSheet.create({
     backgroundColor:"rgba(255,255,255,.8)",
     width: "85%",
     marginVertical: 10
+  },
+  warning:{
+    alignSelf: "flex-end",
+    marginTop: -10,
+    marginBottom: 10,
+    right: 30,
+    color: "#BE3142",
+    fontSize: 10
   }
 })
 
