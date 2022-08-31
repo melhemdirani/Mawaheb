@@ -1,17 +1,11 @@
 import React, {useState} from 'react';
-import { View, StyleSheet, TouchableOpacity} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-
-import SearchableDropdown from 'react-native-searchable-dropdown';
+import { View, StyleSheet} from 'react-native';
 import { RoleList, countryList } from '../assets/data/RolesList';
 
 import Inputs from './Inputs';
 import SelectInput from './SelectInput';
 import TextArea from './TextArea';
-import DurationInputs from './DurationInputs';
-import DailyRate from './DailyRate';
 import DateInputs from './DateInputs';
-import DeleteButton from './Buttons/DeleteButton';
 
 function RoleForm({handleChange, title, index, experience}) {
     return (

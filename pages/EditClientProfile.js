@@ -14,7 +14,7 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { useDispatch, useSelector } from 'react-redux';
-import {updateClientProfile } from '../reduxToolkit/clientSlice';
+import {createClientProfile, updateClientProfile } from '../reduxToolkit/clientSlice';
 
 import Header from '../components/Header';
 import Inputs from '../components/Inputs';
@@ -28,9 +28,10 @@ import PhoneInputs from '../components/PhoneInput';
 
 
 const EditClientProfile = ({navigation, route}) => {
-    const {user} = useSelector( store => store.user)
+    const {user, token} = useSelector( store => store.user)
 
     const client = route.params.clientProfile
+
     const {
         companyName,
         privacy, 
@@ -53,10 +54,9 @@ const EditClientProfile = ({navigation, route}) => {
     TRN,
     email: user.email,
     profileImage: user.profileImage,
-    phoneNb: client.user.phoneNb,
+    phoneNb: user.phoneNb,
     tradingLicense
   }
-  console.log("email", client)
   const [values, setValues] = useState(initialState)
 
   const [uploaded, setUploaded] = useState(sign !== "" || tradingLicense !== "" ? true : false)
@@ -88,9 +88,11 @@ const EditClientProfile = ({navigation, route}) => {
     setValues({ ...values, [name]: value })
     setChanged(true)
   }
-
-
+console.log("completed", client.notCompleted)
   const onSubmit = () => {
+    if(activity){
+      return alert("Uploading please wait")
+    }
     const {
       companyName,
       privacy,
@@ -115,32 +117,59 @@ const EditClientProfile = ({navigation, route}) => {
       return alert("Uploading please wait")
     }
     else { 
-      dispatch(
-        updateUser({
-            companyName: values.companyName,
+      if(client.notCompleted){
+        console.log("creating")
+        dispatch(
+          createClientProfile({
+            companyName:values.companyName,
+            privacy:values.privacy,
+            signatoryName:values.signatoryName,
+            signatoryTitle:values.signatoryTitle,
+            companyName:values.companyName,
+            TRN:parseInt(values.TRN),
+            sign: uploadedImage,
+            tradingLicense: uploadedImage,
             Address: "address",
-            name: values.companyName,
-            email: values.email.toLowerCase(),
-            phoneNb: values.phoneNb,
-            role: 'client',
-            profileImage: values.profileImage,
-            userId: user.clientId
+    
+          })
+        )
+        .unwrap()
+        .then((response) => {
+          console.log("creating profile", response)
         })
-      )
-      .unwrap()
-      .then((response) => {
-        console.log("response registiring", response)
-        onRegister()
-      })
-      .catch((error) => {
-        if(error === "Email already in use"){
-          alert("This email is already in use, please register using another email address")
-        } else{
-          alert("Error registering")
-        }
-        console.log("error", error)
-      })
+        .catch(error => console.log("error registering", error))
+      } else{
+        console.log("updating")
+
+        dispatch(
+          updateUser({
+              companyName: values.companyName,
+              Address: "address",
+              name: values.companyName,
+              email: values.email.toLowerCase(),
+              phoneNb: values.phoneNb,
+              role: 'client',
+              profileImage: values.profileImage,
+              userId: user.clientId,
+              notificationToken: token
+          })
+        )
+        .unwrap()
+        .then((response) => {
+          console.log("response registiring", response)
+          onRegister()
+        })
+        .catch((error) => {
+          if(error === "Email already in use"){
+            alert("This email is already in use, please register using another email address")
+          } else{
+            alert("Error registering")
+          }
+          console.log("error", error)
+        })
+      }
     }
+
   }
 
   const onRegister = () => {
@@ -183,7 +212,7 @@ const EditClientProfile = ({navigation, route}) => {
   const selectFile = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
     })
@@ -197,7 +226,7 @@ const EditClientProfile = ({navigation, route}) => {
   const selectFile2 = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
     })
@@ -209,7 +238,6 @@ const EditClientProfile = ({navigation, route}) => {
     }
   }
   const upload2 = async (uri) => {
-    console.log("uploading")
     try {
       const response = await FileSystem.uploadAsync(
         `http://195.110.58.234:4000/api/v1/auth/uploadImage/`,
@@ -312,7 +340,7 @@ const EditClientProfile = ({navigation, route}) => {
                 image2 !== "" && !uploaded2
                 ? <View style={{width: "100%", alignItems: "center"}}>
                     <View style={styles.ActivityIndicator}>
-                    <ActivityIndicator size={"large"} />
+                  <ActivityIndicator size={"large"} color="#4E84D5"/>
                     </View>
                     <ImageCard uri={image2} onImageDelete={onImageDelete2} />
                 </View>
@@ -351,7 +379,7 @@ const EditClientProfile = ({navigation, route}) => {
                     image.length && !uploaded
                     ? <View style={{width: "100%", alignItems: "center"}}>
                         <View style={styles.ActivityIndicator}>
-                        <ActivityIndicator size={"large"} />
+                      <ActivityIndicator size={"large"} color="#4E84D5"/>
                         </View>
                         <ImageCard uri={image} style={styles.Imagecontainer} onImageDelete={onImageDelete}/>
                     </View>
@@ -377,7 +405,7 @@ const EditClientProfile = ({navigation, route}) => {
                     image !== "" && !uploaded
                     ? <View style={{width: "100%", alignItems: "center"}} >
                         <View style={styles.ActivityIndicator}>
-                        <ActivityIndicator size={"large"} />
+                      <ActivityIndicator size={"large"} color="#4E84D5"/>
                         </View>
                         <ImageCard uri={image} style={styles.Imagecontainer} onImageDelete={onImageDelete}/>
                     </View>

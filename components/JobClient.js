@@ -9,13 +9,30 @@ import heartIcon from '../assets/images/heartIcon.png'
 import plusIcon from '../assets/images/plusIcon.png'
 import MaskedView from '@react-native-masked-view/masked-view'
 
-const JobClient = ({ title, current, navigate, item }) => {
+const JobClient = ({ title, current, navigate, item, contract, user, future }) => {
+  if(!future){
+    console.log("data ", user) // apply to prev and current jobs pass new variable !future
+  }
+    const navigation = () => {
+      if(!future){
+        navigate(item, user)
+      } else{
+        navigate(item)
+      }
+    }
+
     return (
         <View
         // style={lastOne ? [styles.wrapper, { marginBottom: 40 }] : styles.wrapper}
         style={styles.wrapper}
         >
-        <View style={styles.header}>
+        <View style={ future ? styles.header : styles.header2}>
+            {!future && 
+              <Image 
+                source={{uri: `http://195.110.58.234:4000${user.profileImage}`}} 
+                style={styles.profileImage}
+              />
+            }
             <View style={styles.subHeader}>
             <ImageBackground
                 source={priceRectangle}
@@ -28,12 +45,14 @@ const JobClient = ({ title, current, navigate, item }) => {
                 </View>
             </ImageBackground>
             </View>
-            <View style={styles.subHeader}>
+            { future &&
+              <View style={styles.subHeader}>
                 {/* <Image source={heartIcon} style={styles.heart}></Image> */}
-                <Pressable onPress={() => navigate(item)} style={styles.plusContainer}>
+                <Pressable onPress={() => navigation()} style={styles.plusContainer}>
                 <Image source={plusIcon} style={styles.plus}></Image>
                 </Pressable>
-            </View>
+              </View>
+            }
         </View>
         <LinearGradient
             colors={
@@ -67,7 +86,7 @@ const JobClient = ({ title, current, navigate, item }) => {
                         { backgroundColor: 'transparent' }
                     ]}
                     >
-                    {item.title} {item.privacy === "private" && " - private job"}
+                    {future ? item.title : user.name} 
                     </Text>
                 }
                 >
@@ -76,10 +95,14 @@ const JobClient = ({ title, current, navigate, item }) => {
                     end={{ x: 1, y: 1 }}
                     colors={['#31BEBB','#655BDA']}
                 >
-                    <Text style={[styles.title, { opacity: 0 }]}>{item.title}</Text>
+                    <Text style={[styles.title, { opacity: 0 }]}>{ future ? item.title : user.name}</Text>
                 </LinearGradient>
                 </MaskedView>
-                <Text style={styles.description}>{item.description && item.description.slice(0,70)}</Text>
+                {
+                  future 
+                  ? <Text style={styles.description}>{item.description && item.description.slice(0,70)}</Text>
+                  : <Text style={styles.description}>{item.title} - {item.category}</Text>
+                }
             </View>
             <LinearGradient
                 colors={
@@ -153,6 +176,15 @@ const styles = Platform.OS === 'android'
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
+      width: '90%',
+      alignSelf: 'center',
+      marginBottom: -45,
+    },
+    header2: {
+      zIndex: 1,
+      top: 0,
+      flexDirection: 'row',
+      alignItems: 'center',
       width: '90%',
       alignSelf: 'center',
       marginBottom: -45,
@@ -244,8 +276,27 @@ const styles = Platform.OS === 'android'
       marginTop: 5,
       color: '#107DC5',
     },
+    profileImage:{
+      width: 60,
+      height: 60,
+      borderRadius: 50,
+      backgroundColor: "white",
+      zIndex: 9999,
+      borderWidth: 1,
+      borderColor: "#4E84D5"
+    },
+   
   })
   : StyleSheet.create({
+    profileImage:{
+      width: 60,
+      height: 60,
+      borderRadius: 50,
+      backgroundColor: "white",
+      zIndex: 9999,
+      borderWidth: 1,
+      borderColor: "#4E84D5"
+    },
     wrapper: {
       zIndex: 9999,
       width: "90%",
@@ -276,8 +327,17 @@ const styles = Platform.OS === 'android'
       zIndex: 1,
       top: 0,
       flexDirection: 'row',
+      justifyContent: "space-between",
       alignItems: 'center',
-      justifyContent: 'space-between',
+      width: '90%',
+      alignSelf: 'center',
+      marginBottom: -45,
+    },
+    header2: {
+      zIndex: 1,
+      top: 0,
+      flexDirection: 'row',
+      alignItems: 'center',
       width: '90%',
       alignSelf: 'center',
       marginBottom: -45,

@@ -29,23 +29,23 @@ const JobList = ({
 }) => {
   const uniqueIds = [];
 
-  const newLanguages = freelancer.languages.filter(element => {
-    const isDuplicate = uniqueIds.includes(element.name);
+  // const newLanguages = freelancer.languages.filter(element => {
+  //   const isDuplicate = uniqueIds.includes(element.name);
 
-    if (!isDuplicate) {
-      uniqueIds.push(element.name);
+  //   if (!isDuplicate) {
+  //     uniqueIds.push(element.name);
 
-      return true;
-    }
+  //     return true;
+  //   }
 
-    return false;
-  });
+  //   return false;
+  // });
 
   let rate = freelancer.roles.filter(role => {
     return role.title ===  job.title
   })
   console.log("rate", rate)
-  return (
+  return rate.length > 0 &&(
     <View style={styles.wrapper}>
       <View style={styles.header}>
         <View style={styles.subHeader}>
@@ -115,7 +115,7 @@ const JobList = ({
             <Text style={styles.description}>{job.category} - {job.title}</Text>
             <Text style={styles.description}>{rate[0].keyResponsibilities.slice(0,40)}</Text>
           </View>
-          <View style={styles.languages}>
+          {/* <View style={styles.languages}>
             <Image source={languageIcon} style={styles.languageIcon}></Image>
             {newLanguages.length > 0 && newLanguages.map((language, i) => {
               return (
@@ -123,7 +123,7 @@ const JobList = ({
                   <Text style={styles.language}>{language.name}</Text>
                 </View>
             )})}
-          </View>
+          </View> */}
           <LinearGradient
             colors={[
               'rgba(202, 218, 221, 0.4)',

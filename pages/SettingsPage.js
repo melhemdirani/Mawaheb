@@ -63,9 +63,6 @@ const SettingsPage = ({navigation, role}) => {
         .catch( err => {
             alert("You are not logged in")
             console.log("err", err)
-            // navigation.dispatch(
-            //     StackActions.replace('SignIn', {reload})
-            //   )
             CommonActions.reset('SignIn', {reload})
 
             setLoading(false)

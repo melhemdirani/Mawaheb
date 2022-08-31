@@ -92,7 +92,8 @@ const JobsPage = ({ navigation, route }) => {
     } else if(filters.category === "unfiltered" && !handledCategory){
       setFilters( data => ({
         ...data,
-        category: freelancer.roles !== undefined  && freelancer.roles.length ?  freelancer.roles[0].category : ""
+        category: freelancer.roles !== undefined  && freelancer.roles.length ?  freelancer.roles[0].category : "",
+        title: freelancer.roles !== undefined  && freelancer.roles.length ?  freelancer.roles[0].title : ""
       }))
     }
   }, [route])
@@ -117,6 +118,7 @@ const JobsPage = ({ navigation, route }) => {
         console.log("response freelancer length b", response.jobs.length)
         setNumberOfPages(response.numOfPages)
         setJobs(response.jobs)
+        console.log("jobs response", response.jobs)
         setLoading(false)
       })
       .catch((error) => {

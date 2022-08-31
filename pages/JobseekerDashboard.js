@@ -6,11 +6,13 @@ import {
   StyleSheet,
   Image,
   ImageBackground,
+  Dimensions,
 } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import MaskedView from '@react-native-masked-view/masked-view'
 import { useIsFocused } from "@react-navigation/native"
+import Carousel from 'react-native-anchor-carousel'
 
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -23,14 +25,18 @@ import backgroundImage from '../assets/images/currentBg.png'
 import totalBg from '../assets/images/totalBg.png'
 import SeekerDashJob from '../components/SeekerDashJob'
 import { getFavoriteJob } from '../reduxToolkit/jobSlice'
+import { getNotifications, setNewNotifications, setNotificationsSeen } from '../reduxToolkit/userSlice'
+import SimplePaginationDot from '../components/SimplePaginationDot'
 
 const JobseekerDashboard = ({ navigation, route }) => {
   const isFocused = useIsFocused();
 
   const [favRoute, setFavRoute] = useState(false)
   const [favJobs, setFavJobs] = useState([])
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const carouselRef = useRef()
 
-  const { user } = useSelector((store) => store.user)
+  const { user, notifications } = useSelector((store) => store.user)
   const { freelancer } = useSelector((store) => store.freelancer)
   const { dashboard } = useSelector((store) => store.freelancer)
   const { currentJobs, pastJobs, totalWorkingTime, totalCashEarned } = dashboard
@@ -40,19 +46,53 @@ const JobseekerDashboard = ({ navigation, route }) => {
     totalWorkingTime > 30 ? Math.floor(totalWorkingTime % 30) : totalWorkingTime
 
   const dispatch = useDispatch()
-  
-
+  const { width: windowWidth } = Dimensions.get('window')
+  function handleCarouselScrollEnd(item, index) {
+    console.log("index", index)
+    setCurrentIndex(index)
+  }
   useEffect(() => {
     if(isFocused){
       setFavRoute(false)
     }
-    console.log("id",freelancer.id)
     dispatch(getFreelancerDashboard(user.freelancerId))
-    dispatch(getFavoriteJob(freelancer.id))
+    .unwrap()
     .then()
-    .catch(err => console.log(err))
+    .catch(err => console.log("error", err))
+    
+    dispatch(getFavoriteJob(freelancer.id))
+    .then(res => {
+      if(res.payload.favJobs !== undefined){
+        setFavJobs(res.payload.favJobs)
+      }
+    })
+    .catch(err => console.log("err", err))
+    console.log("focused", isFocused) 
   }, [route, isFocused])
 
+  useEffect(() => {
+    dispatch(getNotifications({ 
+      id: user.freelancerId ? user.freelancerId : freelancer.id, 
+      role: user.role 
+    }))
+    .unwrap()
+    .then(res => {
+      dispatch(
+        setNewNotifications(1)
+      )
+      console.log("res notifiactionsa", res)
+      if(res.notifications.length > notifications.length){  
+        dispatch(
+          setNotificationsSeen(true)
+        )
+      } else{
+        dispatch(
+          setNotificationsSeen(false)
+        )
+      }
+    })
+    .catch(err => console.log("error getting notifications for freelancer", err))
+  }, [])
 
   const navigatePrevious = (id) => {
     // navigation.navigate('jobDescription', {id})
@@ -61,16 +101,15 @@ const JobseekerDashboard = ({ navigation, route }) => {
     // navigation.navigate('jobDescription', {id})
   }
   const RenderItem = (data, index) => {
+    const item = data.data
     return (
       <View style={styles.renderItem}>
         <SeekerDashJob
           heart={true}
-          title={currentJobs[0]?.title}
-          description={currentJobs[0]?.description}
-          price={currentJobs[0]?.budget}
           navigate={navigatePrevious}
           disabled
-          job={currentJobs[0]}
+          job={item}
+          client={item.client}
         />
       </View>
     )
@@ -157,8 +196,21 @@ const JobseekerDashboard = ({ navigation, route }) => {
     .catch(err => console.log("error", err))
   }
   const renderItem = (data) => {
-    return  <Job {...data.item} navigate={navigate} data={data} likeJob={likeJob} like dash unLikeJob={unLikeJob}/>
+    return (
+      <View style={styles.renderItem}>
+        <SeekerDashJob
+          heart={true}
+          navigate={navigatePrevious}
+          disabled
+          job={data.item}
+          current
+          client={data.item.client}
+
+        />
+      </View>
+    )
   }
+
   return (
     <View style={styles.container}>
 
@@ -184,18 +236,22 @@ const JobseekerDashboard = ({ navigation, route }) => {
             <View style={styles.current}>
               <Image style={styles.background} source={backgroundImage} />
               <View style={styles.currentSub}>
-                <Text style={[styles.title2]}>Current Job</Text>
-
-                <SeekerDashJob
-                  heart={true}
-                  current={true}
-                  title={currentJobs[0]?.title}
-                  description={currentJobs[0]?.description}
-                  price={currentJobs[0]?.budget}
-                  navigate={navigatePrevious}
-                  disabled
-                  job={currentJobs[0]}
+                <Text style={[styles.title2]}>Current Jobs</Text>
+                  <Carousel
+                  ref={carouselRef}
+                  data={currentJobs} // continue here
+                  renderItem={renderItem}
+                  style={styles.carousel}
+                  itemWidth={windowWidth}
+                  containerWidth={windowWidth}
+                  separatorWidth={0}
+                  onScrollEnd={handleCarouselScrollEnd}
                 />
+              { currentJobs?.length > 1 && <SimplePaginationDot
+                  currentIndex={currentIndex}
+                  length={currentJobs?.length}
+                  color="white"
+                />}
               </View>
             </View>
           ) : null
@@ -203,7 +259,6 @@ const JobseekerDashboard = ({ navigation, route }) => {
           {pastJobs?.length >= 1 ? (
             <View>
               <MaskedTitle title='Previous Jobs' />
-
               {pastJobs.map((data, i) => (
                 <RenderItem data={data} index={i} key={data.id} />
               ))}
@@ -237,12 +292,16 @@ const JobseekerDashboard = ({ navigation, route }) => {
 }
 
 const styles = StyleSheet.create({
+  carousel: {
+    flexGrow: 0,
+    zIndex: 999,
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',
   },
   background: {
-    height: 300,
+    height: 340,
     width: '100%',
     position: 'absolute',
   },
@@ -281,6 +340,8 @@ const styles = StyleSheet.create({
   currentSub: {
     top: -10,
     height: 310,
+    marginBottom: 20,
+
   },
   totalImg: {
     position: 'absolute',
@@ -314,6 +375,9 @@ const styles = StyleSheet.create({
     width: 1,
     height: '50%',
   },
+  current:{
+    marginBottom: 50
+  },  
   row2: {
     flexDirection: 'row',
     justifyContent: 'space-around',

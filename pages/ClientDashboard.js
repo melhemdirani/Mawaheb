@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import {
   ScrollView,
   View,
@@ -13,11 +13,11 @@ import MaskedView from '@react-native-masked-view/masked-view'
 import Carousel from 'react-native-anchor-carousel'
 import { Dimensions } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
+import { useIsFocused } from "@react-navigation/native"
 
 import { getClientDashboard } from '../reduxToolkit/clientSlice'
 
 import SecondaryHeader from '../components/SecondaryHeader'
-import Job from '../components/Job'
 import Navbar from '../components/Navbar'
 import backgroundImage from '../assets/images/currentBg.png'
 import totalBg from '../assets/images/totalBg.png'
@@ -25,44 +25,87 @@ import PrimaryButton from '../components/Buttons/PrimaryButton'
 import SimplePaginationDot from '../components/SimplePaginationDot'
 import { ActivityIndicator } from 'react-native'
 import JobClient from '../components/JobClient'
+import { getNotifications, setNewNotifications, setNotificationsSeen } from '../reduxToolkit/userSlice'
 
 const ClientDashboard = ({ navigation, route }) => {
   const { width: windowWidth } = Dimensions.get('window')
   const { client, clientDashboard, isLoading } = useSelector(
     (store) => store.client
   )
-  const { user } = useSelector((store) => store.user)
-  const { job } = useSelector((store) => store.user)
+  const { user, notifications } = useSelector((store) => store.user)
   const { numOfJobs, numOfContracts } = clientDashboard
-  console.log("number of Cintract", numOfContracts)
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch()
+  const isFocused = useIsFocused();
     
-  const [currentJobs, setCurrentJobs] = useState({})
-  const [pastJobs, setPastJobs] = useState({})
+  const [currentJobs, setCurrentJobs] = useState([])
+  const [pastJobs, setPastJobs] = useState([])
+  const [futureJobs, setFutureJobs] = useState([])
+
   useEffect(() => {
-    setLoading(true)
-    dispatch(getClientDashboard(user?.clientId || client.id))
-    .unwrap()
-    .then((res) =>  { 
-        setCurrentJobs(res.currentJobs); 
-        setPastJobs(res.pastJobs); 
-        setLoading(false) 
-    })
-    .catch(err => {console.log("error getting client dashboard", err);    setLoading(false)})
-  }, [route])
+    if(isFocused){
+      setLoading(true)
+      console.log("client", user.clientId)
+      if(user.id === undefined && !client){
+        setLoading(false)
+        return console.log("hi")
+      }
+      dispatch(getClientDashboard(user?.clientId || client.id))
+      .unwrap()
+      .then((res) =>  { 
+          setCurrentJobs(res.currentJobs); 
+          setFutureJobs(res.futureJobs); 
+          setPastJobs(res.pastJobs); 
+          setLoading(false) 
+      })
+      .catch(err => {console.log("error getting client dashboard", err);    setLoading(false)})
+    }
+}, [route])
+
+  useEffect(() => {
+    if(isFocused){
+      dispatch(getNotifications({ 
+        id: user.clientId 
+        ? user.clientId 
+        : client.id, 
+        role: 
+        user.role 
+      }))
+      .then(res => {
+        if( res.payload.notifications.length > notifications.length){
+          dispatch(
+            setNewNotifications(res.payload.notifications.length - notifications.length)
+          )
+          dispatch(
+            setNotificationsSeen(false)
+          )
+        }
+   
+      })
+      .catch(err => console.log("error getting notifications for client", err))
+  }
+  }, [isFocused])
+
 
   const [currentIndex, setCurrentIndex] = useState(0)
-  const carouselRef = React.useRef()
+  const [futureIndex, setFutureIndex] = useState(0)
+
+  const carouselRef = useRef()
+  const carouselRef2 = useRef()
   function handleCarouselScrollEnd(item, index) {
     setCurrentIndex(index)
   }
+  function handleCarouselScrollEnd2(item, index) {
+    setFutureIndex(index)
+  }
   const navigate = (id) => {
-    navigation.navigate('jobDescriptionClient', { job: id })
+    navigation.navigate('jobDescriptionClient', { job: id, prev: false })
+  }
+  const navigate2 = (id, user) => { // continue here
+    navigation.navigate('jobDescriptionClient', { job: id, prev: true, freelancer: user  }) 
   }
 
   const renderItem = ({ item, index }) => {
-
     return (
       <TouchableOpacity
         style={styles.item}
@@ -74,26 +117,52 @@ const ClientDashboard = ({ navigation, route }) => {
           heart={true}
           current={true}
           description={item.description}
-          navigate={navigate}
+          navigate={navigate2}
           id={item.id}
           item={item}
+          user={data.data.contract.freelancer.user}
+          contract={item.contract}
         />
       </TouchableOpacity>
     )
   }
+  const renderItem2 = ({ item, index }) => {
+    return (
+      <TouchableOpacity
+        style={styles.item}
+        onPress={() => {
+          carouselRef2.current.scrollToIndex(index)
+        }}
+      >
+        <JobClient
+          heart={true}
+          description={item.description}
+          navigate={navigate}
+          id={item.id}
+          item={item}
+          future
+          current={currentJobs.length < 1 ? true : false}
+          contract={item.contract}
+        />
+      </TouchableOpacity>
+    )
+  }
+
 
   const RenderItem = (data) => {
     let lastOne = data.index === pastJobs.length - 1 ? true : false
     return (
       <View style={styles.renderItem}>
         <JobClient
+          contract={true}
           description={data.data.description}
           price={data.data.budget}
           lastOne={lastOne}
           heart={true}
           id={data.id}
           item={data.data}
-          navigate={navigate}
+          user={data.data.contract.freelancer.user}
+          navigate={navigate2}
         />
       </View>
     )
@@ -152,8 +221,9 @@ const ClientDashboard = ({ navigation, route }) => {
   const navigatePosting = () => {
     navigation.navigate('jobPosting')
   }
-  return loading ? <View>
-    <ActivityIndicator size={"large"} />
+
+  return loading ? <View style={{flex: 1, backgroundColor: "white", alignItems: "center", justifyContent: "center"}}>
+  <ActivityIndicator size={"large"} color="#4E84D5"/>
   </View>
   :(
     <View style={styles.container}>
@@ -175,12 +245,39 @@ const ClientDashboard = ({ navigation, route }) => {
             <TotalContainer2 n={numOfJobs} />
           </View>
         </View>
+        {futureJobs?.length >= 1 ? (
+          <View style={styles.current}>
+            {currentJobs.length < 1 && <Image style={styles.background} source={backgroundImage} />}
+            <View style={styles.currentSub}>
+              {
+                currentJobs.length < 1 
+                ?<Text style={[styles.title2]}>Future Jobs</Text>
+                :<MaskedTitle title='Future Jobs' />
+            
+              }
+              <Carousel
+                ref={carouselRef2}
+                data={futureJobs}
+                renderItem={renderItem2}
+                style={styles.carousel}
+                itemWidth={windowWidth}
+                containerWidth={windowWidth}
+                separatorWidth={0}
+                onScrollEnd={handleCarouselScrollEnd2}
+              />
+             { futureJobs?.length > 1 && <SimplePaginationDot
+                currentIndex={futureIndex}
+                length={futureJobs?.length}
+                color={currentJobs.length > 0 ? "#547DD6" : "white" }
+              />}
+            </View>
+          </View>
+        ) : null}
         {currentJobs?.length >= 1 ? (
           <View style={styles.current}>
             <Image style={styles.background} source={backgroundImage} />
             <View style={styles.currentSub}>
               <Text style={[styles.title2]}>Current Jobs</Text>
-
               <Carousel
                 ref={carouselRef}
                 data={currentJobs}

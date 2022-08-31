@@ -21,7 +21,6 @@ const FreelancerSigned = ({navigation, route}) => {
   const dispatch = useDispatch()
   const {role, action} = route.params
   useEffect(() => {
-    console.log("hi", role)
     if(role === "client"){
       dispatch(getFreelancer(action))
       .unwrap()

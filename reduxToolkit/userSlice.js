@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { combineReducers } from 'redux'
 import customFetch from '../utils/axios'
+import * as Notifications from 'expo-notifications';
+
 
 const initialState = {
   user: {},
@@ -10,7 +12,9 @@ const initialState = {
   registerError: undefined,
   notifications: [],
   notificationsSeen: true,
-  credentials: {}
+  newNotifications: 0,
+  credentials: {},
+  token: ""
 }
 export const getNotifications = createAsyncThunk(
   'getNotifications',
@@ -27,6 +31,29 @@ export const getNotifications = createAsyncThunk(
     }
   }
 )
+
+export const generateToken = createAsyncThunk(
+  "generateToken",
+  async () => {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notification!');
+      return; 
+    }
+    try {
+      const token = (await Notifications.getExpoPushTokenAsync({experienceId:'@melhemdirani/mawaheb'})).data;
+      return token;
+    } catch (error) {
+      console.log("error",error)
+    }
+  }
+)
+
 export const createOTP = createAsyncThunk(
   'createOTP',
   async ({ email }, thunkApi) => {
@@ -77,6 +104,7 @@ export const testRegister = createAsyncThunk(
   'testRegister',
   async (user, thunkApi) => {
     let url = '/auth/testRegister'
+    console.log("user", user)
     try {
       const resp = await customFetch.post(url, user)
       return resp.data
@@ -104,7 +132,6 @@ export const deleteAccount = createAsyncThunk(
   'deleteAccount',
   async (userId, thunkApi) => {
     let url = `/users/${userId.userId}`
-    console.log("url", userId)
     try {
       const resp = await customFetch.delete(url)
       console.log("account delete response", resp)
@@ -134,7 +161,6 @@ export const deleteNotifcation = createAsyncThunk(
   'deleteNotifcation',
   async (id, thunkApi) => {
     let url =`/notifications/${id}`
-    console.log("url", url)
     try {
       const resp = await customFetch.delete(url)
       return resp.data
@@ -148,7 +174,6 @@ export const deleteNotifcations = createAsyncThunk(
   'deleteNotifcations',
   async (ids, thunkApi) => {
     let url =`/notifications`
-    console.log("url", ids.ids)
     const notificationIds = ids.ids
     try {
       const resp = await customFetch.patch(url, {notificationIds: notificationIds})
@@ -164,7 +189,6 @@ export const loginUser = createAsyncThunk(
   'loginUser',
   async (user, thunkApi) => {
     let url = '/auth/login'
-    console.log("loggin in")
     try {
       const resp = await customFetch.post(url, user)
       console.log('user login', resp.data)
@@ -203,14 +227,22 @@ const userSlice = createSlice({
       state.user.clientId = action.payload
     },
     setNotificationsSeen: (state, action) => {
-      console.log("action.payload", action.payload)
       state.notificationsSeen = action.payload
     },
+    setNewNotifications: (state, action) => {
+      console.log("action", action.payload)
+      state.newNotifications = action.payload
+    },
     clearUser : (state) => {
-      state.user = {}
+      state.user = {},
+      state.notifications= [],
+      state.newNotifications= 0
     },
     setCredentials : (state, action) => {
       state.credentials = action.payload
+    },
+    setToken : (state, action) => {
+      state.token = action.payload
     }
   },
   extraReducers: {
@@ -251,12 +283,14 @@ const userSlice = createSlice({
     },
     [logout.fulfilled]: (state) => {
       state.user = {}
-      console.log('LOGOUT')
     },
     [loginUser.fulfilled]: (state, { payload }) => {
       const { user } = payload
       state.isLoading = false
       state.user = user
+    },
+    [generateToken.fulfilled]: (state, { payload }) => {
+      state.token = payload
     },
     [loginUser.rejected]: (state, { payload }) => {
       state.isLoading = false
@@ -276,7 +310,14 @@ const userSlice = createSlice({
     },
   },
 })
-export const { setFreelancerId } = userSlice.actions
-export const { setUserAfterRegister, setNotificationsSeen, clearUser, setCredentials } = userSlice.actions
+export const { 
+  setUserAfterRegister, 
+  setNotificationsSeen, 
+  clearUser, 
+  setCredentials,
+  setToken, 
+  setFreelancerId,
+  setNewNotifications 
+} = userSlice.actions
 
 export default userSlice.reducer

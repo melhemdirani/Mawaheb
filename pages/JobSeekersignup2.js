@@ -138,7 +138,7 @@ const JobSeekersignup2 = ({  navigation, route }) => {
 
   const [image, setImage] = useState(update && freelancer.emiratesIdFrontSide !== undefined && freelancer.emiratesIdFrontSide !== null ?`http://195.110.58.234:4000${freelancer.emiratesIdFrontSide}` : {})
   const [image2, setImage2] = useState(update && freelancer.emiratesIdBackSide !== undefined && freelancer.emiratesIdBackSide !== null ?`http://195.110.58.234:4000${freelancer.emiratesIdBackSide}` : {})
-  console.log("freelancer.emiratesIdFrontSide", freelancer.emiratesIdBackSide)
+  console.log("freelancer.emiratesIdFrontSide", freelancer.emiratesIdFrontSide)
   const [uploaded, setUploaded] = useState(freelancer.emiratesIdFrontSide !== undefined ? true :false)
   const [uploaded2, setUploaded2] = useState(freelancer.emiratesIdBackSide !== undefined ? true :false)
 
@@ -148,7 +148,7 @@ const JobSeekersignup2 = ({  navigation, route }) => {
   const selectFile = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
     })
@@ -163,7 +163,7 @@ const JobSeekersignup2 = ({  navigation, route }) => {
   const selectFile2 = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
     })
@@ -298,7 +298,7 @@ const JobSeekersignup2 = ({  navigation, route }) => {
             image.length && !uploaded
             ? <View style={{width: "100%", alignItems: "center"}}>
                 <View style={styles.ActivityIndicator}>
-                  <ActivityIndicator size={"large"} />
+                <ActivityIndicator size={"large"} color="#4E84D5"/>
                 </View>
                 <Image source={{uri:image}} style={styles.Imagecontainer} />
               </View>
@@ -311,7 +311,7 @@ const JobSeekersignup2 = ({  navigation, route }) => {
             image2.length && !uploaded2
             ? <View style={{width: "100%", alignItems: "center"}}>
                 <View style={styles.ActivityIndicator}>
-                  <ActivityIndicator size={"large"} />
+                <ActivityIndicator size={"large"} color="#4E84D5"/>
                 </View>
                 <Image source={{uri:image2}} style={styles.Imagecontainer} />
               </View>

@@ -6,14 +6,11 @@ import {
   Image,
   Pressable,
   ScrollView,
-  ActivityIndicator
 } from 'react-native';
 import * as Linking from "expo-linking";
 
 import { LinearGradient } from 'expo-linear-gradient'
-import calendarIcon from '../assets/images/calendarIcon.png'
 import MaskedView from '@react-native-masked-view/masked-view'
-import languageIcon from '../assets/images/LanguageIcon.png'
 
 import minusIcon from '../assets/images/minusIcon.png'
 import { useSelector } from 'react-redux'
@@ -32,7 +29,6 @@ const ContactCompanyPage = ({ navigation, route }) => {
     Linking.openURL(`tel:${user.phoneNb.replace(/\s/g, "")}`)
   }
   const emailContract = () => {
-   
     Linking.openURL(`mailto:${user.email}`)
   }
 

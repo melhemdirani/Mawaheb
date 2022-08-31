@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "395987793217",
+    "project_id": "mawahib-df3e5",
+    "storage_bucket": "mawahib-df3e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:395987793217:android:c57eca585af260de745dc0",
+        "android_client_info": {
+          "package_name": "com.melhemdirani.mawaheb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "395987793217-37k2b7h7ra7s5um2q07dl1kfcnl8lcek.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGgYhz6kWhcUiz8Be31GTJJb5aqIJ1BS4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "395987793217-37k2b7h7ra7s5um2q07dl1kfcnl8lcek.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

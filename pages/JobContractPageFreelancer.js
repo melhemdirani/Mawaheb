@@ -48,6 +48,7 @@ const JobContractPageFreelancer = ({navigation, route}) => {
     dispatch(getContractFreelancer(route.params.action))
     .unwrap()
     .then(res => {
+      console.log("client", res)
       setClientId(res.contract.clientId)
       setJob(res.contract.job)
       setClient(res.contract.client.companyName)
@@ -81,7 +82,7 @@ const JobContractPageFreelancer = ({navigation, route}) => {
   }
 
   return loading? <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
-    <ActivityIndicator size={"large"} />
+  <ActivityIndicator size={"large"} color="#4E84D5"/>
   </View>
   :(
     <ScrollView style={styles.wrapper}>

@@ -9,7 +9,7 @@ import {
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { deleteNotifcation, deleteNotifcations, setNotificationsSeen } from '../reduxToolkit/userSlice'
+import { deleteNotifcation, deleteNotifcations, setNewNotifications, setNotificationsSeen } from '../reduxToolkit/userSlice'
 
 import Navbar from '../components/Navbar'
 import Header from '../components/Header'
@@ -23,20 +23,17 @@ import { getJob } from '../reduxToolkit/jobSlice'
 
 const NotificationsPage = ({ navigation, role, route }) => {
   const { user, notifications, notificationsSeen, isLoading } = useSelector((store) => store.user)
-  const { freelancer} = useSelector((store) => store.freelancer)
-  const { job} = useSelector((store) => store.job)
-  const { client} = useSelector((store) => store.client)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    console.log("notificationsSeens", notificationsSeen)
     if(!notificationsSeen){
       dispatch(setNotificationsSeen(true))
+      dispatch(setNewNotifications(0))
     }
-  }, [route])
+  }, [])
   const dispatch = useDispatch()
   const acceptContract = (contractId, jobId) => {
-    navigation.navigate('acceptContractFreelancer', {role: "freelancer", action: contractId})
+    navigation.navigate('acceptContractFreelancer', {role: "freelancer", action: contractId, jobId: jobId}) // check jobId if needed
   }
   const navCongrats = (action) => {
     navigation.navigate('acceptedClient', {action, role: user.role})
@@ -98,7 +95,7 @@ const NotificationsPage = ({ navigation, role, route }) => {
   }
 
   return loading ? <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
-    <ActivityIndicator size={"large"} />
+  <ActivityIndicator size={"large"} color="#4E84D5"/>
   </View>
   :(
     <View style={styles.container}>
@@ -113,8 +110,8 @@ const NotificationsPage = ({ navigation, role, route }) => {
           title={'Notifications'}
         />
         {isLoading ? (
-          <View style={{ marginTop: 200 }}>
-            <ActivityIndicator size={'large'} />
+          <View style={{ marginTop: 200, backgroundColor: "white" }}>
+            <ActivityIndicator size={'large'} color="#4E84D5"/>
           </View>
         ) : notifications.length > 0 ? (
           <View style={styles.container4}>

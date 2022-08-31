@@ -48,7 +48,6 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
         jobId: job.id
       })).then(response => {
         console.log("response invite", response)
-        alert("Invitation sent!")
         navigation.goBack()
       })
       .catch(err => {
@@ -131,22 +130,22 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
         <View style={[styles.container, styles.shadow]}>
           <View style={styles.info}>
             {/* <MaskedView
-              maskElement={
-                <Text
-                  style={[styles.title, { backgroundColor: 'transparent',  }]}
-                >
-                  {freelancer.user.name}
-                </Text>
-              }
-            >
-              <LinearGradient
-                start={{ x: 1, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                colors={['rgba(49, 190, 187, 1)', 'rgba(101, 91, 218, 1)']}
-              >
-                <Text style={[styles.title, { opacity: 0 }]}> {freelancer.user.name}</Text>
-              </LinearGradient>
-            </MaskedView> */}
+            //   maskElement={
+            //     <Text
+            //       style={[styles.title, { backgroundColor: 'transparent',  }]}
+            //     >
+            //       {freelancer.user.name}
+            //     </Text>
+            //   }
+            // >
+            //   <LinearGradient
+            //     start={{ x: 1, y: 0 }}
+            //     end={{ x: 1, y: 1 }}
+            //     colors={['rgba(49, 190, 187, 1)', 'rgba(101, 91, 218, 1)']}
+            //   >
+            //     <Text style={[styles.title, { opacity: 0 }]}> {freelancer.user.name}</Text>
+            //   </LinearGradient>
+            // </MaskedView> */}
             <View>
               <Text style={[styles.title, {color: "rgba(202, 218, 221, 0.2)"}]}> {freelancer.user.name}</Text>
 

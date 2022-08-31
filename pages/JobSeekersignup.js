@@ -15,9 +15,10 @@ import * as FileSystem from 'expo-file-system';
 import { useSelector, useDispatch } from 'react-redux'
 import { StackActions } from '@react-navigation/native';
 
+
 import signUp from '../assets/images/signUp.png'
 import { validate } from 'react-email-validator';
-import { registerUser, testRegister, updateUser } from '../reduxToolkit/userSlice'
+import {  testRegister, updateUser } from '../reduxToolkit/userSlice'
 
 import Header from '../components/Header'
 import Inputs from '../components/Inputs'
@@ -35,8 +36,7 @@ const JobSeekersignup = ({ navigation, route }) => {
 
   const { role, update} = route.params
   
-  const { user, error } = useSelector((store) => store.user)
-  const {  freelancer } = useSelector((store) => store.user)
+  const { user, token } = useSelector((store) => store.user)
 
 
   const [uploaded, setUploaded] = useState(
@@ -56,7 +56,6 @@ const JobSeekersignup = ({ navigation, route }) => {
   )
 
 
- 
   let initialState = !update 
   ? {
     name: '',
@@ -93,7 +92,9 @@ const JobSeekersignup = ({ navigation, route }) => {
     navigation.dispatch(
       StackActions.replace('JobSignUpb', {update})
     )
-
+  }
+  const navigateUpdate =() => {
+    navigation.navigate('JobSignUpb', {update})
   }
 
   const navigateOtp = () => {
@@ -115,46 +116,10 @@ const JobSeekersignup = ({ navigation, route }) => {
     if( !validate(email)){
       return alert("Please enter a valid email address")
     }
-    if((user !== undefined &&  user.userId !== undefined && user !== {}) || update){
- 
-      if(!update) {
-        console.log("registering")
-        setIsLoading(true)
-        dispatch(
-          testRegister({
-            name: values.name,
-            lastName: values.lastName,
-            email: values.email,
-            password: values.password,  
-            phoneNb: values.phoneNb,
-            role: role,
-            profileImage: uploadedImage,
-            location: values.location
-          })
-        )
-        .unwrap()
-        .then((response) => {
-          console.log("response registiring", response)
-          // alert(`Thank you ${values.name}! Your account was registerd!`)
-          setChangedValues(false)
-          setIsLoading(false)
-          navigateOtp()
-        })
-        .catch((error) => {
-          if(error === "Email already in use"){
-            alert("This email is already in use, please register using another email address")
-          } else{
-            alert("Error registering")
-          }
-          console.log("error", error)
-          setIsLoading(false)
-        })
-      }
-    } else  if(update){
-      console.log("updating")
-      setIsLoading(true)
-      dispatch(
-        updateUser({
+    if(update){
+      if(changedValues || update){
+        console.log("updating")
+        console.log({
           name: values.name,
           lastName: values.lastName,
           email: values.email.toLocaleLowerCase(),
@@ -162,25 +127,74 @@ const JobSeekersignup = ({ navigation, route }) => {
           role: "freelancer",
           location: values.location,
           profileImage: uploadedImage,
-          userId: update ? user.userId : user.userId.id
-        },)
+          userId: update ? user.userId : user.userId.id,
+          notificationToken: token
+        })
+        setIsLoading(true)
+        dispatch(
+          updateUser({
+            name: values.name,
+            lastName: values.lastName,
+            email: values.email.toLocaleLowerCase(),
+            phoneNb: values.phoneNb,
+            role: "freelancer",
+            location: values.location,
+            profileImage: uploadedImage,
+            userId: update ? user.userId : user.userId.id,
+            notificationToken: token
+          },)
+        )
+    
+        .unwrap()
+        .then((response) => {
+          console.log("new user", response)
+          setIsLoading(false)
+          navigateNext()
+          setChangedValues(false)
+        })
+        .catch((error) => {
+          console.log("error updating", error)
+          console.log("missing", values)
+          setIsLoading(false)
+        })
+      } else {
+        console.log("navigating no updates")
+        setChangedValues(false)
+        navigateNext()
+      }
+    } else if(!update) {
+      setIsLoading(true)
+      dispatch(
+        testRegister({
+          name: values.name,
+          lastName: values.lastName,
+          email: values.email,
+          password: values.password,  
+          phoneNb: values.phoneNb,
+          role: role,
+          profileImage: uploadedImage,
+          location: values.location
+        })
       )
       .unwrap()
       .then((response) => {
-        console.log("new user", response)
-        setIsLoading(false)
-        navigateNext()
+        console.log("response registiring", response)
+        // alert(`Thank you ${values.name}! Your account was registerd!`)
         setChangedValues(false)
+        setIsLoading(false)
+        navigateOtp()
       })
       .catch((error) => {
-        console.log("error updating", error)
-        console.log("missing", values)
+        if(error === "Email already in use"){
+          alert("This email is already in use, please register using another email address")
+        } else{
+          alert("Error registering")
+        }
+        console.log("error", error)
         setIsLoading(false)
       })
     } else {
-      console.log("navigating no updates")
-      setChangedValues(false)
-      navigateNext()
+      alert("none")
     }
    
   }
@@ -194,13 +208,14 @@ const JobSeekersignup = ({ navigation, route }) => {
       quality: 1,
     })
     if (!result.cancelled) {
+      console.log("selected")
       setActivity(true)
       setImage(result.uri)
       upload(result.uri)
     }
   }
   const upload = async (uri) => {
-    console.log("uploading")
+    console.log("uploading", uri)
     try {
       const response = await FileSystem.uploadAsync(
         `http://195.110.58.234:4000/api/v1/auth/uploadImage/`,
@@ -213,7 +228,7 @@ const JobSeekersignup = ({ navigation, route }) => {
        
       )
       const img = JSON.parse(response.body).imageUrl
-      console.log("uploading response", img)
+      console.log("uploading response", response.body)
       setUploadedImage(img)
       setChangedValues(true)
       setUploaded(true)
@@ -324,7 +339,7 @@ const JobSeekersignup = ({ navigation, route }) => {
                 <PrimaryButton title={'Next'} activity={activity}/>
               </TouchableOpacity>
               { update &&
-                <TouchableOpacity onPress={() =>  navigateNext()}>
+                <TouchableOpacity onPress={() =>  navigateUpdate()}>
                   <Text style={styles.skipText}>
                       SKIP
                   </Text>

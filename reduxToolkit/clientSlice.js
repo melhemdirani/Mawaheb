@@ -17,8 +17,6 @@ export const createClientProfile = createAsyncThunk(
       return resp.data
     } catch (error) {
       console.log(error)
-      console.log(error.response.data.msg)
-      alert(error.response.data.msg)
       return thunkAPI.rejectWithValue(error.response.data.msg)
     }
   }
@@ -73,6 +71,7 @@ export const getClientbyId = createAsyncThunk(
   'getClientbyId',
   async (id, thunkAPI) => {
     let url = `/clients/${id}/`
+    console.log("urk", url)
     try {
       const resp = await customFetch.get(url)
       return resp.data
@@ -86,7 +85,6 @@ export const inviteFreelancer = createAsyncThunk(
   'inviteFreelancer',
   async (info, thunkAPI) => {
     let url = `/clients/invite/`
-    console.log("url", url)
     try {
       const resp = await customFetch.post(url, {freelancerId: info.freelancerId, jobId: info.jobId})
       return resp.data
@@ -117,7 +115,6 @@ const clientSlice = createSlice({
     },
     [getClientbyId.fulfilled]: (state, { payload }) => {
       const { client } = payload
-      console.log("clieenttt", client)
       state.isLoading = false
       state.client = client
     },

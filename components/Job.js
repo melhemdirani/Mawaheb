@@ -30,7 +30,6 @@ const Job = ({
     like,
     unLikeJob
   }) => {
-    console.log("datas", data.item.fav)
     const [favorite,setFavorite] = useState(dash || data.item.fav ? true : false)
     const handleLikePress = (id) => {
       if(favorite){

@@ -24,7 +24,6 @@ const PhoneInputs = ({placeholder, onChange, numeric, value}) => {
       setText(e)
       onChange(e)
     }
-    console.log("value", value)
     return (
          <View  style={!changed ? [styles.container, styles.borderBottom] : styles.container}>
             {

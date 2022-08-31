@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
+
 import { ActivityIndicator, Platform, View, Text } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
@@ -9,6 +8,8 @@ import { toolkitStore, persistor } from './reduxToolkit/store'
 import AppLoading from 'expo-app-loading'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PersistGate } from 'reduxjs-toolkit-persist/integration/react'
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
 
 import SignupPage from './pages/SignupPage'
 import SettingsPage from './pages/SettingsPage'
@@ -58,85 +59,43 @@ Sentry.init({
   enableNative: false
 });
 
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: true,
-    shouldSetBadge: true,
+    shouldSetBadge: false,
   }),
-
 });
-const handleNotification = async notification => {
-  console.log("notification", notification)                                                                                    
-  if (notification.remote) {
-    const notificationId = Notifications.presentLocalNotificationAsync({      
-      title: "Follow @technoplato",  
-      body: "To learn yourself goodly (also follow PewDiePie)",                                             
-      ios: { _displayInForeground: true } // <-- HERE'S WHERE THE MAGIC HAPPENS                                
-    });                                                                       
-  }                                                   
-};  
-
 
 function App() {
-  const [expoPushToken, setExpoPushToken] = useState('');
+  const Stack = createNativeStackNavigator()
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
- 
-  const Stack = createNativeStackNavigator()
-  const lastNotificationResponse = Notifications.useLastNotificationResponse();
-  useEffect(() => {
-    
-    registerForPushNotificationsAsync().then(token => {
-      setExpoPushToken("token",token)
-    }).catch(err => console.log("error notification", err));
-    // This listener is fired whenever a notification is received while the app is foregrounded
-    // Notifications.presentNotificationAsync({
-    //   title: 'Welcome',
-    //   // body: "I'm so proud of myself!",
-    // });
+  
 
+  useEffect(() => {
+    console.log("notification", notification)
+
+    // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
       setNotification(notification);
-      console.log("notifcation", notification)
+      alert("foreground", data)
+      // navigate to the destination
     });
- 
     // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log( "response taped", response);
+        console.log(response.notification.request.content.body);
+        alert("background", data)
     });
-
     return () => {
-      Notifications.removeNotificationSubscription(notificationListener.current);
-      Notifications.removeNotificationSubscription(responseListener.current);
+        Notifications.removeNotificationSubscription(notificationListener.current);
+        Notifications.removeNotificationSubscription(responseListener.current);
     };
-  }, [lastNotificationResponse]);
-  async function registerForPushNotificationsAsync() {
-    let token;
-    if (Device.isDevice) {
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
-      if (existingStatus !== 'granted') {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      if (finalStatus !== 'granted') {
-        alert('Failed to get push token for push notification!');
-        return; 
-      }
-      token = (await Notifications.getExpoPushTokenAsync({experienceId:'@melhemdirani/mawaheb'})).data;
-    } 
-    if (Platform.OS === 'android') {
-      Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
-      });
-    }
-    return token;
-  }
+  }, []);
+
+ 
   const [loaded] = useFonts({
     PoppinsR: require('./assets/fonts/Poppins-Regular.ttf'),
     PoppinsB: require('./assets/fonts/Poppins-Bold.ttf'),
@@ -146,7 +105,7 @@ function App() {
 
   return !loaded ?
   <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
-    <ActivityIndicator size={"large"} />
+  <ActivityIndicator size={"large"} color="#4E84D5"/>
   </View>
 
   :(

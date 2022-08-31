@@ -22,6 +22,10 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getClientbyId } from '../reduxToolkit/clientSlice'
 
 const ClientProfile = ({ navigation, route }) => {
+  const navigateEdit = () => {
+    navigation.navigate("editProfileClient", {clientProfile})
+  }
+
 
   const { user } = useSelector((state) => state.user)
   const { client } = useSelector((state) => state.client)
@@ -33,8 +37,32 @@ const ClientProfile = ({ navigation, route }) => {
   const dispatch = useDispatch()
 
   useEffect(() => {
+
     if(clientProfile !== {} && clientProfile!== undefined ){
+    if(user.clientId === undefined && !client){
+
+      return  navigation.navigate("editProfileClient", {clientProfile: {
+        companyName: "",
+        privacy: "", 
+        signatoryName:"",
+        signatoryTitle:"", 
+        sign:"", 
+        Address:"",
+        TRN:"",
+        email:"",
+        phoneNb:"",
+        tradingLicense:"",
+        user:{
+          phoneNb:""
+        },
+
+        notCompleted: true
+      }
+      })
+
+    }
     setLoaded(true)
+
     dispatch(getClientbyId(user.clientId ? user.clientId : client.id))
       .unwrap()
       .then(res => {
@@ -56,11 +84,8 @@ const ClientProfile = ({ navigation, route }) => {
 //     }
 //   }, [])
 
-  const navigateEdit = () => {
-    navigation.navigate("editProfileClient", {clientProfile})
-  }
 
-  return  loaded ? <View style={{marginTop: 400}}>
+  return  loaded || !client ? <View style={{marginTop: 400}}>
         <ActivityIndicator size={"large"}/>
       </View>
     :(
@@ -69,7 +94,12 @@ const ClientProfile = ({ navigation, route }) => {
         <View style={styles.subHeader}>
           {
             clientProfile.user.profileImage !== undefined
-            ? <Image source={{uri: `http://195.110.58.234:4000${clientProfile.user.profileImage}`}} style={styles.profileImage}/>
+            ? <Image 
+              source={{
+                uri: `http://195.110.58.234:4000${clientProfile.user.profileImage}`
+              }} 
+              style={styles.profileImage}
+            />
             : <View style={styles.circle} />
 
           }

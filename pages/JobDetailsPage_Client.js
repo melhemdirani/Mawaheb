@@ -22,9 +22,12 @@ import priceRectangle from '../assets/images/priceRectangle.png';
 import minusIcon from '../assets/images/minusIcon.png';
 import RenderFreelancers from '../components/RenderFreelancers';
 
+
+// details of freelancer should be shown if prev or current job
+
 const JobDetailsPage_Client = ({route, navigation}) => {
   const [page, setPage] = useState(1)
-  const { job } = route.params
+  const { job, prev, freelancer } = route.params
   const [freelancers, setFreelancers] = useState([])
   const dispatch = useDispatch()
   const [reachedEnd, setReachedEnd] = useState(false)
@@ -82,7 +85,7 @@ const getFirstFreelancers = () => {
   }, [])
 
   
-  const navigate = (freelancer, job) => {
+  const navigateFreelancerDetails = (freelancer, job) => {
     navigation.navigate('freelancerDetails', {freelancer, job, invite: true })
   }
 
@@ -101,11 +104,18 @@ const getFirstFreelancers = () => {
       getFirstFreelancers()
     }
   } 
+ 
   return  (
     <View style={styles.wrapper}>
       { !showApplicants &&
         <View>
          <View style={styles.header}>
+          {/* <Image 
+            source={{uri: `http://195.110.58.234:4000${app.freelancer.user.profileImage}`}} 
+            style={[styles.profileImage, i !== 0 && styles.marginLeft, {zIndex: 99 - i}]}
+            key={i}
+            blurRadius={10}
+          /> */}
           <View style={styles.subHeader}>
             <ImageBackground
               source={priceRectangle}
@@ -166,7 +176,7 @@ const getFirstFreelancers = () => {
                       </View>
                 </View>
             </View>
-            { applicants && applicants.length > 0 &&
+            { applicants && applicants.length > 0 && !prev &&
               <View style={{width: "100%"}}>
                   <View style={styles.applicantsContainer}>
 
@@ -227,16 +237,19 @@ const getFirstFreelancers = () => {
           <PrimaryButton title='Apply'  />
         </TouchableOpacity>
       } */}
+       { !prev &&
         <RenderFreelancers
-          freelancers={freelancers}
-          job={job}
-          category={job.category}
-          navigate={navigate}
-          handlePageChange={handlePageChange}
-          alterApplicants={alterApplicants}
-          showApplicants={showApplicants}
-          setShowApplicants={setShowApplicants}
-        />
+            freelancers={freelancers}
+            job={job}
+            category={job.category}
+            navigate={navigateFreelancerDetails}
+            handlePageChange={handlePageChange}
+            alterApplicants={alterApplicants}
+            showApplicants={showApplicants}
+            setShowApplicants={setShowApplicants}
+          />
+        }
+
     </View>
     )
 }

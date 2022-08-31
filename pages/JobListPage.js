@@ -4,7 +4,7 @@ import {
   StyleSheet,
   ScrollView,
   FlatList,
-  Pressable,
+  ActivityIndicator,
 } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import JobList from '../components/JobList'
@@ -14,7 +14,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import arrowUpIcon from '../assets/images/arrowUpIcon.png'
 import Navbar from '../components/Navbar'
 
-import { getAllFreelancers } from '../reduxToolkit/jobSlice'
+import { getAllFreelancers, getJob } from '../reduxToolkit/jobSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { getApplicants, getMyJobs } from '../reduxToolkit/jobSlice'
 import RenderMyjobs from '../components/RenderMyjobs'
@@ -37,6 +37,8 @@ const JobListPage = ({ navigation, route }) => {
   const [showFilters, setShowFilters] = useState(false)
   const [showSearch, setShowSearch] = useState(false)
   const [myJobs, setMyjobs] = useState([])
+  const [job, setJob] = useState({})
+  const [oneJob, setOneJob]= useState(false)
   const { user } = useSelector((state) => state.user)
   const { client } = useSelector((state) => state.client)
   const [shownApplicants, setShownApplicants] = useState(false)
@@ -47,6 +49,9 @@ const JobListPage = ({ navigation, route }) => {
       let value = filters[keyName]  === "All Cities" || filters[keyName] === "All Categories" ? "" : filters[keyName]
       newFilters= newFilters + `${keyName}=${value}&`
     })
+    if(user.clientId === undefined && !client){
+      return setLoaded(true)
+    }
     dispatch(getMyJobs({
       filters:newFilters, 
       id: user.clientId !== undefined ? user.clientId : client.id
@@ -62,9 +67,24 @@ const JobListPage = ({ navigation, route }) => {
   useEffect(() => {
     if(route.params !== undefined && route.params.id !== undefined){
       console.log("route id", route.params.id)
+      setLoaded(false)
+
       setShowApplicantsTitle(route.params.id)
+      dispatch(
+        getJob(route.params.id)
+      )
+      .then(res => {
+        console.log("response getting job", res.payload)
+        setJob(res.payload.job)
+        setOneJob(true)
+      setLoaded(true)
+
+      })
+      .catch(err => console.log("error getting job", err))
     } else{ 
       console.log("no id", route.params)
+      setLoaded(true)
+
     }
   }, [route])
 
@@ -80,7 +100,30 @@ const JobListPage = ({ navigation, route }) => {
       [name]: value
     }))
   }
-  return loaded && (
+
+  return !loaded ?
+  <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
+    <ActivityIndicator size={"large"} color="#4E84D5"/>
+  </View>
+  : oneJob
+  ? <View style={styles.container}>
+     <SecondaryHeader 
+        title='Find the right talent.'
+        onFilter={() => setShowFilters(!showFilters)}
+        handleChange={handleFilterChange}
+        search={false}
+        filter 
+        />
+    <RenderMyjobs
+      job={job}
+      navigate={navigate}
+      setShownApplicants={setShownApplicants}
+      shownApplicants={shownApplicants}
+      showApplicantsTitle={showApplicantsTitle}
+      setShowApplicantsTitle={setShowApplicantsTitle}
+    />
+  </View>
+  :(
     <View style={styles.wrapper}>
       <View style={styles.container} >
         <SecondaryHeader 
@@ -152,6 +195,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    backgroundColor: "white"
   },
   title: {
     padding: 7,

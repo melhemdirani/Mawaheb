@@ -7,9 +7,9 @@ import { StackActions } from '@react-navigation/native';
 
 
 import settingsIcon from '../assets/images/signUp.png';
-import { useDispatch ,useSelector} from 'react-redux'
+import { useDispatch , useSelector} from 'react-redux'
 import { clearUser, loginUser, setCredentials } from '../reduxToolkit/userSlice'
-import { clearFreelancer, clearFreelancerState, getFreelancer } from '../reduxToolkit/freelancerSlice';
+import { clearFreelancerState, getFreelancer } from '../reduxToolkit/freelancerSlice';
 import { clearClient, getClientbyId } from '../reduxToolkit/clientSlice';
 import Inputs from '../components/Inputs';
 import Header from '../components/Header';
@@ -17,9 +17,10 @@ import PrimaryButton from '../components/Buttons/PrimaryButton';
 
 
 const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
-
+  
     const dispatch = useDispatch()
 
+    const {token} = useSelector(store => store.user)
     useEffect(() => {
         dispatch(
             clearFreelancerState()
@@ -43,23 +44,25 @@ const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
             setLoading(false)
            return alert("Please fill in email and password")
         } else {
-            dispatch(loginUser({ email: email.toLocaleLowerCase(), password }))
+            dispatch(loginUser({ 
+                email: email.toLocaleLowerCase(), 
+                password,
+                notificationToken: token
+            }))
             .unwrap()
             .then((res) =>{
                 dispatch(
                     setCredentials({
                         email: email,
                         password: password,
-                        role: "freelancer"
+                        role: "freelancer",
                     })
                 )
                 if(res.user.role === 'freelancer'){
                     dispatch(
                         getFreelancer(res.user.freelancerId)
                     ).then((res) => {
-                        console.log("res", res)
                         setLoading(false)
-                    
                         navigation.dispatch(
                             StackActions.replace(
                             'seeker_dash'
@@ -73,7 +76,7 @@ const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
                 } else{
                     dispatch(
                         getClientbyId(res.user.clientId)
-                    ).then(() => {
+                    ).then((res) => {
                         setLoading(false)
                         navigation.dispatch(
                             StackActions.replace(
@@ -100,8 +103,8 @@ const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
   
 
 
-    return loading ? <View style={{alignItems: "center", justifyContent: "center", flex: 1}}>
-        <ActivityIndicator size={"large"} />
+    return loading ? <View style={{alignItems: "center", justifyContent: "center", flex: 1, backgroundColor: "white"}}>
+      <ActivityIndicator size={"large"} color="#4E84D5"/>
     </View>
     :(
         <View style={styles.container}>

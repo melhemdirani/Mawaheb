@@ -7,8 +7,11 @@ import {
     Image,
     Switch,
     Pressable,
-    TouchableOpacity
+    TouchableOpacity,
+    ActivityIndicator
 } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 
 import Inputs from '../components/Inputs';
 import UploadCard from '../components/UploadCard';
@@ -20,10 +23,10 @@ import payment from '../assets/images/paymentIcon.png';
 import checked from '../assets/images/checked.png';
 import unChecked from '../assets/images/unChecked.png';
 import { createJob } from '../reduxToolkit/jobSlice';
+import ImageCard from '../components/ImageCard';
 
   
   const PaymentPage = ({navigation, route}) => {
-
     const {values} = route.params
     console.log("params", route)
     const { user } = useSelector((state) => state.user)
@@ -80,6 +83,50 @@ import { createJob } from '../reduxToolkit/jobSlice';
         navigation.navigate("recruiter_dashboard")
       })
     }
+    const [image, setImage] = useState("")
+    const [uploaded, setUploaded] = useState(false)
+
+    const onImageDelete = () => {
+      setImage("");
+      setUploaded(false)
+    }
+    const selectFile = async () => {
+      // No permissions request is necessary for launching the image library
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1,
+      })
+      if (!result.cancelled) {
+        setImage(result.uri)
+        setTimeout(() => {
+          setUploaded(true)
+        }, 500)
+        
+      }
+    }
+    // const upload = async (uri) => {
+    //   console.log("uploading")
+    //   try {
+    //     const response = await FileSystem.uploadAsync(
+    //       `http://195.110.58.234:4000/api/v1/auth/uploadImage/`,
+    //       uri,
+    //       {
+    //         fieldName: 'files',
+    //         httpMethod: 'post',
+    //         uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
+    //       },
+         
+    //     )
+    //     const img = JSON.parse(response.body).imageUrl
+    //     console.log("uploading response", img)
+    //     setUploadedImage(img)
+    //   } catch (error) {
+    //     console.log("error uploading", error)
+    //     setUploaded(false)
+    //     alert("Error uploading")
+    //   }
+    // }
 
     return (
       <ScrollView style={styles.wrapper}>
@@ -91,7 +138,11 @@ import { createJob } from '../reduxToolkit/jobSlice';
           goBack={navigation.goBack}
         />
         <View style={styles.container}>
-          <Text>Upload a PO document to finalize your job posting.</Text>
+          <Text style={styles.text}>{
+            isEnabled ? "Upload a PO document to finalize your job posting" 
+            : "Payment option just for testing, simply click pay and post a job"
+            }
+          </Text>
             <View style={styles.form}>
                 <View style={styles.privacy}>
                     <Text style={!isEnabled ? styles.picked : styles.notPicked}>Pre-paid </Text>
@@ -129,21 +180,21 @@ import { createJob } from '../reduxToolkit/jobSlice';
                 {   
                     card 
                     ? <View style={styles.PrepaidView}>
-                        <Inputs 
-                          placeholder='Card Number*' 
-                          value={paymentDetails.cardNumber}
-                          onChange={(value) =>handleChange("cardNumber", value)}
-                        />
-                        <Inputs 
-                          placeholder='Card Holder Name*' 
-                          value={paymentDetails.cardHolder}
-                          onChange={(value) => handleChange("cardHolder", value)}
-                        />
-                        <Inputs 
-                          placeholder='CCV*' 
-                          value={paymentDetails.ccv}
-                          onChange={(value) =>handleChange("ccv", value)}
-                        />
+                            <Inputs 
+                            placeholder='Card Number*' 
+                            value={paymentDetails.cardNumber}
+                            onChange={(value) =>handleChange("cardNumber", value)}
+                            />
+                            <Inputs 
+                            placeholder='Card Holder Name*' 
+                            value={paymentDetails.cardHolder}
+                            onChange={(value) => handleChange("cardHolder", value)}
+                            />
+                            <Inputs 
+                            placeholder='CCV*' 
+                            value={paymentDetails.ccv}
+                            onChange={(value) =>handleChange("ccv", value)}
+                            />
                     </View>
                     : <View style={styles.PrepaidView}>
                         <Inputs 
@@ -170,7 +221,18 @@ import { createJob } from '../reduxToolkit/jobSlice';
               </View>
               :
               <View style={[styles.PrepaidView, {paddingTop: 30}]} >
-                <UploadCard title="Upload PO Document*"/> 
+                { 
+                  image.length && !uploaded
+                  ? <View style={{width: "100%", alignItems: "center"}}>
+                      <View style={styles.ActivityIndicator}>
+                      <ActivityIndicator size={"large"} color="#4E84D5"/>
+                      </View>
+                      <Image source={{uri:image}} style={styles.Imagecontainer} />
+                    </View>
+                  : image.length && uploaded
+                  ? <ImageCard uri={image} onImageDelete={onImageDelete} />
+                  : <UploadCard title='Upload PO Document*' selectFile={selectFile}/>
+                }
                 <Inputs 
                   placeholder='Billing Address*' 
                   value={paymentDetails.billingAddress}
@@ -192,6 +254,20 @@ import { createJob } from '../reduxToolkit/jobSlice';
   }
   
   const styles = StyleSheet.create({
+    paymentWrapper:{
+      width: "85%",
+      alignItems: "center",
+      borderBottomColor: "#107DC5",
+      borderBottomWidth: 1,
+      marginBottom: 20
+    },
+    Imagecontainer: {
+      justifyContent: 'center',
+      height: 230,
+      width: '85%',
+      borderRadius: 20,
+      marginVertical: 10,
+    },
     wrapper: {
       backgroundColor: '#fff',
       flex: 1,
@@ -266,7 +342,25 @@ import { createJob } from '../reduxToolkit/jobSlice';
       fontFamily: "PoppinsL",
       fontSize: 15
   
-    }
+    },
+    text: {
+      fontSize: 13,
+      fontFamily: 'PoppinsR',
+      color: "rgba(0,0,0,.6)",
+      alignSelf: "center",
+      textAlign: "center",
+      width: "80%"
+    },
+    ActivityIndicator:{
+      position: "absolute",
+      zIndex: 999,
+      alignItems: "center",
+      justifyContent: "center",
+      height: 230,
+      backgroundColor:"rgba(255,255,255,.8)",
+      width: "85%",
+      marginVertical: 10
+    },
   })
   
   export default PaymentPage

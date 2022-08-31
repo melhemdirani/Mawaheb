@@ -137,7 +137,7 @@ const CreateProfilePage = ({  navigation, route }) => {
   const selectFile = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
     });
@@ -151,7 +151,7 @@ const CreateProfilePage = ({  navigation, route }) => {
   const selectFile2 = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
     });
@@ -226,7 +226,7 @@ const CreateProfilePage = ({  navigation, route }) => {
             passCopy.length && !uploaded
             ? <View style={{width: "100%", alignItems: "center"}}>
                 <View style={styles.ActivityIndicator}>
-                  <ActivityIndicator size={"large"} />
+                <ActivityIndicator size={"large"} color="#4E84D5"/>
                 </View>
                 <Image source={{uri:passCopy}} style={styles.Imagecontainer} />
               </View>
@@ -238,7 +238,7 @@ const CreateProfilePage = ({  navigation, route }) => {
             visaCopy.length && !uploaded2
             ? <View style={{width: "100%", alignItems: "center"}}>
                 <View style={styles.ActivityIndicator}>
-                  <ActivityIndicator size={"large"} />
+                <ActivityIndicator size={"large"} color="#4E84D5"/>
                 </View>
                 <Image source={{uri:visaCopy}} style={styles.Imagecontainer} />
               </View>

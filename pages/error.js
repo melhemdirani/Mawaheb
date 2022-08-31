@@ -81,7 +81,7 @@ const ContractPageFreelancer = ({navigation, route}) => {
   }
 
   return loading? <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
-    <ActivityIndicator size={"large"} />
+  <ActivityIndicator size={"large"} color="#4E84D5"/>
   </View>
   :(
     <ScrollView style={styles.wrapper}>

@@ -25,6 +25,7 @@ export default function RenderMyjobs({
     shownApplicants
 }) {
     
+    console.log("jobs", job.proposals)
     const [showApplicants, setShowApplicants] = useState(false)
     
     const handlePress = () => {
@@ -60,7 +61,7 @@ export default function RenderMyjobs({
     if (!job) {    
     return <Text>Loading</Text>
     }
-    return (showApplicantsTitle === job.id || showApplicantsTitle === "all") && (
+    return (showApplicantsTitle === job.id || showApplicantsTitle === "all") &&  job.proposals.length > 0  &&(
     <View style={showApplicants ? styles.container2 : styles.container}>
         <Pressable style={styles.title} onPress={()=>handlePress()}>
             <MaskedView
@@ -84,7 +85,7 @@ export default function RenderMyjobs({
         </Pressable>
         <View style={{bheight: "100%"}}>
             { 
-                showApplicants &&  job.proposals.length > 0 
+                showApplicants  
                 ? <FlatList
                     data={job.proposals ? job.proposals : { id: 0, title: 'No Jobs Found' }}
                     renderItem={renderItem}

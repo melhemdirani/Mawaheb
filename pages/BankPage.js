@@ -33,19 +33,16 @@ const BankPage = ({  navigation, route }) => {
 
   const {
     freelancer,
-    isLoading,
-    error,
     expirationDate,
     emiratesId,
     emiratesIdFrontSide,
     emiratesIdBackSide,
     copyOfPassport,
     copyOfResidencyVisa,
-    completedProfile,
     roles,
     languages,
   } = useSelector((store) => store.freelancer)
-  console.log("freelancer.bankDetails", freelancer.bankDetails)
+
   const bankState2 = update && freelancer.bankDetails !== undefined && freelancer.bankDetails !== null
   ?{
     iban: freelancer.bankDetails.iban  ? freelancer.bankDetails.iban : "",
@@ -61,22 +58,6 @@ const BankPage = ({  navigation, route }) => {
     bankState2
   )
  
-  const {user} = useSelector(store => store.user)
-
-  const [isCompleted, setIsCompleted] = useState(true)
-
-  const checkComplete = () => {
-    completedProfile.map( item =>{
-      if(item === false){
-        return setIsCompleted(false)
-      }
-
-    }) 
-  }
-  useEffect(() => {
-    checkComplete()
-  }, [])
-
   const dispatch = useDispatch()
   const handleChange = (name, value) => {
     console.log(name, value)
@@ -100,7 +81,6 @@ const BankPage = ({  navigation, route }) => {
       return false
     }
   }
-  const [profileCompleted, setProfileCompleted] = useState(true)
 
   const checkCompleteProfile = () => {
     if (
@@ -122,7 +102,6 @@ const BankPage = ({  navigation, route }) => {
   }
 
   const updateProfile = () => {
-    console.log("complete", checkCompleteProfile()) 
     dispatch(
       updateFreelancerProfile({ 
         freelancer: {
@@ -176,7 +155,7 @@ const BankPage = ({  navigation, route }) => {
     .then((response) => {
       console.log("response registiring", response)
       navigation.dispatch(
-        StackActions.replace('jobseeker_jobs', 
+        StackActions.replace('seeker_dash', 
           {register: true}
         )
       )

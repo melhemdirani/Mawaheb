@@ -2,7 +2,7 @@
   "expo": {
     "name": "mawaheb",
     "slug": "mawaheb",
-    "version": "1.1.5",
+    "version": "1.1.9",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
@@ -21,30 +21,32 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.melhemdirani.mawaheb",
-      "buildNumber": "2.0.15"
+      "buildNumber": "2.0.18"
     },
     "android": {
-      "versionCode": 33,
+      "versionCode": 35,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.melhemdirani.mawaheb"
+      "package": "com.melhemdirani.mawahib",
+      "permissions": ["NOTIFICATIONS"],
+      "useNextNotificationsApi": true,
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
     },
+    "notification": {
+      "iosDisplayInForeground": true
+      },
     "plugins": [
       "sentry-expo",
      [
         "expo-notifications",
         {
-          "icon": "./local/assets/notification-icon.png",
-          "color": "#ffffff",
-          "sounds": [
-            "./local/assets/notification-sound.wav",
-            "./local/assets/notification-sound-other.wav"
-          ]
+          "icon": "./assets/images/icon.png",
+          "color": "#ffffff"
         }
       ]
     ],

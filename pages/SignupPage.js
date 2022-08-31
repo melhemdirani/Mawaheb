@@ -1,4 +1,5 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, { useEffect, useLayoutEffect, useState} from 'react';
+
 import Carousel from 'react-native-anchor-carousel'; 
 import PaginationDot from 'react-native-animated-pagination-dot'
 import {
@@ -19,27 +20,33 @@ import { useDispatch ,useSelector} from 'react-redux'
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import SecondaryButton from '../components/Buttons/SecondaryButton'
 import TertiaryButton from '../components/Buttons/TertiaryButton'
-import { loginUser } from '../reduxToolkit/userSlice';
+import { generateToken, loginUser } from '../reduxToolkit/userSlice';
 import { getFreelancer } from '../reduxToolkit/freelancerSlice';
 import { getClientbyId } from '../reduxToolkit/clientSlice';
 
 
 
-
 export default function SignupPage({ navigation }) {
+
   const {
     credentials,
-    user
+    notifications,
+    newNotifications
   } = useSelector((store) => store.user)
   const dispatch = useDispatch()
+  console.log({
+    notifications, newNotifications, credentials
+  })
 
-  const [loading, setLoading] = useState(false)
-  useLayoutEffect(() => {
-    console.log("credentials", credentials)
+  const login = (token) =>{
     if(Object.keys(credentials).length !== 0){
       if(credentials.role === 'freelancer'){
         setLoading(true);
-        dispatch(loginUser({ email: credentials.email.toLocaleLowerCase(), password: credentials.password }))
+        dispatch(loginUser({ 
+          email: credentials.email.toLocaleLowerCase(), 
+          password: credentials.password, 
+          notificationToken: token ? token : ""
+        }))
         .unwrap()
         .then((res) =>{
             if(res.user.role === 'freelancer'){
@@ -57,7 +64,8 @@ export default function SignupPage({ navigation }) {
                   setLoading(false)
                 })
             } else{
-                dispatch(
+              setLoading(false)
+                 dispatch(
                     getClientbyId(res.user.clientId)
                 ).then(() => {
                     navigation.dispatch(
@@ -75,6 +83,21 @@ export default function SignupPage({ navigation }) {
         })
       }
     }
+  }
+  const [loading, setLoading] = useState(false)
+  useLayoutEffect(() => {
+    console.log("credentials", credentials)
+    dispatch(
+      generateToken()
+    )
+    .unwrap()
+    .then((token) =>{
+      login(token)
+    }).catch(err =>{ 
+      console.log("error", err)
+      login()
+    })
+    
   }, [])
 
 
@@ -118,8 +141,8 @@ export default function SignupPage({ navigation }) {
     )
   }
   
-  return loading ? <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
-    <ActivityIndicator size={"large"}/>
+  return loading ? <View style={{flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "white"}}>
+    <ActivityIndicator size={"large"} color="#4E84D5"/>
   </View>
    :(
     <ScrollView style={styles.container}>

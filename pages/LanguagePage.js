@@ -19,6 +19,7 @@ import SelectInput from '../components/SelectInput';
 import AddRoleButton from '../components/Buttons/AddRoleButton';
 import { addLanguage, deleteFreelenacerLanguage } from '../reduxToolkit/freelancerSlice';
 import DeleteButton from '../components/Buttons/DeleteButton';
+import { lang } from 'moment';
 
 const LanguagePage = ({ navigation, route }) => {
   const {update} = route.params
@@ -165,13 +166,14 @@ const LanguagePage = ({ navigation, route }) => {
                 valued
                 value={language.profeciency}
               />
-              {
-                i > 1 && <Pressable style={{marginBottom: 20}} onPress={() => onDeleteLanguage(i)}>
-                  <DeleteButton title="Delete" />
-                </Pressable>
-              }
+            
             </View>
           )
+        }
+        {
+          languages.length > 1 && <Pressable style={{marginBottom: 20}} onPress={() => onDeleteLanguage(languages.length - 1)}>
+            <DeleteButton title="Delete" />
+          </Pressable>
         }
         <Pressable style={styles.addButton} onPress={() => handleAddButton()}>
           <AddRoleButton title='Add another language' />

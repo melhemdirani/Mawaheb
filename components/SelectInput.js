@@ -29,8 +29,6 @@ const SelectInput = ({title, list, onSelect, value, valued, setIndex, role, lang
         </Pressable>
       
     );
-    console.log("seleect", value)
-    console.log("seleect", selected)
     return (
         <View style={
             selected === "" && !showList 

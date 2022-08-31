@@ -77,7 +77,6 @@ export const getContractFreelancer = createAsyncThunk(
   'getContractFreelancer',
   async (id, thunkApi) => {
     let url = `/contracts/${id}/contract`
-    console.log("url", url)
     try {
       const resp = await customFetch.get(url)
       return resp.data
@@ -91,7 +90,6 @@ export const addJobToFavorites = createAsyncThunk(
   'addJobToFavorites',
   async (body, thunkApi) => {
     let url = `/freelancers/${body.id}/like`
-    console.log("url", url)
     try {
       const resp = await customFetch.patch(url, {freelancerId : body.freelancerId})
       return resp.data
@@ -105,7 +103,6 @@ export const removeFav = createAsyncThunk(
   'removeFav',
   async (body, thunkApi) => {
     let url = `/freelancers/${body.id}/unLike`
-    console.log("url", url)
     try {
       const resp = await customFetch.patch(url, {freelancerId : body.freelancerId})
       return resp.data

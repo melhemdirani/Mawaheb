@@ -23,13 +23,15 @@ import UploadCard from '../components/UploadCard';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
 
 import signUp from '../assets/images/signUp.png';
-import { setUserAfterRegister, registerUser } from '../reduxToolkit/userSlice';
+import { registerUser } from '../reduxToolkit/userSlice';
 import ImageCard from '../components/ImageCard';
 import PhoneInputs from '../components/PhoneInput';
 
 
 const ClientSignupPage = ({navigation}) => {
-  const { client, isLoading } = useSelector((store) => store.client)
+  const { token } = useSelector((store) => store.user)
+  const { client } = useSelector((store) => store.client)
+  console.log("client", client)
   const [uploaded, setUploaded] = useState(false)
   const [uploaded2, setUploaded2] = useState(false)
   const [activity, setActivity] = useState(false)
@@ -109,6 +111,7 @@ const ClientSignupPage = ({navigation}) => {
           email: values.email.toLowerCase(),
           password: values.password,  
           phoneNb: phoneNb,
+          notificationToken: token,
           role: 'client',
           profileImage: uploadedImage2
         })
@@ -129,6 +132,7 @@ const ClientSignupPage = ({navigation}) => {
     }
   }
 
+  
   const onRegister = () => {
     dispatch(
       createClientProfile({
@@ -141,6 +145,7 @@ const ClientSignupPage = ({navigation}) => {
         sign: uploadedImage,
         tradingLicense: uploadedImage,
         Address: values.address,
+
       })
     )
     .unwrap()
@@ -171,7 +176,7 @@ const ClientSignupPage = ({navigation}) => {
   const selectFile = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
     })
@@ -185,7 +190,7 @@ const ClientSignupPage = ({navigation}) => {
   const selectFile2 = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
     })
@@ -245,6 +250,7 @@ const ClientSignupPage = ({navigation}) => {
       console.log(error)
       setUploaded(false)
       alert("Error uploading")
+  
 
     }
   }
@@ -252,12 +258,16 @@ const ClientSignupPage = ({navigation}) => {
   const onImageDelete = () => {
     startingToUpload && setStartingToUpload(false)
     setUploaded(false);
+    setUploadedImage("")
+
     setImage("");
   }
 
   const onImageDelete2 = () => {
     startingToUpload && setStartingToUpload(false)
     setUploaded2(false);
+    setUploadedImage2("")
+    setImage2("")
   }
 
   useEffect(( ) => {
@@ -318,7 +328,7 @@ const ClientSignupPage = ({navigation}) => {
             image2.length && !uploaded2
             ? <View style={{width: "100%", alignItems: "center"}}>
                 <View style={styles.ActivityIndicator}>
-                  <ActivityIndicator size={"large"} />
+                <ActivityIndicator size={"large"} color="#4E84D5"/>
                 </View>
                 <Image source={{uri:image2}} style={styles.Imagecontainer} />
               </View>
@@ -357,7 +367,7 @@ const ClientSignupPage = ({navigation}) => {
                 image.length && !uploaded
                 ? <View style={{width: "100%", alignItems: "center"}}>
                     <View style={styles.ActivityIndicator}>
-                      <ActivityIndicator size={"large"} />
+                    <ActivityIndicator size={"large"} color="#4E84D5"/>
                     </View>
                     <Image source={{uri:image}} style={styles.Imagecontainer} />
                   </View>
@@ -383,7 +393,7 @@ const ClientSignupPage = ({navigation}) => {
                 image.length && !uploaded
                 ? <View style={{width: "100%", alignItems: "center"}}>
                     <View style={styles.ActivityIndicator}>
-                      <ActivityIndicator size={"large"} />
+                    <ActivityIndicator size={"large"} color="#4E84D5"/>
                     </View>
                     <Image source={{uri:image}} style={styles.Imagecontainer} />
                   </View>

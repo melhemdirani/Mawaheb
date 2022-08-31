@@ -17,11 +17,9 @@ import dashboardN from '../assets/images/dashboardN.png'
 function Navbar({active, navigation}) {
     const {
         user,
-        notifications,
-        notificationsSeen
+        newNotifications
     } = useSelector((store) => store.user)
-    const { client} = useSelector((store) => store.client)
-    const { freelancer} = useSelector((store) => store.freelancer)
+   
     const onJobsPress = () => {
         if(user.role === 'client'){
             navigation.navigate('recruiter_Jobs')
@@ -36,28 +34,6 @@ function Navbar({active, navigation}) {
             navigation.navigate('seeker_dash')
         }
     }
-    const dispatch = useDispatch()
-
-
-    useEffect(() => {
-        if (user?.role === 'client' && (user.clientId || client.id)) {
-          dispatch(getNotifications({ id: user.clientId ? user.clientId : client.id, role: user.role }))
-          .unwrap()
-          .then((res) => console.log("notifcations", res.notifications.slice(-5)))
-          .catch((err) => console.log("error notifications", err))
-        } else if (user.role === 'freelancer' && (user.freelancerId || freelancer.id)) {
-          dispatch(getNotifications({ 
-            id: user.freelancerId ? user.freelancerId : freelancer.id, 
-            role: user.role 
-          }))
-          .unwrap()
-          .then((res) => console.log("notifcations", res))
-          .catch((err) => console.log("error notifications"))
-        }
-      }, [])
-      useEffect(() => {
-        setNotificationsSeen(false)
-      }, [notifications])
     return (
         <View style={[styles.container, styles.shadowProp]}>
             <Pressable style={styles.Pressable}  onPress={() => onJobsPress()}>
@@ -76,10 +52,10 @@ function Navbar({active, navigation}) {
                 <Text style={active === 'Dashboard' ? styles.text2 : styles.text}>Dashboard</Text>
             </Pressable>
             <Pressable style={styles.Pressable}  onPress={() => navigation.navigate('notifications')}>
-               {  notifications && notifications.length > 0 &&
+               {  newNotifications > 0 &&
                     <View>
                         <View style={styles.newNotification} >
-                                <Text style={styles.notificationsCount}>{notifications.length}</Text>
+                                <Text style={styles.notificationsCount}>{newNotifications}</Text>
                             </View>
                     </View>
                 }

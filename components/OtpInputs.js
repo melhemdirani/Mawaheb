@@ -30,8 +30,6 @@ export default OtpInputs = ({navigation, route}) => {
     const {
         user
     } = useSelector((store) => store.user)
-    console.log("user", user)
-
     const onNextClick = () => {
         console.log("code", otpCode)
         dispatch(
