@@ -45,7 +45,6 @@ const ClientDashboard = ({ navigation, route }) => {
   useEffect(() => {
     if(isFocused){
       setLoading(true)
-      console.log("client", user.clientId)
       if(user.id === undefined && !client){
         setLoading(false)
         return console.log("hi")

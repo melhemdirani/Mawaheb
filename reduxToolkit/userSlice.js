@@ -56,7 +56,7 @@ export const generateToken = createAsyncThunk(
 
 export const createOTP = createAsyncThunk(
   'createOTP',
-  async ({ email }, thunkApi) => {
+  async ( email , thunkApi) => {
     let url = `/auth/sendOTP`
     console.log("email", email)
     try {
@@ -184,6 +184,19 @@ export const deleteNotifcations = createAsyncThunk(
     }
   }
 )
+export const testNotification = createAsyncThunk(
+  'testNotification',
+  async (noti, thunkApi) => {
+    let url =`/test/noti`
+    try {
+      const resp = await customFetch.post(url, {noti: noti})
+      return resp.data
+    } catch (error) {
+      console.log('rrer', error)
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
 
 export const loginUser = createAsyncThunk(
   'loginUser',
@@ -191,7 +204,6 @@ export const loginUser = createAsyncThunk(
     let url = '/auth/login'
     try {
       const resp = await customFetch.post(url, user)
-      console.log('user login', resp.data)
       return resp.data
     } catch (error) {
       alert(
@@ -202,6 +214,21 @@ export const loginUser = createAsyncThunk(
     }
   }
 )
+export const resetPassword = createAsyncThunk(
+  'resetPassword',
+  async (user, thunkApi) => {
+    let url = '/auth/resetPassword'
+    console.log("user reset password", user)
+    try {
+      const resp = await customFetch.post(url, user)
+      return resp.data
+    } catch (error) {
+      console.log("error reset password", error)
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
+
 export const logout = createAsyncThunk('logout', async (user, thunkApi) => {
   let url = '/auth/logout'
   try {

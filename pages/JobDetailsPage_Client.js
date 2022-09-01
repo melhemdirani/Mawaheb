@@ -5,14 +5,12 @@ import {
     StyleSheet,
     Image,
     ImageBackground,
-    TouchableOpacity,
     Pressable,
-    ScrollView,
-    ActivityIndicator,
   } from 'react-native';
 import MaskedView from '@react-native-masked-view/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useDispatch, useSelector } from 'react-redux';
+import { useIsFocused } from "@react-navigation/native"
 
 import { getFilteredFreelancer, getJob } from '../reduxToolkit/jobSlice';
 import calendarIcon from '../assets/images/calendarIcon.png';
@@ -35,6 +33,8 @@ const JobDetailsPage_Client = ({route, navigation}) => {
   const [showApplicants, setShowApplicants] = useState(false)
   const [call, setCall] = useState(false)
   const [applicants, setApplicants] = useState([])
+  const isFocused = useIsFocused();
+
   useEffect(() => {
     // foucs
     dispatch(
@@ -81,8 +81,8 @@ const getFirstFreelancers = () => {
 }
 
   useEffect(() => {
-    getFreelancerFiltered()
-  }, [])
+    isFocused && getFreelancerFiltered()
+  }, [isFocused])
 
   
   const navigateFreelancerDetails = (freelancer, job) => {

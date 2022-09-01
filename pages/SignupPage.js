@@ -34,9 +34,6 @@ export default function SignupPage({ navigation }) {
     newNotifications
   } = useSelector((store) => store.user)
   const dispatch = useDispatch()
-  console.log({
-    notifications, newNotifications, credentials
-  })
 
   const login = (token) =>{
     if(Object.keys(credentials).length !== 0){
@@ -86,7 +83,6 @@ export default function SignupPage({ navigation }) {
   }
   const [loading, setLoading] = useState(false)
   useLayoutEffect(() => {
-    console.log("credentials", credentials)
     dispatch(
       generateToken()
     )

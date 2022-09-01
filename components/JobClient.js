@@ -11,7 +11,6 @@ import MaskedView from '@react-native-masked-view/masked-view'
 
 const JobClient = ({ title, current, navigate, item, contract, user, future }) => {
   if(!future){
-    console.log("data ", user) // apply to prev and current jobs pass new variable !future
   }
     const navigation = () => {
       if(!future){

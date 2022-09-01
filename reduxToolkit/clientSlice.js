@@ -71,7 +71,6 @@ export const getClientbyId = createAsyncThunk(
   'getClientbyId',
   async (id, thunkAPI) => {
     let url = `/clients/${id}/`
-    console.log("urk", url)
     try {
       const resp = await customFetch.get(url)
       return resp.data

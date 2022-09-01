@@ -5,6 +5,7 @@ import {
     View,
     Text,
     Pressable,
+    ActivityIndicator,
     TouchableOpacity
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,12 +14,18 @@ import { StackActions } from '@react-navigation/native';
 import Header from './Header';
 import otpIcon from '../assets/images/otpIcon.png';
 import PrimaryButton from './Buttons/PrimaryButton';
-import { verifyUser } from '../reduxToolkit/userSlice';
+import { resetPassword, verifyUser, createOTP } from '../reduxToolkit/userSlice';
+import Inputs from './Inputs';
 
 export default OtpInputs = ({navigation, route}) => {
 
     const {update} = route.params
-    const [otpCode, setOtpCode ] = useState()
+    const [otpCode, setOtpCode ] = useState("")
+    const [password, setPassword] = useState("")
+    const [password2, setPassword2] = useState("")
+    const [showPasswords, setShowPasswords] = useState(false)
+    const [loading, setLoading] = useState(false)
+  
     const dispatch = useDispatch()
 
     const navigateNext =() => {
@@ -31,7 +38,40 @@ export default OtpInputs = ({navigation, route}) => {
         user
     } = useSelector((store) => store.user)
     const onNextClick = () => {
-        console.log("code", otpCode)
+      if(otpCode.length < 4){
+        return alert("Please enter your OTP")
+      }
+      if(route.params.reset){
+        if(showPasswords){
+          if(password === ""|| password2 === "" ){
+            return alert("Please enter all inputs")
+          }
+          dispatch(
+            resetPassword({
+              email: route.params.email.toLowerCase(),
+              password: password,
+              otp: otpCode
+            })
+          ).unwrap()
+          .then( (res) => {
+            console.log("Response", res)
+            alert("Congratulations, your'e password is updated!");
+            navigation.dispatch(
+              StackActions.replace('login')
+            )
+          }).catch((err) => {
+            alert("OTP is incorrect!")
+            setOtpCode("")
+            setPassword("")
+            setPassword2("")
+            setShowPasswords(false)
+            console.log("Errror reseting ", err)
+          })
+        } else {
+          setShowPasswords(true)
+        }
+      } else {
+
         dispatch(
             verifyUser({
                 email: user.email,
@@ -49,39 +89,84 @@ export default OtpInputs = ({navigation, route}) => {
             console.log("error", err)
             alert("Error, please try again")
         })
+      }
+
 
     }   
     const onResend = () => {
+      setLoading(true)
+      if(route.params.reset){
+        dispatch(
+          createOTP({email: route.params.email.toLowerCase()})
+        ).unwrap()
+        .then(() => {
+          alert("New OTP sent!")
+          setLoading(false)
+        })
+        .catch(err => {
+          console.log("error creating otp", err)
+          alert("Error sending a new OTP")
+          setLoading(false)
+        })
+      } else {
+        dispatch(
+          createOTP({email: user.email})
+        ).unwrap()
+        .then(() => {
+          alert("New OTP sent!");
+          setLoading(false)
+        })
+        .catch(err => {
+          console.log("error creating otp", err)
+          alert("Error sending a new OTP")
+          setLoading(false)
+        })
+      }
 
     }
-    return(
+    return loading ?  <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
+      <ActivityIndicator size={"large"} color="#4E84D5"/>
+    </View>
+    :(
         <View style={styles.container}>
             <Header icon={otpIcon} hidden title="OTP Verification" />
-            <View style={{alignItems: "center"}}>
-                <Text style={styles.text}>
-                Type below the 4 digits recieved by email on the email address
-                </Text>
-                <OTPInputView
-                    style={{width: '80%', height: 200}}
-                    pinCount={4}
-                    // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
-                    // onCodeChanged = {code => { this.setState({code})}}
-                    autoFocusOnLoad
-                    codeInputFieldStyle={styles.underlineStyleBase}
-                    codeInputHighlightStyle={styles.underlineStyleHighLighted}
-                    onCodeFilled = {(code) => {
-                        setOtpCode(code)
-                    }}
+            {  ((route.params.reset && !showPasswords) || !route.params.reset) &&
+              <View style={{alignItems: "center"}}>
+                  <Text style={styles.text}>
+                  Type below the 4 digits recieved by email on the email address
+                  </Text>
+                  <OTPInputView
+                      style={{width: '80%', height: 200}}
+                      pinCount={4}
+                      // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
+                      // onCodeChanged = {code => { this.setState({code})}}
+                      autoFocusOnLoad
+                      codeInputFieldStyle={styles.underlineStyleBase}
+                      codeInputHighlightStyle={styles.underlineStyleHighLighted}
+                      onCodeFilled = {(code) => {
+                          setOtpCode(code)
+                      }}
+                  />
+              </View>
+            }
+            { route.params.reset && showPasswords &&
+              <View style={styles.container4}>
+                <Inputs placeholder="New Password*" onChange={setPassword} value={password} />
+                <Inputs
+                  placeholder='Confirm Password*'
+                  onChange={(e) => setPassword2(e)}
+                  value={password2}
                 />
-            </View>
+              </View>
+            }
             <TouchableOpacity onPress={() => onNextClick()} style={styles.button}>
                   <PrimaryButton title={"Next"} />
             </TouchableOpacity>
-            {/* <Pressable onPress={() =>  skip()} style={styles.button2}>
+            <Pressable onPress={() =>  onResend()} style={styles.button2}>
                 <Text style={styles.skipText}>
                     Resend Code
                 </Text>
-            </Pressable> */}
+            </Pressable>
            
         </View>
 
@@ -143,5 +228,12 @@ container:{
     marginTop: 55,
     marginBottom: -20,
     color: 'rgba(0,0,0,0.6)',
+  },
+  container4:{
+    alignSelf: "center",
+    alignItems: "center",
+    width: "100%",
+    top: 100,
+    marginBottom: 150
   },
 });

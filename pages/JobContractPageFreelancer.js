@@ -48,7 +48,6 @@ const JobContractPageFreelancer = ({navigation, route}) => {
     dispatch(getContractFreelancer(route.params.action))
     .unwrap()
     .then(res => {
-      console.log("client", res)
       setClientId(res.contract.clientId)
       setJob(res.contract.job)
       setClient(res.contract.client.companyName)

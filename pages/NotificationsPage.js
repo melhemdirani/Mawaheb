@@ -51,7 +51,6 @@ const NotificationsPage = ({ navigation, role, route }) => {
       dispatch(
         getFreelancer(freelancerId)
       ) .then( res => {
-        console.log("res", res.payload.freelancer)
         setTimeout(() => {
           if(
             response.job ===null || 

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import { ActivityIndicator, Platform, View, Text } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { createNativeStackNavigator, createNavigationContainerRef } from '@react-navigation/native-stack'
 import { Provider } from 'react-redux'
 import { toolkitStore, persistor } from './reduxToolkit/store'
 import AppLoading from 'expo-app-loading'
@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PersistGate } from 'reduxjs-toolkit-persist/integration/react'
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
+import { useDispatch, useSelector } from 'react-redux'
 
 import SignupPage from './pages/SignupPage'
 import SettingsPage from './pages/SettingsPage'
@@ -48,8 +49,17 @@ import DeleteAccountPage from './pages/DeleteAccountPage'
 import JobContractPageFreelancer from './pages/JobContractPageFreelancer';
 import ContactCompanyPage from './pages/ContactCompanyPage';
 import OtpInputs from './components/OtpInputs';
+import { testNotification } from './reduxToolkit/userSlice';
+import axios from 'axios';
 
 
+const navigationRef = createNavigationContainerRef()
+
+function navigate(name, params) {
+  if (navigationRef.isReady()) {
+    navigationRef.navigate(name, params);
+  }
+}
 
 Sentry.init({
   dsn: "https://bcf01992e9f248daa3e02179837016a2@o1345605.ingest.sentry.io/6625163",
@@ -69,6 +79,7 @@ Notifications.setNotificationHandler({
 });
 
 function App() {
+
   const Stack = createNativeStackNavigator()
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
@@ -81,20 +92,35 @@ function App() {
     // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
       setNotification(notification);
-      alert("foreground", data)
+      navigate('notifications')
+      // axios.post('http://195.110.58.234:4000/api/v1/test/noti',
+      // {noti: notification}
+      // ).then().catch(err => {
+      //   console.log("error", err)
+      // })
+
       // navigate to the destination
     });
     // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
         console.log(response.notification.request.content.body);
-        alert("background", data)
-    });
+        // axios.post('http://195.110.58.234:4000/api/v1/test/noti',
+        // {noti: response}
+        // ).then().catch(err => {
+        //   console.log("error", err)
+        // })
+        navigate('notifications')
+      });
     return () => {
         Notifications.removeNotificationSubscription(notificationListener.current);
         Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
 
+  useEffect(() => {
+    
+  }, [])
+ 
  
   const [loaded] = useFonts({
     PoppinsR: require('./assets/fonts/Poppins-Regular.ttf'),

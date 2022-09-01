@@ -22,7 +22,7 @@ const DateInputs = ({title, placeholder, onChange, dateType, valued, value}) => 
     //     }
     // }, [text])
     const [date, setDate] = useState(valued && value !== ""? new Date(value) :new Date());
-    const [show, setShow] = useState(false);
+    const [show, setShow] = useState(Platform.OS === 'android' ? false : true);
     
     const onChangeDate = (event, selectedDate) => {
       const currentDate = selectedDate;
@@ -42,16 +42,17 @@ const DateInputs = ({title, placeholder, onChange, dateType, valued, value}) => 
     };
     
     const showMode = (currentMode) => {
-      DateTimePickerAndroid.open({
-        value: date,
-        onChange: onChangeDate,
-        mode: currentMode,
-        is24Hour: false,
-      });
+  
       if (Platform.OS === 'android') {
+        DateTimePickerAndroid.open({
+          value: date,
+          onChange: onChangeDate,
+          mode: currentMode,
+          is24Hour: false,
+        });
         setShow(false);
         // for iOS, add a button that closes the picker
-      } else setShow(true)
+      } 
     };
   
     const showDatepicker = () => {

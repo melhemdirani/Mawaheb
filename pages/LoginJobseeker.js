@@ -1,5 +1,5 @@
 
-import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ActivityIndicator, Text, Pressable} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import { useIsFocused } from "@react-navigation/native"
 import { StackActions } from '@react-navigation/native';
@@ -113,6 +113,9 @@ const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
                 <Inputs placeholder="Email" style={styles.container4}   onChange={setEmail} value={email}/>
                 <Inputs placeholder="Password" style={styles.container4} onChange={setPassword} value={password} />
             </View>
+            <Pressable onPress={() => navigation.navigate("passwordReset")}>
+                <Text style={styles.text}>Forgot password</Text>
+            </Pressable>
             <TouchableOpacity style={styles.container4} onPress={() => login()}>
              <PrimaryButton title="Log in"/> 
             </TouchableOpacity>
@@ -135,6 +138,10 @@ const styles = StyleSheet.create({
     button:{
         top: 120,
         alignSelf: "center"
+    },
+    text:{
+        color: "#4E84D5",
+        left: 30
     }
   
 })
