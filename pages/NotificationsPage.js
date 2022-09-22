@@ -8,8 +8,8 @@ import {
 } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
-import { deleteNotifcation, deleteNotifcations, setNewNotifications, setNotificationsSeen } from '../reduxToolkit/userSlice'
+import { useIsFocused } from "@react-navigation/native"
+import { deleteNotifcation, deleteNotifcations, getNotifications, setNewNotifications, setNotificationsSeen, setSeenNotifications } from '../reduxToolkit/userSlice'
 
 import Navbar from '../components/Navbar'
 import Header from '../components/Header'
@@ -20,17 +20,46 @@ import { acceptContractFreelancer } from '../reduxToolkit/freelancerSlice'
 import { getClientDashboard } from '../reduxToolkit/clientSlice'
 import { getFreelancer } from '../reduxToolkit/freelancerSlice';
 import { getJob } from '../reduxToolkit/jobSlice'
+import { setEnabled } from 'react-native/Libraries/Performance/Systrace'
 
 const NotificationsPage = ({ navigation, role, route }) => {
-  const { user, notifications, notificationsSeen, isLoading } = useSelector((store) => store.user)
+
+  
+  const { user, notifications, notificationsSeen, isLoading, newNotifications} = useSelector((store) => store.user)
+  const { freelancer} = useSelector((store) => store.freelancer)
+  const { client} = useSelector((store) => store.client)
   const [loading, setLoading] = useState(false)
+  const notificationIds= notifications.map(item => item.id)
+  const isFocused = useIsFocused();
+
 
   useEffect(() => {
-    if(!notificationsSeen){
-      dispatch(setNotificationsSeen(true))
-      dispatch(setNewNotifications(0))
+    if(isFocused){
+      if(user.role === "freelancer"){
+        dispatch(getNotifications({ 
+          id: user.freelancerId ? user.freelancerId : freelancer.id, 
+          role: user.role 
+        }))
+      } else {
+        dispatch(getNotifications({ 
+          id: user.clientId 
+          ? user.clientId 
+          : client.id, 
+          role: 
+          user.role 
+        }))
+      }
+    
+      if(newNotifications > 0){
+        dispatch(
+          setSeenNotifications({notificationIds: notificationIds})
+        )
+      }
+      if(!notificationsSeen){
+        dispatch(setNewNotifications(0))
+      }
     }
-  }, [])
+  }, [isFocused])
   const dispatch = useDispatch()
   const acceptContract = (contractId, jobId) => {
     navigation.navigate('acceptContractFreelancer', {role: "freelancer", action: contractId, jobId: jobId}) // check jobId if needed
@@ -82,12 +111,11 @@ const NotificationsPage = ({ navigation, role, route }) => {
 
     
   }
-  const navJobDetails = (id) => {
-    navigation.navigate('jobDescription', {id})
+  const navJobDetails = (id, invitationId) => {
+    navigation.navigate('jobDescription', {id, inviteToApply: true, invitationId: invitationId})
   }
 
   const onDeleteNotifications = () => {
-     let notificationIds= notifications.map(item => item.id)
     dispatch(
       deleteNotifcations({ids: notificationIds})
     )
@@ -103,7 +131,7 @@ const NotificationsPage = ({ navigation, role, route }) => {
           icon={notificationIcon}
           hidden
           rightIcon={trash}
-          trash
+          trash={notifications.length > 0 ? true : false}
           onTrash={() => onDeleteNotifications()}
           numberHidded
           title={'Notifications'}

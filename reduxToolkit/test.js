@@ -115,7 +115,6 @@ const userSlice = createSlice({
     [getNotifications.fulfilled]: (state, { payload }) => {
       state.notifications =  payload
       state.isLoading = false
-
     },
     [getNotifications.rejected]: (state, { payload }) => {
       state.isLoading = false

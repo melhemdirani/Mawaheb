@@ -1,7 +1,6 @@
 
 import { View, StyleSheet, TouchableOpacity, ActivityIndicator, Text, Pressable} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import { useIsFocused } from "@react-navigation/native"
 import { StackActions } from '@react-navigation/native';
 
 
@@ -16,7 +15,7 @@ import Header from '../components/Header';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
 
 
-const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
+const LoginJobseeker = ({navigation, signIn, notifications, name, route}) => {
   
     const dispatch = useDispatch()
 
@@ -36,6 +35,35 @@ const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
     const [email, setEmail] = useState('')
     const [loading, setLoading] = useState(false)
     
+    const navigateNextClient = () => {
+        if(route.params.edit){
+            navigation.navigate(
+                'editProfileClient',
+                {clientProfile: route.params.clientProfiles}
+            )
+        } else {
+            navigation.dispatch(
+                StackActions.replace(
+                'recruiter_dashboard'
+            ))
+        }
+   
+        
+    }
+    const navigateNextFreelancer = () => {
+        if(route.params.edit){
+            navigation.navigate(
+                'JobSignUp',
+                { role: 'freelancer', update: true }
+            )
+        } else {
+            navigation.dispatch(
+                StackActions.replace(
+                'seeker_dash'
+            ))
+        }
+    
+    }
 
     const login = async () => {
     
@@ -63,11 +91,7 @@ const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
                         getFreelancer(res.user.freelancerId)
                     ).then((res) => {
                         setLoading(false)
-                        navigation.dispatch(
-                            StackActions.replace(
-                            'seeker_dash'
-                        ))
-
+                        navigateNextFreelancer()
                     }).catch(err =>{
                          console.log(err)
                         setLoading(false)
@@ -78,10 +102,7 @@ const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
                         getClientbyId(res.user.clientId)
                     ).then((res) => {
                         setLoading(false)
-                        navigation.dispatch(
-                            StackActions.replace(
-                            'recruiter_dashboard'
-                        ))
+                        navigateNextClient()
                     }).catch(err => {
                         console.log(err)
                         setLoading(false)
@@ -108,7 +129,7 @@ const LoginJobseeker = ({navigation, signIn, notifications, name}) => {
     </View>
     :(
         <View style={styles.container}>
-            <Header icon={settingsIcon}  title="Log in" goBack={goBack}/>
+            <Header icon={settingsIcon}  title={route.params.edit ? "Log in to Edit" :"Log in"} goBack={goBack}/>
             <View style={styles.container4}>
                 <Inputs placeholder="Email" style={styles.container4}   onChange={setEmail} value={email}/>
                 <Inputs placeholder="Password" style={styles.container4} onChange={setPassword} value={password} />

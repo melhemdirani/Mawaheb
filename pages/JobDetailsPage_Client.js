@@ -10,6 +10,7 @@ import {
 import MaskedView from '@react-native-masked-view/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useDispatch, useSelector } from 'react-redux';
+import moment from 'moment';
 import { useIsFocused } from "@react-navigation/native"
 
 import { getFilteredFreelancer, getJob } from '../reduxToolkit/jobSlice';
@@ -19,6 +20,8 @@ import locationIcon from '../assets/images/locationIcon.png';
 import priceRectangle from '../assets/images/priceRectangle.png';
 import minusIcon from '../assets/images/minusIcon.png';
 import RenderFreelancers from '../components/RenderFreelancers';
+import DeleteButton from '../components/Buttons/DeleteButton';
+import { deleteContract } from '../reduxToolkit/clientSlice';
 
 
 // details of freelancer should be shown if prev or current job
@@ -31,11 +34,17 @@ const JobDetailsPage_Client = ({route, navigation}) => {
   const [reachedEnd, setReachedEnd] = useState(false)
   const [loading, setLoading] = useState(false)
   const [showApplicants, setShowApplicants] = useState(false)
+  const [futureContract, setFutureContract] = useState(false)
   const [call, setCall] = useState(false)
   const [applicants, setApplicants] = useState([])
   const isFocused = useIsFocused();
 
   useEffect(() => {
+    if(route.params.hasContract){
+      setFutureContract(true)
+    } else{
+      console.log("bye")
+    }
     // foucs
     dispatch(
       getJob(job.id)
@@ -71,7 +80,7 @@ const getFirstFreelancers = () => {
   .then(
     res => {
       if(res.payload.freelancers.length > 0){
-        setFreelancers(freelancers)
+        setFreelancers(res.payload.freelancers)
       } else{
         setReachedEnd(true)
       }
@@ -81,8 +90,8 @@ const getFirstFreelancers = () => {
 }
 
   useEffect(() => {
-    isFocused && getFreelancerFiltered()
-  }, [isFocused])
+    isFocused && getFirstFreelancers()
+  }, [isFocused, route])
 
   
   const navigateFreelancerDetails = (freelancer, job) => {
@@ -104,7 +113,13 @@ const getFirstFreelancers = () => {
       getFirstFreelancers()
     }
   } 
- 
+  const onCancelContract = () => {
+    console.log("contracts", route.params.contract.id)
+    dispatch(
+      deleteContract(route.params.contract.id) 
+    )
+    navigation.navigate("recruiter_dashboard")
+  }
   return  (
     <View style={styles.wrapper}>
       { !showApplicants &&
@@ -176,8 +191,18 @@ const getFirstFreelancers = () => {
                       </View>
                 </View>
             </View>
-            { applicants && applicants.length > 0 && !prev &&
-              <View style={{width: "100%"}}>
+
+            { 
+            
+              futureContract ? 
+              <View style={{paddingVertical: 20}}>
+                <Text style={styles.description2}>Contract is pending freelancer's signature. </Text>
+                <Pressable onPress={() => onCancelContract()}>
+                <Text style={styles.delete}>Cancel Contract</Text> 
+                </ Pressable>
+              </View>
+              : applicants && applicants.length > 0 && !prev 
+              ? <View style={{width: "100%"}}>
                   <View style={styles.applicantsContainer}>
 
                       {
@@ -200,6 +225,7 @@ const getFirstFreelancers = () => {
                   </View>
                   {/* <RenderItem item={job.proposals} /> */}
               </View>
+              : null
             }
             <LinearGradient
               colors={[
@@ -216,12 +242,12 @@ const getFirstFreelancers = () => {
                           source={calendarIcon}
                           style={styles.calendarIcon}
                       ></Image>
-                      <Text style={styles.text}>{job.createdAt.slice(0,10)}</Text>
+                      <Text style={styles.text}> {job.startDate &&  moment(job.startDate).format('ll')} - {job.endDate &&  moment(job.endDate).format('ll')}</Text>
                   </View>
-                  <View style={styles.footerInfo}>
+                  {/* <View style={styles.footerInfo}>
                       <Image source={locationIcon} style={styles.icon}></Image>
                       <Text style={styles.text}>{job.location}</Text>
-                  </View>
+                  </View> */}
                   <View style={styles.footerInfo}>
                       <Image source={clockIcon} style={styles.icon}></Image>
                       <Text style={styles.text}> {job.shift === "day" ? "Day Shift" : "Night Shift"}</Text>
@@ -232,12 +258,13 @@ const getFirstFreelancers = () => {
        </View>
 
       }
+   
       {/* { !route.params.myjobs &&
         <TouchableOpacity style={styles.button} onPress={() => navigateApply()}>
           <PrimaryButton title='Apply'  />
         </TouchableOpacity>
       } */}
-       { !prev &&
+       { !prev && freelancers.length > 0 &&
         <RenderFreelancers
             freelancers={freelancers}
             job={job}
@@ -343,6 +370,16 @@ const getFirstFreelancers = () => {
     description: {
       color: '#0A084B',
       fontFamily: 'PoppinsR',
+    },
+    description2: {
+      color: '#0A084B',
+      fontFamily: 'PoppinsR',
+      fontSize: 12
+    },
+    delete:{
+      color: '#BE3142',
+      fontFamily: 'PoppinsR',
+      fontSize: 12
     },
     subHeader: {
       flexDirection: 'row',

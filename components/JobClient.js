@@ -1,5 +1,7 @@
 import { View, Text, StyleSheet, Image, ImageBackground, Platform, Pressable } from 'react-native'
 import React from 'react'
+import moment from 'moment';
+
 import { LinearGradient } from 'expo-linear-gradient'
 import calendarIcon from '../assets/images/calendarIcon.png'
 import clockIcon from '../assets/images/clockIcon.png'
@@ -9,16 +11,22 @@ import heartIcon from '../assets/images/heartIcon.png'
 import plusIcon from '../assets/images/plusIcon.png'
 import MaskedView from '@react-native-masked-view/masked-view'
 
-const JobClient = ({ title, current, navigate, item, contract, user, future }) => {
+const JobClient = ({ title, current, navigate, item, contract, user, future, hasContract }) => {
+  console.log("item", item)
+  future && console.log("item", item.contract)
   if(!future){
   }
     const navigation = () => {
       if(!future){
         navigate(item, user)
       } else{
-        navigate(item)
+        hasContract 
+        ? navigate(item, hasContract, contract)
+        : navigate(item)
+     
       }
     }
+
 
     return (
         <View
@@ -124,12 +132,12 @@ const JobClient = ({ title, current, navigate, item, contract, user, future }) =
                 <View style={styles.footer}>
                 <View style={styles.footerInfo}>
                     <Image source={calendarIcon} style={styles.icon}></Image>
-                    <Text style={styles.text}> {item.startDate && item.startDate.slice(0,10)}</Text>
+                    <Text style={styles.text}> {item.startDate && moment(item.startDate).format('ll')} - {item.endDate && moment(item.endDate).format('ll')}</Text>
                 </View>
-                <View style={styles.footerInfo}>
+                {/* <View style={styles.footerInfo}>
                     <Image source={clockIcon} style={styles.icon}></Image>
                     <Text style={styles.text}>{item.shift === 'night' ? "Night Shift " : "Day Shift"}</Text>
-                </View>
+                </View> */}
                 <View style={styles.footerInfo}>
                     <Image source={locationIcon} style={styles.icon}></Image>
                     <Text style={styles.text}> {item.location}</Text>

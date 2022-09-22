@@ -23,14 +23,14 @@ import { getClientbyId } from '../reduxToolkit/clientSlice'
 
 const ClientProfile = ({ navigation, route }) => {
   const navigateEdit = () => {
-    navigation.navigate("editProfileClient", {clientProfile})
+    navigation.navigate("login",{edit: true, clientProfiles} )
   }
 
 
   const { user } = useSelector((state) => state.user)
   const { client } = useSelector((state) => state.client)
 
-  const [clientProfile, setClientProfile] = useState(client)
+  const [clientProfiles, setClientProfile] = useState(client)
 
   const [loaded, setLoaded] = useState(true)
 
@@ -38,7 +38,7 @@ const ClientProfile = ({ navigation, route }) => {
 
   useEffect(() => {
 
-    if(clientProfile !== {} && clientProfile!== undefined ){
+    if(clientProfiles !== {} && clientProfiles!== undefined ){
     if(user.clientId === undefined && !client){
 
       return  navigation.navigate("editProfileClient", {clientProfile: {
@@ -84,8 +84,8 @@ const ClientProfile = ({ navigation, route }) => {
 //     }
 //   }, [])
 
-
-  return  loaded || !client ? <View style={{marginTop: 400}}>
+  console.log("clientProfile", clientProfiles)
+  return  loaded || clientProfiles.user === undefined ? <View style={{marginTop: 400}}>
         <ActivityIndicator size={"large"}/>
       </View>
     :(
@@ -93,10 +93,10 @@ const ClientProfile = ({ navigation, route }) => {
       <View style={styles.header}>
         <View style={styles.subHeader}>
           {
-            clientProfile.user.profileImage !== undefined
+            clientProfiles.user.profileImage !== undefined
             ? <Image 
               source={{
-                uri: `http://195.110.58.234:4000${clientProfile.user.profileImage}`
+                uri: `http://195.110.58.234:4000${clientProfiles.user.profileImage}`
               }} 
               style={styles.profileImage}
             />
@@ -131,7 +131,7 @@ const ClientProfile = ({ navigation, route }) => {
                 <Text
                   style={[styles.title, { backgroundColor: 'transparent' }]}
                 >
-                  {clientProfile.companyName}
+                  {clientProfiles.companyName}
                 </Text>
               }
             >
@@ -140,33 +140,33 @@ const ClientProfile = ({ navigation, route }) => {
                 end={{ x: 1, y: 1 }}
                 colors={['rgba(49, 190, 187, 1)', 'rgba(101, 91, 218, 1)']}
               >
-                <Text style={[styles.title, { opacity: 0 }]}> {clientProfile.companyName}</Text>
+                <Text style={[styles.title, { opacity: 0 }]}> {clientProfiles.companyName}</Text>
               </LinearGradient>
             </MaskedView>
             <View style={{left: 20}}>
               <Text style={styles.text}>
-                Company type: <Text style={styles.text2}>{clientProfile.privacy}</Text>
+                Company type: <Text style={styles.text2}>{clientProfiles.privacy}</Text>
               </Text>
              
               {
-                clientProfile.privacy === "public"
+                clientProfiles.privacy === "public"
                 ?<View style={styles.descriptionContainer}>
                   <Text style={styles.text}>
-                    Signatory name: <Text style={styles.text2}>{clientProfile.signatoryName}</Text>
+                    Signatory name: <Text style={styles.text2}>{clientProfiles.signatoryName}</Text>
                   </Text>
                   <Text style={styles.text}>
-                    Signatory title: <Text style={styles.text2}>{clientProfile.signatoryTitle}</Text>
+                    Signatory title: <Text style={styles.text2}>{clientProfiles.signatoryTitle}</Text>
                   </Text>
-                  <Image source={{uri: `http://195.110.58.234:4000${clientProfile.sign}`}} style={styles.Imagecontainer}/>
+                  <Image source={{uri: `http://195.110.58.234:4000${clientProfiles.sign}`}} style={styles.Imagecontainer}/>
                 </View>
                 :<View style={styles.descriptionContainer}>
                   <Text style={styles.text}>
-                    TRN: <Text style={styles.text2}>{clientProfile.TRN}</Text>
+                    TRN: <Text style={styles.text2}>{clientProfiles.TRN}</Text>
                   </Text>
                   <Text style={styles.text}>
-                    Address: <Text style={styles.text2}>{clientProfile.Address}</Text>
+                    Address: <Text style={styles.text2}>{clientProfiles.Address}</Text>
                   </Text>
-                  <Image source={{uri: `http://195.110.58.234:4000${clientProfile.tradingLicense}`}} style={styles.Imagecontainer}/>
+                  <Image source={{uri: `http://195.110.58.234:4000${clientProfiles.tradingLicense}`}} style={styles.Imagecontainer}/>
                 </View>
               }
 
@@ -184,11 +184,11 @@ const ClientProfile = ({ navigation, route }) => {
           >
             <View style={styles.footerInfo}>
               <Image source={clockIcon} style={styles.icon}></Image>
-              <Text style={styles.text}>{clientProfile.user.phoneNb}</Text>
+              <Text style={styles.text}>{clientProfiles.user.phoneNb}</Text>
             </View>
             <View style={styles.footerInfo}>
               <Image source={locationIcon} style={styles.icon}></Image>
-              <Text style={styles.text}>{clientProfile.user.email}</Text>
+              <Text style={styles.text}>{clientProfiles.user.email}</Text>
             </View>
           </LinearGradient>
         </View>

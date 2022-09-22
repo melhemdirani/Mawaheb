@@ -13,13 +13,13 @@ import { LinearGradient } from 'expo-linear-gradient'
 import MaskedView from '@react-native-masked-view/masked-view'
 import { useIsFocused } from "@react-navigation/native"
 import Carousel from 'react-native-anchor-carousel'
+import PaginationDot from 'react-native-animated-pagination-dot'
 
 import { useSelector, useDispatch } from 'react-redux'
 
 import { addJobToFavorites, getFreelancerDashboard, removeFav } from '../reduxToolkit/freelancerSlice'
 
 import SecondaryHeader from '../components/SecondaryHeader'
-import Job from '../components/Job'
 import Navbar from '../components/Navbar'
 import backgroundImage from '../assets/images/currentBg.png'
 import totalBg from '../assets/images/totalBg.png'
@@ -40,6 +40,7 @@ const JobseekerDashboard = ({ navigation, route }) => {
   const { freelancer } = useSelector((store) => store.freelancer)
   const { dashboard } = useSelector((store) => store.freelancer)
   const { currentJobs, pastJobs, totalWorkingTime, totalCashEarned } = dashboard
+ 
   const totalMonths =
     totalWorkingTime > 30 ? Math.floor(totalWorkingTime / 30) : 0
   const totalDays =
@@ -77,19 +78,12 @@ const JobseekerDashboard = ({ navigation, route }) => {
     }))
     .unwrap()
     .then(res => {
+      let seen = res.notifications.filter(notification => {
+      return !notification.seen 
+      })
       dispatch(
-        setNewNotifications(1)
+        setNewNotifications(seen.length)
       )
-      console.log("res notifiactionsa", res)
-      if(res.notifications.length > notifications.length){  
-        dispatch(
-          setNotificationsSeen(true)
-        )
-      } else{
-        dispatch(
-          setNotificationsSeen(false)
-        )
-      }
     })
     .catch(err => console.log("error getting notifications for freelancer", err))
   }, [])
@@ -205,7 +199,6 @@ const JobseekerDashboard = ({ navigation, route }) => {
           job={data.item}
           current
           client={data.item.client}
-
         />
       </View>
     )
@@ -247,11 +240,16 @@ const JobseekerDashboard = ({ navigation, route }) => {
                   separatorWidth={0}
                   onScrollEnd={handleCarouselScrollEnd}
                 />
-              { currentJobs?.length > 1 && <SimplePaginationDot
-                  currentIndex={currentIndex}
-                  length={currentJobs?.length}
-                  color="white"
-                />}
+             
+                { currentJobs?.length > 1 && 
+                  <View style={styles.PaginationDot}>
+                    <PaginationDot
+                      activeDotColor="white"
+                      curPage={currentIndex}
+                      maxPage={currentJobs?.length}
+                    />
+                  </View>
+                }
               </View>
             </View>
           ) : null
@@ -403,6 +401,10 @@ const styles = StyleSheet.create({
     letterSpacing: 1.5,
     bottom: 10,
   },
+  PaginationDot:{
+    alignSelf: "center",
+    top: 20
+  }
 })
 
 export default JobseekerDashboard

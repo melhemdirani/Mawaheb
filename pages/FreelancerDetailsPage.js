@@ -7,7 +7,8 @@ import {
   ImageBackground,
   Pressable,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from 'react-native'
 
 import { LinearGradient } from 'expo-linear-gradient'
@@ -27,32 +28,37 @@ import minusIcon from '../assets/images/minusIcon.png'
 import { useSelector, useDispatch } from 'react-redux'
 
 const FreelancerDetailsPage = ({ navigation, route }) => {
-  
-  
+    
+  const { freelancer,  job, invite} = route.params
+  const { user: userState } = useSelector((state) => state.user)
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
     if(freelancer === undefined || job === undefined){
       alert("Freelancer not found")
       navigation.goBack()
     }
   }, [])
-  const { freelancer,  job, invite} = route.params
   // let invite = jobId === "job.id" ? true : false
-  const { user: userState } = useSelector((state) => state.user)
 
-  console.log("job", job)
   const dispatch = useDispatch()
   const navigateContract = () => {
    if(invite){
+      setLoading(true)
       dispatch(inviteFreelancer({
         freelancerId: freelancer.id,
         jobId: job.id
       })).then(response => {
+        if(response.error){
+          alert("Freelancer is not available at the time of the job")
+        }
         console.log("response invite", response)
+        setLoading(false)
         navigation.goBack()
       })
       .catch(err => {
+        setLoading(false)
         navigation.goBack()
-        console.log("error ivnite", err)
+        console.log("error ivnite", err) // error handling here
       })
     } else{
        navigation.navigate('acceptContract', {role : 'client', freelancerId: freelancer.id, userState, jobId: job.id})
@@ -82,7 +88,11 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
     clearJob()
     navigation.goBack()
   }
-  return (
+  return loading ?  
+    <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
+      <ActivityIndicator size={"large"} color="#4E84D5"/>
+    </View>
+  :(
     <ScrollView style={styles.wrapper}>
       <View style={styles.header}>
         <View style={styles.subHeader}>
@@ -92,9 +102,11 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
                 style={styles.profileImage}
                 blurRadius={7}
               />
-               <View style={styles.ratingContainer}>
-                  <Text style={styles.rating}>{freelancer.averageRating}</Text>
-                </View>
+                { freelancer.averageRating && freelancer.averageRating > 0 ? 
+                  <View style={styles.ratingContainer}>
+                    <Text style={styles.rating}>{freelancer.averageRating}</Text>
+                  </View> : null
+                }
             </View>
           <ImageBackground
             source={priceRectangle} 

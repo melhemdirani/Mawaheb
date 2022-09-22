@@ -45,7 +45,7 @@ const Header = ({ icon, title, numOfPage, rightIcon, hidden, numberHidded, goBac
         ></ImageBackground>
       </ImageBackground>
       { 
-        profile
+        profile 
         ? <View style={styles.iconsContainer}>
             <LinearGradient
               start={{ x: 1, y: 0 }}
@@ -53,11 +53,19 @@ const Header = ({ icon, title, numOfPage, rightIcon, hidden, numberHidded, goBac
               colors={[ '#23CDB0','#23CDB0','#23CDB0', '#0482AA', ]}
               style={styles.iconContainer}
             >
-              <Image source={icon} style={styles.iconP}></Image>
+              <Image 
+                source={{
+                  uri: `http://195.110.58.234:4000${icon}`
+                }} 
+                style={styles.iconP} 
+              />
+              
             </LinearGradient>
-            <View style={styles.ratingContainer}>
-              <Text style={styles.rating}>{rating}</Text>
-            </View>
+            { rating > 0 ? 
+              <View style={styles.ratingContainer}>
+                <Text style={styles.rating}>{rating}</Text>
+              </View> : null
+            }
           </View>
         : <Image source={icon} style={styles.icon}></Image>
       }
@@ -96,7 +104,9 @@ const styles = StyleSheet.create({
   },
   iconP:{
     width: 90,
-    height: 90
+    height: 90,
+    backgroundColor: "white",
+    borderRadius: 50
   },
   info: {
     position: 'relative',

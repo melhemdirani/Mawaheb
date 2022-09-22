@@ -51,20 +51,26 @@ const SettingsPage = ({navigation, role}) => {
                 setCredentials({})
             )
                 navigation.dispatch(
+                    CommonActions.reset({
+                        routes:[{ 
+                            name: 'SignIn', 
+                            params: {reload}
+                        }]
+                    })
+                )
+            setLoading(false)
+        })
+        .catch( err => {
+            alert("You are not logged in")
+            console.log("err", err)
+            navigation.dispatch(
                 CommonActions.reset({
                     routes:[{ 
                         name: 'SignIn', 
                         params: {reload}
                     }]
                 })
-        )
-            setLoading(false)
-        })
-        .catch( err => {
-            alert("You are not logged in")
-            console.log("err", err)
-            CommonActions.reset('SignIn', {reload})
-
+            )
             setLoading(false)
         })
      

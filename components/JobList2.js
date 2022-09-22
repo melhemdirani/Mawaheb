@@ -55,9 +55,11 @@ const JobList2 = ({
                 style={styles.profileImage}
                 blurRadius={7}
               />
-               <View style={styles.ratingContainer}>
-                  <Text style={styles.rating}>{freelancer.averageRating}</Text>
-                </View>
+                { freelancer.averageRating && freelancer.averageRating > 0 ?
+                  <View style={styles.ratingContainer}>
+                    <Text style={styles.rating}>{freelancer.averageRating}</Text>
+                  </View> : null
+                }
             </View>
            
           <ImageBackground

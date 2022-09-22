@@ -21,6 +21,7 @@ const Job = ({
     navigate, 
     id, 
     startDate, 
+    endDate, 
     data,
     disabled, 
     shift, 
@@ -153,12 +154,14 @@ const Job = ({
             <View style={styles.footer}>
               <View style={styles.footerInfo}>
                 <Image source={calendarIcon} style={styles.icon}></Image>
-                <Text style={styles.text}> {startDate && moment(startDate).format('ll')}</Text>
+                <Text style={styles.text}> 
+                  {startDate && moment(startDate).format('ll')} - {endDate && moment(endDate).format('ll')} 
+                </Text>
               </View>
-              <View style={styles.footerInfo}>
+              {/* <View style={styles.footerInfo}>
                 <Image source={clockIcon} style={styles.icon}></Image>
                 <Text style={styles.text}>{shift && (shift.charAt(0).toUpperCase() + shift.slice(1))} shift</Text>
-              </View>
+              </View> */}
               <View style={styles.footerInfo}>
                 <Image source={locationIcon} style={styles.icon}></Image>
                 <Text style={styles.text}>{location}</Text>
@@ -384,7 +387,8 @@ const styles = Platform.OS === 'android'
     text: {
       color: 'rgba(16, 125, 197, 1)',
       fontFamily: 'PoppinsR',
-      fontSize: 10
+      fontSize: 10,
+      marginLeft: 10
     },
     description: {
       color: 'rgba(10, 8, 75, .6)',

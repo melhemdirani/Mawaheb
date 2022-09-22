@@ -48,7 +48,6 @@ const JobPostingPage = ({navigation}) => {
     setValues({ ...values, [name]: value })
   }
 
-
   const paymentNav = () => {
     //add job with values and client id
       // return(compareDates(values.startDate, values.endDate))
@@ -188,7 +187,7 @@ const JobPostingPage = ({navigation}) => {
         </View>
 
         <TouchableOpacity style={styles.btnContainer} onPress={() => paymentNav()}>
-          <PrimaryButton title='Post job' />
+          <PrimaryButton title='Continue to payment' />
         </TouchableOpacity>
       </View>
       </KeyboardAvoidingView>

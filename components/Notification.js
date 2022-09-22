@@ -9,12 +9,13 @@ function Notification({title, color, action, acceptContract, navCongrats, navJob
         if(title === 'You have a new contract to accept or reject'){
             acceptContract(n.text, n.textOne, action)
         } else{
-            if (title.includes('has accepted')){
+            if (title.includes('has accepted your contract')){
                navCongrats(action) 
-            } else if (title.includes('has applied')){
+            } else if (title.includes('has applied') || title.includes('received an application') || title.includes('has accepted your invitation')){
                 navJobs(n.text, n.textOne, action, n.id)
             } else if (title.includes('invited')){
-                navJobDetails(action)
+                console.log("n", n)
+                navJobDetails(action,  n.textOne)
             }
         }
     }
@@ -49,7 +50,8 @@ const styles =
         text:{
             color: "#0A084B",
             fontWeight: "400",
-            paddingLeft: 40,
+            marginLeft: 40,
+            width: "70%",
 
         },
         shadowProp: {  

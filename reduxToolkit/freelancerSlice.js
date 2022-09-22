@@ -194,7 +194,7 @@ const freelancerSlice = createSlice({
       state.freelancer = {}
     },
     clearFreelancerState : (state) => {
-      state.freelancer = {}
+      Object.assign(state, initialState)
     }
   },
   extraReducers: {

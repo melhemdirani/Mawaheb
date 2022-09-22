@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
+import moment from 'moment';
 import Checkbox from 'expo-checkbox';
 import { useDispatch, useSelector } from 'react-redux'
 import { getContractFreelancer, getFreelancer } from '../reduxToolkit/freelancerSlice';
@@ -152,7 +153,7 @@ const JobContractPageFreelancer = ({navigation, route}) => {
               <View style={styles.footer}>
                 <View style={styles.footerInfo}>
                   <Image source={calendarIcon} style={styles.icon}></Image>
-                  <Text style={styles.text2}> {job.startDate && job.startDate.slice(0,10)}</Text>
+                  <Text style={styles.text2}> {job.startDate &&  moment(job.startDate).format('ll')}</Text>
                 </View>
                 <View style={styles.footerInfo}>
                   <Image source={clockIcon} style={styles.icon}></Image>

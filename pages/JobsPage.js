@@ -118,7 +118,6 @@ const JobsPage = ({ navigation, route }) => {
         console.log("response freelancer length b", response.jobs.length)
         setNumberOfPages(response.numOfPages)
         setJobs(response.jobs)
-        console.log("jobs response", response.jobs)
         setLoading(false)
       })
       .catch((error) => {

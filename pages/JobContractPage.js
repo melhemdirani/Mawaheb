@@ -9,9 +9,10 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
+import moment from 'moment';
 import Checkbox from 'expo-checkbox';
 import { useDispatch, useSelector } from 'react-redux'
-import { getContractFreelancer, getFreelancer } from '../reduxToolkit/freelancerSlice';
+import {  getFreelancer } from '../reduxToolkit/freelancerSlice';
 import { acceptAndSign } from '../reduxToolkit/clientSlice';
 
 import Header from '../components/Header'
@@ -42,17 +43,22 @@ const JobContractPage = ({navigation, route}) => {
   const [loading,setLoading] = useState(false)
  
   useEffect(() => {
-      dispatch(getFreelancer(freelancerId))
+    setLoading(true)
+    dispatch(getFreelancer(freelancerId))
+    .unwrap()
+    .then((response) => {
+      setNewFreelancer(response.freelancer)
+      dispatch(getJob(jobId))
       .unwrap()
       .then((response) => {
-        setNewFreelancer(response.freelancer)
-        dispatch(getJob(jobId))
-        .unwrap()
-        .then((response) => {setJob(response.job)})
+        setJob(response.job)
+        setLoading(false)
       })
-      .catch((error) => {
-        console.log("error", error.message)
-      })
+    })
+    .catch((error) => {
+      console.log("error", error.message)
+      setLoading(false)
+    })
   }, [])
   const navigateAccept = () => {
     if(!isChecked){
@@ -97,9 +103,9 @@ const JobContractPage = ({navigation, route}) => {
   }
 
   console.log("type", tax(200))
-  return Object.keys(newFreelancer) !== 0 && Object.keys(job) !== 0 &&(
+  return Object.keys(newFreelancer) !== 0 && Object.keys(job) !== 0 && !loading &&(
     <ScrollView style={styles.wrapper}>
-      <Header title='Job Contract' icon={jobContractIcon} goBack={navigation.goBack} />
+      <Header title='Job Contracts' icon={jobContractIcon} goBack={navigation.goBack} />
       <SafeAreaView style={styles.container}>
         <View style={styles.titleHeader}>
           <Text style={styles.text}>
@@ -172,7 +178,7 @@ const JobContractPage = ({navigation, route}) => {
               <View style={styles.footer}>
                 <View style={styles.footerInfo}>
                   <Image source={calendarIcon} style={styles.icon}></Image>
-                  <Text style={styles.text2}> {job.startDate && job.startDate.slice(0,10)}</Text>
+                  <Text style={styles.text2}> {job.startDate &&  moment(job.startDate).format('ll')}</Text>
                 </View>
                 <View style={styles.footerInfo}>
                   <Image source={clockIcon} style={styles.icon}></Image>

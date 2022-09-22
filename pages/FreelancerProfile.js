@@ -58,7 +58,7 @@ const FreelancerProfile = ({ navigation, route }) => {
   const { id, roles, languages } = freelancer
   let users = freelancer.user !== undefined ? freelancer.user : user
   const navigateEdit = () => {
-    navigation.navigate('JobSignUp', { role: 'freelancer', update: true })
+    navigation.navigate("login",{edit: true} )
   }
   const navigateComplete = () => {
     navigation.navigate('JobSignUp', { role: 'freelancer', update: true })
@@ -71,14 +71,18 @@ const FreelancerProfile = ({ navigation, route }) => {
     ?(
     <ScrollView style={styles.wrapper}>
       <View style={styles.header}>
-        <View style={styles.subHeader}>
+        <View style={{alignContent: "center", justifyContent: "center"}}>
           {
             user.profileImage 
             ? <Image source={{uri: `http://195.110.58.234:4000${user.profileImage}`}} style={styles.profileImage}/>
             : <View style={styles.circle} />
 
           }
-
+          { freelancer.averageRating && freelancer.averageRating > 0 ? 
+            <View style={styles.ratingContainer}>
+              <Text style={styles.rating}>{freelancer.averageRating}</Text>
+            </View> : null
+          }
         </View>
         <View style={styles.subHeader}>
           <Pressable onPress={() => navigation.navigate("settings")}>
@@ -128,6 +132,9 @@ const FreelancerProfile = ({ navigation, route }) => {
                       <Text style={styles.roleName}>{role.role}</Text>
                       <Text style={styles.roleDescription}>
                         {role.projectTitle}
+                      </Text>
+                      <Text style={styles.roleDescription}>
+                        {role.category} - {role.title}
                       </Text>
                       <Text style={styles.roleDescription}>
                         DailyRate: {role.dailyRate} AED
@@ -417,7 +424,8 @@ const styles = StyleSheet.create({
   profileImage:{
     width: 100,
     height: 100,
-    borderRadius: 50
+    borderRadius: 50,
+    backgroundColor: "white"
   },
   email:{
     fontSize: 14,
@@ -427,6 +435,21 @@ const styles = StyleSheet.create({
     left: 20,
     width: '100%',
     color: "rgba(0,0,0, .4)"
-  }
+  },
+  ratingContainer:{
+    backgroundColor: "#9C88FD",
+    paddingHorizontal: 9,
+    borderRadius: 100,
+    width: 40,
+    top: -10,
+    justifyContent: "center",
+    aligntItems: "center",
+    alignSelf: "center"
+  },
+  rating:{
+    color: "white",
+    fontSize: 14,
+    fontFamily: "PoppinsS"
+  },
 })
 export default FreelancerProfile

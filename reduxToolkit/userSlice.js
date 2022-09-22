@@ -70,6 +70,22 @@ export const createOTP = createAsyncThunk(
     }
   }
 )
+export const sendEmail = createAsyncThunk(
+  'sendEmail',
+  async ( user , thunkApi) => {
+    let url = `/users/supportEmail`
+    console.log("email", user)
+    try {
+      const resp = await customFetch.post(url, {subject: user.subject, message: user.message, email: user.email})
+
+      return resp.data
+    } catch (error) {
+      console.log(error)
+      console.log('error')
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
 export const verifyUser = createAsyncThunk(
   'verifyUser',
   async ( verification , thunkApi) => {
@@ -170,6 +186,19 @@ export const deleteNotifcation = createAsyncThunk(
     }
   }
 )
+export const setSeenNotifications = createAsyncThunk(
+  'setSeenNotifications',
+  async (notificationIds, thunkApi) => {
+    let url =`/notifications/seen`
+    try {
+      const resp = await customFetch.patch(url, notificationIds)
+      return resp.data
+    } catch (error) {
+      console.log('rrer', error)
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
 export const deleteNotifcations = createAsyncThunk(
   'deleteNotifcations',
   async (ids, thunkApi) => {
@@ -257,7 +286,6 @@ const userSlice = createSlice({
       state.notificationsSeen = action.payload
     },
     setNewNotifications: (state, action) => {
-      console.log("action", action.payload)
       state.newNotifications = action.payload
     },
     clearUser : (state) => {
@@ -286,6 +314,9 @@ const userSlice = createSlice({
       state.registerIsLoading = false
       state.user = user
     },
+    [setSeenNotifications.fulfilled]: (state, { payload }) => {
+      state.newNotifications= 0
+    },
     [registerUser.rejected]: (state, { payload }) => {
       state.registerIsLoading = false
       state.registerError = payload
@@ -309,7 +340,7 @@ const userSlice = createSlice({
       state.isLoading = true
     },
     [logout.fulfilled]: (state) => {
-      state.user = {}
+      Object.assign(state, initialState)
     },
     [loginUser.fulfilled]: (state, { payload }) => {
       const { user } = payload

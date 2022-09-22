@@ -74,6 +74,18 @@ export const applyJob = createAsyncThunk(
     }
   }
 )
+export const acceptInvitation = createAsyncThunk(
+  'acceptInvitation',
+  async (user, thunkApi) => {
+    let url = `/freelancers/${user.jobId}/acceptInvitation`
+    try {
+      const resp = await customFetch.patch(url, { freelancerId: user.freelancerId, invitationId: user.invitationId})
+      return resp.data
+    } catch (error) {
+      return thunkApi.rejectWithValue(error.response.data.msg)
+    }
+  }
+)
 export const getApplicants = createAsyncThunk(
   'getApplicants',
   async (id, thunkApi) => {
@@ -132,9 +144,21 @@ export const getMyJobs = createAsyncThunk('getMyJobs', async (filters, thunkApi)
   let url = `jobs/${filters.id}?${filters.filters}`
   try {
     const resp = await customFetch.get(url)
+    console.log("getmyjobs", resp.data)
     return resp.data
   } catch (error) {
     console.log("error getting my jobs",error.response.data.msg)
+    return thunkApi.rejectWithValue(error.response.data.msg)
+  }
+})
+export const setJobRated = createAsyncThunk('setJobRated', async (jobId, thunkApi) => {
+  let url = `jobs/${jobId}/setJobRated`
+  console.log("rated url", url)
+  try {
+    const resp = await customFetch.patch(url)
+    return resp.data
+  } catch (error) {
+    console.log("error getting my jobs",error)
     return thunkApi.rejectWithValue(error.response.data.msg)
   }
 })
@@ -186,6 +210,11 @@ const jobSlice = createSlice({
       state.isLoading = true
     },
     [applyJob.fulfilled]: (state, action) => {
+      const { job } = action.payload
+      state.isLoading = false
+      state.job = job
+    },
+    [acceptInvitation.fulfilled]: (state, action) => {
       const { job } = action.payload
       state.isLoading = false
       state.job = job

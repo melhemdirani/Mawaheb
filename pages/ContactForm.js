@@ -20,6 +20,7 @@ import SelectInput from '../components/SelectInput';
 import DeleteButton from '../components/Buttons/DeleteButton';
 import SecondaryButton from '../components/Buttons/SecondaryButton';
 import TertiaryButton from '../components/Buttons/TertiaryButton';
+import { sendEmail } from '../reduxToolkit/userSlice';
 
 const ContactForm = ({ navigation, route }) => {
 
@@ -37,8 +38,21 @@ const ContactForm = ({ navigation, route }) => {
   // const callContact = () => {
   //   Linking.openURL(`tel://${+96171183511}`)
   // }
+  
   const emailContract = () => {
-    Linking.openURL("mailto:mawahibcareers@gmail.coms")
+    console.log("user.email", user.email)
+    dispatch(
+      sendEmail({
+        subject: subject,
+        message: message,
+        email: user.email
+      })
+    ).then(() => {
+      alert("Thank you for your message, we will respond soon!");
+      navigation.goBack()
+    })
+    .catch(err => console.log("error", err))
+    
   }
   return isLoading ? (
     <View style={styles.loadingStyle}>
@@ -48,18 +62,21 @@ const ContactForm = ({ navigation, route }) => {
       <View style={styles.container}>
         <SecondaryHeader title={'Contact us'} heart={false} noFilter/>
         <View style={styles.subContainer}>
-            {/* <Text style={styles.text}>Hello Name, how can we help?</Text>
+         
+            <Text style={styles.text}>Hello, need help? Send us an email and we will get back shortly!</Text>
             <SelectInput 
                 title="Subject*" 
                 list={['Help needed', 'Report an error', 'General Feedback']}
                 onSelect={(e) => setSubject(e)}
+                valued
+                value={subject}
+
             />
             <TextArea  
                 placeholder="Leave your message here" 
                 onChange={(value) => setMessage(value)}
                 value={message}
-            />  */}
-            <Text style={styles.text}>Hello, need help? Send us an email and we will get back shortly!</Text>
+            /> 
             <TouchableOpacity style={styles.buttons} onPress={() => emailContract()}>
                 <PrimaryButton title='Send us an email' />
             </TouchableOpacity>
@@ -85,8 +102,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     alignItems: "center",
-    flex: .7
-     
   },
   text: {
     width: '70%',

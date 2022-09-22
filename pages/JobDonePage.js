@@ -1,5 +1,8 @@
 import React, { useState} from 'react';
 import { View, Text, StyleSheet, Image, ImageBackground, Platform, Pressable, TouchableOpacity } from 'react-native';
+import { StackActions } from '@react-navigation/native';
+
+import { useDispatch } from 'react-redux'
 
 import Header from '../components/Header';
 import congratsBg from '../assets/images/congratsBg.png';
@@ -10,28 +13,63 @@ import { LinearGradient } from 'expo-linear-gradient';
 import profile from '../assets/images/profile.png';
 import emptyStar from '../assets/images/emptyStar.png';
 import fullStar from '../assets/images/fullStar.png';
+import { setJobRated } from '../reduxToolkit/jobSlice';
+import { reviewFreelancer } from '../reduxToolkit/clientSlice';
 
 
-const JobDonePage = ({navigation}) => {
-
+const JobDonePage = ({navigation, route}) => {
+  const {user, jobId, clientId, freelancerId} = route.params
+  console.log("user", user)
+  const dispatch = useDispatch()
   const navigateDash = () => {
-    navigation.navigate('recruiter_dashboard')
-  }
-
-  const confirmPress = () => {
-    alert('Thank you for your feedback!')
-    navigation.navigate('recruiter_dashboard')
+    dispatch(
+      setJobRated(jobId)
+    ).unwrap()
+    .then(() => {
+      navigation.dispatch(
+        StackActions.replace(
+        'recruiter_dashboard'
+      ))
+    })
+    .catch(err => console.log(err))
   }
   const [rate, setRate] = useState(0)
 
+
+  const confirmPress = () => {
+    dispatch(
+      reviewFreelancer({
+        jobId: jobId,
+        freelancerId: freelancerId,
+        clientId: clientId,
+        comment: "noComment",
+        rating: rate
+      })
+    ).unwrap()
+    .then(() => {
+      dispatch(
+        setJobRated(jobId)
+      ).unwrap()
+      .then(() => {
+        alert('Thank you for your feedback!')
+        navigation.dispatch(
+          StackActions.replace(
+          'recruiter_dashboard'
+        ))
+      })
+    })
+    .catch(err => console.log(err))
+  
+  }
+
   return (
     <View style={styles.wrapper}>
-      <Header title='Job done!' hidden={true} icon={profile} profile rating={4.8}/>
+      <Header title='Job done!' hidden={true} icon={user.profileImage} profile rating={4.8}/>
       <View style={styles.container}>
         <MaskedView
           maskElement={
             <Text style={[styles.text, { backgroundColor: 'transparent' }]}>
-              How was your experience with ahmad?
+              {`How was your experience with ${user.name}?`}
             </Text>
           }
         >
@@ -41,7 +79,7 @@ const JobDonePage = ({navigation}) => {
             colors={['#31BEBB', '#655BDA']}
           >
             <Text style={[styles.text, { opacity: 0 }]}>
-              How was your experience with ahmad?
+             {`How was your experience with ${user.name}?`}
             </Text>
           </LinearGradient>
         </MaskedView>
@@ -91,7 +129,7 @@ const styles = Platform.OS === 'android'
     },
     congratsBg: {
       width: '100%',
-      height: 270,
+      height: 200,
       flexDirection: "row",
       alignItems: "center",
       top: -30,
@@ -135,7 +173,7 @@ const styles = Platform.OS === 'android'
     text: {
       fontSize: 17,
       textAlign: 'center',
-      marginTop: 40,
+      marginTop: 50,
       color: '#31BEBB',
       fontFamily: 'PoppinsS',
       marginBottom: 80,
@@ -143,7 +181,7 @@ const styles = Platform.OS === 'android'
     },
     congratsBg: {
       width: '100%',
-      height: 270,
+      height: 200,
       flexDirection: "row",
       alignItems: "center",
       top: -30,

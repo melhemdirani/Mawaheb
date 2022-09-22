@@ -13,6 +13,7 @@ import MaskedView from '@react-native-masked-view/masked-view'
 import Carousel from 'react-native-anchor-carousel'
 import { Dimensions } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
+import PaginationDot from 'react-native-animated-pagination-dot'
 import { useIsFocused } from "@react-navigation/native"
 
 import { getClientDashboard } from '../reduxToolkit/clientSlice'
@@ -56,10 +57,17 @@ const ClientDashboard = ({ navigation, route }) => {
           setFutureJobs(res.futureJobs); 
           setPastJobs(res.pastJobs); 
           setLoading(false) 
+          res.pastJobs.map(job => {
+            // if not rated take me to job done page please
+            if(!job.rated){
+              navigation.navigate("jobDoneClient", {user: job.contract.freelancer.user, jobId: job.id, clientId: job.clientId, freelancerId: job.contract.freelancer.id})
+
+            }
+          })
       })
       .catch(err => {console.log("error getting client dashboard", err);    setLoading(false)})
     }
-}, [route])
+  }, [isFocused])
 
   useEffect(() => {
     if(isFocused){
@@ -71,15 +79,12 @@ const ClientDashboard = ({ navigation, route }) => {
         user.role 
       }))
       .then(res => {
-        if( res.payload.notifications.length > notifications.length){
-          dispatch(
-            setNewNotifications(res.payload.notifications.length - notifications.length)
-          )
-          dispatch(
-            setNotificationsSeen(false)
-          )
-        }
-   
+        let seen = res.payload.notifications.filter(notification => {
+        return !notification.seen 
+        })
+        dispatch(
+          setNewNotifications(seen.length)
+        )
       })
       .catch(err => console.log("error getting notifications for client", err))
   }
@@ -97,14 +102,14 @@ const ClientDashboard = ({ navigation, route }) => {
   function handleCarouselScrollEnd2(item, index) {
     setFutureIndex(index)
   }
-  const navigate = (id) => {
-    navigation.navigate('jobDescriptionClient', { job: id, prev: false })
+  const navigate = (id, hasContract, user) => {
+    navigation.navigate('jobDescriptionClient', { job: id, prev: false, hasContract: hasContract, contract: user })
   }
   const navigate2 = (id, user) => { // continue here
     navigation.navigate('jobDescriptionClient', { job: id, prev: true, freelancer: user  }) 
   }
 
-  const renderItem = ({ item, index }) => {
+  const renderItem = ({item, index}) => {
     return (
       <TouchableOpacity
         style={styles.item}
@@ -119,7 +124,7 @@ const ClientDashboard = ({ navigation, route }) => {
           navigate={navigate2}
           id={item.id}
           item={item}
-          user={data.data.contract.freelancer.user}
+          user={item.contract.freelancer.user}
           contract={item.contract}
         />
       </TouchableOpacity>
@@ -139,7 +144,8 @@ const ClientDashboard = ({ navigation, route }) => {
           navigate={navigate}
           id={item.id}
           item={item}
-          future
+          hasContract={item.contract !== null ? true : false}
+          future={true}
           current={currentJobs.length < 1 ? true : false}
           contract={item.contract}
         />
@@ -264,11 +270,15 @@ const ClientDashboard = ({ navigation, route }) => {
                 separatorWidth={0}
                 onScrollEnd={handleCarouselScrollEnd2}
               />
-             { futureJobs?.length > 1 && <SimplePaginationDot
-                currentIndex={futureIndex}
-                length={futureJobs?.length}
-                color={currentJobs.length > 0 ? "#547DD6" : "white" }
-              />}
+                { futureJobs?.length > 1 && 
+                  <View style={styles.PaginationDot}>
+                    <PaginationDot
+                      activeDotColor={currentJobs.length > 0 ? "#547DD6" : "white" }
+                      curPage={futureIndex}
+                      maxPage={futureJobs?.length}
+                    />
+                  </View>
+                }
             </View>
           </View>
         ) : null}
@@ -287,10 +297,15 @@ const ClientDashboard = ({ navigation, route }) => {
                 separatorWidth={0}
                 onScrollEnd={handleCarouselScrollEnd}
               />
-             { currentJobs?.length > 1 && <SimplePaginationDot
-                currentIndex={currentIndex}
-                length={currentJobs?.length}
-              />}
+              { currentJobs?.length > 1 && 
+                <View style={styles.PaginationDot}>
+                  <PaginationDot
+                    activeDotColor={"white" }
+                    curPage={currentIndex}
+                    maxPage={currentJobs?.length}
+                  />
+                </View>
+              }
             </View>
           </View>
         ) : null}
@@ -320,7 +335,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   background: {
-    height: 340,
+    height: 320,
     width: '100%',
     position: 'absolute',
   },
@@ -422,6 +437,10 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
   },
+  PaginationDot:{
+    alignSelf: "center",
+    top: 20
+  }
 
 })
 

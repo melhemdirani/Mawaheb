@@ -4,7 +4,8 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Pressable
+  Pressable,
+  ActivityIndicator
 } from 'react-native';
 import { StackActions } from '@react-navigation/native';
 
@@ -30,6 +31,7 @@ const BankPage = ({  navigation, route }) => {
     swiftCode: '',
   }
 
+  const [loading, setLoading] = useState(false)
 
   const {
     freelancer,
@@ -100,8 +102,12 @@ const BankPage = ({  navigation, route }) => {
         return false
     } else return true
   }
-
+  console.log("roles", roles)
+  console.log("languages", languages)
   const updateProfile = () => {
+
+    
+    setLoading(true)
     dispatch(
       updateFreelancerProfile({ 
         freelancer: {
@@ -124,17 +130,20 @@ const BankPage = ({  navigation, route }) => {
     )
     .unwrap()
     .then(() => {
+      setLoading(false)
       navigation.dispatch(
         StackActions.replace('settings')
       )
     })
     .catch((error) => {
+      setLoading(false)
       alert("error!")
       console.log("error", error)
     })
   }
  
   const createJobSeeker = () => {
+    setLoading(true)
     dispatch(
       createFreelancerProfile({
         profile: {
@@ -153,15 +162,15 @@ const BankPage = ({  navigation, route }) => {
     )
     .unwrap()
     .then((response) => {
-      console.log("response registiring", response)
+      setLoading(false)
       navigation.dispatch(
         StackActions.replace('seeker_dash', 
           {register: true}
         )
       )
     })
-    .catch((error) => {
-      console.log("error", error)
+    .catch(() => {
+      setLoading(false)
       alert("Error registiring")
       navigation.dispatch(
         StackActions.replace('SignIn')
@@ -180,7 +189,12 @@ const BankPage = ({  navigation, route }) => {
     freelancer.id === undefined ? createJobSeeker () : updateProfile () 
   }
 
-  return (
+  return loading ?
+  <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
+    <ActivityIndicator size={"large"} color="#4E84D5"/>
+  </View>
+
+  : (
     <ScrollView style={styles.container}>
       <Header
         icon={Icon}

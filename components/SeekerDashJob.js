@@ -27,8 +27,7 @@ const SeekerDashJob = ({
     const emailContract = (email) => {
       Linking.openURL(`mailto:${email}`)
     }
-    const {title, description, location, startDate, shift, budget, category} = job
-    console.log("job", job)
+    const {title, description, location, startDate, shift, budget, category, endDate} = job
 
   return (
     <View
@@ -145,12 +144,12 @@ const SeekerDashJob = ({
             <View style={styles.footer}>
               <View style={styles.footerInfo}>
                 <Image source={calendarIcon} style={styles.icon}></Image>
-                <Text style={styles.text}> {startDate && moment(startDate).format('ll')}</Text>
+                <Text style={styles.text}> {startDate && moment(startDate).format('ll')} - {endDate && moment(endDate).format('ll')}</Text>
               </View>
-              <View style={styles.footerInfo}>
+              {/* <View style={styles.footerInfo}>
                 <Image source={clockIcon} style={styles.icon}></Image>
                 <Text style={styles.text}>{shift && (shift.charAt(0).toUpperCase() + shift.slice(1))} shift</Text>
-              </View>
+              </View> */}
               <View style={styles.footerInfo}>
                 <Image source={locationIcon} style={styles.icon}></Image>
                 <Text style={styles.text}>{location}</Text>

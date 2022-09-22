@@ -30,8 +30,6 @@ export default function SignupPage({ navigation }) {
 
   const {
     credentials,
-    notifications,
-    newNotifications
   } = useSelector((store) => store.user)
   const dispatch = useDispatch()
 
@@ -48,13 +46,13 @@ export default function SignupPage({ navigation }) {
         .then((res) =>{
             if(res.user.role === 'freelancer'){
                 dispatch(
-                    getFreelancer(res.user.freelancerId)
+                  getFreelancer(res.user.freelancerId)
                 )
                 .then(() => {
-                    navigation.dispatch(
-                        StackActions.replace(
-                        'seeker_dash'
-                    ))
+                  navigation.dispatch(
+                    StackActions.replace(
+                    'seeker_dash'
+                  ))
                 })
                 .catch(err =>{
                   console.log(err)
@@ -108,7 +106,7 @@ export default function SignupPage({ navigation }) {
   }
   const navigateLogin = () => {
     navigation.dispatch(
-      StackActions.replace('login')
+      StackActions.replace('login', {edit: false})
     )
   }
   const navigateCSignup = () => {

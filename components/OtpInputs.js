@@ -57,7 +57,7 @@ export default OtpInputs = ({navigation, route}) => {
             console.log("Response", res)
             alert("Congratulations, your'e password is updated!");
             navigation.dispatch(
-              StackActions.replace('login')
+              StackActions.replace('login', {edit: false})
             )
           }).catch((err) => {
             alert("OTP is incorrect!")
@@ -157,8 +157,14 @@ export default OtpInputs = ({navigation, route}) => {
                   onChange={(e) => setPassword2(e)}
                   value={password2}
                 />
+                  { 
+                    password !== password2 && password2 !== "" &&
+                    <Text style={styles.warning}>
+                      passwords don't match
+                    </Text>
+                  }
               </View>
-            }
+            } 
             <TouchableOpacity onPress={() => onNextClick()} style={styles.button}>
                   <PrimaryButton title={"Next"} />
             </TouchableOpacity>
@@ -236,4 +242,12 @@ container:{
     top: 100,
     marginBottom: 150
   },
+  warning:{
+    alignSelf: "flex-end",
+    marginTop: -10,
+    marginBottom: 10,
+    right: 30,
+    color: "#BE3142",
+    fontSize: 10
+  }
 });

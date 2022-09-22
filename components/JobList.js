@@ -28,7 +28,7 @@ const JobList = ({
   item
 }) => {
   const uniqueIds = [];
-
+  console.log("freelancer", freelancer)
   // const newLanguages = freelancer.languages.filter(element => {
   //   const isDuplicate = uniqueIds.includes(element.name);
 
@@ -44,7 +44,6 @@ const JobList = ({
   let rate = freelancer.roles.filter(role => {
     return role.title ===  job.title
   })
-  console.log("rate", rate)
   return rate.length > 0 &&(
     <View style={styles.wrapper}>
       <View style={styles.header}>
@@ -55,9 +54,11 @@ const JobList = ({
                 style={styles.profileImage}
                 blurRadius={7}
               />
-               <View style={styles.ratingContainer}>
-                  <Text style={styles.rating}>{freelancer.averageRating}</Text>
-                </View>
+               { freelancer.averageRating && freelancer.averageRating > 0 ?
+                  <View style={styles.ratingContainer}>
+                    <Text style={styles.rating}>{freelancer.averageRating}</Text>
+                  </View> : null
+                }
             </View>
            
           

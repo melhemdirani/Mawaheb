@@ -63,7 +63,7 @@ const ClientSignupPage = ({navigation}) => {
 
   const navigateLogin = () => {
     navigation.dispatch(
-      StackActions.replace('login')
+      StackActions.replace('login', {edit: false})
     )
   }
   useEffect(() => {
@@ -337,7 +337,7 @@ const ClientSignupPage = ({navigation}) => {
             : <UploadCard title='Profile Picture' selectFile={selectFile2}/>
           }
           <View style={styles.privacy}>
-            <Text style={!isEnabled ? styles.picked : styles.notPicked}>Public </Text>
+            <Text style={!isEnabled ? styles.picked : styles.notPicked}>Governmental</Text>
             <Switch
               style={styles.switch}
               ios_backgroundColor='#23CDB0'
@@ -346,7 +346,7 @@ const ClientSignupPage = ({navigation}) => {
               onValueChange={toggleSwitch}
               value={isEnabled}
             ></Switch>
-            <Text style={isEnabled ? styles.picked : styles.notPicked}> Private</Text>
+            <Text style={isEnabled ? styles.picked : styles.notPicked}>Commercial</Text>
           </View>
           { isEnabled 
             ? <View style={{width: "100%", alignItems: "center"}}>

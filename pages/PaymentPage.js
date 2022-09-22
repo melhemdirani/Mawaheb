@@ -10,9 +10,11 @@ import {
     TouchableOpacity,
     ActivityIndicator
 } from 'react-native';
+import axios from 'axios'
+
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
-
+import { CardField, useStripe, useConfirmPayment } from '@stripe/stripe-react-native';
 import Inputs from '../components/Inputs';
 import UploadCard from '../components/UploadCard';
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,17 +26,13 @@ import checked from '../assets/images/checked.png';
 import unChecked from '../assets/images/unChecked.png';
 import { createJob } from '../reduxToolkit/jobSlice';
 import ImageCard from '../components/ImageCard';
+import { getStripeSession, postPoDocuments } from '../reduxToolkit/clientSlice';
 
   
   const PaymentPage = ({navigation, route}) => {
-    const {values} = route.params
-    console.log("params", route)
-    const { user } = useSelector((state) => state.user)
-    const { client } = useSelector((state) => state.client)
-
-    const dispatch = useDispatch()
 
     const intitialState = {
+      cardDetails: "",
       cardNumber:"",
       cardHolder: "",
       ccv: "",
@@ -46,16 +44,57 @@ import ImageCard from '../components/ImageCard';
       billingAddress: "",
       billingEmail:""
     }
+    const stripe = useStripe();
+
+    const {values} = route.params
+    const { user } = useSelector((state) => state.user)
+    const { client } = useSelector((state) => state.client)
+    const dispatch = useDispatch()
+    const [pageLoading, setPageLoading] = useState(false)
+
+    const getClientSecret = async () => {
+        let url = `http://195.110.58.234:4000/api/v1/stripe`
+        try {
+          const {data} = await axios.post(url)
+          const {clientSecret} = data
+          console.log("secrtet", data)
+          return clientSecret
+        } catch (error) {
+          return console.log("error", error)
+        }
+   
+      //   // const initSheet = await stripe.initPaymentSheet({
+      //   //   paymentIntentClientSecret: data.clientSecret,
+      //   // });
+      //   // if (initSheet.error) {
+      //   //   console.error(initSheet.error);
+      //   //   return alert(initSheet.error.message);
+      //   // }
+      //   // const presentSheet = await stripe.presentPaymentSheet({
+      //   //   clientSecret: data.clientSecret,
+      //   // });
+      //   // if (presentSheet.error) {
+      //   //   console.error(presentSheet.error);
+      //   //   return alert(presentSheet.error.message);
+      //   // }
+      //   // alert("Job Posted!");
+      // } catch (err) {
+      //   console.error("err", err);
+      //   alert("Payment failed!");
+    };
+
+    const {confirmPayment, loading} = useConfirmPayment()
+
     const [paymentDetails, setPaymentDetails] = useState(intitialState)
     const handleChange = (name, value) => {
       setPaymentDetails({...paymentDetails, [name]: value})
     }
-    const [isEnabled, setIsEnabled] = useState(false)
+    const [isEnabled, setIsEnabled] = useState(true)
     const [card, setCard] = useState(true)
     const toggleSwitch = () => setIsEnabled((previousState) => !previousState)
 
-    const onPostClick = () => {
-       dispatch(
+    const postJob = () => {
+      dispatch(
         createJob({
           category: values.category,
           title: values.title,
@@ -75,13 +114,74 @@ import ImageCard from '../components/ImageCard';
       .then((response) => {
         alert("Thank you! Your job was posted")
         let date = new Date()
+        setPageLoading(false)
         navigation.navigate('recruiter_dashboard', {id: date.toDateString()})
       })
       .catch((error) => {
         console.log("error updating", error)
         alert("Error creating a job, please try again later")
+        setPageLoading(false)
         navigation.navigate("recruiter_dashboard")
       })
+    }
+
+    const submitPrepaid = async () => {
+      setPageLoading(true)
+      console.log("prepaid")
+      const clientSecret = await getClientSecret()
+      console.log("client, ", clientSecret)
+      const billingDetails = {
+        email: paymentDetails.email,
+        card : paymentDetails.cardDetails
+      };
+  
+      const {paymentIntent, error} = await confirmPayment(clientSecret, {
+        paymentMethodType: 'Card',
+        paymentMethodData: {
+          billingDetails,
+        },
+      });
+  
+      if (error) {
+        console.log('Payment confirmation error', error);
+        setPageLoading(false)
+      } else if (paymentIntent) {
+        postJob()
+        console.log('Success from promise', paymentIntent);
+      }
+
+    }
+    const [po, setPo] = useState("")
+
+    const submitPostPaid = () => {
+      setPageLoading(true)
+      console.log("postpaid")
+      if(po === "" || paymentDetails.billingAddress === "" || paymentDetails.billingEmail === ""){
+        return alert("Please enter all of your payment details")
+      }
+      dispatch(
+        postPoDocuments({
+          poDocument: po, 
+          billingAddress: paymentDetails.billingAddress, 
+          billingEmail: paymentDetails.billingEmail,
+          clientId: user?.clientId || client.id
+        })
+      )
+      .unwrap()
+      .then((res) => {
+        console.log("res", res)
+        postJob()
+      })
+      .catch(err =>{
+        console.log("error", err)
+        setPageLoading(false)
+        alert("Error posting job")
+      })
+    }
+    const onPostClick = () => {
+      !isEnabled ?
+      submitPrepaid()
+      : submitPostPaid()
     }
     const [image, setImage] = useState("")
     const [uploaded, setUploaded] = useState(false)
@@ -99,34 +199,32 @@ import ImageCard from '../components/ImageCard';
       })
       if (!result.cancelled) {
         setImage(result.uri)
-        setTimeout(() => {
-          setUploaded(true)
-        }, 500)
-        
+        upload(result.uri)
       }
     }
-    // const upload = async (uri) => {
-    //   console.log("uploading")
-    //   try {
-    //     const response = await FileSystem.uploadAsync(
-    //       `http://195.110.58.234:4000/api/v1/auth/uploadImage/`,
-    //       uri,
-    //       {
-    //         fieldName: 'files',
-    //         httpMethod: 'post',
-    //         uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
-    //       },
+    const upload = async (uri) => {
+      console.log("uploading")
+      try {
+        const response = await FileSystem.uploadAsync(
+          `http://195.110.58.234:4000/api/v1/auth/uploadImage/`,
+          uri,
+          {
+            fieldName: 'files',
+            httpMethod: 'post',
+            uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
+          },
          
-    //     )
-    //     const img = JSON.parse(response.body).imageUrl
-    //     console.log("uploading response", img)
-    //     setUploadedImage(img)
-    //   } catch (error) {
-    //     console.log("error uploading", error)
-    //     setUploaded(false)
-    //     alert("Error uploading")
-    //   }
-    // }
+        )
+        const img = JSON.parse(response.body).imageUrl
+        console.log("uploading response", img)
+        setPo(img)
+        setUploaded(true)
+      } catch (error) {
+        console.log("error uploading", error)
+        setUploaded(true)
+        alert("Error uploading")
+      }
+    }   
 
     return (
       <ScrollView style={styles.wrapper}>
@@ -143,7 +241,7 @@ import ImageCard from '../components/ImageCard';
             : "Payment option just for testing, simply click pay and post a job"
             }
           </Text>
-            <View style={styles.form}>
+            {/* <View style={styles.form}>
                 <View style={styles.privacy}>
                     <Text style={!isEnabled ? styles.picked : styles.notPicked}>Pre-paid </Text>
                     <Switch
@@ -156,7 +254,7 @@ import ImageCard from '../components/ImageCard';
                     ></Switch>
                     <Text style={isEnabled ? styles.picked : styles.notPicked}> Post-paid</Text>
                 </View>
-            </View>
+            </View> */}
             {
               !isEnabled ?
               <View style={styles.PrepaidView}>
@@ -180,21 +278,40 @@ import ImageCard from '../components/ImageCard';
                 {   
                     card 
                     ? <View style={styles.PrepaidView}>
-                            <Inputs 
-                            placeholder='Card Number*' 
-                            value={paymentDetails.cardNumber}
-                            onChange={(value) =>handleChange("cardNumber", value)}
-                            />
-                            <Inputs 
-                            placeholder='Card Holder Name*' 
-                            value={paymentDetails.cardHolder}
-                            onChange={(value) => handleChange("cardHolder", value)}
-                            />
-                            <Inputs 
-                            placeholder='CCV*' 
-                            value={paymentDetails.ccv}
-                            onChange={(value) =>handleChange("ccv", value)}
-                            />
+                        <Inputs 
+                        placeholder='Card Number*' 
+                        value={paymentDetails.cardNumber}
+                        onChange={(value) =>handleChange("cardNumber", value)}
+                        />
+                        <View style={styles.paymentWrapper}>
+                          <CardField
+                            hidePostalCode={true} 
+                            postalCodeEnabled={true}
+                            placeholders={{
+                              number: '4242 4242 4242 4242',
+                            }}
+                            cardStyle={{
+                              backgroundColor: '#F4F8F8',
+                              textColor: 'rgba(0,0,0,.2)',
+                              fontSize: 16
+                            }}
+                            style={{
+                              width: '100%',
+                              height: 50,
+                            }}
+                            onCardChange={(cardDetails) => {
+                              handleChange("cardDetails", cardDetails)
+                            }}
+                            // onFocus={(focusedField) => {
+                            //   console.log('focusField', focusedField);
+                            // }}
+                          />
+                        </View>
+                        <Inputs 
+                        placeholder='Card Holder Name*' 
+                        value={paymentDetails.cardHolder}
+                        onChange={(value) => handleChange("cardHolder", value)}
+                        />
                     </View>
                     : <View style={styles.PrepaidView}>
                         <Inputs 
@@ -246,7 +363,7 @@ import ImageCard from '../components/ImageCard';
               </View>
             }
             <TouchableOpacity style={styles.btnContainer} onPress={() => onPostClick()}>
-                <PrimaryButton title='Pay and Post Job' />
+                <PrimaryButton title='Post Job' />
             </TouchableOpacity>
         </View>
       </ScrollView>

@@ -23,8 +23,10 @@ import priceRectangle from '../assets/images/priceRectangle.png';
 import heartIcon from '../assets/images/heartIcon.png';
 import PrimaryButton from '../components/Buttons/PrimaryButton';
 import minusIcon from '../assets/images/minusIcon.png';
-import { getJob, applyJob } from '../reduxToolkit/jobSlice';
+import { getJob, applyJob, acceptInvitation } from '../reduxToolkit/jobSlice';
 
+
+// error here
 const JobDetailsPage = ({route, navigation}) => {
   const initialState = {
     title:'',
@@ -79,26 +81,56 @@ const JobDetailsPage = ({route, navigation}) => {
     } else if(newRoles === null || newRoles === undefined || newRoles.length === 0){
       return alert("You can only apply to jobs with same categories as your filled work experience")
     } else{
-      dispatch(
-        applyJob({
-          jobId: id,
-          freelancerId: freelancer.id ? freelancer.id : user.freelancerId,
-          price: newRoles.length ? newRoles[0].dailyRate : 0,
-        })
-      ).then(res => {
-        console.log("res", res)
-        if(res.payload !== undefined && res.payload === "You are not qualified for this job"){
-          alert("You can only apply to jobs with same categories as your work experience")
-        } else if(res.payload !== undefined && res.payload === "You have already applied for this job"){
-          alert("You have already applied for this job")
-        } 
-        setApplied(!applied)
-        navigation.goBack({applied: applied})
+      if(route.params.inviteToApply){
+        dispatch(
+          acceptInvitation({
+            jobId: id,
+            freelancerId: freelancer.id ? freelancer.id : user.freelancerId,
+            invitationId: route.params.invitationId
+          })
+        )
+        .then(res => {
+          dispatch(
+            applyJob({
+              jobId: id,
+              freelancerId: freelancer.id ? freelancer.id : user.freelancerId,
+              price: newRoles.length ? newRoles[0].dailyRate : 0,
+            })
+          ).then(res => {
+            console.log("res accepting invitation", res)
+            if(res.payload !== undefined && res.payload === "You are not qualified for this job"){
+              alert("You can only apply to jobs with same categories as your work experience")
+            } else if(res.payload !== undefined && res.payload === "You have already applied for this job"){
+              alert("You have already applied for this job")
+            } 
+            setApplied(!applied)
+            navigation.goBack({applied: applied})
+          })
+  
+        }) 
+        .catch(err => console.log("error applying", err))
 
-      }) 
-      .catch(err => console.log("error applying", err))
+      } else {
+        dispatch(
+          applyJob({
+            jobId: id,
+            freelancerId: freelancer.id ? freelancer.id : user.freelancerId,
+            price: newRoles.length ? newRoles[0].dailyRate : 0,
+          })
+        ).then(res => {
+          console.log("res", res)
+          if(res.payload !== undefined && res.payload === "You are not qualified for this job"){
+            alert("You can only apply to jobs with same categories as your work experience")
+          } else if(res.payload !== undefined && res.payload === "You have already applied for this job"){
+            alert("You have already applied for this job")
+          } 
+          setApplied(!applied)
+          navigation.goBack({applied: applied})
+  
+        }) 
+        .catch(err => console.log("error applying", err))
+      }
     }
-   
   }
 
   useLayoutEffect(() => {
@@ -219,7 +251,7 @@ const JobDetailsPage = ({route, navigation}) => {
       </LinearGradient>
       { !route.params.myjobs &&
         <TouchableOpacity style={styles.button} onPress={() => navigateApply()}>
-          <PrimaryButton title='Apply'  />
+          <PrimaryButton title={route.params.inviteToApply ? 'Accept Invitation' : 'Apply'}  />
         </TouchableOpacity>
       }
     </ScrollView>
