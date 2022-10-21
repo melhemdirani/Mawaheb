@@ -1,8 +1,9 @@
-import React, { useState} from 'react';
+import React, { useEffect, useState} from 'react';
 import { View, Text, StyleSheet, Image, ImageBackground, Platform, Pressable, TouchableOpacity } from 'react-native';
 import { StackActions } from '@react-navigation/native';
 
 import { useDispatch } from 'react-redux'
+import {  getFreelancer } from '../reduxToolkit/freelancerSlice';
 
 import Header from '../components/Header';
 import congratsBg from '../assets/images/congratsBg.png';
@@ -19,8 +20,16 @@ import { reviewFreelancer } from '../reduxToolkit/clientSlice';
 
 const JobDonePage = ({navigation, route}) => {
   const {user, jobId, clientId, freelancerId} = route.params
-  console.log("user", user)
+  const [prevRate, setPrevRate] = useState(0)
+
   const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(
+      getFreelancer(freelancerId)
+    ).then(res => setPrevRate(res.payload.freelancer.averageRating))
+    .catch(err => console.log("err", err))
+  }, [])
+
   const navigateDash = () => {
     dispatch(
       setJobRated(jobId)
@@ -61,10 +70,9 @@ const JobDonePage = ({navigation, route}) => {
     .catch(err => console.log(err))
   
   }
-
   return (
     <View style={styles.wrapper}>
-      <Header title='Job done!' hidden={true} icon={user.profileImage} profile rating={4.8}/>
+      <Header title='Job done!' hidden={true} icon={user.profileImage} profile rating={prevRate.toFixed(1)}/>
       <View style={styles.container}>
         <MaskedView
           maskElement={

@@ -44,6 +44,7 @@ const ClientDashboard = ({ navigation, route }) => {
   const [futureJobs, setFutureJobs] = useState([])
 
   useEffect(() => {
+    
     if(isFocused){
       setLoading(true)
       if(user.id === undefined && !client){

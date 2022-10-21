@@ -104,7 +104,7 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
               />
                 { freelancer.averageRating && freelancer.averageRating > 0 ? 
                   <View style={styles.ratingContainer}>
-                    <Text style={styles.rating}>{freelancer.averageRating}</Text>
+                    <Text style={styles.rating}>{freelancer.averageRating.toFixed(1)}</Text>
                   </View> : null
                 }
             </View>

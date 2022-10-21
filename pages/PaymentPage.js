@@ -126,7 +126,6 @@ import { getStripeSession, postPoDocuments } from '../reduxToolkit/clientSlice';
     }
 
     const submitPrepaid = async () => {
-      setPageLoading(true)
       console.log("prepaid")
       const clientSecret = await getClientSecret()
       console.log("client, ", clientSecret)
@@ -179,6 +178,7 @@ import { getStripeSession, postPoDocuments } from '../reduxToolkit/clientSlice';
       })
     }
     const onPostClick = () => {
+      setPageLoading(true)
       !isEnabled ?
       submitPrepaid()
       : submitPostPaid()
@@ -226,7 +226,13 @@ import { getStripeSession, postPoDocuments } from '../reduxToolkit/clientSlice';
       }
     }   
 
-    return (
+    return pageLoading 
+    ? (
+      <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
+        <ActivityIndicator size={"large"} color="#4E84D5"/>
+      </View>
+    )
+    :(
       <ScrollView style={styles.wrapper}>
         <Header 
           title='Payment Details' 
