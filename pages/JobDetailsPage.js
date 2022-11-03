@@ -72,9 +72,9 @@ const JobDetailsPage = ({route, navigation}) => {
   }, [route])
 
   const navigateApply = () => {
-    const newRoles = freelancer.roles.filter(element => {
+    const newRoles = freelancer.roles ? freelancer.roles.filter(element => {
       return element.category === job.category && element.title === job.title
-    });
+    }) : null
     if(!freelancer.isCompleted){
       alert("Please complete your profile before applying")
       return navigation.navigate("freelancerProfile")
