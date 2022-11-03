@@ -15,6 +15,7 @@ const initialState = {
 export const createJob = createAsyncThunk(
   'createJob',
   async (job, thunkApi) => {
+    console.log("job", job)
     let url = '/jobs'
     try {
       const resp = await customFetch.post(url, job)
@@ -28,10 +29,9 @@ export const  getAllJobs = createAsyncThunk(
   'getAllJobs',
   async (filters, thunkApi) => {
     let url = `jobs/${filters.id}/filteredjobs?${filters.filters}`
+    console.log("urlss", url)
     try {
       const resp = await customFetch.get(url)
-      console.log("filtered jibs", resp)
-
       return ("all jobs",resp.data)
     } catch (error) {
 

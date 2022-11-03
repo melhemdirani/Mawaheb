@@ -48,6 +48,10 @@ const JobsPage = ({ navigation, route }) => {
     // setPage(1)
   }
 
+  useEffect(() => {
+    console.log("filters", filters)
+  }, [filters])
+
   // const categories = (roles) => {
   //   let array = []
   //   roles.map(role => 
@@ -78,7 +82,7 @@ const JobsPage = ({ navigation, route }) => {
       .then((response) => {
         alert("getting")
         // categories(response.roles)
-        if(filters.category === "" && !handledCategory && response.freelancer){
+        if(filters.category === "unfiltered" && !handledCategory && response.freelancer){
           setFilters( data => ({
             ...data,
             category:   response.roles !== undefined ?  response.roles[0].category : ""
@@ -106,16 +110,24 @@ const JobsPage = ({ navigation, route }) => {
       setLoading(true)
       let newFilters = ""
       Object.keys(filters).map((keyName, i) =>{
-        let value = filters[keyName]  === "All Cities" || filters[keyName] === "All Categories" ? "" : filters[keyName]
+        let value = (filters[keyName]  === "All Cities" || filters[keyName] === "All Categories") ? "" : filters[keyName]
+        if(filters["category"] === "All Categories"){
+          if( keyName === "title"){
+            console.log("keyname", keyName)
+            console.log("VALUE", value)
+            value = ""
+          }
+        }
         newFilters= newFilters + `${keyName}=${value}&`
       })
+      console.log("new filters", newFilters)
       dispatch(getAllJobs({
         filters:newFilters + `page=${1}`, 
         id: freelancer.id
       }))
       .unwrap()
       .then((response) => {
-        console.log("response freelancer length b", response.jobs.length)
+        console.log("response freelancer length b", response)
         setNumberOfPages(response.numOfPages)
         setJobs(response.jobs)
         setLoading(false)

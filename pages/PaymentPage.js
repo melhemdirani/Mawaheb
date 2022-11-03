@@ -104,7 +104,7 @@ import { getStripeSession, postPoDocuments } from '../reduxToolkit/clientSlice';
           yearsOfExperience: values.yearsOfExperience,
           description: values.description,
           budget: parseInt(values.budget),
-          privacy: isEnabled ? 'private' : 'public',
+          privacy: !isEnabled ? 'private' : 'public',
           clientId: user.clientId? user.clientId : client.id,
           duration: new Date(),
           shift: values.shift

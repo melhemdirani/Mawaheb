@@ -54,6 +54,7 @@ const ClientDashboard = ({ navigation, route }) => {
       dispatch(getClientDashboard(user?.clientId || client.id))
       .unwrap()
       .then((res) =>  { 
+        console.log("res", res)
           setCurrentJobs(res.currentJobs); 
           setFutureJobs(res.futureJobs); 
           setPastJobs(res.pastJobs); 
