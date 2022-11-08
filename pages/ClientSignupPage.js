@@ -27,6 +27,8 @@ import { registerUser } from '../reduxToolkit/userSlice';
 import ImageCard from '../components/ImageCard';
 import PhoneInputs from '../components/PhoneInput';
 
+import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
+
 
 const ClientSignupPage = ({navigation}) => {
   const { token } = useSelector((store) => store.user)
@@ -285,137 +287,142 @@ const ClientSignupPage = ({navigation}) => {
     )
   }
 
+
   return (
-    <ScrollView style={styles.wrapper}>
-      <Header title='Client Sign Up' icon={signUp} hidden={false} goBack={goBack}/>
-      <View style={styles.container}>
-        <Text style={styles.text}>All you need is to fill your information below and upload a document to create your profile. </Text>
-        <View style={styles.form}>
-          <Inputs
-            placeholder='Company Name*'
-            style={styles.input}
-            onChange={(value) => handleChange('companyName', value)}
-            value={values.companyName}
-          />
-          <Inputs
-            placeholder='Email*'
-            onChange={(value) => handleChange('email', value)}
-            value={values.email}
-          />
-          <PhoneInputs
-            placeholder='Phone number*'
-            onChange={(value) => handleChange('phoneNb', value)}
-            value={values.phoneNb}
-          />
-          <View style={{marginTop: 20}}/>
-          <Inputs
-            placeholder='Password*'
-            onChange={(value) => handleChange('password', value)}
-            value={values.password}
-          />
-          <Inputs
-            placeholder='Confirm Password*'
-            onChange={(e) => setPassword2(e)}
-            value={password2}
-          />
-          { 
-            values.password !== password2 && password2 !== "" &&
-            <Text style={styles.warning}>
-              passwords don't match
-            </Text>
-          }
-          { 
-            image2.length && !uploaded2
-            ? <View style={{width: "100%", alignItems: "center"}}>
-                <View style={styles.ActivityIndicator}>
-                <ActivityIndicator size={"large"} color="#4E84D5"/>
+
+    <KeyboardAvoidingWrapper>
+      <>
+        <Header title='Client Sign Up' icon={signUp} hidden={false} goBack={goBack}/>
+        <View style={styles.container}>
+          <Text style={styles.text}>All you need is to fill your information below and upload a document to create your profile. </Text>
+          
+          <View style={styles.form}>
+            <Inputs
+              placeholder='Company Name*'
+              style={styles.input}
+              onChange={(value) => handleChange('companyName', value)}
+              value={values.companyName}
+            />
+            <Inputs
+              placeholder='Email*'
+              onChange={(value) => handleChange('email', value)}
+              value={values.email}
+            />
+            <PhoneInputs
+              placeholder='Phone number*'
+              onChange={(value) => handleChange('phoneNb', value)}
+              value={values.phoneNb}
+            />
+            <View style={{marginTop: 20}}/>
+            <Inputs
+              placeholder='Password*'
+              onChange={(value) => handleChange('password', value)}
+              value={values.password}
+            />
+            <Inputs
+              placeholder='Confirm Password*'
+              onChange={(e) => setPassword2(e)}
+              value={password2}
+            />
+            { 
+              values.password !== password2 && password2 !== "" &&
+              <Text style={styles.warning}>
+                passwords don't match
+              </Text>
+            }
+            { 
+              image2.length && !uploaded2
+              ? <View style={{width: "100%", alignItems: "center"}}>
+                  <View style={styles.ActivityIndicator}>
+                  <ActivityIndicator size={"large"} color="#4E84D5"/>
+                  </View>
+                  <Image source={{uri:image2}} style={styles.Imagecontainer} />
                 </View>
-                <Image source={{uri:image2}} style={styles.Imagecontainer} />
+              : image2.length && uploaded2
+              ? <ImageCard uri={image2} onImageDelete={onImageDelete2} />
+              : <UploadCard title='Profile Picture' selectFile={selectFile2}/>
+            }
+            <View style={styles.privacy}>
+              <Text style={!isEnabled ? styles.picked : styles.notPicked}>Governmental</Text>
+              <Switch
+                style={styles.switch}
+                ios_backgroundColor='#23CDB0'
+                trackColor={{ false: '#23CDB0', true: '#23CDB0' }}
+                thumbColor={'#f4f3f4'}
+                onValueChange={toggleSwitch}
+                value={isEnabled}
+              ></Switch>
+              <Text style={isEnabled ? styles.picked : styles.notPicked}>Commercial</Text>
+            </View>
+            { isEnabled 
+              ? <View style={{width: "100%", alignItems: "center"}}>
+                <Inputs
+                  placeholder={'Address*'}
+                  style={styles.input}
+                  value={values.address}
+                  onChange={ (value) => handleChange('address', value) }
+                />
+                <Inputs
+                  placeholder={'TRN(Tax Number)*'}
+                  style={styles.input}
+                  value={ values.TRN}
+                  numeric
+                  onChange={ (value) => handleChange('TRN', parseInt(value)) }
+                />
+                { 
+                  image.length && !uploaded
+                  ? <View style={{width: "100%", alignItems: "center"}}>
+                      <View style={styles.ActivityIndicator}>
+                      <ActivityIndicator size={"large"} color="#4E84D5"/>
+                      </View>
+                      <Image source={{uri:image}} style={styles.Imagecontainer} />
+                    </View>
+                  : image.length && uploaded
+                  ? <ImageCard uri={image} style={styles.Imagecontainer} onImageDelete={onImageDelete}/>
+                  : <UploadCard title='Trading Liscence*' selectFile={selectFile}/>
+                }
               </View>
-            : image2.length && uploaded2
-            ? <ImageCard uri={image2} onImageDelete={onImageDelete2} />
-            : <UploadCard title='Profile Picture' selectFile={selectFile2}/>
-          }
-          <View style={styles.privacy}>
-            <Text style={!isEnabled ? styles.picked : styles.notPicked}>Governmental</Text>
-            <Switch
-              style={styles.switch}
-              ios_backgroundColor='#23CDB0'
-              trackColor={{ false: '#23CDB0', true: '#23CDB0' }}
-              thumbColor={'#f4f3f4'}
-              onValueChange={toggleSwitch}
-              value={isEnabled}
-            ></Switch>
-            <Text style={isEnabled ? styles.picked : styles.notPicked}>Commercial</Text>
+              : <View style={{width: "100%", alignItems: "center"}}>
+                <Inputs
+                  placeholder={ 'Signatory Name*'}
+                  style={styles.input}
+                  value={values.signatoryName}
+                  onChange={ (value) => handleChange('signatoryName', value) }
+                />
+                <Inputs
+                  placeholder={ 'Signatory Title'}
+                  style={styles.input}
+                  value={values.signatoryTitle}
+                  onChange={  (value) => handleChange('signatoryTitle', value) }
+                />
+                { 
+                  image.length && !uploaded
+                  ? <View style={{width: "100%", alignItems: "center"}}>
+                      <View style={styles.ActivityIndicator}>
+                      <ActivityIndicator size={"large"} color="#4E84D5"/>
+                      </View>
+                      <Image source={{uri:image}} style={styles.Imagecontainer} />
+                    </View>
+                  : image.length && uploaded
+                  ? <ImageCard uri={image} style={styles.Imagecontainer} onImageDelete={onImageDelete}/>
+                  : <UploadCard title='Add Authorized Signatory*' selectFile={selectFile}/>
+                }
+              </View>
+            }
           </View>
-          { isEnabled 
-            ? <View style={{width: "100%", alignItems: "center"}}>
-              <Inputs
-                placeholder={'Address*'}
-                style={styles.input}
-                value={values.address}
-                onChange={ (value) => handleChange('address', value) }
-              />
-              <Inputs
-                placeholder={'TRN(Tax Number)*'}
-                style={styles.input}
-                value={ values.TRN}
-                numeric
-                onChange={ (value) => handleChange('TRN', parseInt(value)) }
-              />
-              { 
-                image.length && !uploaded
-                ? <View style={{width: "100%", alignItems: "center"}}>
-                    <View style={styles.ActivityIndicator}>
-                    <ActivityIndicator size={"large"} color="#4E84D5"/>
-                    </View>
-                    <Image source={{uri:image}} style={styles.Imagecontainer} />
-                  </View>
-                : image.length && uploaded
-                ? <ImageCard uri={image} style={styles.Imagecontainer} onImageDelete={onImageDelete}/>
-                : <UploadCard title='Trading Liscence*' selectFile={selectFile}/>
-              }
-            </View>
-            : <View style={{width: "100%", alignItems: "center"}}>
-              <Inputs
-                placeholder={ 'Signatory Name*'}
-                style={styles.input}
-                value={values.signatoryName}
-                onChange={ (value) => handleChange('signatoryName', value) }
-              />
-              <Inputs
-                placeholder={ 'Signatory Title'}
-                style={styles.input}
-                value={values.signatoryTitle}
-                onChange={  (value) => handleChange('signatoryTitle', value) }
-              />
-              { 
-                image.length && !uploaded
-                ? <View style={{width: "100%", alignItems: "center"}}>
-                    <View style={styles.ActivityIndicator}>
-                    <ActivityIndicator size={"large"} color="#4E84D5"/>
-                    </View>
-                    <Image source={{uri:image}} style={styles.Imagecontainer} />
-                  </View>
-                : image.length && uploaded
-                ? <ImageCard uri={image} style={styles.Imagecontainer} onImageDelete={onImageDelete}/>
-                : <UploadCard title='Add Authorized Signatory*' selectFile={selectFile}/>
-              }
-            </View>
-          }
+          <View style={styles.btnContainer}>
+            <TouchableOpacity onPress={() => onSubmit()}>
+            <PrimaryButton  title='Sign up' activity={activity}/>
+            </TouchableOpacity>
+            <SafeAreaView style={styles.btn}>
+              <Pressable onPress={() => navigateLogin()}>
+              <Text style={styles.btnText}>Login</Text>
+              </Pressable>
+            </SafeAreaView>
+          </View>
         </View>
-        <View style={styles.btnContainer}>
-          <TouchableOpacity onPress={() => onSubmit()}>
-           <PrimaryButton  title='Sign up' activity={activity}/>
-          </TouchableOpacity>
-          <SafeAreaView style={styles.btn}>
-            <Pressable onPress={() => navigateLogin()}>
-             <Text style={styles.btnText}>Login</Text>
-            </Pressable>
-          </SafeAreaView>
-        </View>
-      </View>
-    </ScrollView>
+      </>
+    </KeyboardAvoidingWrapper>
   )
 }
 

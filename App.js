@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import * as Linking from 'expo-linking';
 import { initStripe } from '@stripe/stripe-react-native';
 import { StripeProvider } from '@stripe/stripe-react-native';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, View, StatusBar } from 'react-native';
 import { NavigationContainer, createNavigationContainerRef } from '@react-navigation/native';
 import { Provider } from 'react-redux';
 import { toolkitStore, persistor } from './reduxToolkit/store';
@@ -62,17 +62,20 @@ function App() {
   </View>
 
   :(
-    <StripeProvider
-      publishableKey="pk_test_51LNgzpL3Oi9cGlpnLiMoA82Evd2j6Ua1UBhIsqSVxyisutC3RxMBhyhGNXcL5Y3yCuqzgXCoiahjnS4RZQqtO8g400GToPoRvh"
-    >
-      <Provider store={toolkitStore} screenOptions={{headerShown: false}}>
-        <PersistGate persistor={persistor} loading={null}>
-        <NavigationContainer ref={navigationRef} linking={linking}>
-        <AppContainer />
-        </NavigationContainer>
-        </PersistGate>
-      </Provider>
-    </StripeProvider>
+    <>
+      <StatusBar translucent={true} backgroundColor="transparent" />
+      <StripeProvider
+        publishableKey="pk_test_51LNgzpL3Oi9cGlpnLiMoA82Evd2j6Ua1UBhIsqSVxyisutC3RxMBhyhGNXcL5Y3yCuqzgXCoiahjnS4RZQqtO8g400GToPoRvh"
+      >
+        <Provider store={toolkitStore} screenOptions={{headerShown: false}}>
+          <PersistGate persistor={persistor} loading={null}>
+          <NavigationContainer ref={navigationRef} linking={linking}>
+          <AppContainer />
+          </NavigationContainer>
+          </PersistGate>
+        </Provider>
+      </StripeProvider>
+    </>
 
   )
 }

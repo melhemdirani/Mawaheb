@@ -13,12 +13,14 @@ import {
 
 import { LinearGradient } from 'expo-linear-gradient'
 import calendarIcon from '../assets/images/calendarIcon.png'
-import clockIcon from '../assets/images/clockIcon.png'
+import clockIcon from '../assets/images/clockIcon.png';
+import checked from '../assets/images/checked.png'
 import locationIcon from '../assets/images/locationIcon.png'
 import priceRectangle from '../assets/images/priceRectangle.png'
 import heartIcon from '../assets/images/heartIcon.png'
 import languageIcon from '../assets/images/LanguageIcon.png'
-import { clearFreelancer } from '../reduxToolkit/freelancerSlice'
+import { clearFreelancer } from '../reduxToolkit/freelancerSlice';
+import { getFreelancer } from '../reduxToolkit/freelancerSlice'
 import { clearJob } from '../reduxToolkit/jobSlice'
 import { inviteFreelancer } from '../reduxToolkit/clientSlice'
 
@@ -31,11 +33,22 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
     
   const { freelancer,  job, invite} = route.params
   const { user: userState } = useSelector((state) => state.user)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+
   useEffect(() => {
     if(freelancer === undefined || job === undefined){
       alert("Freelancer not found")
       navigation.goBack()
+    } else {
+      dispatch(getFreelancer(freelancer.id))
+      .unwrap()
+      .then((res) => {
+        setIsVerified(res.freelancer.isVerified)
+      })
+      .catch(err =>{ 
+        console.log("errors", err);
+    })
     }
   }, [])
   // let invite = jobId === "job.id" ? true : false
@@ -97,11 +110,19 @@ const FreelancerDetailsPage = ({ navigation, route }) => {
       <View style={styles.header}>
         <View style={styles.subHeader}>
           <View style={{alignContent: "center", justifyContent: "center"}}>
-              <Image      
+            <ImageBackground      
                 source={{uri: `http://195.110.58.234:4000${freelancer.user.profileImage}`}} 
                 style={styles.profileImage}
                 blurRadius={7}
-              />
+                imageStyle={styles.profileImage}
+              >
+                {isVerified && 
+                  <Image
+                    source={checked} 
+                    style={styles.verificationMark}
+                  />
+                }
+              </ImageBackground>
                 { freelancer.averageRating && freelancer.averageRating > 0 ? 
                   <View style={styles.ratingContainer}>
                     <Text style={styles.rating}>{freelancer.averageRating.toFixed(1)}</Text>
@@ -268,6 +289,13 @@ const styles = StyleSheet.create({
     width: '90%',
     alignSelf: 'center',
     marginBottom: -45,
+  },
+  verificationMark: {
+    zIndex: 999,
+    top: 20,
+    right: 8,
+    width: 20,
+    height: 20
   },
   title: {
     fontSize: 20,

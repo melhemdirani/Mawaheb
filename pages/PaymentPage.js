@@ -27,6 +27,7 @@ import unChecked from '../assets/images/unChecked.png';
 import { createJob } from '../reduxToolkit/jobSlice';
 import ImageCard from '../components/ImageCard';
 import { getStripeSession, postPoDocuments } from '../reduxToolkit/clientSlice';
+import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
 
   
   const PaymentPage = ({navigation, route}) => {
@@ -233,7 +234,8 @@ import { getStripeSession, postPoDocuments } from '../reduxToolkit/clientSlice';
       </View>
     )
     :(
-      <ScrollView style={styles.wrapper}>
+      <KeyboardAvoidingWrapper>
+        <>
         <Header 
           title='Payment Details' 
           icon={payment} 
@@ -372,7 +374,8 @@ import { getStripeSession, postPoDocuments } from '../reduxToolkit/clientSlice';
                 <PrimaryButton title='Post Job' />
             </TouchableOpacity>
         </View>
-      </ScrollView>
+        </>
+      </KeyboardAvoidingWrapper>
     )
   }
   

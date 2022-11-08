@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,8 +9,11 @@ import {
 } from 'react-native';
 import moment from 'moment';
 
+import { useDispatch } from 'react-redux';
+
 import { LinearGradient } from 'expo-linear-gradient';
 import calendarIcon from '../assets/images/calendarIcon.png';
+import checked from '../assets/images/checked.png';
 import clockIcon from '../assets/images/clockIcon.png';
 import locationIcon from '../assets/images/locationIcon.png';
 import priceRectangle from '../assets/images/priceRectangle.png';
@@ -18,6 +21,7 @@ import heartIcon from '../assets/images/heartIcon.png';
 import plusIcon from '../assets/images/plusIcon.png';
 import MaskedView from '@react-native-masked-view/masked-view';
 import languageIcon from '../assets/images/LanguageIcon.png';
+import { getFreelancer } from '../reduxToolkit/freelancerSlice';
 
 const JobList2 = ({
   price,
@@ -25,9 +29,26 @@ const JobList2 = ({
   job,
   freelancer,
   id,
-  item
+  item,
+  verified
 }) => {
   const uniqueIds = [];
+
+  const dispatch = useDispatch();
+
+  const [isVerified, setIsVerified] = useState(false);
+
+  useEffect(() => {
+    dispatch(getFreelancer(freelancer.id))
+    .unwrap()
+    .then((res) => {
+      setIsVerified(res.freelancer.isVerified)
+    })
+    .catch(err =>{ 
+      console.log("errors", err);
+  })
+    
+  }, [])
 
   const newLanguages = freelancer.languages.filter(element => {
     const isDuplicate = uniqueIds.includes(element.name);
@@ -50,11 +71,19 @@ const JobList2 = ({
       <View style={styles.header}>
         <View style={styles.subHeader}>
            <View style={{alignContent: "center", justifyContent: "center"}}>
-              <Image      
-                source={{uri: `http://195.110.58.234:4000${freelancer.user.profileImage}`}} 
-                style={styles.profileImage}
-                blurRadius={7}
-              />
+              <ImageBackground      
+                  source={{uri: `http://195.110.58.234:4000${freelancer.user.profileImage}`}}
+                  style={styles.profileImage}
+                  imageStyle={styles.profileImage}
+                  blurRadius={7}
+                >
+                  {isVerified && 
+                    <Image
+                      source={checked} 
+                      style={styles.verificationMark}
+                    />
+                  }
+              </ImageBackground>
                 { freelancer.averageRating && freelancer.averageRating > 0 ?
                   <View style={styles.ratingContainer}>
                     <Text style={styles.rating}>{freelancer.averageRating.toFixed(1)}</Text>
@@ -187,6 +216,13 @@ const styles = StyleSheet.create({
     fontFamily: 'PoppinsS',
     marginEnd: 80,
     width: '100%',
+  },
+  verificationMark: {
+    zIndex: 999,
+    top: 20,
+    right: 8,
+    width: 20,
+    height: 20
   },
   footer: {
     flexDirection: 'row',

@@ -19,8 +19,10 @@ import MaskedView from '@react-native-masked-view/masked-view'
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import minusIcon from '../assets/images/minusIcon.png'
 import { useSelector, useDispatch } from 'react-redux'
-import { getClientbyId } from '../reduxToolkit/clientSlice'
+import { getClientbyId } from '../reduxToolkit/clientSlice';
 
+import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
+ 
 const ClientProfile = ({ navigation, route }) => {
   const navigateEdit = () => {
     navigation.navigate("login",{edit: true, clientProfiles} )
@@ -150,7 +152,8 @@ const ClientProfile = ({ navigation, route }) => {
              
               {
                 clientProfiles.privacy === "public"
-                ?<View style={styles.descriptionContainer}>
+                ?
+                <View style={styles.descriptionContainer}>
                   <Text style={styles.text}>
                     Signatory name: <Text style={styles.text2}>{clientProfiles.signatoryName}</Text>
                   </Text>
@@ -159,6 +162,7 @@ const ClientProfile = ({ navigation, route }) => {
                   </Text>
                   <Image source={{uri: `http://195.110.58.234:4000${clientProfiles.sign}`}} style={styles.Imagecontainer}/>
                 </View>
+                
                 :<View style={styles.descriptionContainer}>
                   <Text style={styles.text}>
                     TRN: <Text style={styles.text2}>{clientProfiles.TRN}</Text>

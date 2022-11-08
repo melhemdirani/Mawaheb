@@ -14,8 +14,10 @@ import moment from 'moment';
 import { useIsFocused } from "@react-navigation/native"
 
 import { getFilteredFreelancer, getJob } from '../reduxToolkit/jobSlice';
+import { getFreelancer } from '../reduxToolkit/freelancerSlice';
 import calendarIcon from '../assets/images/calendarIcon.png';
 import clockIcon from '../assets/images/clockIcon.png';
+import checked from '../assets/images/checked.png';
 import locationIcon from '../assets/images/locationIcon.png';
 import priceRectangle from '../assets/images/priceRectangle.png';
 import minusIcon from '../assets/images/minusIcon.png';
@@ -33,13 +35,25 @@ const JobDetailsPage_Client = ({route, navigation}) => {
   const dispatch = useDispatch()
   const [reachedEnd, setReachedEnd] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [freelancerIsVerified, setFreelancerIsVerified] = useState(false);
   const [showApplicants, setShowApplicants] = useState(false)
   const [futureContract, setFutureContract] = useState(false)
   const [call, setCall] = useState(false)
   const [applicants, setApplicants] = useState([])
   const isFocused = useIsFocused();
 
+  const [isVerified, setIsVerified] = useState({});
+
   useEffect(() => {
+    dispatch(getJob(job.id))
+      .unwrap()
+      .then((res) => {
+        setIsVerified(res);
+      })
+      .catch(err =>{ 
+        console.log("errors", err);
+    })
+
     if(route.params.hasContract){
       setFutureContract(true)
     } else{
@@ -53,6 +67,19 @@ const JobDetailsPage_Client = ({route, navigation}) => {
       setApplicants(res.job.proposals)
     })
     .catch(err => console.log("error", err))
+
+    // dispatch(
+    //   getFreelancer(freelancers[0])
+    // ).unwrap()
+    // .then(
+    //   res => {
+    //     console.log("response", res)
+    //     if(res.freelancer.isVerified) {
+    //       console.log(`Response of verification is: ${res.freelancer.isVerified}`);
+    //       setFreelancerIsVerified(true);
+    //     }
+    //   }
+    // ).catch(err => console.log(`Error: ${err}`));
 
   }, [])
 const getFreelancerFiltered = () => {
@@ -72,6 +99,21 @@ const getFreelancerFiltered = () => {
 
   ).catch(error => console.log("error", error))
 }
+
+// const getFreelancerVerified = () => {
+//   dispatch(getFreelancer({
+//     freelancerId: freelancer.id,
+//     page: 1
+//   }))
+//   .then(
+//     res => {
+//       console.log("response", res)
+//       if(res.freelancer.isVerified) {
+//         setFreelancerIsVerified(true);
+//       }
+//     }
+//   ).catch(err => console.log(`Error: ${err}`));
+// }
 const getFirstFreelancers = () => {
   dispatch(getFilteredFreelancer({
     jobId: job.id,
@@ -207,22 +249,31 @@ const getFirstFreelancers = () => {
 
                       {
                           applicants && applicants.slice(0,8).map((app, i) =>
-                              <Image 
-                                  source={{uri: `http://195.110.58.234:4000${app.freelancer.user.profileImage}`}} 
-                                  style={[styles.profileImage, i !== 0 && styles.marginLeft, {zIndex: 99 - i}]}
-                                  key={i}
-                                  blurRadius={10}
-                              />
+                          <ImageBackground      
+                            source={{uri: `http://195.110.58.234:4000${app.freelancer.user.profileImage}`}} 
+                            style={[styles.profileImage, i !== 0 && styles.marginLeft, {zIndex: 99 - i}]}
+                            imageStyle={[styles.profileImage, i !== 0 && styles.marginLeft, {zIndex: 99 - i}]}
+                            key={i}
+                            blurRadius={10}
+                            >
+                              {app.freelancer.isVerified && 
+                                <Image
+                                  source={checked} 
+                                  style={styles.verificationMark}
+                                />
+                              }
+                          </ImageBackground>
                           )
                       }
 
                   </View> 
-                  <View style={styles.applicantsSecondRow}>
+                    <View style={styles.applicantsSecondRow}>
                       <Text style={styles.applicantsNumber}>+ {applicants.length} Applicants</Text>
                       <Pressable onPress={() => navigation.navigate("recruiter_Jobs", { id: job.id})}>
                           <Text style={styles.viewButton}>View All</Text>
                       </Pressable>
                   </View>
+                  
                   {/* <RenderItem item={job.proposals} /> */}
               </View>
               : null
@@ -289,6 +340,13 @@ const getFirstFreelancers = () => {
       alignSelf: "center",
       marginTop: 70,
       flex: 1,
+    },
+    verificationMark: {
+      zIndex: 999,
+      top: 15,
+      right: 5,
+      width: 17,
+      height: 17
     },
     minusContainer:{
       padding: 15,

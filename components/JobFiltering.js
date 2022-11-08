@@ -9,6 +9,8 @@ import TextArea from './TextArea';
 import DateInputs from './DateInputs';
 import PrimaryButton from './Buttons/PrimaryButton';
 
+import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
+
 function JobFiltering({handleChange, filters, onClick, category, selectedCategory, freelancerCategories}) {
  
     const sortList = [
@@ -74,8 +76,9 @@ function JobFiltering({handleChange, filters, onClick, category, selectedCategor
       return available
     }
     return (
-        <ScrollView contentContainerStyle={styles.subContainer}>
-            <View style={{width: "100%", alignItems: "center"}}>
+        <KeyboardAvoidingWrapper>
+          <>
+          <View style={{width: "100%", alignItems: "center"}} contentContainerStyle={styles.subContainer}>
                 <SelectInput    
                     title="Filter by location" 
                     placeholder="First Name" 
@@ -132,13 +135,17 @@ function JobFiltering({handleChange, filters, onClick, category, selectedCategor
                   /> 
             </View>
             <KeyboardAvoidingView  behavior='position'>
-                <Pressable onPress={() => onClick()}>
+                <Pressable
+                  onPress={() => onClick()}
+                  style={{ alignItems: "center" }}
+                >
                   <PrimaryButton title={"Filter Jobs"} />
                 </Pressable>
             </KeyboardAvoidingView>
                 
               <View />
-        </ScrollView>
+          </>
+        </KeyboardAvoidingWrapper>
     )
 }
 

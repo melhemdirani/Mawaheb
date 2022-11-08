@@ -22,6 +22,7 @@ import SelectInput from '../components/SelectInput';
 import DeleteButton from '../components/Buttons/DeleteButton';
 import DailyRate from '../components/DailyRate';
 import Inputs from '../components/Inputs';
+import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
 
 
 const ExperiencePage = ({ navigation, route }) => {
@@ -272,7 +273,8 @@ const ExperiencePage = ({ navigation, route }) => {
 
   const list = RoleList.map(role => role.category)
   return (
-      <ScrollView style={styles.container}>
+    <KeyboardAvoidingWrapper>
+      <>
           <Header
               icon={signUp}
               title='Experience'
@@ -361,7 +363,8 @@ const ExperiencePage = ({ navigation, route }) => {
           <Pressable onPress={() => languageNavigate()}>
             <Text style={styles.skipText}>Skip</Text>
           </Pressable>
-      </ScrollView>
+      </>
+    </KeyboardAvoidingWrapper>
   )
 }
 

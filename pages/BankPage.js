@@ -18,6 +18,7 @@ import Icon from '../assets/images/bankIcon.png';
 import Inputs from '../components/Inputs';
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import SelectInput from '../components/SelectInput';
+import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
 
 const BankPage = ({  navigation, route }) => {
 
@@ -195,61 +196,63 @@ const BankPage = ({  navigation, route }) => {
   </View>
 
   : (
-    <ScrollView style={styles.container}>
-      <Header
-        icon={Icon}
-        title='Bank Details'
-        // numOfPage={<Image source={trash}></Image>}
-        numOfPage='6/6'
-        hidden={false}
-        goBack={navigation.goBack}
-      />
-      <View style={styles.subContainer}>
-        <Text style={styles.text}>
-          Fill your bank account details in the fields provided below for secure banking proccesses .
-        </Text>
-        <Inputs
-          placeholder='Your IBAN*'
-          onChange={(value) => handleChange('iban', value)}
-          value={bank.iban}
+    <KeyboardAvoidingWrapper>
+      <>
+        <Header
+          icon={Icon}
+          title='Bank Details'
+          // numOfPage={<Image source={trash}></Image>}
+          numOfPage='6/6'
+          hidden={false}
+          goBack={navigation.goBack}
         />
-        <Inputs
-          placeholder='Account holder*'
-          onChange={(value) => handleChange('accountName', value)}
-          value={bank.accountName}
-        />
-        <Inputs
-          placeholder={`Bank's name*`}
-          onChange={(value) => handleChange('bankName', value)}
-          value={bank.bankName}
-        />
-        <Inputs
-          placeholder={`Bank's address*`}
-          onChange={(value) => handleChange('bankAddress', value)}
-          value={bank.bankAddress}
-        />
-        <SelectInput 
-          title='City*'
-          onSelect={(value) => handleChange('city', value)}
-          list={listofCities}
-          value={bank.city}
-          valued
-        /> 
-        <Inputs
-          placeholder='Swift Code*'
-          value={bank.swiftCode}
-          onChange={(value) => handleChange('swiftCode', value)}
-        />
-        <Pressable style={styles.nextButton} onPress={() => handleSubmit()}>
-          <PrimaryButton title={update ? 'Update profile' : 'Create Profile'} />
-        </Pressable>
-        <Pressable onPress={() =>  skip()}>
-          <Text style={styles.skipText}>
-              SKIP
+        <View style={styles.subContainer}>
+          <Text style={styles.text}>
+            Fill your bank account details in the fields provided below for secure banking proccesses .
           </Text>
-        </Pressable>
-      </View>
-    </ScrollView>
+          <Inputs
+            placeholder='Your IBAN*'
+            onChange={(value) => handleChange('iban', value)}
+            value={bank.iban}
+          />
+          <Inputs
+            placeholder='Account holder*'
+            onChange={(value) => handleChange('accountName', value)}
+            value={bank.accountName}
+          />
+          <Inputs
+            placeholder={`Bank's name*`}
+            onChange={(value) => handleChange('bankName', value)}
+            value={bank.bankName}
+          />
+          <Inputs
+            placeholder={`Bank's address*`}
+            onChange={(value) => handleChange('bankAddress', value)}
+            value={bank.bankAddress}
+          />
+          <SelectInput 
+            title='City*'
+            onSelect={(value) => handleChange('city', value)}
+            list={listofCities}
+            value={bank.city}
+            valued
+          /> 
+          <Inputs
+            placeholder='Swift Code*'
+            value={bank.swiftCode}
+            onChange={(value) => handleChange('swiftCode', value)}
+          />
+          <Pressable style={styles.nextButton} onPress={() => handleSubmit()}>
+            <PrimaryButton title={update ? 'Update profile' : 'Create Profile'} />
+          </Pressable>
+          <Pressable onPress={() =>  skip()}>
+            <Text style={styles.skipText}>
+                SKIP
+            </Text>
+          </Pressable>
+        </View>
+      </>
+    </KeyboardAvoidingWrapper>
   )
 }
 

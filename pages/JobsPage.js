@@ -196,7 +196,7 @@ const JobsPage = ({ navigation, route }) => {
   }
 
   const renderItem = (data) => {
-    return  <Job {...data.item} navigate={navigate} data={data} likeJob={likeJob} unLikeJob={unLikeJob} like/>
+    return  <Job {...data.item} navigate={navigate} data={data} likeJob={likeJob} unLikeJob={unLikeJob} verified={true} like/>
   }
   let welcomeMessage = `Hi ${user?.name}`
 

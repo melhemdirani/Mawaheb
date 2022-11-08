@@ -23,6 +23,8 @@ import DateInputs from '../components/DateInputs';
 import TextArea from '../components/TextArea';
 import DailyRate from '../components/DailyRate';
 
+import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
+
 const JobPostingPage = ({navigation}) => {
   const initialState = {
     title: '',
@@ -102,97 +104,96 @@ const JobPostingPage = ({navigation}) => {
 
 
   return (
-    <ScrollView style={styles.wrapper}>
-      <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={-409}>
+    <KeyboardAvoidingWrapper>
+      <>
+        <Header 
+          title='Post a Job' 
+          icon={post} 
+          numOfPage='1/2'
+          hidden={false}
+          goBack={navigation.goBack}
+          />
 
-      <Header 
-        title='Post a Job' 
-        icon={post} 
-        numOfPage='1/2'
-        hidden={false}
-        goBack={navigation.goBack}
-        />
+        <View style={styles.container}>
+          <Text style={styles.text}>
+            Let us know what are you looking for, and fill in some details find better qualified matches. 
+          </Text>
+          <View style={styles.form}>
+              <SelectInput 
+                  title="Role Category*" 
+                  list={list}
+                  onSelect={(value) => handleChange("category", value)}
+                  setIndex={setIndex}
+                  role={true}
+                  value={values.category}
 
-      <View style={styles.container}>
-        <Text style={styles.text}>
-          Let us know what are you looking for, and fill in some details find better qualified matches. 
-        </Text>
-        <View style={styles.form}>
-            <SelectInput 
-                title="Role Category*" 
-                list={list}
-                onSelect={(value) => handleChange("category", value)}
-                setIndex={setIndex}
-                role={true}
-                value={values.category}
+              /> 
+              <SelectInput 
+                  title="Job Title*" 
+                  list={RoleList[index].subCategories}
+                  onSelect={(value) => handleChange("title", value)}
+                  value={values.title}
+              />
+              <DateInputs 
+                onChange={(value) => handleChange('startDate', value)} 
+                placeholder="Start Date" 
+                dateType
+                value={values.startDate}
 
-            /> 
-            <SelectInput 
-                title="Job Title*" 
-                list={RoleList[index].subCategories}
-                onSelect={(value) => handleChange("title", value)}
-                value={values.title}
-            />
-            <DateInputs 
-              onChange={(value) => handleChange('startDate', value)} 
-              placeholder="Start Date" 
-              dateType
-              value={values.startDate}
+              />
+              <DateInputs 
+                onChange={(value) => handleChange('endDate', value)} 
+                placeholder="End Date" 
+                dateType
+                value={values.endDate}
+              />
+              <SelectInput 
+                  title="Location*" 
+                  onSelect={(value) => handleChange('location', value)}
+                  list={listofCities}
+                  value={values.location}
+              /> 
+              <SelectInput 
+                  title="Shift*" 
+                  onSelect={(value) => handleChange('shift', value)}
+                  list={['day', 'night']}
+                  value={values.shift}
 
-            />
-            <DateInputs 
-              onChange={(value) => handleChange('endDate', value)} 
-              placeholder="End Date" 
-              dateType
-              value={values.endDate}
-            />
-            <SelectInput 
-                title="Location*" 
-                onSelect={(value) => handleChange('location', value)}
-                list={listofCities}
-                value={values.location}
-            /> 
-            <SelectInput 
-                title="Shift*" 
-                onSelect={(value) => handleChange('shift', value)}
-                list={['day', 'night']}
-                value={values.shift}
+              /> 
+              <DailyRate
+                title='Budget'
+                placeholder='Estimated Budget*'
+                numeric
+                onChange={(value) => handleChange('budget', value)}
+                value={values.budget}
+              />
+              <TextArea
+                placeholder='Job Description*'
+                onChange={(value) => handleChange('description', value)}
+                value={values.description}
+              />
+              <View style={styles.privacy}>
+                  <Text style={!isEnabled ? styles.picked : styles.notPicked}>Public </Text>
+                  <Switch
+                    style={styles.switch}
+                    ios_backgroundColor='#23CDB0'
+                    trackColor={{ false: '#23CDB0', true: '#23CDB0' }}
+                    thumbColor={'#f4f3f4'}
+                    onValueChange={toggleSwitch}
+                    value={isEnabled}
+                  ></Switch>
+                  <Text style={isEnabled ? styles.picked : styles.notPicked}> Private</Text>
+              </View>
 
-            /> 
-            <DailyRate
-              title='Budget'
-              placeholder='Estimated Budget*'
-              numeric
-              onChange={(value) => handleChange('budget', value)}
-              value={values.budget}
-            />
-            <TextArea
-              placeholder='Job Description*'
-              onChange={(value) => handleChange('description', value)}
-              value={values.description}
-            />
-            <View style={styles.privacy}>
-                <Text style={!isEnabled ? styles.picked : styles.notPicked}>Public </Text>
-                <Switch
-                  style={styles.switch}
-                  ios_backgroundColor='#23CDB0'
-                  trackColor={{ false: '#23CDB0', true: '#23CDB0' }}
-                  thumbColor={'#f4f3f4'}
-                  onValueChange={toggleSwitch}
-                  value={isEnabled}
-                ></Switch>
-                <Text style={isEnabled ? styles.picked : styles.notPicked}> Private</Text>
-            </View>
+          </View>
 
+          <TouchableOpacity style={styles.btnContainer} onPress={() => paymentNav()}>
+            <PrimaryButton title='Continue to payment' />
+          </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.btnContainer} onPress={() => paymentNav()}>
-          <PrimaryButton title='Continue to payment' />
-        </TouchableOpacity>
-      </View>
-      </KeyboardAvoidingView>
-
-    </ScrollView>
+      </>
+    </KeyboardAvoidingWrapper>
   )
 }
 

@@ -25,6 +25,8 @@ import Inputs from '../components/Inputs'
 
 import { listofCities } from '../assets/data/RolesList';
 
+import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
+
 import PrimaryButton from '../components/Buttons/PrimaryButton'
 import PhoneInputs from '../components/PhoneInput';
 import UploadCard from '../components/UploadCard';
@@ -252,14 +254,17 @@ const JobSeekersignup = ({ navigation, route }) => {
       StackActions.replace('SignIn')
     )
   }
+
+  const keyboardVerticalOffset = Platform.OS === 'ios' ? 40 : 0;
+
   return isLoading ? (
     <View style={styles.loadingStyle}>
       <ActivityIndicator size={'large'} />
     </View>
   ) : (
       <View style={styles.container}>
-        <KeyboardAvoidingView   behavior={Platform.OS === 'ios' ? 'position' : 'paddingBottom'}   style={{backgroundColor: "white"}}  >
-          <ScrollView>
+        <KeyboardAvoidingWrapper>
+          <>
             <Header
               icon={signUp}
               title={update ? 'Update profile' : 'Create profile'}
@@ -346,8 +351,8 @@ const JobSeekersignup = ({ navigation, route }) => {
                 </TouchableOpacity>
               }
             </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+        </>
+      </ KeyboardAvoidingWrapper>
     </View>
 
   )

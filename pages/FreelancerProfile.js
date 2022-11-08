@@ -33,6 +33,8 @@ const FreelancerProfile = ({ navigation, route }) => {
   const dispatch = useDispatch()
   const isFocused = useIsFocused();
 
+  const [isVerified, setIsVerified] = useState({});
+
  
 
  
@@ -43,7 +45,8 @@ const FreelancerProfile = ({ navigation, route }) => {
       dispatch(getFreelancer(user.freelancerId ?  user.freelancerId : freelancer.id))
       .unwrap()
       .then((res) => {
-        console.log("res", res.freelancer.averageRating)
+        console.log("res", res.freelancer.averageRating);
+        setIsVerified(res.freelancer)
         setLoading(false)
       })
       .catch(err =>{ 

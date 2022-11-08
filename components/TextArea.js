@@ -43,6 +43,7 @@ const TextArea = ({placeholder, onChange, value, valued}) => {
             }
             <TextInput
                 multiline
+                scrollEnabled={false}
                 style={
                 styles.wrapperCustom
                 }
