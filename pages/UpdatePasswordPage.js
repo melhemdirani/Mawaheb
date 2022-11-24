@@ -22,8 +22,18 @@ const UpdatePasswordPage = ({navigation, route}) => {
   const dispatch = useDispatch()
   const [oldPassword, setOldPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
+  const [password2, setPassword2] = useState("")
   const [loading, setLoading] = useState(false)
+  const containsNumbers = (str) => {
+    return /\d/.test(str);
+  }
   const updatePass = () => {
+    if(newPassword !== password2 ){
+      return alert("Error, passwords don't match!")
+    }
+    else if (newPassword.length < 8 || !containsNumbers(newPassword)){
+      return alert("Password must be at least 8 characters with 1 upper case letter and 1 number")
+    }
     setLoading(true)
     dispatch(
       updateUserPassword({
@@ -62,6 +72,23 @@ const UpdatePasswordPage = ({navigation, route}) => {
                 onChange={(value) => setNewPassword(value)}
                 value={newPassword}
             />
+             { 
+                newPassword !== "" && (newPassword.length < 8 || !containsNumbers(newPassword) )&& 
+                <Text style={styles.warning}>
+                  Password must be at least 8 characters with 1 upper case letter and 1 number
+                </Text>
+              }
+            <Inputs
+                placeholder='Confirm your new password'
+                onChange={(value) => setPassword2(value)}
+                value={password2}
+            />
+               { 
+                newPassword !== password2 && password2 !== "" &&
+                <Text style={styles.warning}>
+                  passwords don't match
+                </Text>
+              }
         </View>
         <View style={styles.btnContainer}>
           <TouchableOpacity onPress={() => updatePass()}>
@@ -156,6 +183,15 @@ const styles = StyleSheet.create({
     backgroundColor:"rgba(255,255,255,.8)",
     width: "85%",
     marginVertical: 10
+  },
+  warning:{
+    alignSelf: "flex-end",
+    marginTop: -10,
+    marginBottom: 10,
+    right: 30,
+    color: "#BE3142",
+    fontSize: 10,
+    maxWidth: "90%",
   }
 })
 

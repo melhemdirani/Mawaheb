@@ -36,6 +36,7 @@ function RoleForm({handleChange, title, index, experience}) {
                 value={experience.startDate}
             /> 
             <DateInputs 
+                minimumDate={experience.startDate ? new Date(experience.startDate) : null}
                 placeholder="Role End Date*"
                 onChange={(value) => handleChange('endDate', value, index, title)}
                 valued

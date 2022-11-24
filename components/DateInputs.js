@@ -5,7 +5,7 @@ import DateTimePicker, {DateTimePickerAndroid} from '@react-native-community/dat
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 
-const DateInputs = ({title, placeholder, onChange, dateType, valued, value}) => {
+const DateInputs = ({title, placeholder, onChange, dateType, valued, value, maximumDate, minimumDate}) => {
     // const [text, setText] = useState("")
 
     let shown = Platform.OS === 'ios' ? false : true
@@ -49,6 +49,8 @@ const DateInputs = ({title, placeholder, onChange, dateType, valued, value}) => 
           onChange: onChangeDate,
           mode: currentMode,
           is24Hour: false,
+          minimumDate: minimumDate ? minimumDate : "",
+          maximumDate: maximumDate ? maximumDate : ""
         });
         setShow(false);
         // for iOS, add a button that closes the picker
@@ -84,6 +86,8 @@ const DateInputs = ({title, placeholder, onChange, dateType, valued, value}) => 
             value={date}
             mode={'date'}
             is24Hour={true}
+            minimumDate={minimumDate ? minimumDate : null}
+            maximumDate={maximumDate ? maximumDate : null}
             onChange={onChangeDate}
             style={{left: 20, opacity: 0.011, width: "100%", position: "absolute", zIndex: 999, padding: 20}}
           />

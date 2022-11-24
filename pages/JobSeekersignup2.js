@@ -45,12 +45,14 @@ const JobSeekersignup2 = ({  navigation, route }) => {
     emiratesId: freelancer.emiratesId !== undefined ? freelancer.emiratesId : "",
     emiratesIdFrontSide: freelancer.emiratesIdFrontSide !== undefined ? freelancer.emiratesIdFrontSide : "",
     emiratesIdBackSide: freelancer.emiratesIdBackSide!== undefined ? freelancer.emiratesIdBackSide : "",
+    birthDate: freelancer.birthDate!== undefined ? freelancer.birthDate : "",
   }
   : {
     expirationDate: '',
     emiratesId: '',
     emiratesIdFrontSide: '',
     emiratesIdBackSide: '',
+    birthDate:''
   }
   const dispatch = useDispatch()
 
@@ -84,6 +86,12 @@ const JobSeekersignup2 = ({  navigation, route }) => {
       handleChange({
         name: 'emiratesIdBackSide',
         value: uploadedImage2,
+      })
+    )
+    dispatch(
+      handleChange({
+        name: 'birthDate',
+        value: values.birthDate,
       })
     )
     
@@ -284,12 +292,25 @@ const JobSeekersignup2 = ({  navigation, route }) => {
             value={values.emiratesId}
           />
           <DateInputs 
-            placeholder='Expiration Date*'
+            placeholder='Date of Birth*'
             valued
             value={values.expirationDate}
+            maximumDate={new Date()}
             onChange={(value) =>
                 handleValuesChange({
                   name: 'expirationDate',
+                  value: value,
+                })
+            }
+          />
+          <DateInputs 
+            placeholder='Expiration Date*'
+            valued
+            value={values.birthDate}
+            minimumDate={new Date()}
+            onChange={(value) =>
+                handleValuesChange({
+                  name: 'birthDate',
                   value: value,
                 })
             }

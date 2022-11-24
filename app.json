@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "mawaheb",
+    "name": "mawahib",
     "scheme": "mawaheb",
     "slug": "mawaheb",
-    "version": "1.2.3",
+    "version": "1.2.5",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
@@ -22,7 +22,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.melhemdirani.mawaheb",
-      "buildNumber": "2.0.21",
+      "buildNumber": "2.0.22",
       "infoPlist": {
         "NSBluetoothPeripheralUsageDescription": "Mawahib needs your permission to use your bluetooth",
         "NSLocationWhenInUseUsageDescription": "Mawahib needs your permission to access your location",
@@ -30,7 +30,7 @@
       }
     },
     "android": {
-      "versionCode": 37,
+      "versionCode": 39,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#FFFFFF"

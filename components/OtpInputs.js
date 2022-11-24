@@ -25,7 +25,10 @@ export default OtpInputs = ({navigation, route}) => {
     const [password2, setPassword2] = useState("")
     const [showPasswords, setShowPasswords] = useState(false)
     const [loading, setLoading] = useState(false)
-  
+
+    const containsNumbers = (str) => {
+      return /\d/.test(str);
+    }
     const dispatch = useDispatch()
 
     const navigateNext =() => {
@@ -45,6 +48,12 @@ export default OtpInputs = ({navigation, route}) => {
         if(showPasswords){
           if(password === ""|| password2 === "" ){
             return alert("Please enter all inputs")
+          }
+          if (password.length < 8 || !containsNumbers(password) ){
+            return alert(" Password must be at least 8 characters with 1 upper case letter and 1 number")
+          }
+          if (password2 !== password){
+            return alert("Error, passwords don't match!")
           }
           dispatch(
             resetPassword({
@@ -152,6 +161,12 @@ export default OtpInputs = ({navigation, route}) => {
             { route.params.reset && showPasswords &&
               <View style={styles.container4}>
                 <Inputs placeholder="New Password*" onChange={setPassword} value={password} />
+                { 
+                  password !== "" && (password.length < 8 || !containsNumbers(password) )&& 
+                  <Text style={styles.warning}>
+                    Password must be at least 8 characters with 1 upper case letter and 1 number
+                  </Text>
+                }
                 <Inputs
                   placeholder='Confirm Password*'
                   onChange={(e) => setPassword2(e)}
@@ -248,6 +263,7 @@ container:{
     marginBottom: 10,
     right: 30,
     color: "#BE3142",
-    fontSize: 10
+    fontSize: 10,
+    maxWidth: "80%"
   }
 });

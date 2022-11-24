@@ -62,7 +62,9 @@ const ClientSignupPage = ({navigation}) => {
   const [values, setValues] = useState(initialState)
   const dispatch = useDispatch()
   const [password2, setPassword2] = useState("")
-
+  const containsNumbers = (str) => {
+    return /\d/.test(str);
+  }
   const navigateLogin = () => {
     navigation.dispatch(
       StackActions.replace('login', {edit: false})
@@ -105,6 +107,12 @@ const ClientSignupPage = ({navigation}) => {
        return alert('Please fill all fieldss')
     } else if (activity){
       return alert("Uploading please wait")
+    }
+    if(password !== password2 ){
+      return alert("Error, passwords don't match!")
+    }
+    else if (password.length < 8 || !containsNumbers(values.password)){
+      return alert("Password must be at least 8 characters with 1 upper case letter and 1 number")
     }
     else { 
       dispatch(
@@ -319,6 +327,12 @@ const ClientSignupPage = ({navigation}) => {
               onChange={(value) => handleChange('password', value)}
               value={values.password}
             />
+            { 
+              values.password !== "" && (values.password.length < 8 || !containsNumbers(values.password) )&& 
+              <Text style={styles.warning}>
+                Password must be at least 8 characters with 1 upper case letter and 1 number
+              </Text>
+            }
             <Inputs
               placeholder='Confirm Password*'
               onChange={(e) => setPassword2(e)}
@@ -509,7 +523,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     right: 30,
     color: "#BE3142",
-    fontSize: 10
+    fontSize: 10,
+    maxWidth: "90%"
   }
 })
 

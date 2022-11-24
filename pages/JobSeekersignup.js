@@ -3,8 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
-  KeyboardAvoidingView,
   TouchableOpacity,
   Platform,
   ActivityIndicator,
@@ -32,14 +30,15 @@ import PhoneInputs from '../components/PhoneInput';
 import UploadCard from '../components/UploadCard';
 import ImageCard from '../components/ImageCard';
 import SelectInput from '../components/SelectInput';
-import DailyRate from '../components/DailyRate';
+import { handleChange } from '../reduxToolkit/freelancerSlice';
 
 const JobSeekersignup = ({ navigation, route }) => {
 
   const { role, update} = route.params
   
   const { user, token } = useSelector((store) => store.user)
-
+  const { freelancer } = useSelector((store) => store.freelancer)
+  console.log("freelancer", freelancer)
 
   const [uploaded, setUploaded] = useState(
     update && user.profileImage !== ''
@@ -67,6 +66,9 @@ const JobSeekersignup = ({ navigation, route }) => {
     phoneNb: '',
     profileImage: '', 
     location: '', 
+    nationality: '', 
+    arabicName: '', 
+    middleName: ''
   }
   : {
     name: user.name,
@@ -75,6 +77,9 @@ const JobSeekersignup = ({ navigation, route }) => {
     phoneNb: user.phoneNb,
     profileImage: user.profileImage, 
     location: user.location, 
+    nationality: freelancer.nationality ? freelancer.nationality : '', 
+    arabicName: freelancer.arabicName ? freelancer.arabicName : '', 
+    middleName: freelancer.middleName? freelancer.middleName : '', 
   }
 
   const [values, setValues] = useState(initialState)
@@ -85,7 +90,7 @@ const JobSeekersignup = ({ navigation, route }) => {
   const dispatch = useDispatch()
 
 
-  const handleChange = (name, value) => {
+  const handleChanges = (name, value) => {
     setChangedValues(true)
     setValues({ ...values, [name]: value })
   }
@@ -104,12 +109,15 @@ const JobSeekersignup = ({ navigation, route }) => {
       StackActions.replace('otp', {update})
     )
   }
+  const containsNumbers = (str) => {
+    return /\d/.test(str);
+  }
   const submit = () => {
-    const { name, email, password, phoneNb } = values
+    const { name, email, password, phoneNb, middleName,nationality,arabicName  } = values
     if(password !== password2 && !update){
       return alert("Error, passwords don't match!")
     }
-    if (!name || !email || (!update && !password )|| !phoneNb) {
+    if (!name || !email || (!update && !password )|| !phoneNb || !middleName) {
       return alert('Please fill all the fields')
     } 
     if(activity){
@@ -118,6 +126,27 @@ const JobSeekersignup = ({ navigation, route }) => {
     if( !validate(email)){
       return alert("Please enter a valid email address")
     }
+    else if (password.length < 8 || !containsNumbers(values.password)){
+      return alert("Password must be at least 8 characters with 1 upper case letter and 1 number")
+    }
+    dispatch(
+      handleChange({
+        name: 'middleName',
+        value: middleName,
+      })
+    )
+    dispatch(
+      handleChange({
+        name: 'arabicName',
+        value: arabicName,
+      })
+    )
+    dispatch(
+      handleChange({
+        name: 'nationality',
+        value: nationality,
+      })
+    )
     if(update){
       if(changedValues || update){
         console.log("updating")
@@ -130,7 +159,7 @@ const JobSeekersignup = ({ navigation, route }) => {
           location: values.location,
           profileImage: uploadedImage,
           userId: update ? user.userId : user.userId.id,
-          notificationToken: token
+          notificationToken: token,
         })
         setIsLoading(true)
         dispatch(
@@ -293,26 +322,47 @@ const JobSeekersignup = ({ navigation, route }) => {
               }
               <Inputs
                 placeholder='First Name*'
-                onChange={(value) => handleChange('name', value)}
+                onChange={(value) => handleChanges('name', value)}
                 value={values.name}
               />
               <Inputs
+                placeholder='Middle Name*'
+                onChange={(value) => handleChanges('middleName', value)}
+                value={values.middleName}
+              />
+              <Inputs
                 placeholder='Last Name*'
-                onChange={(value) => handleChange('lastName', value)}
+                onChange={(value) => handleChanges('lastName', value)}
                 value={values.lastName}
               />
               <Inputs
+                placeholder='Full Name In Arabic (optional)'
+                onChange={(value) => handleChanges('arabicName', value)}
+                value={values.arabicName}
+              />
+              <Inputs
                 placeholder='Email*'
-                onChange={(value) => handleChange('email', value.toLocaleLowerCase())}
+                onChange={(value) => handleChanges('email', value.toLocaleLowerCase())}
                 value={values.email}
+              />
+              <Inputs
+                placeholder='Nationality*'
+                onChange={(value) => handleChanges('nationality', value.toLocaleLowerCase())}
+                value={values.nationality}
               />
 
               { !update &&
                 <Inputs
                   placeholder='Password*'
-                  onChange={(value) => handleChange('password', value)}
+                  onChange={(value) => handleChanges('password', value)}
                   value={values.password}
                 />
+              }
+               { 
+                values.password !== "" && (values.password.length < 8 || !containsNumbers(values.password) )&& 
+                <Text style={styles.warning}>
+                  Password must be at least 8 characters with 1 upper case letter and 1 number
+                </Text>
               }
               { !update &&
                 <Inputs
@@ -329,14 +379,14 @@ const JobSeekersignup = ({ navigation, route }) => {
               }
               <SelectInput 
                 title="Location*" 
-                onSelect={(value) => handleChange('location', value)}
+                onSelect={(value) => handleChanges('location', value)}
                 list={listofCities}
                 value={values.location}
                 valued
               /> 
               <PhoneInputs
                 placeholder='Phone Number*'
-                onChange={(value) => handleChange('phoneNb', value)}
+                onChange={(value) => handleChanges('phoneNb', value)}
                 value={values.phoneNb}
               />
             
@@ -412,7 +462,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     right: 30,
     color: "#BE3142",
-    fontSize: 10
+    fontSize: 10,
+    maxWidth: "90%",
   }
 })
 

@@ -44,6 +44,10 @@ const BankPage = ({  navigation, route }) => {
     copyOfResidencyVisa,
     roles,
     languages,
+    nationality,
+    arabicName,
+    middleName,
+    birthDate
   } = useSelector((store) => store.freelancer)
 
   const bankState2 = update && freelancer.bankDetails !== undefined && freelancer.bankDetails !== null
@@ -98,13 +102,15 @@ const BankPage = ({  navigation, route }) => {
       languages === "" ||
       languages === [] ||
       bank === "" ||
+      middleName === ""||
+      nationality  === ""||
+      arabicName === ""||
       checkBankEmpty()
       ){
         return false
     } else return true
   }
-  console.log("roles", roles)
-  console.log("languages", languages)
+ 
   const updateProfile = () => {
 
     
@@ -119,6 +125,10 @@ const BankPage = ({  navigation, route }) => {
           emiratesIdBackSide,
           copyOfPassport,
           copyOfResidencyVisa,
+          middleName,
+          nationality,
+          birthDate: new Date (birthDate),
+          arabicName,
           isCompleted: checkCompleteProfile(),
         },
         roles: roles,
@@ -154,6 +164,10 @@ const BankPage = ({  navigation, route }) => {
           emiratesIdBackSide,
           copyOfPassport,
           copyOfResidencyVisa,
+          middleName,
+          nationality,
+          arabicName,
+          birthDate: new Date (birthDate),
           isCompleted:  checkCompleteProfile(),
         },
         roles: roles,

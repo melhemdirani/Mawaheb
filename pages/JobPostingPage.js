@@ -139,6 +139,7 @@ const JobPostingPage = ({navigation}) => {
                 placeholder="Start Date" 
                 dateType
                 value={values.startDate}
+                minimumDate={new Date()}
 
               />
               <DateInputs 
@@ -146,6 +147,8 @@ const JobPostingPage = ({navigation}) => {
                 placeholder="End Date" 
                 dateType
                 value={values.endDate}
+                minimumDate={values.startDate}
+
               />
               <SelectInput 
                   title="Location*" 
