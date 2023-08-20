@@ -90,7 +90,6 @@ const EditClientProfile = ({navigation, route}) => {
     setValues({ ...values, [name]: value })
     setChanged(true)
   }
-console.log("completed", client.notCompleted)
   const onSubmit = () => {
     if(activity){
       return alert("Uploading please wait")
@@ -106,14 +105,14 @@ console.log("completed", client.notCompleted)
       email,
       phoneNb,
     } = values
-    if (privacy === 'private' && (!TRN || !address || !companyName || !sign.length)) {
-        console.log("values", values)
+    if (privacy === 'private' && (!TRN || !address || !companyName || !uploadedImage)) {
+        console.log("values private", values)
       return alert('Please fill all fields')
     } else if (
       privacy === 'public' &&
-      (!companyName || !signatoryName || !signatoryTitle || !sign.length || !email || !phoneNb ) 
+      (!companyName || !signatoryName || !signatoryTitle || !uploadedImage|| !email || !phoneNb ) 
     ) {
-        console.log("values", values)
+        console.log("values public", values)
        return alert('Please fill all fieldss')
     } else if (activity){
       return alert("Uploading please wait")
@@ -138,6 +137,7 @@ console.log("completed", client.notCompleted)
         .unwrap()
         .then((response) => {
           console.log("creating profile", response)
+          navigation.navigate('clientProfile')
         })
         .catch(error => console.log("error registering", error))
       } else{

@@ -156,7 +156,12 @@ import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
     const submitPostPaid = () => {
       setPageLoading(true)
       console.log("postpaid")
+      if(image.length && !uploaded){
+        setPageLoading(false)
+        return alert("uploading please wait")
+      }
       if(po === "" || paymentDetails.billingAddress === "" || paymentDetails.billingEmail === ""){
+        setPageLoading(false)
         return alert("Please enter all of your payment details")
       }
       dispatch(

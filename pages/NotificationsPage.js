@@ -5,11 +5,15 @@ import {
   Platform,
   Text,
   ActivityIndicator,
+  TouchableHighlight,
+  Pressable,
+  Image
 } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useIsFocused } from "@react-navigation/native"
 import { deleteNotifcation, deleteNotifcations, getNotifications, setNewNotifications, setNotificationsSeen, setSeenNotifications } from '../reduxToolkit/userSlice'
+import { SwipeListView } from 'react-native-swipe-list-view';
 
 import Navbar from '../components/Navbar'
 import Header from '../components/Header'
@@ -30,36 +34,50 @@ const NotificationsPage = ({ navigation, role, route }) => {
   const { client} = useSelector((store) => store.client)
   const [loading, setLoading] = useState(false)
   const notificationIds= notifications.map(item => item.id)
+
   const isFocused = useIsFocused();
 
+  const getNotificationsFunction = () => {
+    if(user.role === "freelancer"){
+      dispatch(getNotifications({ 
+        id: user.freelancerId ? user.freelancerId : freelancer.id, 
+        role: user.role 
+      }))
+    } else {
+      dispatch(getNotifications({ 
+        id: user.clientId 
+        ? user.clientId 
+        : client.id, 
+        role: 
+        user.role 
+      }))
+    }
+  
+    if(newNotifications > 0){
+      dispatch(
+        setSeenNotifications({notificationIds: notificationIds})
+      )
+    }
+    if(!notificationsSeen){
+      dispatch(setNewNotifications(0))
+    }
+
+  }
 
   useEffect(() => {
     if(isFocused){
-      if(user.role === "freelancer"){
-        dispatch(getNotifications({ 
-          id: user.freelancerId ? user.freelancerId : freelancer.id, 
-          role: user.role 
-        }))
-      } else {
-        dispatch(getNotifications({ 
-          id: user.clientId 
-          ? user.clientId 
-          : client.id, 
-          role: 
-          user.role 
-        }))
-      }
-    
-      if(newNotifications > 0){
-        dispatch(
-          setSeenNotifications({notificationIds: notificationIds})
-        )
-      }
-      if(!notificationsSeen){
-        dispatch(setNewNotifications(0))
-      }
+      getNotificationsFunction()
     }
   }, [isFocused])
+
+
+  const onDeleteNotification = (id) => {
+    console.log("id", id)
+    dispatch(
+      deleteNotifcations({ids: [id]})
+    ).then(() => getNotificationsFunction() )
+    .catch(err => console.log("er, err", err))
+  }
   const dispatch = useDispatch()
   const acceptContract = (contractId, jobId) => {
     navigation.navigate('acceptContractFreelancer', {role: "freelancer", action: contractId, jobId: jobId}) // check jobId if needed
@@ -121,12 +139,24 @@ const NotificationsPage = ({ navigation, role, route }) => {
     )
   }
 
+ 
+
+
+  const renderHiddenItem = (data) => (
+    <TouchableHighlight 
+      style={[styles.backRightBtn,  styles.backRightBtnRight]} 
+      onPress={() => onDeleteNotification(data.item.id)}
+    >
+        <Image style={styles.trash} source={trash} />
+    </TouchableHighlight>
+  );
+
   return loading ? <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
   <ActivityIndicator size={"large"} color="#4E84D5"/>
   </View>
   :(
     <View style={styles.container}>
-      <ScrollView>
+      <View style={styles.container}>
         <Header
           icon={notificationIcon}
           hidden
@@ -141,21 +171,31 @@ const NotificationsPage = ({ navigation, role, route }) => {
             <ActivityIndicator size={'large'} color="#4E84D5"/>
           </View>
         ) : notifications.length > 0 ? (
-          <View style={styles.container4}>
-            {notifications.map((n, i) => (
-              <Notification
-                title={n.message}
-                action={n.text}
-                color={n.text === 'urgent' ? true : false}
-                key={i}
-                acceptContract={acceptContract}
-                navJobs={navJobs}
-                navJobDetails={navJobDetails}
-                navCongrats={navCongrats}
-                n={n}
-              />
-            ))}
-          </View>
+            <SwipeListView
+              data={notifications}
+              renderItem={ (data, rowMap) => {
+                const n = data.item
+                return(
+                    <Notification
+                    title={n.message}
+                    action={n.text}
+                    color={n.text === 'urgent' ? true : false}
+                    key={data.index}
+                    acceptContract={acceptContract}
+                    navJobs={navJobs}
+                    navJobDetails={navJobDetails}
+                    navCongrats={navCongrats}
+                    n={n}
+                  />
+              )}}
+              renderHiddenItem={renderHiddenItem}
+              leftOpenValue={0}
+              rightOpenValue={-80}
+              previewRowKey={'0'}
+              previewOpenValue={-40}
+              previewOpenDelay={3000}
+            />
+            
         ) : (
           <View style={styles.container4}>
             <Text style={{ marginTop: 200, alignSelf: 'center' }}>
@@ -163,7 +203,7 @@ const NotificationsPage = ({ navigation, role, route }) => {
             </Text>
           </View>
         )}
-      </ScrollView>
+      </View>
       <Navbar
         active='Notifications'
         navigation={navigation}
@@ -183,7 +223,31 @@ const styles =
         container4: {
           marginTop: 40,
         },
-      })
+        rowBack: {
+          alignItems: 'center',
+          flex: 1,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          paddingLeft: 15,
+      },
+      backRightBtn: {
+        alignItems: 'center',
+        bottom: 0,
+        justifyContent: 'center',
+        position: 'absolute',
+        top: 0,
+        width: 75,
+    },
+    backRightBtnRight: {
+      right: 0,
+      backgroundColor: 'red',
+      height: 60,
+      width: 60,
+      marginTop: 28,
+      borderRadius: 15,
+      marginRight: 15
+    },
+        })
     : StyleSheet.create({
         container: {
           flex: 1,
@@ -191,7 +255,32 @@ const styles =
         },
         container4: {
           marginTop: 40,
+          paddingBottom: 100
         },
-      })
+        rowBack: {
+          alignItems: 'center',
+          flex: 1,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+      },
+      backRightBtn: {
+        alignItems: 'center',
+        bottom: 0,
+        justifyContent: 'center',
+        position: 'absolute',
+        top: 0,
+        width: 75,
+    },
+    backRightBtnRight: {
+        right: 0,
+        backgroundColor: 'red',
+        height: 60,
+        width: 60,
+        marginTop: 28,
+        borderRadius: 15,
+        marginRight: 15
+    },
+   
+  })
 
 export default NotificationsPage

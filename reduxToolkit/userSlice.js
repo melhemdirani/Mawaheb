@@ -204,6 +204,7 @@ export const deleteNotifcations = createAsyncThunk(
   async (ids, thunkApi) => {
     let url =`/notifications`
     const notificationIds = ids.ids
+    console.log("ids", ids.ids)
     try {
       const resp = await customFetch.patch(url, {notificationIds: notificationIds})
       return resp.data

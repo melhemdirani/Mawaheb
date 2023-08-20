@@ -15,6 +15,7 @@ import { Dimensions } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import PaginationDot from 'react-native-animated-pagination-dot'
 import { useIsFocused } from "@react-navigation/native"
+import { StackActions } from '@react-navigation/native';
 
 import { getClientDashboard } from '../reduxToolkit/clientSlice'
 
@@ -50,6 +51,12 @@ const ClientDashboard = ({ navigation, route }) => {
       if(user.id === undefined && !client){
         setLoading(false)
         return console.log("hi")
+      }
+      if (user.clientId === undefined && client.id === undefined){
+        alert("Please finish filling up your profile")
+        return navigation.dispatch(
+          StackActions.replace('clientsignup2')
+        )
       }
       dispatch(getClientDashboard(user?.clientId || client.id))
       .unwrap()

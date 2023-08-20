@@ -32,11 +32,16 @@ export default OtpInputs = ({navigation, route}) => {
     const dispatch = useDispatch()
 
     const navigateNext =() => {
+      if (route.params.role === "client"){
+        return  navigation.dispatch(
+          StackActions.replace('clientsignup2')
+        )
+      } else {
         navigation.dispatch(
           StackActions.replace('JobSignUpb', {update})
         )
-    
       }
+    }
     const {
         user
     } = useSelector((store) => store.user)

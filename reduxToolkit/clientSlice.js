@@ -29,8 +29,6 @@ export const updateClientProfile = createAsyncThunk(
       return resp.data
     } catch (error) {
       console.log(error)
-      console.log(error.response.data.msg)
-      alert(error.response.data.msg)
       return thunkAPI.rejectWithValue(error.response.data.msg)
     }
   }
@@ -73,8 +71,6 @@ export const getClientDashboard = createAsyncThunk(
       return resp.data
     } catch (error) {
       console.log(error)
-      console.log(error.response.data.msg)
-      alert(error.response.data.msg)
       return thunkAPI.rejectWithValue(error.response.data.msg)
     }
   }

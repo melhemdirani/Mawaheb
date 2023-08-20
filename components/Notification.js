@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, ImageBackground, Pressable} from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, ImageBackground, Pressable, Animated} from 'react-native';
 
 import notificationImage from '../assets/images/notification.png';
 import notificationImage2 from '../assets/images/notificationR.png';
@@ -34,14 +34,12 @@ const styles =
         container:{
             flexDirection: "row",
             justifyContent: "flex-start",
-            backgroundColor: "white",
             alignItems: "center",
             alignSelf: "center",
             marginTop: 20,
             width: "100%",
             height: 83,
-            borderBottomRightRadius: 20,
-            borderTopRightRadius: 20,
+            padding: 0,
         },
         bar:{
             width: 10,

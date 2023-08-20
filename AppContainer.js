@@ -4,43 +4,44 @@ import * as Linking from 'expo-linking';
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import * as Notifications from 'expo-notifications';
 
-import SignupPage from './pages/SignupPage'
 import SettingsPage from './pages/SettingsPage'
-import CreateProfilePage from './pages/CreateProfilePage'
-import ExperiencePage from './pages/ExperiencePage'
-import LanguagePage from './pages/LanguagePage'
-import BankPage from './pages/BankPage'
-import ClientSignupPage from './pages/ClientSignupPage'
-import JobsPage from './pages/JobsPage'
-import JobListPage from './pages/JobListPage'
-import JobseekerDashboard from './pages/JobseekerDashboard'
 import NotificationsPage from './pages/NotificationsPage'
-import FreelanceAcceptedPage from './pages/FreelanceAcceptedPage'
-import FreelancerDetailsPage from './pages/FreelancerDetailsPage'
-import JobDonePage from './pages/JobDonePage'
-import JobPostingPage from './pages/JobPostingPage'
-import PaymentPage from './pages/PaymentPage'
 import LoginJobseeker from './pages/LoginJobseeker'
-import JobContractPage from './pages/JobContractPage'
-import JobSeekersignup from './pages/JobSeekersignup'
-import ClientDashboard from './pages/ClientDashboard'
-
-import JobDetailsPage from './pages/JobDetailsPage'
-import JobSeekersignup2 from './pages/JobSeekersignup2'
-import FreelancerProfile from './pages/FreelancerProfile'
-import ClientProfile from './pages/ClientProfile'
 import ContactForm from './pages/ContactForm'
-import JobDetailsPage_Client from './pages/JobDetailsPage_Client'
-import ContactFreelancerPage from './pages/ContactFreelancerPage'
-import EditClientProfile from './pages/EditClientProfile'
 import UpdatePasswordPage from './pages/UpdatePasswordPage'
 import DeleteAccountPage from './pages/DeleteAccountPage'
-import JobContractPageFreelancer from './pages/JobContractPageFreelancer';
-import ContactCompanyPage from './pages/ContactCompanyPage';
 import OtpInputs from './components/OtpInputs';
 import ResetPassword from './pages/ResetPassword';
 
+import SignupPage from './FreelancerPages/SignupPage'
+import FreelancerProfile from './FreelancerPages/FreelancerProfile'
+import FreelancerDetailsPage from './FreelancerPages/FreelancerDetailsPage'
+import FreelanceAcceptedPage from './FreelancerPages/FreelanceAcceptedPage'
+import BankPage from './FreelancerPages/BankPage'
+import ExperiencePage from './FreelancerPages/ExperiencePage'
+import LanguagePage from './FreelancerPages/LanguagePage'
+import JobsPage from './FreelancerPages/JobsPage'
+import JobseekerDashboard from './FreelancerPages/JobseekerDashboard'
+import JobSeekersignup from './FreelancerPages/JobSeekersignup'
+import JobDetailsPage from './FreelancerPages/JobDetailsPage'
+import JobSeekersignup2 from './FreelancerPages/JobSeekersignup2'
+import ContactCompanyPage from './FreelancerPages/ContactCompanyPage';
+import JobContractPageFreelancer from './FreelancerPages/JobContractPageFreelancer';
+import CreateProfilePage from './FreelancerPages/CreateProfilePage'
 
+
+import ClientDashboard from './ClientPages/ClientDashboard'
+import ClientProfile from './ClientPages/ClientProfile'
+import JobContractPage from './ClientPages/JobContractPage'
+import ClientSignupPage from './ClientPages/ClientSignupPage'
+import JobDetailsPage_Client from './ClientPages/JobDetailsPage_Client'
+import JobDonePage from './ClientPages/JobDonePage'
+import PaymentPage from './ClientPages/PaymentPage'
+import JobPostingPage from './ClientPages/JobPostingPage'
+import ContactFreelancerPage from './ClientPages/ContactFreelancerPage'
+import EditClientProfile from './ClientPages/EditClientProfile'
+import JobListPage from './ClientPages/JobListPage'
+import CreateClientPage from './ClientPages/CreateClientPage';
 
 
 Notifications.setNotificationHandler({
@@ -209,7 +210,7 @@ function AppContainer() {
             />
             <Stack.Screen
             name='recruiter_signup'
-            component={ClientSignupPage}
+            component={CreateClientPage}
             options={{
                 headerShown: false,
             }}
@@ -336,6 +337,13 @@ function AppContainer() {
             <Stack.Screen
             name='deletePage'
             component={DeleteAccountPage}
+            options={{
+                headerShown: false,
+            }}
+            />
+            <Stack.Screen
+            name='clientsignup2'
+            component={ClientSignupPage}
             options={{
                 headerShown: false,
             }}

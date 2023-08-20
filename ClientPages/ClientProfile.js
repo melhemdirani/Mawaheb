@@ -34,36 +34,34 @@ const ClientProfile = ({ navigation, route }) => {
 
   const [clientProfiles, setClientProfile] = useState(client)
 
-  const [loaded, setLoaded] = useState(true)
+  const [loaded, setLoaded] = useState(false)
 
   const dispatch = useDispatch()
 
   useEffect(() => {
 
     if(clientProfiles !== {} && clientProfiles!== undefined ){
-    if(user.clientId === undefined && !client){
+      if(user.clientId === undefined && client.id === undefined){
+        return  navigation.navigate("editProfileClient", {clientProfile: {
+          companyName: "",
+          privacy: "", 
+          signatoryName:"",
+          signatoryTitle:"", 
+          sign:"", 
+          Address:"",
+          TRN:"",
+          email:"",
+          phoneNb:"",
+          tradingLicense:"",
+          user:{
+            phoneNb:""
+          },
 
-      return  navigation.navigate("editProfileClient", {clientProfile: {
-        companyName: "",
-        privacy: "", 
-        signatoryName:"",
-        signatoryTitle:"", 
-        sign:"", 
-        Address:"",
-        TRN:"",
-        email:"",
-        phoneNb:"",
-        tradingLicense:"",
-        user:{
-          phoneNb:""
-        },
-
-        notCompleted: true
-      }
+          notCompleted: true
+        }
       })
 
     }
-    setLoaded(true)
 
     dispatch(getClientbyId(user.clientId ? user.clientId : client.id))
       .unwrap()
@@ -86,7 +84,6 @@ const ClientProfile = ({ navigation, route }) => {
 //     }
 //   }, [])
 
-  console.log("clientProfile", clientProfiles)
   return  loaded || clientProfiles.user === undefined ? <View style={{marginTop: 400}}>
         <ActivityIndicator size={"large"}/>
       </View>

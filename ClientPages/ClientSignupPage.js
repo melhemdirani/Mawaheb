@@ -31,9 +31,9 @@ import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
 
 
 const ClientSignupPage = ({navigation}) => {
-  const { token } = useSelector((store) => store.user)
+  const { user } = useSelector((store) => store.user)
   const { client } = useSelector((store) => store.client)
-  console.log("client", client)
+  console.log("user", user.name)
   const [uploaded, setUploaded] = useState(false)
   const [uploaded2, setUploaded2] = useState(false)
   const [activity, setActivity] = useState(false)
@@ -61,10 +61,7 @@ const ClientSignupPage = ({navigation}) => {
 
   const [values, setValues] = useState(initialState)
   const dispatch = useDispatch()
-  const [password2, setPassword2] = useState("")
-  const containsNumbers = (str) => {
-    return /\d/.test(str);
-  }
+
   const navigateLogin = () => {
     navigation.dispatch(
       StackActions.replace('login', {edit: false})
@@ -90,67 +87,35 @@ const ClientSignupPage = ({navigation}) => {
       privacy,
       signatoryName,
       signatoryTitle,
-      sign,
       TRN,
       address,
-      email,
-      phoneNb,
-      password,
     } = values
     if (privacy === 'private' && (!TRN || !address || !companyName)) {
-
+      console.log("private", values)
       return alert('Please fill all fields')
     } else if (
       privacy === 'public' &&
-      (!companyName || !signatoryName || !signatoryTitle || !sign || !email || !password || !phoneNb ) 
+      ( !signatoryName || !signatoryTitle || !uploadedImage ) 
     ) {
+      console.log("public", values)
        return alert('Please fill all fieldss')
     } else if (activity){
       return alert("Uploading please wait")
     }
-    if(password !== password2 ){
-      return alert("Error, passwords don't match!")
-    }
-    else if (password.length < 8 || !containsNumbers(values.password)){
-      return alert("Password must be at least 8 characters with 1 upper case letter and 1 number")
-    }
     else { 
-      dispatch(
-        registerUser({
-          name: companyName,
-          email: values.email.toLowerCase(),
-          password: values.password,  
-          phoneNb: phoneNb,
-          notificationToken: token,
-          role: 'client',
-          profileImage: uploadedImage2
-        })
-      )
-      .unwrap()
-      .then((response) => {
-        console.log("response registiring", response)
-        onRegister()
-      })
-      .catch((error) => {
-        if(error === "Email already in use"){
-          alert("This email is already in use, please register using another email address")
-        } else{
-          alert("Error registering")
-        }
-        console.log("error", error.message)
-      })
+      onRegister()
     }
+
   }
 
   
   const onRegister = () => {
     dispatch(
       createClientProfile({
-        companyName:values.companyName,
+        companyName:user.name,
         privacy:values.privacy,
         signatoryName:values.signatoryName,
         signatoryTitle:values.signatoryTitle,
-        companyName:values.companyName,
         TRN:parseInt(values.TRN),
         sign: uploadedImage,
         tradingLicense: uploadedImage,
@@ -257,11 +222,8 @@ const ClientSignupPage = ({navigation}) => {
       setUploaded(true)
       setChanged(true)
      } catch (error) {
-      console.log(error)
       setUploaded(false)
       alert("Error uploading")
-  
-
     }
   }
 
@@ -269,7 +231,6 @@ const ClientSignupPage = ({navigation}) => {
     startingToUpload && setStartingToUpload(false)
     setUploaded(false);
     setUploadedImage("")
-
     setImage("");
   }
 
@@ -303,47 +264,7 @@ const ClientSignupPage = ({navigation}) => {
         <Header title='Client Sign Up' icon={signUp} hidden={false} goBack={goBack}/>
         <View style={styles.container}>
           <Text style={styles.text}>All you need is to fill your information below and upload a document to create your profile. </Text>
-          
           <View style={styles.form}>
-            <Inputs
-              placeholder='Company Name*'
-              style={styles.input}
-              onChange={(value) => handleChange('companyName', value)}
-              value={values.companyName}
-            />
-            <Inputs
-              placeholder='Email*'
-              onChange={(value) => handleChange('email', value)}
-              value={values.email}
-            />
-            <PhoneInputs
-              placeholder='Phone number*'
-              onChange={(value) => handleChange('phoneNb', value)}
-              value={values.phoneNb}
-            />
-            <View style={{marginTop: 20}}/>
-            <Inputs
-              placeholder='Password*'
-              onChange={(value) => handleChange('password', value)}
-              value={values.password}
-            />
-            { 
-              values.password !== "" && (values.password.length < 8 || !containsNumbers(values.password) )&& 
-              <Text style={styles.warning}>
-                Password must be at least 8 characters with 1 upper case letter and 1 number
-              </Text>
-            }
-            <Inputs
-              placeholder='Confirm Password*'
-              onChange={(e) => setPassword2(e)}
-              value={password2}
-            />
-            { 
-              values.password !== password2 && password2 !== "" &&
-              <Text style={styles.warning}>
-                passwords don't match
-              </Text>
-            }
             { 
               image2.length && !uploaded2
               ? <View style={{width: "100%", alignItems: "center"}}>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, ImageBackground, Pressable, Dimensions } from 'react-native';
 
-import backgroundImage from '../assets/images/backgroundHeader.jpg'
+import backgroundImage from '../assets/images/backgroundHeader.png'
 import backIcon from '../assets/images/backIcon.png'
 import testImage from '../assets/images/test.png'
 import { LinearGradient } from 'expo-linear-gradient'
@@ -9,9 +9,8 @@ import { LinearGradient } from 'expo-linear-gradient'
 const width = Dimensions.get('window').width
 
 const Header = ({ icon, title, numOfPage, rightIcon, hidden, numberHidded, goBack, profile, rating, center, onTrash, trash}) => {
-  
   return (
-    <View style={styles.container}>
+    <View style={title !== "Notifications" ? styles.container: [styles.container, styles.notifications]}>
       <ImageBackground
         source={backgroundImage}
         style={styles.background}
@@ -39,10 +38,6 @@ const Header = ({ icon, title, numOfPage, rightIcon, hidden, numberHidded, goBac
           }
         </View>
         <Text style={[styles.text, center &&{ textAlign: "center"}]}>{title}</Text>
-        <ImageBackground
-          source={testImage}
-          style={styles.body}
-        ></ImageBackground>
       </ImageBackground>
       { 
         profile 
@@ -75,10 +70,13 @@ const Header = ({ icon, title, numOfPage, rightIcon, hidden, numberHidded, goBac
 const styles = StyleSheet.create({
   container: {
     position: 'relative',
+    backgroundColor: "transparent !important",
+    marginTop: -12,
+    zIndex: -99
   },
   background: {
     width: '100%',
-    height: 200,
+    height: 220,
   },
   body: {
     position: 'absolute',
@@ -171,6 +169,9 @@ const styles = StyleSheet.create({
    justifyContent: "center",
    marginTop: -10
   },
+  notifications:{
+    paddingBottom: 35,
+  }
 })
 
 export default Header

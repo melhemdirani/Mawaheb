@@ -209,8 +209,6 @@ const JobSeekersignup = ({ navigation, route }) => {
       )
       .unwrap()
       .then((response) => {
-        console.log("response registiring", response)
-        // alert(`Thank you ${values.name}! Your account was registerd!`)
         setChangedValues(false)
         setIsLoading(false)
         navigateOtp()
