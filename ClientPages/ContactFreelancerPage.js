@@ -1,4 +1,4 @@
-import React, {  useState } from 'react'
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,54 +6,52 @@ import {
   Image,
   Pressable,
   ScrollView,
-  ActivityIndicator
-} from 'react-native';
+  ActivityIndicator,
+} from "react-native";
 import * as Linking from "expo-linking";
 
-import { LinearGradient } from 'expo-linear-gradient'
-import calendarIcon from '../assets/images/calendarIcon.png'
-import MaskedView from '@react-native-masked-view/masked-view'
-import languageIcon from '../assets/images/LanguageIcon.png'
+import { LinearGradient } from "expo-linear-gradient";
+import calendarIcon from "../assets/images/calendarIcon.png";
+import MaskedView from "@react-native-masked-view/masked-view";
+import languageIcon from "../assets/images/LanguageIcon.png";
 
-import minusIcon from '../assets/images/minusIcon.png'
-import { useSelector } from 'react-redux'
+import minusIcon from "../assets/images/minusIcon.png";
+import { useSelector } from "react-redux";
 
 const ContactFreelancerPage = ({ navigation, route }) => {
+  const { freelancer } = useSelector((state) => state.freelancer);
 
-  const { freelancer } = useSelector((state) => state.freelancer)
+  const { user } = freelancer;
+  const [loaded, setLoaded] = useState(false);
 
-  const {user} = freelancer
-  const [loaded, setLoaded] = useState(false)
-
-
-  console.log("freelancer", user.profileImage)
-  const { id, roles, languages } = freelancer
-  const users = freelancer.user
+  console.log("freelancer", user.profileImage);
+  const { id, roles, languages } = freelancer;
+  const users = freelancer.user;
 
   const callContact = () => {
-    console.log("freelancer.user.phoneNumber",freelancer.user.phoneNumber)
-    Linking.openURL(`tel:${freelancer.user.phoneNb.replace(/\s/g, "")}`)
-  }
+    console.log("freelancer.user.phoneNumber", freelancer.user.phoneNumber);
+    Linking.openURL(`tel:${freelancer.user.phoneNb.replace(/\s/g, "")}`);
+  };
   const emailContract = () => {
-   
-    Linking.openURL(`mailto:${freelancer.user.email}`)
-  }
+    Linking.openURL(`mailto:${freelancer.user.email}`);
+  };
 
-  return loaded || Object.keys(freelancer).length === 0
-    ? <View style={{marginTop: 400}}>
-        <ActivityIndicator size={"large"}/>
-      </View>
-    :(
+  return loaded || Object.keys(freelancer).length === 0 ? (
+    <View style={{ marginTop: 400 }}>
+      <ActivityIndicator size={"large"} />
+    </View>
+  ) : (
     <ScrollView style={styles.wrapper}>
       <View style={styles.header}>
         <View style={styles.subHeader}>
-          {
-            user.profileImage 
-            ? <Image source={{uri: `http://195.110.58.234:4000${user.profileImage}`}} style={styles.profileImage}/>
-            : <View style={styles.circle} />
-
-          }
-
+          {user.profileImage ? (
+            <Image
+              source={{ uri: `http://195.110.58.234:4000${user.profileImage}` }}
+              style={styles.profileImage}
+            />
+          ) : (
+            <View style={styles.circle} />
+          )}
         </View>
         <View style={styles.subHeader}>
           <Pressable onPress={() => navigation.navigate("recruiter_dashboard")}>
@@ -63,12 +61,12 @@ const ContactFreelancerPage = ({ navigation, route }) => {
       </View>
       <LinearGradient
         colors={[
-          'rgba(202, 218, 221, 0.1)',
-          'rgba(202, 218, 221, 0)',
-          'rgba(202, 218, 221, 0.2)',
-          'rgba(202, 218, 221, 0.2)',
-          'rgba(202, 218, 221, 0.2)',
-          'rgba(202, 218, 221, 0.1)',
+          "rgba(202, 218, 221, 0.1)",
+          "rgba(202, 218, 221, 0)",
+          "rgba(202, 218, 221, 0.2)",
+          "rgba(202, 218, 221, 0.2)",
+          "rgba(202, 218, 221, 0.2)",
+          "rgba(202, 218, 221, 0.1)",
         ]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
@@ -79,7 +77,7 @@ const ContactFreelancerPage = ({ navigation, route }) => {
             <MaskedView
               maskElement={
                 <Text
-                  style={[styles.title, { backgroundColor: 'transparent' }]}
+                  style={[styles.title, { backgroundColor: "transparent" }]}
                 >
                   {users.name}
                 </Text>
@@ -88,19 +86,19 @@ const ContactFreelancerPage = ({ navigation, route }) => {
               <LinearGradient
                 start={{ x: 1, y: 0 }}
                 end={{ x: 1, y: 1 }}
-                colors={['rgba(49, 190, 187, 1)', 'rgba(101, 91, 218, 1)']}
+                colors={["rgba(49, 190, 187, 1)", "rgba(101, 91, 218, 1)"]}
               >
                 <Text style={[styles.title, { opacity: 0 }]}>{users.name}</Text>
               </LinearGradient>
             </MaskedView>
             <Pressable onPress={() => emailContract()}>
-                <Text style={[styles.email]}>{freelancer.user.email}</Text>
+              <Text style={[styles.email]}>{freelancer.user.email}</Text>
             </Pressable>
             <Pressable onPress={() => callContact()}>
-                <Text style={[styles.email]}>{freelancer.user.phoneNb}</Text>
+              <Text style={[styles.email]}>{freelancer.user.phoneNb}</Text>
             </Pressable>
 
-            <View style={styles.roles}>
+            {/* <View style={styles.roles}>
               {roles.map((role) => {
                 return (
                   <View key={role.id} style={styles.role}>
@@ -126,7 +124,7 @@ const ContactFreelancerPage = ({ navigation, route }) => {
                   </View>
                 )
               })}
-            </View>
+            </View> */}
           </View>
           <View style={styles.languages}>
             <Image source={languageIcon} style={styles.languageIcon}></Image>
@@ -135,20 +133,20 @@ const ContactFreelancerPage = ({ navigation, route }) => {
                 <Text key={item.id} style={styles.language}>
                   {item.name}
                 </Text>
-              )
+              );
             })}
           </View>
         </View>
       </LinearGradient>
     </ScrollView>
-  )
-}
+  );
+};
 const styles = StyleSheet.create({
   wrapper: {
     height: 300,
     padding: 20,
-    width: '100%',
-    alignSelf: 'center',
+    width: "100%",
+    alignSelf: "center",
     marginTop: 70,
     flex: 1,
   },
@@ -156,10 +154,10 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   container: {
-    justifyContent: 'center',
+    justifyContent: "center",
     borderWidth: 1,
-    borderColor: 'rgba(0,0,0,.03)',
-    position: 'relative',
+    borderColor: "rgba(0,0,0,.03)",
+    position: "relative",
     zIndex: 1,
     paddingTop: 30,
   },
@@ -169,163 +167,163 @@ const styles = StyleSheet.create({
   header: {
     zIndex: 1,
     top: 0,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '90%',
-    alignSelf: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "90%",
+    alignSelf: "center",
     marginBottom: -45,
   },
   title: {
     fontSize: 20,
     marginBottom: 10,
-    fontFamily: 'PoppinsS',
+    fontFamily: "PoppinsS",
     marginEnd: 80,
     left: 20,
-    width: '100%',
+    width: "100%",
   },
   footerInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingTop: 7,
-    marginRight: 30
+    marginRight: 30,
   },
   circle: {
     width: 80,
     height: 80,
     borderRadius: 50,
-    borderColor: ' rgba(16, 125, 197, 1)',
+    borderColor: " rgba(16, 125, 197, 1)",
     borderWidth: 1,
     zIndex: 999,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   priceBg: {
     width: 130,
     height: 90,
     left: 10,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   price: {
     fontSize: 18,
     left: 10,
-    fontWeight: 'bold',
-    color: 'rgba(16, 125, 197, 1)',
+    fontWeight: "bold",
+    color: "rgba(16, 125, 197, 1)",
   },
   heart: {},
   plus: {
     left: 10,
   },
   text: {
-    color: 'rgba(16, 125, 197, 1)',
-    fontFamily: 'PoppinsR',
+    color: "rgba(16, 125, 197, 1)",
+    fontFamily: "PoppinsR",
   },
   description: {
-    color: '#0A084B',
-    fontFamily: 'PoppinsR',
+    color: "#0A084B",
+    fontFamily: "PoppinsR",
   },
   subHeader: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   shad: {
     shadowOffset: { width: -2, height: 4 },
-    shadowColor: '#171717',
+    shadowColor: "#171717",
     shadowOpacity: 1,
     shadowRadius: 3,
   },
   languages: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    width: "100%",
     marginTop: -30,
     marginBottom: 20,
     paddingRight: 20,
   },
   language: {
-    fontFamily: 'PoppinsR',
-    color: 'rgba(10, 8, 75, .6)',
-    marginRight:10,
-    marginLeft: 3
+    fontFamily: "PoppinsR",
+    color: "rgba(10, 8, 75, .6)",
+    marginRight: 10,
+    marginLeft: 3,
   },
   description: {
-    fontFamily: 'PoppinsR',
-    color: '#0A084B',
+    fontFamily: "PoppinsR",
+    color: "#0A084B",
   },
   languageIcon: {
     marginLeft: 20,
   },
   priceAndCurrency: {
-    flexDirection: 'row',
+    flexDirection: "row",
 
-    alignItems: 'center',
-    width: '100%',
+    alignItems: "center",
+    width: "100%",
   },
   currency: {
-    fontFamily: 'PoppinsR',
+    fontFamily: "PoppinsR",
     fontSize: 10,
     marginTop: 3,
-    color: '#107DC5',
+    color: "#107DC5",
     padding: 10,
   },
   calendarIcon: {
     marginRight: 5,
   },
   roleDate: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
   },
   roleName: {
-    fontFamily: 'PoppinsR',
+    fontFamily: "PoppinsR",
     fontSize: 14,
-    color: 'rgba(10, 8, 75, .6)',
+    color: "rgba(10, 8, 75, .6)",
     marginBottom: 5,
   },
   roleDescription: {
-    fontFamily: 'PoppinsR',
+    fontFamily: "PoppinsR",
     fontSize: 12,
-    color: 'rgba(10, 8, 75, .6)',
+    color: "rgba(10, 8, 75, .6)",
     lineHeight: 20,
     marginBottom: 5,
   },
   role: {
     marginBottom: 20,
-    borderBottomColor: 'rgba(16, 125, 197, .3)',
+    borderBottomColor: "rgba(16, 125, 197, .3)",
     borderBottomWidth: 1,
     paddingBottom: 20,
   },
   roleDateText: {
-    fontFamily: 'PoppinsR',
+    fontFamily: "PoppinsR",
     fontSize: 12,
-    color: '#107DC5',
+    color: "#107DC5",
   },
   button: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 40,
     marginBottom: 90,
   },
   footerContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    width: "100%",
+    alignItems: "flex-start",
     paddingVertical: 20,
     paddingLeft: 20,
   },
-  profileImage:{
+  profileImage: {
     width: 100,
     height: 100,
-    borderRadius: 50
+    borderRadius: 50,
   },
-  email:{
+  email: {
     fontSize: 14,
     marginBottom: 10,
-    fontFamily: 'PoppinsS',
+    fontFamily: "PoppinsS",
     marginEnd: 80,
     left: 20,
-    width: '100%',
-    color: "rgba(0,0,0, .4)"
-  }
-})
-export default ContactFreelancerPage
+    width: "100%",
+    color: "rgba(0,0,0, .4)",
+  },
+});
+export default ContactFreelancerPage;
